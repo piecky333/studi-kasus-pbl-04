@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tic Tech Pro</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+  :root {
+    --bg: #0f2027;
+    --bg-grad: linear-gradient(135deg, #2c5364 0%, #203a43 50%, #0f2027 100%);
+    --cell-bg: rgba(36, 198, 220, 0.08);
+    --cell-border: #00ffea;
+    --x-color: #ff3cac;
+    --o-color: #20e3b2;
+    --glow: 0 0 16px #00ffea, 0 0 32px #00ffea;
+    --win-glow: 0 0 24px #fff200, 0 0 40px #fff200;
+    --text-glow: 0 0 10px #00ffea;
+    --panel-bg: rgba(36, 198, 220, 0.12);
+    --btn-bg: linear-gradient(90deg, #ff3cac 0%, #784ba0 100%);
+    --btn-glow: 0 0 8px #ff3cac, 0 0 16px #784ba0;
+    --shadow: 0 4px 24px rgba(32,227,178,0.15);
+  }
+  .dark-mode {
+    --bg: #141e30;
+    --bg-grad: linear-gradient(135deg, #232526 0%, #414345 100%);
+    --cell-bg: rgba(255, 255, 255, 0.04);
+    --cell-border: #fff200;
+    --x-color: #fff200;
+    --o-color: #00d2ff;
+    --glow: 0 0 16px #fff200, 0 0 32px #fff200;
+    --win-glow: 0 0 24px #00d2ff, 0 0 40px #00d2ff;
+    --text-glow: 0 0 10px #fff200;
+    --panel-bg: rgba(255, 255, 255, 0.08);
+    --btn-bg: linear-gradient(90deg, #fff200 0%, #00d2ff 100%);
+    --btn-glow: 0 0 8px #fff200, 0 0 16px #00d2ff;
+    --shadow: 0 4px 24px rgba(0,210,255,0.15);
+  }
+  body {
+    background: var(--bg-grad);
+    color: #fff;
+    font-family: 'Orbitron', Arial, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    transition: background 0.5s;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+  h1 {
+    margin-top: 30px;
+    font-size: 2.2em;
+    letter-spacing: 0.1em;
+    text-shadow: var(--text-glow);
+    color: #fff;
+    background: linear-gradient(90deg, #ff3cac 0%, #20e3b2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .controls, .score-board {
+    background: var(--panel-bg);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 12px 24px;
+    margin: 12px 0 18px 0;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .controls button {
+    background: var(--btn-bg);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 1em;
+    font-family: inherit;
+    font-weight: bold;
+    padding: 10px 18px;
+    box-shadow: var(--btn-glow);
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    outline: none;
+  }
+  .controls button:hover {
+    transform: scale(1.08);
+    filter: brightness(1.2);
+  }
+  .score-board div {
+    font-size: 1.1em;
+    margin: 0 10px;
+    letter-spacing: 0.08em;
+  }
+  #board {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(80px, 110px));
+    gap: 18px;
+    margin: 22px 0 18px 0;
+    background: var(--panel-bg);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 18px;
+    position: relative;
+  }
+  .cell {
+    width: 100px;
+    height: 100px;
+    background: var(--cell-bg);
+    border: 2.5px solid var(--cell-border);
+    border-radius: 18px;
+    font-size: 2.8em;
+    font-family: 'Orbitron', Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--glow);
+    transition: background 0.3s, box-shadow 0.3s, transform 0.13s;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+  }
+  .cell.x {
+    color: var(--x-color);
+    text-shadow: 0 0 18px var(--x-color), 0 0 32px #fff;
+    animation: popX 0.3s;
+  }
+  .cell.o {
+    color: var(--o-color);
+    text-shadow: 0 0 18px var(--o-color), 0 0 32px #fff;
+    animation: popO 0.3s;
+  }
+  .cell:hover {
+    background: rgba(255,255,255,0.09);
+    transform: scale(1.07);
+    box-shadow: 0 0 24px #fff200, 0 0 40px #20e3b2;
+  }
+  @keyframes popX {
+    0% { transform: scale(0.5) rotate(-10deg);}
+    100% { transform: scale(1) rotate(0);}
+  }
+  @keyframes popO {
+    0% { transform: scale(0.5) rotate(10deg);}
+    100% { transform: scale(1) rotate(0);}
+  }
+  .cell.win {
+    box-shadow: var(--win-glow);
+    border-color: #fff200;
+    background: rgba(255, 242, 0, 0.15);
+    animation: winAnim 0.7s alternate infinite;
+  }
+  @keyframes winAnim {
+    0% { box-shadow: 0 0 24px #fff200, 0 0 40px #fff200;}
+    100% { box-shadow: 0 0 40px #fff, 0 0 60px #fff200;}
+  }
+  .status {
+    font-size: 1.2em;
+    margin: 18px 0;
+    letter-spacing: 0.08em;
+    text-shadow: var(--text-glow);
+    min-height: 28px;
+  }
+  .gallery {
+    display: flex;
+    gap: 14px;
+    margin: 25px 0 10px 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .gallery img {
+    width: 68px;
+    height: 68px;
+    border-radius: 16px;
+    object-fit: cover;
+    box-shadow: 0 0 12px #00ffea, 0 0 16px #20e3b2;
+    border: 2.5px solid #fff;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .gallery img:hover {
+    transform: scale(1.12) rotate(-3deg);
+    box-shadow: 0 0 24px #ff3cac, 0 0 32px #fff200;
+    border-color: #ff3cac;
+  }
+  @media (max-width: 600px) {
+    #board { grid-template-columns: repeat(3, minmax(62px, 1fr)); padding: 8px;}
+    .cell { width: 60px; height: 60px; font-size: 1.7em;}
+    .gallery img { width: 48px; height: 48px;}
+  }
+</style>
+</head>
+<body>
+  <h1>Tic Tech Pro <span style="font-size:0.7em;">by Mr.king</span></h1>
+  <div class="gallery" id="gallery"></div>
+  <div class="controls">
+    <button id="modeBtn">Mode: 2 Pemain</button>
+    <button id="themeBtn">Toggle Tema</button>
+    <button id="resetBtn">Reset Game</button>
+  </div>
+  <div class="score-board">
+    <div>X Menang: <span id="scoreX">0</span></div>
+    <div>Seri: <span id="scoreDraw">0</span></div>
+    <div>O Menang: <span id="scoreO">0</span></div>
+  </div>
+  <div id="board"></div>
+  <div class="status" id="status">Giliran Pemain X</div>
+
+<script>
+  // URL gambar background keren
+  const bgImages = [
+    'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?auto=format&fit=crop&w=800&q=80'
+  ];
+
+  // Variabel global game
+  const boardElement = document.getElementById('board');
+  const statusElement = document.getElementById('status');
+  const modeBtn = document.getElementById('modeBtn');
+  const themeBtn = document.getElementById('themeBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const scoreXEl = document.getElementById('scoreX');
+  const scoreOEl = document.getElementById('scoreO');
+  const scoreDrawEl = document.getElementById('scoreDraw');
+  const galleryEl = document.getElementById('gallery');
+
+  let board = Array(9).fill('');
+  let currentPlayer = 'X';
+  let gameActive = true;
+  let mode = '2-player'; // '2-player' atau 'vs-ai'
+  let scores = { X: 0, O: 0, draw: 0 };
+  let currentBgIndex = -1;
+
+  // Kombinasi menang
+  const winCombos = [
+    [0,1,2],[3,4,5],[6,7,8], // baris
+    [0,3,6],[1,4,7],[2,5,8], // kolom
+    [0,4,8],[2,4,6]          // diagonal
+  ];
+
+  // Inisialisasi galeri gambar
+  function initGallery() {
+    galleryEl.innerHTML = '';
+    bgImages.forEach((url, idx) => {
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = `Background ${idx+1}`;
+      img.title = 'Klik untuk ganti background';
+      img.addEventListener('click', () => changeBackground(idx));
+      galleryEl.appendChild(img);
+    });
+  }
+
+  // Ganti background body dengan gambar yang dipilih
+  function changeBackground(index) {
+    currentBgIndex = index;
+    document.body.style.backgroundImage = `url(${bgImages[index]})`;
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center center';
+    document.body.style.backgroundRepeat = 'no-repeat';
+    // Overlay agar teks tetap terbaca
+    document.body.style.backgroundBlendMode = 'overlay';
+    document.body.style.backgroundColor = 'rgba(15,32,39,0.85)';
+  }
+
+  // Reset background ke default gradien
+  function resetBackground() {
+    currentBgIndex = -1;
+    document.body.style.backgroundImage = '';
+    document.body.style.background = 'var(--bg-grad)';
+    document.body.style.backgroundBlendMode = 'normal';
+  }
+
+  // Inisialisasi papan
+  function initBoard() {
+    boardElement.innerHTML = '';
+    board.forEach((cell, index) => {
+      const cellDiv = document.createElement('div');
+      cellDiv.classList.add('cell');
+      cellDiv.dataset.index = index;
+      cellDiv.addEventListener('click', () => handleCellClick(index));
+      boardElement.appendChild(cellDiv);
+    });
+    updateBoardUI();
+    updateStatus();
+  }
+
+  // Update tampilan papan sesuai data board
+  function updateBoardUI(winIndexes=[]) {
+    board.forEach((val, idx) => {
+      const cell = boardElement.querySelector(`[data-index="${idx}"]`);
+      cell.textContent = val;
+      cell.classList.remove('x', 'o', 'win');
+      if (val) cell.classList.add(val.toLowerCase());
+      if (winIndexes.includes(idx)) cell.classList.add('win');
+    });
+  }
+
+  // Handle klik sel
+  function handleCellClick(index) {
+    if (!gameActive || board[index] !== '') return;
+
+    makeMove(index, currentPlayer);
+
+    const winIndexes = checkWin(currentPlayer);
+    if (winIndexes) {
+      handleGameEnd(currentPlayer, winIndexes);
+      return;
+    } else if (checkDraw()) {
+      handleGameEnd(null, []);
+      return;
+    }
+
+    // Ganti giliran
+    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+    updateStatus();
+
+    // Jika mode vs AI dan giliran AI
+    if (mode === 'vs-ai' && currentPlayer === 'O' && gameActive) {
+      statusElement.textContent = 'Giliran AI (O)...';
+      setTimeout(() => {
+        const bestMove = getBestMove();
+        makeMove(bestMove, 'O');
+        const winAI = checkWin('O');
+        if (winAI) {
+          handleGameEnd('O', winAI);
+          return;
+        } else if (checkDraw()) {
+          handleGameEnd(null, []);
+          return;
+        }
+        currentPlayer = 'X';
+        updateStatus();
+      }, 420);
+    }
+  }
+
+  // Buat langkah di papan
+  function makeMove(index, player) {
+    board[index] = player;
+    updateBoardUI();
+  }
+
+  // Cek kemenangan, return array index sel yang menang jika menang
+  function checkWin(player) {
+    for (const combo of winCombos) {
+      if (combo.every(i => board[i] === player)) return combo;
+    }
+    return null;
+  }
+
+  // Cek seri
+  function checkDraw() {
+    return board.every(cell => cell !== '');
+  }
+
+  // Tangani akhir game
+  function handleGameEnd(winner, winIndexes) {
+    gameActive = false;
+    if (winIndexes && winIndexes.length) updateBoardUI(winIndexes);
+    if (winner === 'X') {
+      scores.X++;
+      statusElement.textContent = 'Pemain X Menang! 🎉';
+    } else if (winner === 'O') {
+      scores.O++;
+      statusElement.textContent = mode === 'vs-ai' ? 'AI Menang! 🤖' : 'Pemain O Menang! 🎉';
+    } else {
+      scores.draw++;
+      statusElement.textContent = 'Game Seri! 🤝';
+    }
+    updateScores();
+  }
+
+  // Update skor di UI
+  function updateScores() {
+    scoreXEl.textContent = scores.X;
+    scoreOEl.textContent = scores.O;
+    scoreDrawEl.textContent = scores.draw;
+  }
+
+  // Update status giliran
+  function updateStatus() {
+    if (!gameActive) return;
+    statusElement.textContent = `Giliran Pemain ${currentPlayer}`;
+  }
+
+  // Toggle mode permainan
+  function toggleMode() {
+    if (gameActive && !confirm('Game sedang berjalan, yakin ingin ganti mode?')) return;
+    mode = mode === '2-player' ? 'vs-ai' : '2-player';
+    modeBtn.textContent = `Mode: ${mode === '2-player' ? '2 Pemain' : 'vs AI'}`;
+    resetGame();
+  }
+
+  // Toggle tema gelap/terang
+  function toggleTheme() {
+    document.body.classList.toggle('dark-mode');
+  }
+
+  // Reset game
+  function resetGame() {
+    board = Array(9).fill('');
+    currentPlayer = 'X';
+    gameActive = true;
+    updateStatus();
+    updateBoardUI();
+    resetBackground();
+  }
+
+  // Algoritma Minimax untuk AI
+  function getBestMove() {
+    let bestScore = -Infinity;
+    let move;
+    board.forEach((cell, index) => {
+      if (cell === '') {
+        board[index] = 'O';
+        let score = minimax(board, 0, false);
+        board[index] = '';
+        if (score > bestScore) {
+          bestScore = score;
+          move = index;
+        }
+      }
+    });
+    return move;
+  }
+
+  function minimax(newBoard, depth, isMaximizing) {
+    if (checkWinForBoard(newBoard, 'O')) return 10 - depth;
+    if (checkWinForBoard(newBoard, 'X')) return depth - 10;
+    if (newBoard.every(cell => cell !== '')) return 0;
+
+    if (isMaximizing) {
+      let bestScore = -Infinity;
+      newBoard.forEach((cell, index) => {
+        if (cell === '') {
+          newBoard[index] = 'O';
+          let score = minimax(newBoard, depth + 1, false);
+          newBoard[index] = '';
+          bestScore = Math.max(score, bestScore);
+        }
+      });
+      return bestScore;
+    } else {
+      let bestScore = Infinity;
+      newBoard.forEach((cell, index) => {
+        if (cell === '') {
+          newBoard[index] = 'X';
+          let score = minimax(newBoard, depth + 1, true);
+          newBoard[index] = '';
+          bestScore = Math.min(score, bestScore);
+        }
+      });
+      return bestScore;
+    }
+  }
+
+  function checkWinForBoard(boardToCheck, player) {
+    return winCombos.some(combo => combo.every(i => boardToCheck[i] === player));
+  }
+
+  // Event listeners tombol
+  modeBtn.addEventListener('click', toggleMode);
+  themeBtn.addEventListener('click', toggleTheme);
+  resetBtn.addEventListener('click', () => {
+    if (gameActive && !confirm('Game sedang berjalan, yakin reset?')) return;
+    resetGame();
+  });
+
+  // Inisialisasi galeri dan game saat load
+  initGallery();
+  initBoard();
+  updateScores();
+</script>
+</body>
+</html>
