@@ -1,6 +1,6 @@
-
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,31 +14,38 @@
             font-family: 'Poppins', sans-serif;
             background-color: #f8f9fa;
         }
+
         nav.navbar {
             background-color: #004080;
         }
+
         nav a.nav-link {
             color: #fff !important;
             font-weight: 500;
         }
+
         nav a.nav-link:hover {
             color: #ffd700 !important;
         }
+
         footer {
             background-color: #002855;
             color: #ddd;
             padding: 30px 0;
             margin-top: 50px;
         }
+
         footer a {
             color: #ffd700;
             text-decoration: none;
         }
+
         footer a:hover {
             text-decoration: underline;
         }
     </style>
 </head>
+
 <body>
 
     {{-- Navbar --}}
@@ -77,11 +84,11 @@
                 <a href="{{ url('/kontak') }}">Kontak</a> |
                 <a href="{{ url('/kebijakan') }}">Kebijakan Privasi</a>
             </p>
-            <p>Jl. Pendidikan No.1, Kampus Teknologi Informasi, Universitas X</p>
         </div>
     </footer>
 
     {{-- Bootstrap JS --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
