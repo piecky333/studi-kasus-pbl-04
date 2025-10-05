@@ -5,7 +5,7 @@ use App\Http\Controllers\admin\KontenController;
 use App\Http\Controllers\JabatanController;
 
 Route::get('/', function () {
-    return view('layouts.public');
+    return view('public.home');
 });
 
 Route::get('/dashboard', function () {
