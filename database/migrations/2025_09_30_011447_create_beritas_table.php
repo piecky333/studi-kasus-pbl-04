@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('berita', function (Blueprint $table) {
-          $table->id('id_berita'); // Primary key, auto increment
+        $table->id('id_berita'); // Primary key, auto increment
         $table->unsignedBigInteger('id_user'); // Relasi ke users
         $table->string('judul_berita', 200); // Judul berita
         $table->text('isi_berita'); // Isi berita
@@ -21,7 +21,10 @@ return new class extends Migration
         $table->timestamps(); // created_at & updated_at otomatis
 
         // Foreign key ke tabel users (kalau pakai user bawaan Laravel)
-        $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
+        $table->foreign('id_user')
+        ->references('id_user')
+        ->on('user')
+        ->onDelete('cascade');
     });
 }
 

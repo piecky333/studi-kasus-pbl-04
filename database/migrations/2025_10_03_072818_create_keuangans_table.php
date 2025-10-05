@@ -22,10 +22,15 @@ return new class extends Migration
             $table->timestamps();
 
             // Relasi ke tabel anggota
-            $table->foreign('id_anggota')->references('id_anggota')->on('anggota')->onDelete('cascade');
+            $table->foreign('id_anggota')
+            ->references('id_anggota')
+            ->on('anggota')->onDelete('cascade');
 
             // Relasi ke tabel divisi
-            $table->foreign('id_divisi')->references('id_divisi')->on('divisi')->onDelete('cascade');
+            $table->foreign('id_divisi')
+            ->references('id_divisi')
+            ->on('divisi')
+            ->onDelete('cascade');
         });
     }
 

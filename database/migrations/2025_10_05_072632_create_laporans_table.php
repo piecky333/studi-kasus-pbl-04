@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('laporan', function (Blueprint $table) {
             $table->id('id_laporan');
-            $table->unsignedBigInteger('id_pelapor'); // Relasi ke tabel user (pelapor)
+            $table->unsignedBigInteger('id_user'); // Relasi ke tabel user (pelapor)
             $table->unsignedBigInteger('id_terlapor')->nullable(); // Relasi ke tabel terlapor
             $table->string('judul_laporan', 150);
             $table->text('isi_laporan');
@@ -24,13 +24,22 @@ return new class extends Migration
             $table->timestamps();
 
             // Relasi ke tabel user
-            $table->foreign('id_pelapor')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('id_user')
+            ->references('id_user')
+            ->on('user')
+            ->onDelete('cascade');
 
             // Relasi ke tabel terlapor (opsional)
-            $table->foreign('id_terlapor')->references('id_terlapor')->on('terlapor')->onDelete('set null');
+            $table->foreign('id_terlapor')
+            ->references('id_terlapor')
+            ->on('terlapor')
+            ->onDelete('set null');
 
             // Relasi ke tabel admin (opsional)
-            $table->foreign('id_admin')->references('id_admin')->on('admin')->onDelete('set null');
+            $table->foreign('id_admin')
+            ->references('id_admin')
+            ->on('admin')
+            ->onDelete('set null');
         });
     }
 
