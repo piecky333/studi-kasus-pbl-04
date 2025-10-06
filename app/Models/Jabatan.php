@@ -2,21 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Jabatan extends Model
 {
-    use HasFactory;
+    protected $table = 'jabatan';
+    protected $primaryKey = 'id_jabatan';
+    protected $fillable = ['id_divisi', 'jabatan'];
 
-    /**
-     * fillable
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'nama',
-        'jabatan',
-        'deskripsi',
-    ];
+    public function divisi()
+    {
+        return $this->belongsTo(Divisi::class, 'id_divisi');
+    }
+
+    public function anggota()
+    {
+        return $this->hasMany(Anggota::class, 'id_jabatan');
+    }
 }

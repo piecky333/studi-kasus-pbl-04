@@ -9,27 +9,22 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('berita', function (Blueprint $table) {
-        $table->id('id_berita'); // Primary key, auto increment
-        $table->unsignedBigInteger('id_user'); // Relasi ke users
-        $table->string('judul_berita', 200); // Judul berita
-        $table->text('isi_berita'); // Isi berita
-        $table->string('gambar_berita', 255); // Lokasi file gambar
-        $table->date('tanggal'); // Tanggal berita dibuat
-        $table->timestamps(); // created_at & updated_at otomatis
-
-        // Foreign key ke tabel users (kalau pakai user bawaan Laravel)
-        $table->foreign('id_user')
-        ->references('id_user')
-        ->on('user')
-        ->onDelete('cascade');
-    });
-}
-
-public function down(): void
+   public function up(): void
 {
-    Schema::dropIfExists('berita');
+    if (!Schema::hasTable('berita')) {
+        Schema::create('berita', function (Blueprint $table) {
+            $table->id('id_berita');
+            $table->unsignedBigInteger('id_user');
+            $table->foreign('id_user')
+                  ->references('id_user')
+                  ->on('user')
+                  ->onDelete('cascade');
+            $table->string('judul_berita', 200);
+            $table->text('isi_berita');
+            $table->string('gambar_berita', 255);
+            $table->date('tanggal');
+            $table->timestamps();
+        });
+    }
 }
 };
