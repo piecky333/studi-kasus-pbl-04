@@ -20,7 +20,10 @@ return new class extends Migration
             $table->timestamps();
 
             // Relasi ke tabel dt_mahasiswa (jika ada)
-            $table->foreign('id_mahasiswa')->references('id_mahasiswa')->on('dt_mahasiswa')->onDelete('set null');
+            $table->foreign('id_mahasiswa')
+            ->references('id_mahasiswa')
+            ->on('dt_mahasiswa')
+            ->onDelete('set null');
         });
     }
 
