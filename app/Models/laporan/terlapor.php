@@ -4,14 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class terlapor extends Model
+class Terlapor extends Model
 {
-    protected $fillable = [
- 'id_terlapor',
- 'nama_terlapor',
- 'nim_terlapor',
- 'keterangan',
- 'id_mahasiswa',
- ];
+    protected $table = 'terlapor';
+    protected $primaryKey = 'id_terlapor';
+    protected $fillable = ['nama', 'status_terlapor', 'no_hp_terlapor', 'id_laporan'];
 
+    public function laporan()
+    {
+        return $this->belongsTo(Laporan::class, 'id_laporan');
+    }
 }
+

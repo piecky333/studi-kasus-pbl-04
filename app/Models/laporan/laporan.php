@@ -4,18 +4,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class laporan extends Model
+class Laporan extends Model
 {
-    protected $fillable = [
- 'id_laporan',
- 'id_pelapor',
- 'id_terlapor',
- 'judul_laporan',
- 'isi_laporan',
- 'tanggal_lapor',
- 'bukti_laporan',
- 'status_laporan',
- 'id_admin',
-  ];
+    protected $table = 'laporan';
+    protected $primaryKey = 'id_laporan';
+    protected $fillable = ['tanggal_laporan', 'jenis_kasus', 'deskripsi', 'status', 'id_user'];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user');
+    }
+
+    public function terlapor()
+    {
+        return $this->hasMany(Terlapor::class, 'id_laporan');
+    }
+
+    public function tanggapan()
+    {
+        return $this->hasMany(Tanggapan::class, 'id_laporan');
+    }
 }
