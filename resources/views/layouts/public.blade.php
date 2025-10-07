@@ -19,9 +19,11 @@
             background-color: #004080;
         }
 
+        .nav-item{
+            margin-left: 15px
+        }
         nav a.nav-link {
-            color: #fff !important;
-            font-weight: 500;
+            color: hsl(0, 0%, 100%) !important;
         }
 
         nav a.nav-link:hover {
@@ -48,27 +50,7 @@
 
 <body>
 
-    {{-- Navbar --}}
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand text-white" href="{{ url('/') }}">Sistem Informasi HIMA</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/') }}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/divisi') }}">Divisi</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/profil') }}">Profil</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/berita') }}">Berita</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/pendaftaran') }}">Pendaftaran</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/prestasi') }}">Prestasi Mahasiswa</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/laporan') }}">Laporan</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    @include ('partials.public.navbar')
 
     {{-- Konten Halaman --}}
     <main class="container py-5">

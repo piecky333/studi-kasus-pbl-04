@@ -13,7 +13,7 @@ class KontenController extends Controller
      */
     public function index()
     {
-        return view('berita.konten');
+        return view('public.berita.index');
     }
 
     /**
