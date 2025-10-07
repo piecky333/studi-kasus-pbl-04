@@ -25,3 +25,4 @@ class Laporan extends Model
         return $this->hasMany(Tanggapan::class, 'id_laporan');
     }
 }
+  

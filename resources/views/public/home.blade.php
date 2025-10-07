@@ -19,7 +19,7 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 mb-4 mb-lg-0">
-                <img src="{{ asset('images/hima-profil.jpg') }}" alt="Profil HIMA" class="img-fluid rounded-4 shadow-sm">
+                <img src="{{ asset('img/Logo hima.png') }}" alt="Profil HIMA" class="img-fluid rounded-4">
             </div>
             <div class="col-lg-6">
                 <h2 class="fw-bold text-primary mb-3">Tentang HIMA-TI</h2>
