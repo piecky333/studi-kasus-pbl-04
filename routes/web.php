@@ -32,6 +32,6 @@ Route::get('/dashboard', function () {
     return view('pages.dashboard');
 });
 
-// Route::post('/laporan', [App\Http\Controllers\LaporanController::class, 'store'])->name('laporan.store');
+// 
 Route::resource('berita', KontenController::class);
 Route::resource('jabatan', JabatanController::class);

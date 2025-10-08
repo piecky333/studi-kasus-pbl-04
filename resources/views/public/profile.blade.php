@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Profil HIMA-TI Politala')
+@section('title', 'Profile HIMA-TI Politala')
 
 @section('content')
 
