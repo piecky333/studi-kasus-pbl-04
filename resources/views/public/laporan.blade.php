@@ -10,7 +10,7 @@
     <div class="container">
         <h1 class="fw-bold display-6 mb-3">Laporan Mahasiswa</h1>
         <p class="lead mb-4">
-            Sampaikan laporan, masukan, atau kendala yang kamu hadapi agar dapat ditindaklanjuti oleh HIMA-TI.
+            Sampaikan laporan atau kendala yang kamu alami agar dapat ditindaklanjuti oleh pengurus HIMA-TI.
         </p>
     </div>
 </section>
@@ -24,82 +24,61 @@
                 <div class="card border-0 shadow-sm rounded-4">
                     <div class="card-body p-4 p-md-5">
                         <h3 class="fw-bold text-center text-primary mb-4">Formulir Laporan Mahasiswa</h3>
-                        <p class="text-center text-secondary mb-4">Isi form di bawah ini dengan jujur dan lengkap. Semua data akan dijaga kerahasiaannya.</p>
+                        <p class="text-center text-secondary mb-4">
+                            Mohon isi data di bawah ini secara lengkap dan jujur. Semua laporan akan ditinjau oleh pengurus HIMA-TI.
+                        </p>
 
-                        {{-- Pesan Sukses / Error (opsional, nanti dari controller) --}}
+                        {{-- Pesan Sukses --}}
                         @if(session('success'))
                             <div class="alert alert-success">{{ session('success') }}</div>
                         @endif
 
                         {{-- FORM INPUT --}}
-                        <form action="{{ route('laporan.store') }}" method="POST">
+                        <form action="{{ route('laporan.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
-                            {{-- NAMA PELAPOR --}}
+                            {{-- JUDUL LAPORAN --}}
                             <div class="mb-3">
-                                <label for="nama" class="form-label fw-semibold">Nama Pelapor</label>
-                                <input type="text" name="nama" id="nama" class="form-control rounded-3 @error('nama') is-invalid @enderror"
-                                       placeholder="Masukkan nama lengkap anda" required>
-                                @error('nama')
+                                <label for="judul" class="form-label fw-semibold">Judul Laporan</label>
+                                <input type="text" name="judul" id="judul"
+                                       class="form-control rounded-3 @error('judul') is-invalid @enderror"
+                                       placeholder="Tuliskan judul singkat laporan kamu" required>
+                                @error('judul')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
-                            {{-- NIM --}}
+                            {{-- ISI LAPORAN --}}
                             <div class="mb-3">
-                                <label for="nim" class="form-label fw-semibold">NIM</label>
-                                <input type="text" name="nim" id="nim" class="form-control rounded-3 @error('nim') is-invalid @enderror"
-                                       placeholder="Masukkan NIM anda" required>
-                                @error('nim')
+                                <label for="isi" class="form-label fw-semibold">Isi / Deskripsi Laporan</label>
+                                <textarea name="isi" id="isi" rows="5"
+                                          class="form-control rounded-3 @error('isi') is-invalid @enderror"
+                                          placeholder="Jelaskan secara detail laporan atau kendala yang kamu alami" required></textarea>
+                                @error('isi')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
-                            {{-- KONTAK --}}
-                            <div class="mb-3">
-                                <label for="kontak" class="form-label fw-semibold">Kontak (Email / WhatsApp)</label>
-                                <input type="text" name="kontak" id="kontak" class="form-control rounded-3"
-                                       placeholder="Masukkan kontak yang bisa dihubungi">
-                            </div>
-
-                            {{-- JENIS KASUS --}}
-                            <div class="mb-3">
-                                <label for="jenis_kasus" class="form-label fw-semibold">Jenis Kasus</label>
-                                <select name="jenis_kasus" id="jenis_kasus" class="form-select rounded-3" required>
-                                    <option value="">-- Pilih Jenis Kasus --</option>
-                                    <option value="akademik">Akademik (nilai, dosen, jadwal, tugas, dll)</option>
-                                    <option value="non-akademik">Non-Akademik (organisasi, kegiatan, konflik)</option>
-                                    <option value="fasilitas">Fasilitas Kampus (ruangan, lab, internet, dsb)</option>
-                                    <option value="lainnya">Lainnya</option>
-                                </select>
-                            </div>
-
-                            {{-- DESKRIPSI LAPORAN --}}
-                            <div class="mb-3">
-                                <label for="deskripsi" class="form-label fw-semibold">Deskripsi Laporan</label>
-                                <textarea name="deskripsi" id="deskripsi" rows="5" 
-                                          class="form-control rounded-3 @error('deskripsi') is-invalid @enderror"
-                                          placeholder="Tuliskan secara detail kendala, masalah, atau laporan yang ingin disampaikan" required></textarea>
-                                @error('deskripsi')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            {{-- TANGGAL --}}
+                            {{-- TANGGAL KEJADIAN --}}
                             <div class="mb-3">
                                 <label for="tanggal" class="form-label fw-semibold">Tanggal Kejadian</label>
-                                <input type="date" name="tanggal" id="tanggal" class="form-control rounded-3" required>
+                                <input type="date" name="tanggal" id="tanggal"
+                                       class="form-control rounded-3 @error('tanggal') is-invalid @enderror" required>
+                                @error('tanggal')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
-                            {{-- KATEGORI URGENSI --}}
-                            <div class="mb-4">
-                                <label for="urgensi" class="form-label fw-semibold">Tingkat Urgensi</label>
-                                <select name="urgensi" id="urgensi" class="form-select rounded-3" required>
-                                    <option value="">-- Pilih Urgensi --</option>
-                                    <option value="rendah">Rendah</option>
-                                    <option value="sedang">Sedang</option>
-                                    <option value="tinggi">Tinggi</option>
-                                </select>
+                            {{-- BUKTI LAPORAN (FILE) --}}
+                            <div class="mb-3">
+                                <label for="bukti" class="form-label fw-semibold">Unggah Bukti Laporan (opsional)</label>
+                                <input type="file" name="bukti" id="bukti"
+                                       class="form-control rounded-3 @error('bukti') is-invalid @enderror"
+                                       accept=".jpg,.jpeg,.png,.pdf">
+                                <small class="text-secondary">Format diperbolehkan: JPG, PNG, PDF. Maksimal 2MB.</small>
+                                @error('bukti')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             {{-- BUTTON --}}

@@ -26,7 +26,7 @@ class JabatanController extends Controller
     public function index(): View
     {
         $jabatans = Jabatan::latest()->paginate(10);
-        return view('jabatan.index', compact('jabatans'));
+        return view('admin.jabatan.index', compact('jabatans'));
     }
 
     /**
@@ -34,7 +34,7 @@ class JabatanController extends Controller
      */
     public function create(): View
     {
-        return view('jabatan.create', ['jabatanOptions' => $this->jabatanOptions]);
+        return view('admin.jabatan.create', ['jabatanOptions' => $this->jabatanOptions]);
     }
 
     /**
