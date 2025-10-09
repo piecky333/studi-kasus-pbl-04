@@ -1,80 +1,66 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manajemen Jabatan Pegawai</title>
+    <title>Kelola Anggota & Jabatan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
-        body { background-color: #f4f7f6; }
-        .card { border-radius: 0.75rem; border: none; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
-        .table thead { background-color: #0d6efd; color: white; }
+        :root { --primary-color: #0d6efd; --light-gray: #f8f9fa; }
+        body { background-color: var(--light-gray); }
+        .card { border-radius: 0.75rem; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border: none; }
+        .card-header { background-color: var(--primary-color); color: white; font-weight: 600; }
     </style>
 </head>
 <body>
-
-    <div class="container my-5">
-        <div class="row">
-            <div class="col-md-12">
-                <h2 class="text-center mb-4 fw-bold text-primary">Manajemen Jabatan Pegawai</h2>
-                <div class="card">
-                    <div class="card-body">
-                        <a href="{{ route('jabatan.create') }}" class="btn btn-success mb-3"><i class="bi bi-plus-lg"></i> Tambah Data Pegawai</a>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover align-middle">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">NAMA PEGAWAI</th>
-                                        <th scope="col">JABATAN</th>
-                                        <th scope="col">DESKRIPSI</th>
-                                        <th scope="col" class="text-center">AKSI</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse ($jabatans as $item)
-                                        <tr>
-                                            <td class="fw-semibold">{{ $item->nama }}</td>
-                                            <td>{{ $item->jabatan }}</td>
-                                            <td>{{ $item->deskripsi ?: '-' }}</td>
-                                            <td class="text-center" style="width: 15%;">
-                                                <form onsubmit="return confirm('Anda yakin ingin menghapus data ini?');" action="{{ route('jabatan.destroy', $item->id) }}" method="POST">
-                                                    <a href="{{ route('jabatan.edit', $item->id) }}" class="btn btn-sm btn-primary"><i class="bi bi-pencil-fill"></i></a>
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i></button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="4" class="text-center"><div class="alert alert-warning">Data belum tersedia.</div></td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                        {!! $jabatans->links() !!}
-                    </div>
-                </div>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-users-cog"></i> KELOLA JABATAN ANGGOTA</span>
+                <a href="{{ route('jabatan.create') }}" class="btn btn-sm btn-light">
+                    <i class="fas fa-plus-circle"></i> TAMBAH ANGGOTA
+                </a>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>NAMA ANGGOTA</th>
+                            <th>JABATAN</th>
+                            <th>DIVISI</th>
+                            <th class="text-center">AKSI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($anggota as $item)
+                            <tr>
+                                <td>{{ $item->nama_anggota }}</td>
+                                <td>{{ $item->jabatan_struktural }}</td>
+                                <td>{{ $item->divisi }}</td>
+                                <td class="text-center">
+                                    <form onsubmit="return confirm('Yakin ingin menghapus data ini?');" action="{{ route('jabatan.destroy', $item->id) }}" method="POST">
+                                        <a href="{{ route('jabatan.edit', $item->id) }}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a>
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="4" class="text-center alert alert-warning">Data Anggota belum tersedia.</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+                {{ $anggota->links() }}
             </div>
         </div>
     </div>
-    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    @if(session('success'))
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: @json(session('success')),
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-            });
-        </script>
-    @endif
+    <script>
+        @if(session('success'))
+            Swal.fire({ icon: 'success', title: 'BERHASIL!', text: '{{ session('success') }}', showConfirmButton: false, timer: 2000 });
+        @endif
+    </script>
 </body>
 </html>
-
