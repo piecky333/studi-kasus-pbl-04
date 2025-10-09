@@ -9,102 +9,99 @@ use Illuminate\Http\RedirectResponse;
 
 class JabatanController extends Controller
 {
-    // Daftar pilihan jabatan yang akan kita gunakan sebagai "enum"
-    private $jabatanOptions = [
-        'Staff Administrasi',
-        'Frontend Web Developer',
-        'Backend Web Developer',
-        'UI/UX Designer',
-        'Project Manager',
+    // Daftar jabatan dan divisi disesuaikan dengan struktur organisasi Anda
+    private $jabatans = [
+        'Gubernur', 
+        'Wakil Gubernur', 
+        'Sekretaris', 
+        'Bendahara',
         'Kepala Divisi',
-        'Direktur'
+        'Anggota Divisi'
+    ];
+    
+    private $divisis = [
+        'BPH (Badan Pengurus Harian)',
+        'Kaderisasi', 
+        'Media Informasi', 
+        'Technopreneurship', 
+        'Public Relation'
     ];
 
     /**
-     * Menampilkan daftar semua data jabatan pegawai.
+     * Menampilkan daftar semua anggota.
      */
     public function index(): View
     {
-        $jabatans = Jabatan::latest()->paginate(10);
-        return view('admin.jabatan.index', compact('jabatans'));
+        $anggota = Jabatan::latest()->paginate(10);
+        return view('admin.jabatan.index', compact('anggota'));
     }
 
     /**
-     * Menampilkan form untuk menambah data baru.
+     * Menampilkan form untuk menambah anggota baru.
      */
     public function create(): View
     {
-        return view('admin.jabatan.create', ['jabatanOptions' => $this->jabatanOptions]);
+        return view('admin.jabatan.create', [
+            'jabatans' => $this->jabatans,
+            'divisis' => $this->divisis
+        ]);
     }
 
     /**
-     * Menyimpan data baru ke database.
+     * Menyimpan anggota baru ke database.
      */
     public function store(Request $request): RedirectResponse
     {
-        // Validasi form
         $request->validate([
-            'nama'      => 'required|string|min:3',
-            'jabatan'   => 'required|string',
-            'deskripsi' => 'nullable|string'
+            'nama_anggota'       => 'required|string|min:3',
+            'jabatan_struktural' => 'required|string',
+            'divisi'             => 'required|string',
         ]);
 
-        // Buat data baru
-        Jabatan::create([
-            'nama'      => $request->nama,
-            'jabatan'   => $request->jabatan,
-            'deskripsi' => $request->deskripsi
-        ]);
+        Jabatan::create($request->all());
 
-        // Redirect ke halaman index dengan pesan sukses
-        return redirect()->route('jabatan.index')->with(['success' => 'Data Pegawai Berhasil Disimpan!']);
+        return redirect()->route('jabatan.index')->with(['success' => 'Data Anggota Berhasil Disimpan!']);
     }
 
     /**
-     * Menampilkan form untuk mengedit data.
+     * Menampilkan form untuk mengedit data anggota.
      */
     public function edit(string $id): View
     {
         $jabatan = Jabatan::findOrFail($id);
-        return view('jabatan.edit', [
-            'jabatan' => $jabatan, 
-            'jabatanOptions' => $this->jabatanOptions
+        return view('admin.jabatan.edit', [
+            'jabatan' => $jabatan,
+            'jabatans' => $this->jabatans,
+            'divisis' => $this->divisis
         ]);
     }
 
     /**
-     * Memperbarui data di database.
+     * Memperbarui data anggota di database.
      */
     public function update(Request $request, $id): RedirectResponse
     {
-        // Validasi form
         $request->validate([
-            'nama'      => 'required|string|min:3',
-            'jabatan'   => 'required|string',
-            'deskripsi' => 'nullable|string'
+            'nama_anggota'       => 'required|string|min:3',
+            'jabatan_struktural' => 'required|string',
+            'divisi'             => 'required|string',
         ]);
 
         $jabatan = Jabatan::findOrFail($id);
+        
+        $jabatan->update($request->all());
 
-        // Update data
-        $jabatan->update([
-            'nama'      => $request->nama,
-            'jabatan'   => $request->jabatan,
-            'deskripsi' => $request->deskripsi
-        ]);
-
-        // Redirect ke halaman index dengan pesan sukses
-        return redirect()->route('jabatan.index')->with(['success' => 'Data Pegawai Berhasil Diperbarui!']);
+        return redirect()->route('jabatan.index')->with(['success' => 'Data Anggota Berhasil Diperbarui!']);
     }
 
     /**
-     * Menghapus data dari database.
+     * Menghapus data anggota dari database.
      */
     public function destroy($id): RedirectResponse
     {
         $jabatan = Jabatan::findOrFail($id);
         $jabatan->delete();
-        return redirect()->route('jabatan.index')->with(['success' => 'Data Pegawai Berhasil Dihapus!']);
+        return redirect()->route('jabatan.index')->with(['success' => 'Data Anggota Berhasil Dihapus!']);
     }
 }
 

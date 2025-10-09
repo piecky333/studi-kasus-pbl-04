@@ -1,52 +1,48 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Data Pegawai</title>
+    <title>Tambah Anggota Baru</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background-color: #f4f7f6; }
-        .card { border-radius: 0.75rem; border: none; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
-    </style>
 </head>
-<body>
+<body style="background-color: #f8f9fa;">
     <div class="container mt-5">
         <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="card">
-                    <div class="card-body p-4">
-                        <h4 class="card-title fw-bold text-primary mb-4">Form Tambah Data Pegawai</h4>
+            <div class="col-md-8">
+                <div class="card shadow-sm border-0 rounded-3">
+                    <div class="card-header text-white fw-bold" style="background-color: #0d6efd;">FORM TAMBAH ANGGOTA</div>
+                    <div class="card-body">
                         <form action="{{ route('jabatan.store') }}" method="POST">
                             @csrf
                             <div class="mb-3">
-                                <label for="nama" class="form-label fw-semibold">Nama Pegawai <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('nama') is-invalid @enderror" name="nama" value="{{ old('nama') }}" placeholder="Masukkan nama lengkap pegawai" required>
-                                @error('nama') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                <label class="form-label fw-bold">NAMA LENGKAP</label>
+                                <input type="text" class="form-control @error('nama_anggota') is-invalid @enderror" name="nama_anggota" value="{{ old('nama_anggota') }}" placeholder="Masukkan Nama Lengkap">
+                                @error('nama_anggota')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
-
                             <div class="mb-3">
-                                <label for="jabatan" class="form-label fw-semibold">Jabatan <span class="text-danger">*</span></label>
-                                <select class="form-select @error('jabatan') is-invalid @enderror" name="jabatan" required>
-                                    <option value="" disabled selected>-- Pilih Jabatan --</option>
-                                    @foreach ($jabatanOptions as $option)
-                                        <option value="{{ $option }}" {{ old('jabatan') == $option ? 'selected' : '' }}>{{ $option }}</option>
+                                <label class="form-label fw-bold">JABATAN STRUKTURAL</label>
+                                <select class="form-select @error('jabatan_struktural') is-invalid @enderror" name="jabatan_struktural">
+                                    <option value="" selected disabled>Pilih Jabatan</option>
+                                    @foreach ($jabatans as $jabatan)
+                                        <option value="{{ $jabatan }}" {{ old('jabatan_struktural') == $jabatan ? 'selected' : '' }}>{{ $jabatan }}</option>
                                     @endforeach
                                 </select>
-                                @error('jabatan') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                @error('jabatan_struktural')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
-
                             <div class="mb-3">
-                                <label for="deskripsi" class="form-label fw-semibold">Deskripsi Jabatan (Opsional)</label>
-                                <textarea class="form-control @error('deskripsi') is-invalid @enderror" name="deskripsi" rows="4" placeholder="Jelaskan tugas dan tanggung jawab jabatan ini">{{ old('deskripsi') }}</textarea>
-                                @error('deskripsi') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                <label class="form-label fw-bold">DIVISI</label>
+                                <select class="form-select @error('divisi') is-invalid @enderror" name="divisi">
+                                    <option value="" selected disabled>Pilih Divisi</option>
+                                    @foreach ($divisis as $divisi)
+                                        <option value="{{ $divisi }}" {{ old('divisi') == $divisi ? 'selected' : '' }}>{{ $divisi }}</option>
+                                    @endforeach
+                                </select>
+                                @error('divisi')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
-
-                            <div class="mt-4">
-                                <button type="submit" class="btn btn-primary">Simpan Data</button>
-                                <a href="{{ route('jabatan.index') }}" class="btn btn-outline-secondary">Batal</a>
-                            </div>
-                        </form> 
+                            <a href="{{ route('jabatan.index') }}" class="btn btn-secondary">KEMBALI</a>
+                            <button type="submit" class="btn btn-primary">SIMPAN</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -54,4 +50,3 @@
     </div>
 </body>
 </html>
-

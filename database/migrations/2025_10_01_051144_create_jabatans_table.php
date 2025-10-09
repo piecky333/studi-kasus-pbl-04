@@ -9,20 +9,16 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-
     public function up(): void
     {
         Schema::create('jabatans', function (Blueprint $table) {
-        $table->id();
-        $table->string('nama'); // Field untuk Nama Pegawai
-        $table->string('jabatan'); // Field untuk Nama Jabatan (dari dropdown)
-        $table->text('deskripsi')->nullable(); // Field untuk Deskripsi, boleh kosong
-        $table->timestamps();
+            $table->id();
+            $table->string('nama_anggota');
+            $table->string('jabatan_struktural');
+            $table->string('divisi');
+            $table->timestamps();
         });
     }
-
-// ... bagian bawah sama ...
-
 
     /**
      * Reverse the migrations.
@@ -32,3 +28,4 @@ return new class extends Migration
         Schema::dropIfExists('jabatans');
     }
 };
+
