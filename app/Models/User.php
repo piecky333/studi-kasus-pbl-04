@@ -13,28 +13,14 @@ class User extends Authenticatable
     /**
      * Nama tabel yang digunakan model ini.
      */
-    protected $table = 'user'; // karena kamu pakai nama tabel 'user', bukan 'users'
+    protected $table = 'user'; 
 
-    /**
-     * Primary key dari tabel.
-     */
-    protected $primaryKey = 'id_user'; // disesuaikan dengan migration kamu
+    protected $primaryKey = 'id_user'; 
 
-    /**
-     * Apakah primary key auto-increment.
-     */
     public $incrementing = true;
 
-    /**
-     * Jenis data primary key.
-     */
     protected $keyType = 'int';
 
-    /**
-     * Kolom yang bisa diisi (mass assignable).
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'nama',
         'username',
@@ -43,20 +29,11 @@ class User extends Authenticatable
         'role',
     ];
 
-    /**
-     * Kolom yang disembunyikan dari output JSON.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
     ];
 
-    /**
-     * Casting kolom tertentu.
-     *
-     * @var array<string, string>
-     */
+    
     protected $casts = [
         'password' => 'hashed',
     ];

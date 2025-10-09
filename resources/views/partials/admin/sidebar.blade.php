@@ -1,7 +1,7 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url('/dashboard') }}">
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-laugh-wink"></i>
         </div>
@@ -13,7 +13,7 @@
 
     <!-- Nav Item - Dashboard -->
     <li class="nav-item">
-        <a class="nav-link" href="{{ route('admin.dashboard') }}">
+        <a class="nav-link" href="{{ url('/dashboard') }}">
             <i class="bi bi-grid"></i>
             <span>Dashboard</span></a>
     </li>
@@ -33,16 +33,16 @@
             <span>Manajemen akun</span></a>
     </li>
 
-    <!-- Nav Item - anggota % divisi Collapse Menu -->
+    <!-- Nav Item - Pengurus & divisi Collapse Menu -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
             aria-controls="collapsePages">
             <i class="fas fa-fw bi bi-diagram-3-fill"></i>
-            <span>Anggota & divisi</span>
+            <span>Pengurus & divisi</span>
         </a>
         <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="login.html">Daftar anggota HIMA-TI</a>
+                <a class="collapse-item" href="login.html">Daftar Pengurus HIMA-TI</a>
                 <a class="collapse-item" href="register.html">Struktur Divisi</a>
                 <a class="collapse-item" href="forgot-password.html">Anggota per Divisi</a>
                 {{-- <div class="collapse-divider"></div>
@@ -72,13 +72,6 @@
         <a class="nav-link" href="tables.html">
             <i class="fas fa-fw bi bi-chat-dots-fill"></i>
             <span>Laporan</span></a>
-    </li>
-
-    <!-- Nav Item - Pengaturan -->
-    <li class="nav-item ">
-        <a class="nav-link" href="tables.html">
-            <i class="fas fa-fw bi bi-gear-fill"></i>
-            <span>pengaturan</span></a>
     </li>
 
     <!-- Divider -->
