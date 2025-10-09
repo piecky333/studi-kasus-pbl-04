@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Jalankan migrasi untuk membuat tabel mahasiswa_bermasalah.
-     */
     public function up(): void
     {
         Schema::create('mahasiswa_bermasalah', function (Blueprint $table) {
@@ -28,10 +25,6 @@ return new class extends Migration
             $table->foreign('id_laporan')->references('id_laporan')->on('laporan')->onDelete('set null');
         });
     }
-
-    /**
-     * Undo migrasi (hapus tabel mahasiswa_bermasalah).
-     */
     public function down(): void
     {
         Schema::dropIfExists('mahasiswa_bermasalah');

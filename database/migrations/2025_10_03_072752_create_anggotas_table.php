@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Jalankan migrasi untuk membuat tabel anggota.
-     */
     public function up(): void
     {
         Schema::create('anggota', function (Blueprint $table) {
@@ -40,9 +37,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Undo migrasi (hapus tabel anggota).
-     */
     public function down(): void
     {
         Schema::dropIfExists('anggota');

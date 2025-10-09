@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Jalankan migrasi untuk membuat tabel mahasiswa_berprestasi.
-     */
+
     public function up(): void
     {
         Schema::create('mahasiswa_berprestasi', function (Blueprint $table) {
@@ -31,9 +29,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Undo migrasi (hapus tabel mahasiswa_berprestasi).
-     */
     public function down(): void
     {
         Schema::dropIfExists('mahasiswa_berprestasi');

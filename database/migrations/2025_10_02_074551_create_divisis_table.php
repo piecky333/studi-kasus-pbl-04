@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Jalankan migrasi untuk membuat tabel divisi.
-     */
     public function up(): void
     {
         Schema::create('divisi', function (Blueprint $table) {
@@ -20,9 +17,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Undo migrasi (hapus tabel divisi).
-     */
     public function down(): void
     {
         Schema::dropIfExists('divisi');

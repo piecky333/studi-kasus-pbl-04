@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Jalankan migrasi untuk membuat tabel laporan.
-     */
     public function up(): void
     {
         Schema::create('laporan', function (Blueprint $table) {
@@ -43,9 +40,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Undo migrasi (hapus tabel laporan).
-     */
     public function down(): void
     {
         Schema::dropIfExists('laporan');

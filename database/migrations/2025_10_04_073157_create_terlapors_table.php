@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Jalankan migrasi untuk membuat tabel terlapor.
-     */
     public function up(): void
     {
         Schema::create('terlapor', function (Blueprint $table) {
@@ -19,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_mahasiswa')->nullable(); // Relasi opsional ke DT_MAHASISWA
             $table->timestamps();
 
-            // Relasi ke tabel dt_mahasiswa (jika ada)
+            // Relasi ke tabel dt_mahasiswa
             $table->foreign('id_mahasiswa')
             ->references('id_mahasiswa')
             ->on('dt_mahasiswa')
@@ -27,9 +24,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Undo migrasi (hapus tabel terlapor).
-     */
     public function down(): void
     {
         Schema::dropIfExists('terlapor');

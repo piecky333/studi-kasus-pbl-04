@@ -21,12 +21,6 @@ return new class extends Migration
         });
     }
 
-// ... bagian bawah sama ...
-
-
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('jabatans');

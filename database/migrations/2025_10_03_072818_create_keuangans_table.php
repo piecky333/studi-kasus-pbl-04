@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Jalankan migrasi untuk membuat tabel keuangan.
-     */
     public function up(): void
     {
         Schema::create('keuangan', function (Blueprint $table) {
@@ -34,9 +31,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Undo migrasi (hapus tabel keuangan).
-     */
     public function down(): void
     {
         Schema::dropIfExists('keuangan');

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
-use App\Models\admin\berita;
+use App\Models\berita;
 use Illuminate\Http\Request;
 use illuminate\view;
 
-class KontenController extends Controller
+class BeritaController extends Controller
 {
     /**
      * Display a listing of the resource.

@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Jalankan migrasi untuk membuat tabel tanggapan.
-     */
     public function up(): void
     {
         Schema::create('tanggapan', function (Blueprint $table) {
@@ -27,9 +24,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Undo migrasi (hapus tabel tanggapan).
-     */
     public function down(): void
     {
         Schema::dropIfExists('tanggapan');

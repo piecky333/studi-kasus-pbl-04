@@ -17,8 +17,6 @@ return new class extends Migration
             $table->enum('role', ['user', 'pelapor'])->default('user'); // Hak akses
             $table->timestamps(); // created_at dan updated_at otomatis
         });
-
-        // Opsional — kalau masih mau fitur reset password dan session Laravel
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');

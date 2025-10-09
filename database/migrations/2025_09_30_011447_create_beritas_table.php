@@ -17,12 +17,13 @@ return new class extends Migration
             $table->unsignedBigInteger('id_user');
             $table->foreign('id_user')
                   ->references('id_user')
-                  ->on('user')
+                  ->on('users')
                   ->onDelete('cascade');
             $table->string('judul_berita', 200);
             $table->text('isi_berita');
             $table->string('gambar_berita', 255);
-            $table->date('tanggal');
+           $table->date('tanggal')->default(DB::raw('CURRENT_DATE'));
+
             $table->timestamps();
         });
     }

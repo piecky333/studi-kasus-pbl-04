@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Jalankan migrasi untuk membuat tabel dt_mahasiswa.
-     */
     public function up(): void
     {
         Schema::create('dt_mahasiswa', function (Blueprint $table) {
@@ -21,14 +18,10 @@ return new class extends Migration
             $table->string('no_hp', 15);
             $table->timestamps();
 
-            // Relasi ke tabel admin (yang input data)
             $table->foreign('id_admin')->references('id_admin')->on('admin')->onDelete('set null');
         });
     }
 
-    /**
-     * Undo migrasi (hapus tabel dt_mahasiswa).
-     */
     public function down(): void
     {
         Schema::dropIfExists('dt_mahasiswa');

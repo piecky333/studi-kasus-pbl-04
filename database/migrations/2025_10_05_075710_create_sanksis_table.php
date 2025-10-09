@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Jalankan migrasi untuk membuat tabel sanksi.
-     */
     public function up(): void
     {
         Schema::create('sanksi', function (Blueprint $table) {
@@ -28,9 +25,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Undo migrasi (hapus tabel sanksi).
-     */
     public function down(): void
     {
         Schema::dropIfExists('sanksi');
