@@ -4,30 +4,23 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    /**
-     * Jalankan migrasi untuk membuat tabel admin.
-     */
-    public function up(): void
-    {
+return new class extends Migration {
+    public function up(): void {
         Schema::create('admin', function (Blueprint $table) {
-            $table->id('id_admin');
-            $table->string('nama', 100);
-            $table->string('username', 50)->unique(); // Username harus unik
-            $table->string('email', 100)->unique(); // Email harus unik
-            $table->string('password', 255); // Password terenkripsi (bcrypt)
-            $table->enum('role', ['admin', 'superadmin'])->default('admin'); // Level akses
-            $table->enum('status', ['aktif', 'nonaktif'])->default('aktif'); // Status akun
+            $table->bigIncrements('id_admin');
+            $table->unsignedBigInteger('id_user');
+            $table->string('nama_admin');
+            $table->string('jabatan_admin')->nullable();
             $table->timestamps();
+
+            $table->foreign('id_user')
+                  ->references('id_user')
+                  ->on('user')
+                  ->onDelete('cascade');
         });
     }
 
-    /**
-     * Undo migrasi (hapus tabel admin).
-     */
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('admin');
     }
 };

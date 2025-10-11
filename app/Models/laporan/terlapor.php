@@ -1,18 +1,25 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\laporan;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Terlapor extends Model
+class terlapor extends Model
 {
+    use HasFactory;
+
     protected $table = 'terlapor';
     protected $primaryKey = 'id_terlapor';
-    protected $fillable = ['nama', 'status_terlapor', 'no_hp_terlapor', 'id_laporan'];
+    protected $fillable = [
+        'id_laporan',
+        'nama',
+        'no_hp_terlapor',
+        'status_terlapor'
+    ];
 
     public function laporan()
     {
-        return $this->belongsTo(Laporan::class, 'id_laporan');
+        return $this->belongsTo(laporan::class, 'id_laporan', 'id_laporan');
     }
 }
-

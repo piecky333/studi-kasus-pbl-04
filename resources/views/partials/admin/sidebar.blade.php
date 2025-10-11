@@ -13,7 +13,7 @@
 
     <!-- Nav Item - Dashboard -->
     <li class="nav-item">
-        <a class="nav-link" href="{{ route('admin.dashboard') }}">
+        <a class="nav-link" href="#">
             <i class="bi bi-grid"></i>
             <span>Dashboard</span></a>
     </li>
@@ -62,7 +62,7 @@
 
     <!-- Nav Item - Berita -->
     <li class="nav-item ">
-        <a class="nav-link" href="tables.html">
+       <a class="nav-link" href="{{ route('admin.berita.index') }}">
             <i class="fas fa-fw bi bi-newspaper"></i>
             <span>Berita</span></a>
     </li>

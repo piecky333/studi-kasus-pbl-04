@@ -6,17 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
-        Schema::create('sanksi', function (Blueprint $table) {
+        Schema::create('prestasi', function (Blueprint $table) {
             $table->engine = 'InnoDB';
 
-            $table->bigIncrements('id_sanksi');
+            $table->bigIncrements('id_prestasi');
             $table->unsignedBigInteger('id_dtmahasiswa'); // FK ke dt_mahasiswa
-            $table->string('jenis_sanksi');
-            $table->text('keterangan')->nullable();
-            $table->date('tanggal_sanksi')->nullable();
+            $table->string('nama_prestasi');
+            $table->string('tingkat'); // contoh: lokal, nasional, internasional
+            $table->string('peringkat')->nullable();
+            $table->year('tahun');
             $table->timestamps();
 
-            // ✅ relasi ke dt_mahasiswa dengan kolom yg benar
+            // ✅ Relasi foreign key yang benar
             $table->foreign('id_dtmahasiswa')
                   ->references('id_dtmahasiswa')
                   ->on('dt_mahasiswa')
@@ -25,6 +26,6 @@ return new class extends Migration {
     }
 
     public function down(): void {
-        Schema::dropIfExists('sanksi');
+        Schema::dropIfExists('prestasi');
     }
 };
