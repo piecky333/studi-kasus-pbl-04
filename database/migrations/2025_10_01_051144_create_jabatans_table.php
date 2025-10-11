@@ -4,25 +4,22 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    /**
-     * Run the migrations.
-     */
+return new class extends Migration {
+    public function up(): void {
+        Schema::create('jabatan', function (Blueprint $table) {
+            $table->bigIncrements('id_jabatan');
+            $table->unsignedBigInteger('id_divisi'); // tipe harus sama dengan id_divisi di tabel divisi
+            $table->string('nama_jabatan');
+            $table->timestamps();
 
-    public function up(): void
-    {
-        Schema::create('jabatans', function (Blueprint $table) {
-        $table->id();
-        $table->string('nama'); // Field untuk Nama Pegawai
-        $table->string('jabatan'); // Field untuk Nama Jabatan (dari dropdown)
-        $table->text('deskripsi')->nullable(); // Field untuk Deskripsi, boleh kosong
-        $table->timestamps();
+            $table->foreign('id_divisi')
+                  ->references('id_divisi')
+                  ->on('divisi')
+                  ->onDelete('cascade');
         });
     }
 
-    public function down(): void
-    {
-        Schema::dropIfExists('jabatans');
+    public function down(): void {
+        Schema::dropIfExists('jabatan');
     }
 };
