@@ -34,26 +34,20 @@ class PrestasiController extends Controller
     {
         // Validasi form
         $request->validate([
-            'nim' => 'required|string|max:20',
-            'nama' => 'required|string|max:255',
-            'nama_lomba' => 'required|string|max:255',
-            'tahun' => 'required|integer|min:1900|max:' . (date('Y') + 1),
+            'nama_prestasi' => 'required|string|max:255',
             'tingkat' => 'required|string|max:50',
-            'jenis_prestasi' => 'required|in:Akademik,Non-Akademik',
-            'status_validasi' => 'required|in:Tervalidasi,Menunggu,Ditolak',
-            'id_mahasiswa' => 'required|integer|exists:dt_mahasiswas,id_mahasiswa'
+            'peringkat' => 'nullable|string|max:50',
+            'tahun' => 'required|integer|min:1900|max:' . (date('Y') + 1),
+            'id_dtmahasiswa' => 'required|integer|exists:dt_mahasiswa,id_dtmahasiswa'
         ]);
 
         // Buat data baru
         Prestasi::create([
-            'nim' => $request->nim,
-            'nama' => $request->nama,
-            'nama_lomba' => $request->nama_lomba,
-            'tahun' => $request->tahun,
+            'nama_prestasi' => $request->nama_prestasi,
             'tingkat' => $request->tingkat,
-            'jenis_prestasi' => $request->jenis_prestasi,
-            'status_validasi' => $request->status_validasi,
-            'id_mahasiswa' => $request->id_mahasiswa
+            'peringkat' => $request->peringkat,
+            'tahun' => $request->tahun,
+            'id_dtmahasiswa' => $request->id_dtmahasiswa
         ]);
 
         // Redirect ke halaman index dengan pesan sukses
@@ -76,28 +70,22 @@ class PrestasiController extends Controller
     {
         // Validasi form
         $request->validate([
-            'nim' => 'required|string|max:20',
-            'nama' => 'required|string|max:255',
-            'nama_lomba' => 'required|string|max:255',
-            'tahun' => 'required|integer|min:1900|max:' . (date('Y') + 1),
+            'nama_prestasi' => 'required|string|max:255',
             'tingkat' => 'required|string|max:50',
-            'jenis_prestasi' => 'required|in:Akademik,Non-Akademik',
-            'status_validasi' => 'required|in:Tervalidasi,Menunggu,Ditolak',
-            'id_mahasiswa' => 'required|integer|exists:dt_mahasiswas,id_mahasiswa'
+            'peringkat' => 'nullable|string|max:50',
+            'tahun' => 'required|integer|min:1900|max:' . (date('Y') + 1),
+            'id_dtmahasiswa' => 'required|integer|exists:dt_mahasiswa,id_dtmahasiswa'
         ]);
 
         $prestasi = Prestasi::findOrFail($id);
 
         // Update data
         $prestasi->update([
-            'nim' => $request->nim,
-            'nama' => $request->nama,
-            'nama_lomba' => $request->nama_lomba,
-            'tahun' => $request->tahun,
+            'nama_prestasi' => $request->nama_prestasi,
             'tingkat' => $request->tingkat,
-            'jenis_prestasi' => $request->jenis_prestasi,
-            'status_validasi' => $request->status_validasi,
-            'id_mahasiswa' => $request->id_mahasiswa
+            'peringkat' => $request->peringkat,
+            'tahun' => $request->tahun,
+            'id_dtmahasiswa' => $request->id_dtmahasiswa
         ]);
 
         // Redirect ke halaman index dengan pesan sukses
