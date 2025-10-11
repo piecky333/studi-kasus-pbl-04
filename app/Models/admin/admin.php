@@ -11,26 +11,31 @@ class admin extends Model
 
     protected $table = 'admin';
     protected $primaryKey = 'id_admin';
-    protected $fillable = [
-        'id_user',
-        'nama',
-        'email',
-        'username',
-        'password'
-    ];
+    protected $fillable = ['id_user', 'nama_admin', 'jabatan_admin'];
 
+    // Relasi ke User
     public function user()
     {
-        return $this->belongsTo(\App\Models\User::class, 'id_user', 'id_user');
-    }
-
-    public function prestasi()
-    {
-        return $this->hasMany(prestasi::class, 'id_admin', 'id_admin');
+        return $this->belongsTo(\App\Models\User::class, 'id_user');
     }
 
     public function tanggapan()
     {
-        return $this->hasMany(\App\Models\laporan\tanggapan::class, 'id_admin', 'id_admin');
+        return $this->hasMany(\App\Models\laporan\tanggapan::class, 'id_admin');
+    }
+
+    public function prestasi()
+    {
+        return $this->hasMany(\App\Models\admin\Prestasi::class, 'id_admin');
+    }
+
+    public function sanksi()
+    {
+        return $this->hasMany(\App\Models\admin\sanksi::class, 'id_admin');
+    }
+
+    public function dt_mahasiswa()
+    {
+        return $this->hasMany(\App\Models\admin\dt_mahasiswa::class, 'id_admin');
     }
 }

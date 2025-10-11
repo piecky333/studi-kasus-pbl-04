@@ -13,8 +13,9 @@ class sanksi extends Model
     protected $primaryKey = 'id_sanksi';
     protected $fillable = [
         'id_dtmahasiswa',
-        'tanggal_sanksi',
-        'jenis_sanksi'
+        'jenis_sanksi',
+        'keterangan',
+        'tanggal_sanksi'
     ];
 
     public function dt_mahasiswa()
