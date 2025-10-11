@@ -6,16 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
-        Schema::create('berita', function (Blueprint $table) {
-            $table->bigIncrements('id_berita');
+        Schema::create('pengurus', function (Blueprint $table) {
+            $table->bigIncrements('id_pengurus');
+            $table->unsignedBigInteger('id_divisi');
             $table->unsignedBigInteger('id_user');
-            $table->string('judul_berita');
-            $table->text('isi_berita');
-            $table->string('gambar_berita')->nullable();
-            $table->date('tanggal_berita')->nullable();
+            $table->string('posisi_jabatan');
             $table->timestamps();
 
-            // foreign key manual
+            // relasi ke divisi dan user
+            $table->foreign('id_divisi')
+                  ->references('id_divisi')
+                  ->on('divisi')
+                  ->onDelete('cascade');
+
             $table->foreign('id_user')
                   ->references('id_user')
                   ->on('user')
@@ -24,6 +27,6 @@ return new class extends Migration {
     }
 
     public function down(): void {
-        Schema::dropIfExists('berita');
+        Schema::dropIfExists('pengurus');
     }
 };

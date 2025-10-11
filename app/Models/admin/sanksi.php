@@ -1,18 +1,24 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\admin;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class sanksi extends Model
 {
-    protected $table = 'sanksi';
-    protected $primaryKey = 'id_kodetik';
-    protected $fillable = ['id_mhsbermasalah', 'tanggal_sanksi', 'jenis_sanksi'];
+    use HasFactory;
 
-    public function mahasiswaBermasalah()
+    protected $table = 'sanksi';
+    protected $primaryKey = 'id_sanksi';
+    protected $fillable = [
+        'id_dtmahasiswa',
+        'tanggal_sanksi',
+        'jenis_sanksi'
+    ];
+
+    public function dt_mahasiswa()
     {
-        return $this->belongsTo(Mahasiswa_bermasalah::class, 'id_mhsbermasalah');
+        return $this->belongsTo(dt_mahasiswa::class, 'id_dtmahasiswa', 'id_dtmahasiswa');
     }
 }
-

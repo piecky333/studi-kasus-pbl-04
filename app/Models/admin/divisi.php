@@ -1,28 +1,34 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\admin;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Divisi extends Model
+class divisi extends Model
 {
+    use HasFactory;
+
     protected $table = 'divisi';
     protected $primaryKey = 'id_divisi';
-    protected $fillable = ['nama_divisi', 'isi_divisi', 'foto_divisi'];
+    protected $fillable = [
+        'nama_divisi',
+        'isi_divisi',
+        'foto_divisi'
+    ];
 
-    public function anggota()
+    public function pengurus()
     {
-        return $this->hasMany(Anggota::class, 'id_divisi');
+        return $this->hasMany(pengurus::class, 'id_divisi', 'id_divisi');
     }
 
     public function jabatan()
     {
-        return $this->hasMany(Jabatan::class, 'id_divisi');
+        return $this->hasMany(\App\Models\jabatan::class, 'id_divisi', 'id_divisi');
     }
 
     public function keuangan()
     {
-        return $this->hasMany(Keuangan::class, 'id_divisi');
+        return $this->hasMany(keuangan::class, 'id_divisi', 'id_divisi');
     }
 }
-

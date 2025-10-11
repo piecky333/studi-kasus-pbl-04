@@ -1,26 +1,35 @@
 <?php
-namespace App\Models;
 
+namespace App\Models\admin;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class dt_Mahasiswa extends Model
+class dt_mahasiswa extends Model
 {
+    use HasFactory;
+
     protected $table = 'dt_mahasiswa';
     protected $primaryKey = 'id_dtmahasiswa';
-    protected $fillable = ['nim', 'nama', 'email', 'semester', 'alamat', 'no_hp'];
+    protected $fillable = [
+        'nim',
+        'nama',
+        'email',
+        'semester'
+    ];
 
     public function prestasi()
     {
-        return $this->hasMany(mahasiswa_berprestasi::class, 'id_dtmahasiswa');
+        return $this->hasMany(prestasi::class, 'id_dtmahasiswa', 'id_dtmahasiswa');
     }
 
-    public function bermasalah()
+    public function sanksi()
     {
-        return $this->hasMany(mahasiswa_bermasalah::class, 'id_dtmahasiswa');
+        return $this->hasMany(sanksi::class, 'id_dtmahasiswa', 'id_dtmahasiswa');
     }
 
-    public function anggota()
+    public function keuangan()
     {
-        return $this->hasOne(Anggota::class, 'id_mhs');
+        return $this->hasMany(keuangan::class, 'id_anggota', 'id_dtmahasiswa');
     }
 }

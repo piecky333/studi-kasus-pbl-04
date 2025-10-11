@@ -4,41 +4,36 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    /**
-     * Jalankan migrasi untuk membuat tabel keuangan.
-     */
-    public function up(): void
-    {
+return new class extends Migration {
+    public function up(): void {
         Schema::create('keuangan', function (Blueprint $table) {
-            $table->id('id_iuran');
-            $table->unsignedBigInteger('id_anggota'); // Relasi ke tabel anggota
-            $table->unsignedBigInteger('id_divisi'); // Relasi ke tabel divisi
-            $table->decimal('jumlah_iuran', 12, 2); // Jumlah uang dibayar
-            $table->date('tanggal_bayar'); // Tanggal pembayaran
-            $table->date('deadline'); // Batas waktu pembayaran
-            $table->string('metode_pembayaran', 50); // Misal: Cash, Transfer, e-Wallet
+            $table->bigIncrements('id_iuran');
+
+            // 🔧 Kolom foreign key — tipe harus UNSIGNED BIGINT
+            $table->unsignedBigInteger('id_divisi');
+            $table->unsignedBigInteger('id_pengurus');
+
+            // 🔢 Kolom data lainnya
+            $table->double('jumlah_iuran');
+            $table->date('tanggal_bayar')->nullable();
+            $table->date('deadline')->nullable();
+            $table->string('metode_pembayaran')->nullable();
+            $table->enum('status_pembayaran', ['lunas', 'belum_lunas'])->default('belum_lunas');
             $table->timestamps();
 
-            // Relasi ke tabel anggota
-            $table->foreign('id_anggota')
-            ->references('id_anggota')
-            ->on('anggota')->onDelete('cascade');
-
-            // Relasi ke tabel divisi
             $table->foreign('id_divisi')
-            ->references('id_divisi')
-            ->on('divisi')
-            ->onDelete('cascade');
+                  ->references('id_divisi')
+                  ->on('divisi')
+                  ->onDelete('cascade');
+
+            $table->foreign('id_pengurus')
+                  ->references('id_pengurus')
+                  ->on('pengurus')
+                  ->onDelete('cascade');
         });
     }
 
-    /**
-     * Undo migrasi (hapus tabel keuangan).
-     */
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('keuangan');
     }
 };

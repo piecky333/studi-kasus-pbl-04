@@ -4,24 +4,30 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
-        Schema::create('komentars', function (Blueprint $table) {
-            $table->id();
+return new class extends Migration {
+    public function up(): void {
+        Schema::create('komentar', function (Blueprint $table) {
+            $table->bigIncrements('id_komentar');
+            $table->unsignedBigInteger('id_berita');
+            $table->unsignedBigInteger('id_user');
+            $table->text('isi');
             $table->timestamps();
+
+            // 🔗 Relasi ke tabel berita (harus ke id_berita, bukan id)
+            $table->foreign('id_berita')
+                  ->references('id_berita')
+                  ->on('berita')
+                  ->onDelete('cascade');
+
+            // 🔗 Relasi ke tabel user (harus ke id_user, bukan id)
+            $table->foreign('id_user')
+                  ->references('id_user')
+                  ->on('user')
+                  ->onDelete('cascade');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('komentars');
+    public function down(): void {
+        Schema::dropIfExists('komentar');
     }
 };

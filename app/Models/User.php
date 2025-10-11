@@ -5,39 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+
 use App\Models\laporan\laporan;
-use App\Models\mahasiswa\Komentar;
-use App\Models\mahasiswa\Berita;
+use App\Models\komentar;
+use App\Models\berita;
+use App\Models\admin\admin;
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    /**
-     * Nama tabel yang digunakan model ini.
-     */
-    protected $table = 'user'; // karena nama tabel kamu 'user', bukan 'users'
-
-    /**
-     * Primary key dari tabel.
-     */
-    protected $primaryKey = 'id_user'; // disesuaikan dengan migration kamu
-
-    /**
-     * Apakah primary key auto-increment.
-     */
+    protected $table = 'user';
+    protected $primaryKey = 'id_user';
     public $incrementing = true;
-
-    /**
-     * Jenis data primary key.
-     */
     protected $keyType = 'int';
 
-    /**
-     * Kolom yang bisa diisi (mass assignable).
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'nama',
         'username',
@@ -46,27 +28,23 @@ class User extends Authenticatable
         'role',
     ];
 
-    /**
-     * Kolom yang disembunyikan dari output JSON.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
     ];
 
-    /**
-     * Casting kolom tertentu.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'password' => 'hashed',
     ];
 
     /* ==================================================
-       🔗 Relasi antar tabel (sesuai ERD kamu)
+       🔗 Relasi antar tabel (sesuai ERD)
     ================================================== */
+
+    // 1 User bisa menjadi Admin
+    public function admin()
+    {
+        return $this->hasOne(admin::class, 'id_user');
+    }
 
     // 1 User punya banyak laporan
     public function laporan()
@@ -86,3 +64,4 @@ class User extends Authenticatable
         return $this->hasMany(berita::class, 'id_user');
     }
 }
+
