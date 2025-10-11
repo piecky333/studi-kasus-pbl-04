@@ -40,26 +40,17 @@ class User extends Authenticatable
        🔗 Relasi antar tabel (sesuai ERD)
     ================================================== */
 
-<<<<<<< HEAD
-    // 1 User bisa menjadi Admin
-    public function admin()
-    {
-        return $this->hasOne(admin::class, 'id_user');
-    }
-
-=======
     // Relasi berdasarkan role
     public function admin()
     {
-        return $this->hasOne(Admin::class, 'id_user');
+        return $this->hasOne(\App\Models\admin\admin::class, 'id_user');
     }
 
     public function mahasiswa()
     {
         return $this->hasOne(Mahasiswa::class, 'id_user');
     }
-    
->>>>>>> 0dc1741 (Menambahkan PrestasiController dan memperbarui model serta view terkait)
+
     // 1 User punya banyak laporan
     public function laporan()
     {
@@ -78,4 +69,3 @@ class User extends Authenticatable
         return $this->hasMany(berita::class, 'id_user');
     }
 }
-

@@ -34,9 +34,11 @@ class PrestasiController extends Controller
     {
         // Validasi form
         $request->validate([
-            'nama_kegiatan' => 'required|string|max:200',
+            'nim' => 'required|string|max:20',
+            'nama' => 'required|string|max:255',
+            'nama_lomba' => 'required|string|max:255',
             'tahun' => 'required|integer|min:1900|max:' . (date('Y') + 1),
-            'tingkat' => 'required|in:Kampus,Kota,Provinsi,Nasional,Internasional',
+            'tingkat' => 'required|string|max:50',
             'jenis_prestasi' => 'required|in:Akademik,Non-Akademik',
             'status_validasi' => 'required|in:Tervalidasi,Menunggu,Ditolak',
             'id_mahasiswa' => 'required|integer|exists:dt_mahasiswas,id_mahasiswa'
@@ -44,7 +46,9 @@ class PrestasiController extends Controller
 
         // Buat data baru
         Prestasi::create([
-            'nama_kegiatan' => $request->nama_kegiatan,
+            'nim' => $request->nim,
+            'nama' => $request->nama,
+            'nama_lomba' => $request->nama_lomba,
             'tahun' => $request->tahun,
             'tingkat' => $request->tingkat,
             'jenis_prestasi' => $request->jenis_prestasi,
@@ -72,9 +76,11 @@ class PrestasiController extends Controller
     {
         // Validasi form
         $request->validate([
-            'nama_kegiatan' => 'required|string|max:200',
+            'nim' => 'required|string|max:20',
+            'nama' => 'required|string|max:255',
+            'nama_lomba' => 'required|string|max:255',
             'tahun' => 'required|integer|min:1900|max:' . (date('Y') + 1),
-            'tingkat' => 'required|in:Kampus,Kota,Provinsi,Nasional,Internasional',
+            'tingkat' => 'required|string|max:50',
             'jenis_prestasi' => 'required|in:Akademik,Non-Akademik',
             'status_validasi' => 'required|in:Tervalidasi,Menunggu,Ditolak',
             'id_mahasiswa' => 'required|integer|exists:dt_mahasiswas,id_mahasiswa'
@@ -84,6 +90,8 @@ class PrestasiController extends Controller
 
         // Update data
         $prestasi->update([
+            'nim' => $request->nim,
+            'nama' => $request->nama,
             'nama_lomba' => $request->nama_lomba,
             'tahun' => $request->tahun,
             'tingkat' => $request->tingkat,
