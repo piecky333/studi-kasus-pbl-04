@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\JabatanController;
 use App\Http\Controllers\Admin\BeritaController as AdminBeritaController;
+use App\Http\Controllers\PengaduanController;
+use App\Http\Controllers\admin\PengaduanController as AdminPengaduanController;
 
 Route::get('/', function () {
     return view('public.home');
@@ -45,3 +47,10 @@ Route::prefix('admin')->name('admin.')->group(function() {
 // 
 Route::resource('berita', BeritaController::class);
 Route::resource('jabatan', JabatanController::class);
+route::resource('pengaduan',PengaduanController::class);
+
+// Admin pengaduan
+Route::get('/admin/pengaduan', [AdminPengaduanController::class, 'index']);
+Route::get('/admin/pengaduan/{id}', [AdminPengaduanController::class, 'show']);
+Route::put('/admin/pengaduan/{id}/verifikasi', [AdminPengaduanController::class, 'verifikasi']);
+Route::delete('/admin/pengaduan/{id}', [AdminPengaduanController::class, 'destroy']);

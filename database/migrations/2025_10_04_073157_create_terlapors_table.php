@@ -7,20 +7,15 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
         Schema::create('terlapor', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-
             $table->bigIncrements('id_terlapor');
-            $table->unsignedBigInteger('id_laporan'); // FK ke laporan
+            $table->unsignedBigInteger('id_pengaduan');
             $table->string('nama_terlapor');
-            $table->string('nim')->nullable();
-            $table->string('jurusan')->nullable();
+            $table->string('no_hp_terlapor')->nullable();
+            $table->string('status_terlapor')->default('belum diverifikasi');
+            $table->text('keterangan')->nullable();
             $table->timestamps();
 
-            // ✅ Perbaiki FK-nya, refer ke 'id_laporan' (bukan 'id')
-            $table->foreign('id_laporan')
-                  ->references('id_laporan')
-                  ->on('laporan')
-                  ->onDelete('cascade');
+            $table->foreign('id_pengaduan')->references('id_pengaduan')->on('pengaduan')->onDelete('cascade');
         });
     }
 

@@ -7,29 +7,18 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
         Schema::create('keuangan', function (Blueprint $table) {
-            $table->bigIncrements('id_iuran');
-
-            // 🔧 Kolom foreign key — tipe harus UNSIGNED BIGINT
-            $table->unsignedBigInteger('id_divisi');
+            $table->bigIncrements('id_keuangan');
             $table->unsignedBigInteger('id_pengurus');
-
-            // 🔢 Kolom data lainnya
-            $table->double('jumlah_iuran');
-            $table->date('tanggal_bayar')->nullable();
+            $table->unsignedBigInteger('id_divisi');
+            $table->decimal('jumlah_iuran', 12, 2);
+            $table->date('tanggal_bayar');
             $table->date('deadline')->nullable();
-            $table->string('metode_pembayaran')->nullable();
-            $table->enum('status_pembayaran', ['lunas', 'belum_lunas'])->default('belum_lunas');
+            $table->enum('metode_pembayaran', ['cash', 'transfer', 'qris'])->default('cash');
+            $table->enum('status_pembayaran', ['belum', 'proses', 'lunas'])->default('belum');
             $table->timestamps();
 
-            $table->foreign('id_divisi')
-                  ->references('id_divisi')
-                  ->on('divisi')
-                  ->onDelete('cascade');
-
-            $table->foreign('id_pengurus')
-                  ->references('id_pengurus')
-                  ->on('pengurus')
-                  ->onDelete('cascade');
+            $table->foreign('id_pengurus')->references('id_pengurus')->on('pengurus')->onDelete('cascade');
+            $table->foreign('id_divisi')->references('id_divisi')->on('divisi')->onDelete('cascade');
         });
     }
 

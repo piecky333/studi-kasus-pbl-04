@@ -7,21 +7,17 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
         Schema::create('prestasi', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-
             $table->bigIncrements('id_prestasi');
-            $table->unsignedBigInteger('id_dtmahasiswa'); // FK ke dt_mahasiswa
-            $table->string('nama_prestasi');
-            $table->string('tingkat'); // contoh: lokal, nasional, internasional
-            $table->string('peringkat')->nullable();
+            $table->unsignedBigInteger('id_dtmahasiswa');
+            $table->unsignedBigInteger('id_admin')->nullable();
+            $table->string('nama_kegiatan');
+            $table->string('tingkat_prestasi');
             $table->year('tahun');
+            $table->enum('status_validasi', ['menunggu', 'disetujui', 'ditolak'])->default('menunggu');
             $table->timestamps();
 
-            // ✅ Relasi foreign key yang benar
-            $table->foreign('id_dtmahasiswa')
-                  ->references('id_dtmahasiswa')
-                  ->on('dt_mahasiswa')
-                  ->onDelete('cascade');
+            $table->foreign('id_dtmahasiswa')->references('id_dtmahasiswa')->on('dt_mahasiswa')->onDelete('cascade');
+            $table->foreign('id_admin')->references('id_admin')->on('admin')->onDelete('set null');
         });
     }
 

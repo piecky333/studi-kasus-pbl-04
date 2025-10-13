@@ -6,28 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
-        Schema::create('laporan', function (Blueprint $table) {
-            // Gunakan InnoDB agar foreign key bisa aktif
-            $table->engine = 'InnoDB';
-
-            $table->bigIncrements('id_laporan');
-            
-            // Relasi ke tabel user
+        Schema::create('pengaduan', function (Blueprint $table) {
+            $table->bigIncrements('id_pengaduan');
             $table->unsignedBigInteger('id_user');
-            $table->foreign('id_user')
-                  ->references('id_user')
-                  ->on('user')
-                  ->onDelete('cascade');
-
-            $table->date('tanggal_laporan');
+            $table->date('tanggal_pengaduan');
             $table->string('jenis_kasus');
             $table->text('deskripsi');
             $table->enum('status_validasi', ['menunggu', 'proses', 'selesai'])->default('menunggu');
             $table->timestamps();
+
+            $table->foreign('id_user')
+                  ->references('id_user')
+                  ->on('user')
+                  ->onDelete('cascade');
         });
     }
 
     public function down(): void {
-        Schema::dropIfExists('laporan');
+        Schema::dropIfExists('pengaduan');
     }
 };

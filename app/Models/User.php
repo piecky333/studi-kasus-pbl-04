@@ -5,17 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
-use App\Models\laporan\laporan;
+use App\Models\laporan\Pengaduan;
+use App\Models\admin\admin;
 use App\Models\komentar;
 use App\Models\berita;
-use App\Models\admin\admin;
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $table = 'user';
+    protected $table = 'user'; // ✅ tabel sesuai migration
     protected $primaryKey = 'id_user';
     public $incrementing = true;
     protected $keyType = 'int';
@@ -37,7 +36,7 @@ class User extends Authenticatable
     ];
 
     /* ==================================================
-       🔗 Relasi antar tabel (sesuai ERD)
+       🔗 Relasi antar tabel (sesuai ERD terbaru)
     ================================================== */
 
     // 1 User bisa menjadi Admin
@@ -46,22 +45,21 @@ class User extends Authenticatable
         return $this->hasOne(admin::class, 'id_user');
     }
 
-    // 1 User punya banyak laporan
-    public function laporan()
+    // 1 User punya banyak Pengaduan (dulu: laporan)
+    public function pengaduan()
     {
-        return $this->hasMany(laporan::class, 'id_user');
+        return $this->hasMany(pengaduan::class, 'id_user');
     }
 
-    // 1 User punya banyak komentar
+    // 1 User punya banyak Komentar
     public function komentar()
     {
         return $this->hasMany(komentar::class, 'id_user');
     }
 
-    // 1 User bisa membuat banyak berita
+    // 1 User bisa membuat banyak Berita
     public function berita()
     {
         return $this->hasMany(berita::class, 'id_user');
     }
 }
-
