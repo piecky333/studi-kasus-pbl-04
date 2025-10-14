@@ -10,26 +10,26 @@ class dt_mahasiswa extends Model
     use HasFactory;
 
     protected $table = 'dt_mahasiswa';
-    protected $primaryKey = 'id_dtmahasiswa';
-    protected $fillable = [
-        'nim',
-        'nama',
-        'email',
-        'semester'
-    ];
+    protected $primaryKey = 'id_mahasiswa';
+    protected $fillable = ['id_admin', 'nama', 'nim', 'semester', 'alamat', 'no_hp'];
+
+    public function admin()
+    {
+        return $this->belongsTo(\App\Models\admin\admin::class, 'id_admin');
+    }
 
     public function prestasi()
     {
-        return $this->hasMany(prestasi::class, 'id_dtmahasiswa', 'id_dtmahasiswa');
+        return $this->hasMany(\App\Models\admin\Prestasi::class, 'id_mahasiswa');
     }
 
     public function sanksi()
     {
-        return $this->hasMany(sanksi::class, 'id_dtmahasiswa', 'id_dtmahasiswa');
+        return $this->hasMany(\App\Models\admin\mahasiswa_bermasalah::class, 'id_mahasiswa');
     }
 
-    public function keuangan()
+    public function anggota()
     {
-        return $this->hasMany(keuangan::class, 'id_anggota', 'id_dtmahasiswa');
+        return $this->hasOne(\App\Models\anggota::class, 'id_mhs');
     }
 }

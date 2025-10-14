@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Prestasi extends Model
 {
-    protected $table = 'mahasiswa_berprestasi';
-    protected $primaryKey = 'id_mhsprestasi';
-    protected $fillable = ['id_mahasiswa', 'nama', 'nim', 'tahun', 'tingkat', 'nama_lomba', 'jenis_prestasi', 'status_validasi'];
+    protected $table = 'Prestasi';
+    protected $primaryKey = 'id_prestasi';
+    protected $fillable = ['id_prestasi', 'tahun', 'tingkat', 'nama_kegiatan', 'jenis_prestasi', 'status_validasi'];
 
     public function mahasiswa()
     {
