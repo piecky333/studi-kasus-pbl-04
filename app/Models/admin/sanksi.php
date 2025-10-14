@@ -12,13 +12,13 @@ class sanksi extends Model
     protected $table = 'sanksi';
     protected $primaryKey = 'id_sanksi';
     protected $fillable = [
-        'id_dtmahasiswa',
+        'id_mahasiswa',
         'tanggal_sanksi',
         'jenis_sanksi'
     ];
 
-    public function dt_mahasiswa()
+    public function mahasiswa()
     {
-        return $this->belongsTo(dt_mahasiswa::class, 'id_dtmahasiswa', 'id_dtmahasiswa');
+        return $this->belongsTo(mahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 }

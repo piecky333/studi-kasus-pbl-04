@@ -69,7 +69,7 @@
 
     <!-- Nav Item - Laporan -->
     <li class="nav-item ">
-        <a class="nav-link" href="tables.html">
+        <a class="nav-link" href="{{ url('admin/pengaduan') }}">
             <i class="fas fa-fw bi bi-chat-dots-fill"></i>
             <span>Laporan</span></a>
     </li>

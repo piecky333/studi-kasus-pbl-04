@@ -6,6 +6,8 @@ use App\Http\Controllers\JabatanController;
 use App\Http\Controllers\Admin\BeritaController as AdminBeritaController;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\admin\PengaduanController as AdminPengaduanController;
+use App\Http\Controllers\pengurus\DivisiController as PengurusDivisiController;
+use App\Http\Controllers\admin\DivisiController as AdminDivisiController;
 
 Route::get('/', function () {
     return view('public.home');
@@ -54,3 +56,27 @@ Route::get('/admin/pengaduan', [AdminPengaduanController::class, 'index']);
 Route::get('/admin/pengaduan/{id}', [AdminPengaduanController::class, 'show']);
 Route::put('/admin/pengaduan/{id}/verifikasi', [AdminPengaduanController::class, 'verifikasi']);
 Route::delete('/admin/pengaduan/{id}', [AdminPengaduanController::class, 'destroy']);
+
+Route::prefix('pengurus')->name('pengurus.')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('pages.pengurus.dashboard');
+    })->name('dashboard');
+
+    // CRUD lengkap divisi
+    Route::resource('divisi', PengurusDivisiController::class);
+});
+
+/*
+|--------------------------------------------------------------------------
+| ROUTE UNTUK ADMIN (READ-ONLY)
+|--------------------------------------------------------------------------
+*/
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('pages.admin.dashboard');
+    })->name('dashboard');
+
+    // hanya index & show
+    Route::get('divisi', [AdminDivisiController::class, 'index'])->name('divisi.index');
+    Route::get('divisi/{id}', [AdminDivisiController::class, 'show'])->name('divisi.show');
+});

@@ -5,7 +5,7 @@ namespace App\Models\admin;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\admin\admin;
-use App\Models\admin\DtMahasiswa;
+use App\Models\admin\mahasiswa;
 
 class Prestasi extends Model
 {
@@ -24,7 +24,7 @@ class Prestasi extends Model
 
     public function mahasiswa()
     {
-        return $this->belongsTo(dt_mahasiswa::class, 'id_dtmahasiswa');
+        return $this->belongsTo(mahasiswa::class, 'id_dtmahasiswa');
     }
 
     public function admin()

@@ -5,12 +5,12 @@ namespace App\Models\admin;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class dt_mahasiswa extends Model
+class mahasiswa extends Model
 {
     use HasFactory;
 
-    protected $table = 'dt_mahasiswa';
-    protected $primaryKey = 'id_dtmahasiswa';
+    protected $table = 'mahasiswa';
+    protected $primaryKey = 'id_mahasiswa';
     protected $fillable = [
         'nim',
         'nama',
@@ -20,16 +20,16 @@ class dt_mahasiswa extends Model
 
     public function prestasi()
     {
-        return $this->hasMany(prestasi::class, 'id_dtmahasiswa', 'id_dtmahasiswa');
+        return $this->hasMany(prestasi::class, 'id_mahasiswa', 'id_dtmahasiswa');
     }
 
     public function sanksi()
     {
-        return $this->hasMany(sanksi::class, 'id_dtmahasiswa', 'id_dtmahasiswa');
+        return $this->hasMany(sanksi::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 
     public function keuangan()
     {
-        return $this->hasMany(keuangan::class, 'id_anggota', 'id_dtmahasiswa');
+        return $this->hasMany(keuangan::class, 'id_anggota', 'id_mahasiswa');
     }
 }

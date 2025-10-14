@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('prestasi', function (Blueprint $table) {
             $table->bigIncrements('id_prestasi');
-            $table->unsignedBigInteger('id_dtmahasiswa');
+            $table->unsignedBigInteger('id_mahasiswa');
             $table->unsignedBigInteger('id_admin')->nullable();
             $table->string('nama_kegiatan');
             $table->string('tingkat_prestasi');
@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->enum('status_validasi', ['menunggu', 'disetujui', 'ditolak'])->default('menunggu');
             $table->timestamps();
 
-            $table->foreign('id_dtmahasiswa')->references('id_dtmahasiswa')->on('dt_mahasiswa')->onDelete('cascade');
+            $table->foreign('id_mahasiswa')->references('id_mahasiswa')->on('mahasiswa')->onDelete('cascade');
             $table->foreign('id_admin')->references('id_admin')->on('admin')->onDelete('set null');
         });
     }
