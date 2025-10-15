@@ -1,82 +1,65 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\BeritaController;
-use App\Http\Controllers\JabatanController;
-use App\Http\Controllers\Admin\BeritaController as AdminBeritaController;
-use App\Http\Controllers\PengaduanController;
-use App\Http\Controllers\admin\PengaduanController as AdminPengaduanController;
-use App\Http\Controllers\pengurus\DivisiController as PengurusDivisiController;
-use App\Http\Controllers\admin\DivisiController as AdminDivisiController;
+use App\Http\Controllers\{
+    BeritaController,
+    JabatanController,
+    PengaduanController
+};
+use App\Http\Controllers\Admin\{
+    BeritaController as AdminBeritaController,
+    DivisiController as AdminDivisiController,
+    PengaduanController as AdminPengaduanController
+};
+use App\Http\Controllers\pengurus\{
+    DivisiController as PengurusDivisiController,
+    DashboardController
+};
 
-Route::get('/', function () {
-    return view('public.home');
-});
+Route::get('/', fn() => view('public.home'));
+Route::view('/divisi', 'public.divisi');
+Route::view('/profile', 'public.profile');
+Route::view('/berita', 'public.berita.index');
+Route::view('/prestasiMahasiswa', 'public.prestasi');
+Route::view('/laporan', 'public.laporan');
+Route::view('/dashboard', 'pages.dashboard');
 
-Route::get('/divisi', function () {
-    return view('public.divisi');
-});
+// ===========================
+// ROUTE UNTUK ADMIN
+// ===========================
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', fn() => view('pages.admin.dashboard'))->name('dashboard');
 
-Route::get('/profile', function () {
-    return view('public.profile');
-});
-
-Route::get('/berita', function () {
-    return view('public.berita.index');
-});
-
-Route::get('/prestasiMahasiswa', function () {
-    return view('public.prestasi');
-});
-
-Route::get('/laporan', function () {
-    return view('public.laporan');
-});
-
-Route::get('/dashboard', function () {
-    return view('pages.dashboard');
-});
-Route::prefix('admin')->name('admin.')->group(function() {
     Route::get('/berita', [AdminBeritaController::class, 'index'])->name('berita.index');
     Route::get('/berita/create', [AdminBeritaController::class, 'create'])->name('berita.create');
     Route::post('/berita', [AdminBeritaController::class, 'store'])->name('berita.store');
     Route::get('/berita/{id}/edit', [AdminBeritaController::class, 'edit'])->name('berita.edit');
     Route::put('/berita/{id}', [AdminBeritaController::class, 'update'])->name('berita.update');
     Route::delete('/berita/{id}', [AdminBeritaController::class, 'destroy'])->name('berita.destroy');
-});
 
-
-// 
-Route::resource('berita', BeritaController::class);
-Route::resource('jabatan', JabatanController::class);
-route::resource('pengaduan',PengaduanController::class);
-
-// Admin pengaduan
-Route::get('/admin/pengaduan', [AdminPengaduanController::class, 'index']);
-Route::get('/admin/pengaduan/{id}', [AdminPengaduanController::class, 'show']);
-Route::put('/admin/pengaduan/{id}/verifikasi', [AdminPengaduanController::class, 'verifikasi']);
-Route::delete('/admin/pengaduan/{id}', [AdminPengaduanController::class, 'destroy']);
-
-Route::prefix('pengurus')->name('pengurus.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('pages.pengurus.dashboard');
-    })->name('dashboard');
-
-    // CRUD lengkap divisi
-    Route::resource('divisi', PengurusDivisiController::class);
-});
-
-/*
-|--------------------------------------------------------------------------
-| ROUTE UNTUK ADMIN (READ-ONLY)
-|--------------------------------------------------------------------------
-*/
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('pages.admin.dashboard');
-    })->name('dashboard');
-
-    // hanya index & show
     Route::get('divisi', [AdminDivisiController::class, 'index'])->name('divisi.index');
     Route::get('divisi/{id}', [AdminDivisiController::class, 'show'])->name('divisi.show');
+
+    Route::get('/pengaduan', [AdminPengaduanController::class, 'index']);
+    Route::get('/pengaduan/{id}', [AdminPengaduanController::class, 'show']);
+    Route::put('/pengaduan/{id}/verifikasi', [AdminPengaduanController::class, 'verifikasi']);
+    Route::delete('/pengaduan/{id}', [AdminPengaduanController::class, 'destroy']);
 });
+
+// ===========================
+// ROUTE UNTUK PENGURUS
+// ===========================
+Route::prefix('pengurus')->name('pengurus.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::resource('divisi', PengurusDivisiController::class);
+    // Route::resource('jabatan', PengurusJabatanController::class);
+    // Route::resource('keuangan', PengurusKeuanganController::class);
+    // Route::resource('pengurus', PengurusController::class);
+});
+
+// ===========================
+// ROUTE UNTUK USER BIASA
+// ===========================
+Route::resource('berita', BeritaController::class);
+Route::resource('jabatan', JabatanController::class);
+Route::resource('pengaduan', PengaduanController::class);

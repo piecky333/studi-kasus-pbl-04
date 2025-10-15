@@ -14,7 +14,7 @@
         <thead>
             <tr>
                 <th>No</th>
-                <th>Nama User</th>
+                <th>Nama pelapor</th>
                 <th>Jenis Kasus</th>
                 <th>Tanggal</th>
                 <th>Status</th>

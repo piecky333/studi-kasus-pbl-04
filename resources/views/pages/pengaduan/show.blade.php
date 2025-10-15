@@ -16,7 +16,7 @@
         <div class="card-body">
             <h5 class="fw-bold mb-3">Informasi Pelapor</h5>
             <p><strong>Nama:</strong> {{ $pengaduan->user->nama ?? 'User tidak ditemukan' }}</p>
-            <p><strong>ID User:</strong> {{ $pengaduan->id_user }}</p>
+        
 
             <hr>
 
