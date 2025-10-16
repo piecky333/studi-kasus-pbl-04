@@ -5,7 +5,7 @@ namespace App\Models\admin;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class mahasiswa extends Model
+class Mahasiswa extends Model
 {
     use HasFactory;
 
@@ -15,21 +15,21 @@ class mahasiswa extends Model
         'nim',
         'nama',
         'email',
-        'semester'
+        'semester',
     ];
 
     public function prestasi()
     {
-        return $this->hasMany(prestasi::class, 'id_mahasiswa', 'id_dtmahasiswa');
+        return $this->hasMany(Prestasi::class, 'id_mahasiswa', 'id_dtmahasiswa');
     }
 
     public function sanksi()
     {
-        return $this->hasMany(sanksi::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->hasMany(Sanksi::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 
-    public function keuangan()
+    public function anggota()
     {
-        return $this->hasMany(keuangan::class, 'id_anggota', 'id_mahasiswa');
+        return $this->hasMany(Keuangan::class, 'id_anggota', 'id_mahasiswa');
     }
 }

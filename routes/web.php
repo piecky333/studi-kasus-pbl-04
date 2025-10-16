@@ -55,7 +55,6 @@ Route::prefix('pengurus')->name('pengurus.')->group(function () {
     Route::resource('jabatan', \App\Http\Controllers\pengurus\JabatanController::class);
     Route::resource('pengurus', \App\Http\Controllers\pengurus\PengurusController::class);
     Route::resource('keuangan', \App\Http\Controllers\pengurus\KeuanganController::class);
-
 });
 
 // ===========================
