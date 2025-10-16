@@ -32,28 +32,30 @@
     </li>
 
     <!-- Kelola Jabatan -->
-    <li class="nav-item">
-        <a class="nav-link" href="#">
-            <i class="bi bi-person-badge"></i>
-            <span>Kelola Jabatan</span>
-        </a>
-    </li>
+<li class="nav-item {{ request()->is('pengurus/jabatan*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('pengurus.jabatan.index') }}">
+        <i class="bi bi-person-badge"></i>
+        <span>Kelola Jabatan</span>
+    </a>
+</li>
 
-    <!-- Kelola Pengurus -->
-    <li class="nav-item">
-        <a class="nav-link" href="#">
-            <i class="bi bi-people"></i>
-            <span>Kelola Pengurus</span>
-        </a>
-    </li>
+
+   <!-- Kelola Pengurus -->
+<li class="nav-item {{ request()->is('pengurus/pengurus*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('pengurus.pengurus.index') }}">
+        <i class="bi bi-people"></i>
+        <span>Kelola Pengurus</span>
+    </a>
+</li>
 
     <!-- Kelola Keuangan -->
-    <li class="nav-item">
-        <a class="nav-link" href="#">
-            <i class="bi bi-cash-stack"></i>
-            <span>Kelola Keuangan</span>
-        </a>
-    </li>
+<li class="nav-item {{ request()->is('pengurus/keuangan*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('pengurus.keuangan.index') }}">
+        <i class="bi bi-cash-stack"></i>
+        <span>Kelola Keuangan</span>
+    </a>
+</li>
+
 
     <hr class="sidebar-divider">
 

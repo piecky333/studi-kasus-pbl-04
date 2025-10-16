@@ -52,14 +52,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
 Route::prefix('pengurus')->name('pengurus.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('divisi', PengurusDivisiController::class);
-    // Route::resource('jabatan', PengurusJabatanController::class);
-    // Route::resource('keuangan', PengurusKeuanganController::class);
-    // Route::resource('pengurus', PengurusController::class);
+    Route::resource('jabatan', \App\Http\Controllers\pengurus\JabatanController::class);
+    Route::resource('pengurus', \App\Http\Controllers\pengurus\PengurusController::class);
+    Route::resource('keuangan', \App\Http\Controllers\pengurus\KeuanganController::class);
+
 });
 
 // ===========================
 // ROUTE UNTUK USER BIASA
 // ===========================
 Route::resource('berita', BeritaController::class);
-Route::resource('jabatan', JabatanController::class);
 Route::resource('pengaduan', PengaduanController::class);
