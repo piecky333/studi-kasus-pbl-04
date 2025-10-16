@@ -7,9 +7,6 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
         Schema::create('user', function (Blueprint $table) {
-            // Gunakan InnoDB agar mendukung foreign key
-            $table->engine = 'InnoDB';
-
             $table->bigIncrements('id_user');
             $table->string('nama');
             $table->string('username')->unique();

@@ -17,8 +17,8 @@ class sanksi extends Model
         'jenis_sanksi'
     ];
 
-    public function dt_mahasiswa()
+    public function mahasiswa()
     {
-        return $this->belongsTo(dt_mahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->belongsTo(mahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 }
