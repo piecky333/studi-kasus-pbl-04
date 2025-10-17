@@ -10,16 +10,15 @@ return new class extends Migration {
             $table->engine = 'InnoDB';
 
             $table->bigIncrements('id_sanksi');
-            $table->unsignedBigInteger('id_dtmahasiswa'); // FK ke dt_mahasiswa
+            $table->unsignedBigInteger('id_mahasiswa');
             $table->string('jenis_sanksi');
             $table->text('keterangan')->nullable();
             $table->date('tanggal_sanksi')->nullable();
             $table->timestamps();
 
-            // ✅ relasi ke dt_mahasiswa dengan kolom yg benar
-            $table->foreign('id_dtmahasiswa')
-                  ->references('id_dtmahasiswa')
-                  ->on('dt_mahasiswa')
+            $table->foreign('id_mahasiswa')
+                  ->references('id_mahasiswa')
+                  ->on('mahasiswa')
                   ->onDelete('cascade');
         });
     }

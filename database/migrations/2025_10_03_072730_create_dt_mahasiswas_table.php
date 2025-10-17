@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
-        Schema::create('dt_mahasiswa', function (Blueprint $table) {
-            $table->bigIncrements('id_dtmahasiswa');
+        Schema::create('mahasiswa', function (Blueprint $table) {
+            $table->bigIncrements('id_mahasiswa');
             $table->string('nim')->unique();
             $table->string('nama');
             $table->string('email');
@@ -16,6 +16,6 @@ return new class extends Migration {
         });
     }
     public function down(): void {
-        Schema::dropIfExists('dt_mahasiswa');
+        Schema::dropIfExists('mahasiswa');
     }
 };

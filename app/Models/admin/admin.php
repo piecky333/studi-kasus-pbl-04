@@ -4,14 +4,22 @@ namespace App\Models\admin;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\laporan\Tanggapan;
+use App\Models\admin\Prestasi;
+use App\Models\admin\Sanksi;
+use App\Models\admin\Mahasiswa;
 
-class admin extends Model
+class Admin extends Model
 {
     use HasFactory;
 
     protected $table = 'admin';
     protected $primaryKey = 'id_admin';
-    protected $fillable = ['id_user', 'nama_admin', 'jabatan_admin'];
+    protected $fillable = [
+        'id_user',
+        'nama_admin',
+        'jabatan', // pakai 'jabatan' karena kamu gak pakai 'jabatan_admin'
+    ];
 
     // Relasi ke User
     public function user()
@@ -19,23 +27,27 @@ class admin extends Model
         return $this->belongsTo(\App\Models\User::class, 'id_user');
     }
 
+    // Relasi ke Tanggapan
     public function tanggapan()
     {
-        return $this->hasMany(\App\Models\laporan\tanggapan::class, 'id_admin');
+        return $this->hasMany(Tanggapan::class, 'id_admin');
     }
 
+    // Relasi ke Prestasi
     public function prestasi()
     {
-        return $this->hasMany(\App\Models\admin\Prestasi::class, 'id_admin');
+        return $this->hasMany(Prestasi::class, 'id_admin');
     }
 
+    // Relasi ke Sanksi
     public function sanksi()
     {
-        return $this->hasMany(\App\Models\admin\sanksi::class, 'id_admin');
+        return $this->hasMany(Sanksi::class, 'id_admin');
     }
 
-    public function dt_mahasiswa()
+    // Relasi ke Mahasiswa
+    public function mahasiswa()
     {
-        return $this->hasMany(\App\Models\admin\dt_mahasiswa::class, 'id_admin');
+        return $this->hasMany(Mahasiswa::class, 'id_admin');
     }
 }
