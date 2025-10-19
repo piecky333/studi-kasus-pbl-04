@@ -14,7 +14,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $table = 'user'; // ✅ tabel sesuai migration
+    protected $table = 'user';
     protected $primaryKey = 'id_user';
     public $incrementing = true;
     protected $keyType = 'int';
@@ -25,6 +25,8 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'google_id',
+        'avatar',
     ];
 
     protected $hidden = [
@@ -42,7 +44,7 @@ class User extends Authenticatable
     // Relasi berdasarkan role
     public function admin()
     {
-        return $this->hasOne(\App\Models\admin\admin::class, 'id_user');
+        return $this->hasOne(admin::class, 'id_user');
     }
 
     public function mahasiswa()

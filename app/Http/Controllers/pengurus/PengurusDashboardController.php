@@ -8,7 +8,7 @@ use App\Models\admin\Keuangan;
 use App\Models\Jabatan;
 use App\Models\User;
 
-class DashboardController extends Controller
+class PengurusDashboardController extends Controller
 {
     public function index()
     {
