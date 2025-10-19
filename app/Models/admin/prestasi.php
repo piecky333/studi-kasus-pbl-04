@@ -19,11 +19,11 @@ class Prestasi extends Model
 
     public function mahasiswa()
     {
-        return $this->belongsTo(mahasiswa::class, 'id_mahasiswa');
+        return $this->belongsTo(\App\Models\admin\Mahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 
-    public function anggota()
+    public function admin()
     {
-        return $this->belongsTo(admin::class, 'id_admin');
+        return $this->belongsTo(\App\Models\admin\Admin::class, 'id_admin', 'id_admin');
     }
 }
