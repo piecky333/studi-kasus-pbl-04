@@ -53,11 +53,11 @@
         </div>
     </li>
 
-    <!-- Nav Item - prestasi & penghargaan -->
+    <!-- Nav Item - prestasi -->
     <li class="nav-item">
         <a class="nav-link" href="charts.html">
             <i class="fas fa-fw bi bi-trophy-fill"></i>
-            <span>prestasi & penghargaan</span></a>
+            <span>prestasi</span></a>
     </li>
 
     <!-- Nav Item - Berita -->

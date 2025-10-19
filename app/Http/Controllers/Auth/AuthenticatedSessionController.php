@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Http\Request;
+use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
@@ -22,32 +22,21 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(LoginRequest $request): RedirectResponse
     {
-        $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+        $request->authenticate();
 
-        if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
-            $request->session()->regenerate();
+        $request->session()->regenerate();
 
-            $user = Auth::user();
-
-            // Redirect berdasarkan role
-            switch ($user->role) {
-                case 'admin':
-                    return redirect()->intended('/admin/dashboard');
-                case 'mahasiswa':
-                    return redirect()->intended('/mahasiswa/dashboard');
-                default:
-                    return redirect()->intended(RouteServiceProvider::HOME);
-            }
+        //authenticated, redirect to intended page
+        if (Auth::user()->role === 'admin') {
+            return redirect()->intended(route('pages.dashboard', absolute: false));
+        } elseif (Auth::user()->role === 'pengurus') {
+            return redirect()->intended(route('pengurus.dashboard', absolute: false));
+        } elseif (Auth::user()->role === 'user') {
+            return redirect()->intended(route('dashboard', absolute: false));
         }
-
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ]);
+        return redirect()->intended(route('dashboard', absolute: false));
     }
 
     /**

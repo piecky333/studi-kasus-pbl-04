@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\admin\Prestasi;
 
 class Mahasiswa extends Model
 {
@@ -31,8 +32,8 @@ class Mahasiswa extends Model
     }
 
     // Relasi ke Kuota
-    public function kuota()
+    public function Prestasi()
     {
-        return $this->hasMany(Kuota::class, 'id_mahasiswa');
+        return $this->hasMany(Prestasi::class, 'id_pengurus');
     }
 }

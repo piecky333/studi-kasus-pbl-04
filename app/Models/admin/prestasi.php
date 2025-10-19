@@ -3,27 +3,22 @@
 namespace App\Models\admin;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\admin\mahasiswa;
+use App\Models\admin\pengurus;
 
 class Prestasi extends Model
 {
-    protected $table = 'prestasi';
+    protected $table = 'Prestasi';
     protected $primaryKey = 'id_prestasi';
-    protected $fillable = [
-        'id_mahasiswa',
-        'id_admin',
-        'nama_kegiatan',
-        'tingkat_prestasi',
-        'tahun',
-        'status_validasi',
-    ];
+    protected $fillable = ['id_prestasi', 'tahun', 'tingkat', 'nama_kegiatan', 'jenis_prestasi', 'status_validasi'];
 
     public function mahasiswa()
     {
         return $this->belongsTo(mahasiswa::class, 'id_mahasiswa');
     }
 
-    public function anggota()
+    public function pengurus()
     {
-        return $this->belongsTo(admin::class, 'id_admin');
+        return $this->hasMany(pengurus::class, 'prestasi');
     }
 }
