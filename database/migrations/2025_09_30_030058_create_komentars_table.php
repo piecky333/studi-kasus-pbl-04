@@ -13,13 +13,13 @@ return new class extends Migration {
             $table->text('isi');
             $table->timestamps();
 
-            // 🔗 Relasi ke tabel berita (harus ke id_berita, bukan id)
+            // 🔗 Relasi ke tabel berita
             $table->foreign('id_berita')
                   ->references('id_berita')
                   ->on('berita')
                   ->onDelete('cascade');
 
-            // 🔗 Relasi ke tabel user (harus ke id_user, bukan id)
+            // 🔗 Relasi ke tabel user 
             $table->foreign('id_user')
                   ->references('id_user')
                   ->on('user')

@@ -14,11 +14,15 @@ class Prestasi extends Model
 
     public function mahasiswa()
     {
-        return $this->belongsTo(mahasiswa::class, 'id_mahasiswa');
+        return $this->belongsTo(Mahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 
     public function pengurus()
     {
         return $this->hasMany(pengurus::class, 'prestasi');
+    }
+    public function admin()
+    {
+        return $this->belongsTo(\App\Models\admin\Admin::class, 'id_admin', 'id_admin');
     }
 }

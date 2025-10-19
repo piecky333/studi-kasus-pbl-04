@@ -20,7 +20,8 @@ use App\Http\Controllers\user\{
 use App\Http\Controllers\Admin\{
     BeritaController as AdminBeritaController,
     DivisiController as AdminDivisiController,
-    PengaduanController as AdminPengaduanController
+    PengaduanController as AdminPengaduanController,
+    PrestasiController as AdminPrestasiController
 };
 
 use App\Http\Controllers\pengurus\{
@@ -43,7 +44,7 @@ Route::view('/dashboard', 'pages.dashboard');
 // ROUTE UNTUK ADMIN
 // ===========================
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', fn() => view('pages.admin.dashboard'))->name('dashboard');
+    Route::get('/dashboard', fn() => view('pages.dashboard'))->name('admin.dashboard');
     Route::get('/berita', [AdminBeritaController::class, 'index'])->name('berita.index');
     Route::get('/berita/create', [AdminBeritaController::class, 'create'])->name('berita.create');
     Route::post('/berita', [AdminBeritaController::class, 'store'])->name('berita.store');
@@ -51,24 +52,33 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::put('/berita/{id}', [AdminBeritaController::class, 'update'])->name('berita.update');
     Route::delete('/berita/{id}', [AdminBeritaController::class, 'destroy'])->name('berita.destroy');
 
-    Route::get('divisi', [AdminDivisiController::class, 'index'])->name('divisi.index');
-    Route::get('divisi/{id}', [AdminDivisiController::class, 'show'])->name('divisi.show');
+    // ---- DIVISI ----
+    Route::get('/divisi', [AdminDivisiController::class, 'index'])->name('divisi.index');
+    Route::get('/divisi/{id}', [AdminDivisiController::class, 'show'])->name('divisi.show');
 
-    Route::get('/pengaduan', [AdminPengaduanController::class, 'index']);
-    Route::get('/pengaduan/{id}', [AdminPengaduanController::class, 'show']);
-    Route::put('/pengaduan/{id}/verifikasi', [AdminPengaduanController::class, 'verifikasi']);
-    Route::delete('/pengaduan/{id}', [AdminPengaduanController::class, 'destroy']);
+    // ---- PENGADUAN ----
+    Route::get('/pengaduan', [AdminPengaduanController::class, 'index'])->name('pengaduan.index');
+    Route::get('/pengaduan/{id}', [AdminPengaduanController::class, 'show'])->name('pengaduan.show');
+    Route::put('/pengaduan/{id}/verifikasi', [AdminPengaduanController::class, 'verifikasi'])->name('pengaduan.verifikasi');
+    Route::delete('/pengaduan/{id}', [AdminPengaduanController::class, 'destroy'])->name('pengaduan.destroy');
+
+    // ---- PRESTASI (CRUD + AJAX Search Mahasiswa) ----
+    Route::resource('prestasi', AdminPrestasiController::class);
+    Route::get('/prestasi/cari-mahasiswa', [AdminPrestasiController::class, 'cariMahasiswa'])
+    ->name('prestasi.cariMahasiswa');
+
+
 });
 
 // ===========================
 // ROUTE UNTUK PENGURUS
 // ===========================
 Route::prefix('pengurus')->name('pengurus.')->group(function () {
-    Route::get('/dashboard', [PengurusDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [PengurusDashboardController::class, 'index'])->name('pengurus.dashboard');
     Route::resource('divisi', PengurusDivisiController::class);
-    Route::resource('jabatan', \App\Http\Controllers\pengurus\JabatanController::class);
-    Route::resource('pengurus', \App\Http\Controllers\pengurus\PengurusController::class);
-    Route::resource('keuangan', \App\Http\Controllers\pengurus\KeuanganController::class);
+    Route::resource('jabatan', \App\Http\Controllers\Pengurus\JabatanController::class);
+    Route::resource('pengurus', \App\Http\Controllers\Pengurus\PengurusController::class);
+    Route::resource('keuangan', \App\Http\Controllers\Pengurus\KeuanganController::class);
 });
 
 
@@ -76,7 +86,7 @@ Route::prefix('pengurus')->name('pengurus.')->group(function () {
 // ROUTE UNTUK USER BIASA
 // ===========================
 Route::get('/dashboard', [UserDashboardController::class, 'index'])
-    ->middleware(['auth'])->name('dashboard');
+    ->middleware(['auth'])->name('user.dashboard');
 Route::resource('berita', BeritaController::class);
 Route::resource('pengaduan', UserPengaduanController::class);
 
@@ -86,7 +96,6 @@ Route::resource('pengaduan', UserPengaduanController::class);
 // ===========================
 Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirect'])->name('google.redirect');
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('google.callback');
-
 
 
 // ===========================
