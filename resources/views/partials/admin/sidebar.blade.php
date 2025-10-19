@@ -53,12 +53,14 @@
         </div>
     </li>
 
-    <!-- Nav Item - prestasi & penghargaan -->
-    <li class="nav-item">
-        <a class="nav-link" href="charts.html">
-            <i class="fas fa-fw bi bi-trophy-fill"></i>
-            <span>prestasi & penghargaan</span></a>
-    </li>
+    <!-- Nav Item - Prestasi & Penghargaan -->
+<li class="nav-item">
+    <a class="nav-link" href="{{ route('admin.prestasi.index') }}">
+        <i class="fas fa-fw bi bi-trophy-fill"></i>
+        <span>Prestasi & Penghargaan</span>
+    </a>
+</li>
+
 
     <!-- Nav Item - Berita -->
     <li class="nav-item ">

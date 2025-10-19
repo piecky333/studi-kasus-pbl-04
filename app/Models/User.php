@@ -36,7 +36,7 @@ class User extends Authenticatable
     ];
 
     /* ==================================================
-       🔗 Relasi antar tabel (sesuai ERD terbaru)
+       🔗 Relasi antar tabel
     ================================================== */
 
     // Relasi berdasarkan role
@@ -50,7 +50,7 @@ class User extends Authenticatable
         return $this->hasOne(Mahasiswa::class, 'id_user');
     }
 
-    // 1 User punya banyak Pengaduan (dulu: laporan)
+    // 1 User punya banyak Pengaduan
     public function pengaduan()
     {
         return $this->hasMany(pengaduan::class, 'id_user');
