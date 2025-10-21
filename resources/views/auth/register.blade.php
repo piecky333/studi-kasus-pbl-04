@@ -30,7 +30,7 @@
                 <form method="POST" action="{{ route('register') }}">
                     @csrf
 
-                    {{-- pengecekan error --}}
+                    {{-- pengecekan error
                     @if ($errors->any())
                         <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
                             <strong class="font-bold">Oops! Ada yang salah.</strong>
@@ -40,7 +40,7 @@
                                 @endforeach
                             </ul>
                         </div>
-                    @endif
+                    @endif --}}
 
                     <!-- Name -->
                     <div>
