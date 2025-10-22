@@ -17,26 +17,26 @@
                 <div class="card">
                     <div class="card-body p-4">
                         <h4 class="card-title fw-bold text-primary mb-4">Form Edit Data Prestasi</h4>
-                        <form action="{{ route('prestasi.update', $prestasi->id_mhsprestasi) }}" method="POST">
+                        <form action="{{ route('admin.prestasi.update', $prestasi->id_prestasi) }}" method="POST">
                             @csrf
                             @method('PUT')
 
                             <div class="mb-3">
-                                <label for="nim" class="form-label fw-semibold">NIM <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('nim') is-invalid @enderror" name="nim" value="{{ old('nim', $prestasi->nim) }}" required>
-                                @error('nim') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                <label for="nama_kegiatan" class="form-label fw-semibold">Nama Kegiatan <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control @error('nama_kegiatan') is-invalid @enderror" name="nama_kegiatan" value="{{ old('nama_kegiatan', $prestasi->nama_kegiatan) }}" required>
+                                @error('nama_kegiatan') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
 
                             <div class="mb-3">
-                                <label for="nama" class="form-label fw-semibold">Nama <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('nama') is-invalid @enderror" name="nama" value="{{ old('nama', $prestasi->nama) }}" required>
-                                @error('nama') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="nama_lomba" class="form-label fw-semibold">Nama Lomba <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control @error('nama_lomba') is-invalid @enderror" name="nama_lomba" value="{{ old('nama_lomba', $prestasi->nama_lomba) }}" required>
-                                @error('nama_lomba') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                <label for="tingkat_prestasi" class="form-label fw-semibold">Tingkat Prestasi <span class="text-danger">*</span></label>
+                                <select class="form-control @error('tingkat_prestasi') is-invalid @enderror" name="tingkat_prestasi" required>
+                                    <option value="">Pilih Tingkat</option>
+                                    <option value="Lokal" {{ old('tingkat_prestasi', $prestasi->tingkat_prestasi) == 'Lokal' ? 'selected' : '' }}>Lokal</option>
+                                    <option value="Provinsi" {{ old('tingkat_prestasi', $prestasi->tingkat_prestasi) == 'Provinsi' ? 'selected' : '' }}>Provinsi</option>
+                                    <option value="Nasional" {{ old('tingkat_prestasi', $prestasi->tingkat_prestasi) == 'Nasional' ? 'selected' : '' }}>Nasional</option>
+                                    <option value="Internasional" {{ old('tingkat_prestasi', $prestasi->tingkat_prestasi) == 'Internasional' ? 'selected' : '' }}>Internasional</option>
+                                </select>
+                                @error('tingkat_prestasi') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
 
                             <div class="mb-3">
@@ -46,35 +46,12 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="tingkat" class="form-label fw-semibold">Tingkat <span class="text-danger">*</span></label>
-                                <select class="form-control @error('tingkat') is-invalid @enderror" name="tingkat" required>
-                                    <option value="">Pilih Tingkat</option>
-                                    <option value="Kampus" {{ old('tingkat', $prestasi->tingkat) == 'Kampus' ? 'selected' : '' }}>Kampus</option>
-                                    <option value="Kota" {{ old('tingkat', $prestasi->tingkat) == 'Kota' ? 'selected' : '' }}>Kota</option>
-                                    <option value="Provinsi" {{ old('tingkat', $prestasi->tingkat) == 'Provinsi' ? 'selected' : '' }}>Provinsi</option>
-                                    <option value="Nasional" {{ old('tingkat', $prestasi->tingkat) == 'Nasional' ? 'selected' : '' }}>Nasional</option>
-                                    <option value="Internasional" {{ old('tingkat', $prestasi->tingkat) == 'Internasional' ? 'selected' : '' }}>Internasional</option>
-                                </select>
-                                @error('tingkat') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="jenis_prestasi" class="form-label fw-semibold">Jenis Prestasi <span class="text-danger">*</span></label>
-                                <select class="form-control @error('jenis_prestasi') is-invalid @enderror" name="jenis_prestasi" required>
-                                    <option value="">Pilih Jenis Prestasi</option>
-                                    <option value="Akademik" {{ old('jenis_prestasi', $prestasi->jenis_prestasi) == 'Akademik' ? 'selected' : '' }}>Akademik</option>
-                                    <option value="Non-Akademik" {{ old('jenis_prestasi', $prestasi->jenis_prestasi) == 'Non-Akademik' ? 'selected' : '' }}>Non-Akademik</option>
-                                </select>
-                                @error('jenis_prestasi') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            </div>
-
-                            <div class="mb-3">
                                 <label for="status_validasi" class="form-label fw-semibold">Status Validasi <span class="text-danger">*</span></label>
                                 <select class="form-control @error('status_validasi') is-invalid @enderror" name="status_validasi" required>
                                     <option value="">Pilih Status Validasi</option>
-                                    <option value="Tervalidasi" {{ old('status_validasi', $prestasi->status_validasi) == 'Tervalidasi' ? 'selected' : '' }}>Tervalidasi</option>
-                                    <option value="Menunggu" {{ old('status_validasi', $prestasi->status_validasi) == 'Menunggu' ? 'selected' : '' }}>Menunggu</option>
-                                    <option value="Ditolak" {{ old('status_validasi', $prestasi->status_validasi) == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
+                                    <option value="menunggu" {{ old('status_validasi', $prestasi->status_validasi) == 'menunggu' ? 'selected' : '' }}>Menunggu</option>
+                                    <option value="disetujui" {{ old('status_validasi', $prestasi->status_validasi) == 'disetujui' ? 'selected' : '' }}>Disetujui</option>
+                                    <option value="ditolak" {{ old('status_validasi', $prestasi->status_validasi) == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                                 </select>
                                 @error('status_validasi') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
@@ -87,7 +64,7 @@
 
                             <div class="mt-4">
                                 <button type="submit" class="btn btn-primary">Perbarui Data</button>
-                                <a href="{{ route('prestasi.index') }}" class="btn btn-outline-secondary">Batal</a>
+                                <a href="{{ route('admin.prestasi.index') }}" class="btn btn-outline-secondary">Batal</a>
                             </div>
                         </form>
                     </div>
