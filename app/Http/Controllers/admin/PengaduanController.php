@@ -1,46 +1,70 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\laporan\Pengaduan;
+use App\Models\laporan\pengaduan; 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class PengaduanController extends Controller
 {
-    // 🔹 Tampilkan semua pengaduan di halaman admin
+    /**
+     * Opsi 1: Menampilkan semua daftar pengaduan (index)
+     */
     public function index()
     {
-        $pengaduan = Pengaduan::with('user')->orderBy('created_at', 'desc')->get();
-        return view('pages.pengaduan.index', compact('pengaduan'));
+        $daftarPengaduan = pengaduan::with('mahasiswa')
+                            ->latest()
+                            ->paginate(10); 
+
+        return view('admin.pengaduan.index', compact('daftarPengaduan'));
     }
 
-    // 🔹 Detail pengaduan
+    /**
+     * Opsi 2: Menampilkan detail spesifik pengaduan (show)
+     */
     public function show($id)
     {
-        $pengaduan = Pengaduan::with('user')->findOrFail($id);
-        return view('pages.pengaduan.show', compact('pengaduan'));
+        $pengaduan = pengaduan::with(['mahasiswa', 'mahasiswa.user'])
+                        ->findOrFail($id);
+
+        return view('admin.pengaduan.show', compact('pengaduan'));
     }
 
-    // 🔹 Update status pengaduan
+    /**
+     * Opsi 3 (Aksi Kunci): Mem-verifikasi (Update Status) pengaduan.
+     */
     public function verifikasi(Request $request, $id)
     {
-        $request->validate([
-            'status_validasi' => 'required|in:menunggu,proses,selesai',
+        $validated = $request->validate([
+            'status' => [
+                'required',
+                'string',
+                Rule::in(['Diproses', 'Selesai', 'Ditolak']),
+            ],
         ]);
 
-        $pengaduan = Pengaduan::findOrFail($id);
-        $pengaduan->update(['status_validasi' => $request->status_validasi]);
+        $pengaduan = pengaduan::findOrFail($id);
+        $pengaduan->status = $validated['status'];
+        $pengaduan->save();
 
-        return redirect()->back()->with('success', 'Status pengaduan berhasil diperbarui!');
+        return redirect()->route('admin.pengaduan.show', $pengaduan->id_pengaduan)
+                         ->with('success', 'Status pengaduan berhasil diperbarui!');
     }
 
-    // 🔹 Hapus pengaduan
+    /**
+     * Opsi 4: Menghapus pengaduan (destroy)
+     */
     public function destroy($id)
     {
-        $pengaduan = Pengaduan::findOrFail($id);
+        $pengaduan = pengaduan::findOrFail($id);
+
+        // Hapus data dari database
         $pengaduan->delete();
 
-        return redirect()->back()->with('success', 'Pengaduan berhasil dihapus.');
+        return redirect()->route('admin.pengaduan.index')
+                         ->with('success', 'Pengaduan telah berhasil dihapus.');
     }
 }
+

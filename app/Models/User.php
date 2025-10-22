@@ -55,7 +55,7 @@ class User extends Authenticatable
     // 1 User punya banyak Pengaduan
     public function pengaduan()
     {
-        return $this->hasMany(pengaduan::class, 'id_user');
+        return $this->hasMany(Pengaduan::class, 'id_user', 'id');
     }
 
     // 1 User punya banyak Komentar
