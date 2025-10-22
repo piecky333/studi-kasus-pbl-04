@@ -26,7 +26,7 @@ class GoogleAuthController extends Controller
                     'email' => $googleUser->getEmail(),
                     'username' => Str::before($googleUser->getEmail(), '@'), // Membuat username dari email
                     'avatar' => $googleUser->getAvatar(),
-                    'role' => 'mahasiswa', 
+                    'role' => 'User', 
                     'password' => null
                 ]
             );
