@@ -21,8 +21,11 @@ use App\Http\Controllers\Admin\{
     BeritaController as AdminBeritaController,
     DivisiController as AdminDivisiController,
     PengaduanController as AdminPengaduanController,
-    PrestasiController as AdminPrestasiController
+    PrestasiController as AdminPrestasiController,
+    DashboardController as AdminDashboardController,
+    SanksiController as AdminSanksiController
 };
+
 
 use App\Http\Controllers\pengurus\{
     DivisiController as PengurusDivisiController,
@@ -44,7 +47,7 @@ Route::view('/dashboard', 'pages.dashboard');
 // ROUTE UNTUK ADMIN
 // ===========================
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', fn() => view('pages.dashboard'))->name('admin.dashboard');
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/berita', [AdminBeritaController::class, 'index'])->name('berita.index');
     Route::get('/berita/create', [AdminBeritaController::class, 'create'])->name('berita.create');
     Route::post('/berita', [AdminBeritaController::class, 'store'])->name('berita.store');
@@ -59,13 +62,22 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // ---- PENGADUAN ----
     Route::get('/pengaduan', [AdminPengaduanController::class, 'index'])->name('pengaduan.index');
     Route::get('/pengaduan/{id}', [AdminPengaduanController::class, 'show'])->name('pengaduan.show');
-    Route::put('/pengaduan/{id}/verifikasi', [AdminPengaduanController::class, 'verifikasi'])->name('pengaduan.verifikasi');
     Route::delete('/pengaduan/{id}', [AdminPengaduanController::class, 'destroy'])->name('pengaduan.destroy');
+    Route::put('/pengaduan/{id}/verifikasi', [AdminPengaduanController::class, 'verifikasi'])->name('pengaduan.verifikasi');
 
     // ---- PRESTASI (CRUD + AJAX Search Mahasiswa) ----
     Route::resource('prestasi', AdminPrestasiController::class);
     Route::get('/prestasi/cari-mahasiswa', [AdminPrestasiController::class, 'cariMahasiswa'])
     ->name('prestasi.cariMahasiswa');
+
+    // ---- SANKSI (CRUD) ----
+Route::get('/sanksi', [AdminSanksiController::class, 'index'])->name('sanksi.index');
+Route::get('/sanksi/create', [AdminSanksiController::class, 'create'])->name('sanksi.create');
+Route::post('/sanksi', [AdminSanksiController::class, 'store'])->name('sanksi.store');
+Route::get('/sanksi/{id}/edit', [AdminSanksiController::class, 'edit'])->name('sanksi.edit');
+Route::put('/sanksi/{id}', [AdminSanksiController::class, 'update'])->name('sanksi.update');
+Route::delete('/sanksi/{id}', [AdminSanksiController::class, 'destroy'])->name('sanksi.destroy');
+
 
 
 });

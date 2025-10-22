@@ -12,7 +12,6 @@ return new class extends Migration {
             $table->bigIncrements('id_sanksi');
             $table->unsignedBigInteger('id_mahasiswa');
             $table->string('jenis_sanksi');
-            $table->text('keterangan')->nullable();
             $table->date('tanggal_sanksi')->nullable();
             $table->timestamps();
 

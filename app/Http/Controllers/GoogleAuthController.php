@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str; // Penting!
+use Illuminate\Support\Str; 
 use Laravel\Socialite\Facades\Socialite;
+use Exception; 
 
 class GoogleAuthController extends Controller
 {
@@ -19,8 +20,11 @@ class GoogleAuthController extends Controller
         try {
             $googleUser = Socialite::driver('google')->user();
 
+            // ===== PERIKSA BAGIAN INI DENGAN TELITI =====
             $user = User::updateOrCreate(
-                ['google_id' => $googleUser->getId()],
+                [
+                    'google_id' => $googleUser->getId() // Kunci pencarian
+                ],
                 [
                     'nama' => $googleUser->getName(),
                     'email' => $googleUser->getEmail(),
@@ -31,13 +35,20 @@ class GoogleAuthController extends Controller
                 ]
             );
 
+
             Auth::login($user);
 
-            return redirect('/dashboard');
-
-        } catch (\Throwable $th) {
-            // dd($th->getMessage()); // Aktifkan ini jika ada error untuk debug
-            return redirect('/login')->with('error', 'Terjadi masalah saat login dengan Google.');
+            // --- Logika Redirect Berdasarkan Role ---
+             if ($user->role === 'admin') {
+                return redirect()->intended(route('admin.dashboard', absolute: false));
+            } elseif ($user->role === 'pengurus') {
+                return redirect()->intended(route('pages.pengurus.dashboard', absolute: false));
+            } else {
+                return redirect()->intended(route('dashboard', absolute: false));
+            }
+            
+        } catch (Exception $e) {
+            return redirect('/login')->with('error', 'Terjadi masalah saat login dengan Google: ' . $e->getMessage());
         }
     }
 }
