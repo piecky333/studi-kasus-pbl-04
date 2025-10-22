@@ -22,7 +22,7 @@ use App\Http\Controllers\Admin\{
     DivisiController as AdminDivisiController,
     PengaduanController as AdminPengaduanController,
     PrestasiController as AdminPrestasiController,
-    DashboardController as AdminDashboardController
+    DashboardController as AdminDashboardController,
 };
 
 use App\Http\Controllers\pengurus\{
@@ -52,6 +52,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/berita/{id}/edit', [AdminBeritaController::class, 'edit'])->name('berita.edit');
     Route::put('/berita/{id}', [AdminBeritaController::class, 'update'])->name('berita.update');
     Route::delete('/berita/{id}', [AdminBeritaController::class, 'destroy'])->name('berita.destroy');
+    
+    // ----  MANAJEMEN AKUN   ----
+    Route::resource('pengurus', \App\Http\Controllers\Admin\PengurusController::class);
 
     // ---- DIVISI ----
     Route::get('/divisi', [AdminDivisiController::class, 'index'])->name('divisi.index');
@@ -63,11 +66,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::delete('/pengaduan/{id}', [AdminPengaduanController::class, 'destroy'])->name('pengaduan.destroy');
     Route::put('/pengaduan/{id}/verifikasi', [AdminPengaduanController::class, 'verifikasi'])->name('pengaduan.verifikasi');
 
-    // ---- PRESTASI (CRUD + AJAX Search Mahasiswa) ----
+    // ---- PRESTASI  ----
     Route::resource('prestasi', AdminPrestasiController::class);
     Route::get('/prestasi/cari-mahasiswa', [AdminPrestasiController::class, 'cariMahasiswa'])
         ->name('prestasi.cariMahasiswa');
-
 
 });
 
