@@ -69,9 +69,9 @@
 
     <!-- Nav Item - Laporan -->
     <li class="nav-item ">
-        <a class="nav-link" href="{{ url('admin/pengaduan') }}">
+        <a class="nav-link" href="{{ route('admin.pengaduan.index') }}">
             <i class="fas fa-fw bi bi-chat-dots-fill"></i>
-            <span>Laporan</span></a>
+            <span>Pengaduan</span></a>
     </li>
 
     <!-- Nav Item - Pengaturan -->
