@@ -15,14 +15,14 @@
     <div id="wrapper">
 
         {{-- Sidebar Pengurus --}}
-        @include('partials.pengurus.sidebar')
+        @include('partials.admin.sidebar')
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
 
             <div id="content">
                 <!-- Topbar -->
-                @include('partials.pengurus.navbar')
+                @include('partials.admin.navbar')
                 <!-- End of Topbar -->
 
                 <!-- Content -->

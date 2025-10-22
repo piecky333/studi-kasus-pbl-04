@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\laporan\Tanggapan;
 use App\Models\laporan\Terlapor;
+use App\Models\Mahasiswa;
 
 class Pengaduan extends Model
 {
@@ -49,6 +50,19 @@ class Pengaduan extends Model
     public function tanggapan()
     {
         return $this->hasMany(Tanggapan::class, 'id_pengaduan');
+    }
+
+
+    public function mahasiswa()
+    {
+        return $this->hasOneThrough(
+            Mahasiswa::class,
+            User::class,
+            'id', 
+            'id_user', 
+            'id_user', 
+            'id' 
+        );
     }
 
     /**
