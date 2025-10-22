@@ -26,12 +26,14 @@ class GoogleAuthController extends Controller
                     'google_id' => $googleUser->getId() // Kunci pencarian
                 ],
                 [
-                    'nama' => $googleUser->getName(),
-                    'email' => $googleUser->getEmail(),
-                    'username' => Str::before($googleUser->getEmail(), '@'), // Membuat username dari email
-                    'avatar' => $googleUser->getAvatar(),
-                    'role' => 'User', 
-                    'password' => null
+                    // Data untuk di-update atau dibuat:
+                    'nama' => $googleUser->getName(),         
+                    'email' => $googleUser->getEmail(),       
+                    'username' => Str::before($googleUser->getEmail(), '@'), 
+                    'avatar' => $googleUser->getAvatar(),    
+                    'role' => 'user',                     
+                    'password' => null                    
+                    
                 ]
             );
 

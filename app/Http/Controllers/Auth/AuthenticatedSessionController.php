@@ -34,9 +34,9 @@ class AuthenticatedSessionController extends Controller
         } elseif (Auth::user()->role === 'pengurus') {
             return redirect()->intended(route('pengurus.pengurus.dashboard', absolute: false));
         } elseif (Auth::user()->role === 'user') {
-            return redirect()->intended(route('user.dashboard', absolute: false));
+            return redirect()->intended(route('dashboard', absolute: false));
         }
-        return redirect()->intended(route('user.dashboard', absolute: false));
+        return redirect()->intended(route('dashboard', absolute: false));
     }
 
     /**
