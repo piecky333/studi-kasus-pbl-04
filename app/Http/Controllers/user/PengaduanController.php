@@ -61,7 +61,7 @@ class PengaduanController extends Controller
         ]);
 
         //halaman dashnoard user
-        return redirect()->route('user.dashboard')
+        return redirect()->route('dashboard')
             ->with('success', 'Pengaduan berhasil dikirim!');
     }
 

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\admin\mahasiswa;
 use App\Models\admin\pengurus;
 
-class Prestasi extends Model
+class prestasi extends Model
 {
     protected $table = 'Prestasi';
     protected $primaryKey = 'id_prestasi';
