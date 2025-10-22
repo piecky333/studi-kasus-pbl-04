@@ -22,8 +22,10 @@ use App\Http\Controllers\Admin\{
     DivisiController as AdminDivisiController,
     PengaduanController as AdminPengaduanController,
     PrestasiController as AdminPrestasiController,
-    DashboardController as AdminDashboardController
+    DashboardController as AdminDashboardController,
+    SanksiController as AdminSanksiController
 };
+
 
 use App\Http\Controllers\pengurus\{
     DivisiController as PengurusDivisiController,
@@ -67,6 +69,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('prestasi', AdminPrestasiController::class);
     Route::get('/prestasi/cari-mahasiswa', [AdminPrestasiController::class, 'cariMahasiswa'])
         ->name('prestasi.cariMahasiswa');
+
+    // ---- SANKSI (CRUD) ----
+Route::get('/sanksi', [AdminSanksiController::class, 'index'])->name('sanksi.index');
+Route::get('/sanksi/create', [AdminSanksiController::class, 'create'])->name('sanksi.create');
+Route::post('/sanksi', [AdminSanksiController::class, 'store'])->name('sanksi.store');
+Route::get('/sanksi/{id}/edit', [AdminSanksiController::class, 'edit'])->name('sanksi.edit');
+Route::put('/sanksi/{id}', [AdminSanksiController::class, 'update'])->name('sanksi.update');
+Route::delete('/sanksi/{id}', [AdminSanksiController::class, 'destroy'])->name('sanksi.destroy');
+
 
 
 });
