@@ -12,9 +12,9 @@
                     <li class="nav-item"><a class="nav-link" href="{{ url('/divisi') }}">Divisi</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url('/profile') }}">Profil</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url('/berita') }}">Berita</a></li>
-                    {{-- <li class="nav-item"><a class="nav-link" href="{{ url('/pendaftaran') }}">Pendaftaran</a></li> --}}
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/prestasiMahasiswa') }}">Prestasi Mahasiswa</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url('/prestasi') }}">Prestasi Mahasiswa</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url('/pengaduan') }}">Laporan</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url('/login') }}">Login</a></li>
                 </ul>
             </div>
         </div>

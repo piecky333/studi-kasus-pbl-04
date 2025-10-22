@@ -17,31 +17,43 @@ class Pengaduan extends Model
     public $incrementing = true;
     protected $keyType = 'int';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'id_user',
+        'judul',
         'tanggal_pengaduan',
         'jenis_kasus',
         'deskripsi',
-        'status_validasi',
+        'status',
     ];
 
     /* ===========================
-       🔗 Relasi antar tabel
+        🔗 Relasi antar tabel
     =========================== */
 
-    // 1 Pengaduan dibuat oleh 1 User
+    /**
+     * Mendapatkan user yang memiliki pengaduan ini.
+     */
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user');
     }
 
-    // 1 Pengaduan bisa punya banyak Tanggapan
+    /**
+     * Mendapatkan semua tanggapan untuk pengaduan ini.
+     */
     public function tanggapan()
     {
         return $this->hasMany(Tanggapan::class, 'id_pengaduan');
     }
 
-    // 1 Pengaduan bisa punya banyak Terlapor
+    /**
+     * Mendapatkan semua terlapor untuk pengaduan ini.
+     */
     public function terlapor()
     {
         return $this->hasMany(Terlapor::class, 'id_pengaduan');

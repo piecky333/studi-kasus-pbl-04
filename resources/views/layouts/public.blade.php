@@ -8,6 +8,8 @@
 
     {{-- Bootstrap CSS --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
 
     <style>
         body {
@@ -16,7 +18,7 @@
         }
 
         nav.navbar {
-            background-color: #004080;
+            background-color: #004080;s
         }
 
         .nav-item{
@@ -34,7 +36,7 @@
             background-color: #002855;
             color: #ddd;
             padding: 30px 0;
-            margin-top: 50px;
+            /* Hapus margin-top agar tidak ada jarak aneh jika halaman pendek */
         }
 
         footer a {
@@ -46,14 +48,21 @@
             text-decoration: underline;
         }
     </style>
+    
+    {{-- UNTUK MENERIMA CSS DARI HALAMAN LAIN --}}
+    @stack('styles')
+    
 </head>
 
 <body>
 
     @include ('partials.public.navbar')
 
-    {{-- Konten Halaman --}}
-    <main class="container py-5">
+    {{-- BARIS INI PENTING: Untuk menampung hero section layar penuh --}}
+    @yield('hero')
+    
+    {{-- Konten Halaman Lainnya akan masuk ke sini --}}
+    <main>
         @yield('content')
     </main>
 
@@ -71,6 +80,10 @@
 
     {{-- Bootstrap JS --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    {{-- UNTUK MENERIMA JAVASCRIPT DARI HALAMAN LAIN --}}
+    @stack('scripts')
 </body>
 
 </html>
+

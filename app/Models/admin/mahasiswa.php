@@ -20,16 +20,16 @@ class Mahasiswa extends Model
 
     public function prestasi()
     {
-        return $this->hasMany(Prestasi::class, 'id_mahasiswa', 'id_dtmahasiswa');
+        return $this->hasMany(\App\Models\admin\Prestasi::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 
     public function sanksi()
     {
-        return $this->hasMany(Sanksi::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->hasMany(\App\Models\admin\Sanksi::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 
-    public function anggota()
+    public function keuangan()
     {
-        return $this->hasMany(Keuangan::class, 'id_anggota', 'id_mahasiswa');
+        return $this->hasMany(\App\Models\admin\Keuangan::class, 'id_anggota', 'id_mahasiswa');
     }
 }
