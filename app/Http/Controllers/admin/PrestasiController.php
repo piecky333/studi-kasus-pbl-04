@@ -15,7 +15,7 @@ class PrestasiController extends Controller
      */
     public function index()
     {
-        $prestasi = Prestasi::with(['mahasiswa'])->latest()->get();
+        $prestasi = Prestasi::with(['mahasiswa'])->latest()->paginate(10);
         return view('pages.prestasi.index', compact('prestasi'));
     }
 
@@ -32,29 +32,27 @@ class PrestasiController extends Controller
      * Simpan data prestasi baru.
      */
     public function store(Request $request)
-{
-    $request->validate([
-        'nim'         => 'required|exists:mahasiswa,nim',
-        'judul_prestasi' => 'required|string|max:255',
-        'tingkat'     => 'required|string|max:255',
-        'tanggal'     => 'required|date',
-        'deskripsi'   => 'nullable|string',
-    ]);
+    {
+        // Validasi form
+        $request->validate([
+            'nama_kegiatan' => 'required|string|max:255',
+            'tingkat_prestasi' => 'required|string|max:50',
+            'tahun' => 'required|integer|min:1900|max:' . (date('Y') + 1),
+            'status_validasi' => 'required|in:menunggu,disetujui,ditolak',
+            'id_mahasiswa' => 'required|integer|exists:mahasiswa,id_mahasiswa'
+        ]);
 
-    $mahasiswa = Mahasiswa::where('nim', $request->nim)->first();
+        // Buat data baru
+        Prestasi::create([
+            'nama_kegiatan' => $request->nama_kegiatan,
+            'tingkat_prestasi' => $request->tingkat_prestasi,
+            'tahun' => $request->tahun,
+            'status_validasi' => $request->status_validasi,
+            'id_mahasiswa' => $request->id_mahasiswa
+        ]);
 
-    Prestasi::create([
-        'id_mahasiswa'     => $mahasiswa->id_mahasiswa,
-        'id_admin'         => Auth::user()->id_admin ?? null,
-        'nama_kegiatan'    => $request->judul_prestasi,
-        'tingkat_prestasi' => $request->tingkat,
-        'tahun'            => date('Y', strtotime($request->tanggal)),
-        'status_validasi'  => 'menunggu',
-        'deskripsi'        => $request->deskripsi,
-    ]);
-
-    return redirect()->route('admin.prestasi.index')->with('success', 'Data prestasi berhasil ditambahkan.');
-}
+        return redirect()->route('admin.prestasi.index')->with('success', 'Data prestasi berhasil ditambahkan.');
+    }
 
 
     /**
@@ -81,18 +79,20 @@ class PrestasiController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'nama_kegiatan'    => 'required|string|max:255',
-            'tingkat_prestasi' => 'required|string|max:255',
-            'tahun'            => 'required|digits:4|integer',
-            'status_validasi'  => 'required|in:menunggu,disetujui,ditolak',
+            'nama_kegiatan' => 'required|string|max:255',
+            'tingkat_prestasi' => 'required|string|max:50',
+            'tahun' => 'required|integer|min:1900|max:' . (date('Y') + 1),
+            'status_validasi' => 'required|in:menunggu,disetujui,ditolak',
+            'id_mahasiswa' => 'required|integer|exists:mahasiswa,id_mahasiswa'
         ]);
 
         $prestasi = Prestasi::findOrFail($id);
         $prestasi->update([
-            'nama_kegiatan'    => $request->nama_kegiatan,
+            'nama_kegiatan' => $request->nama_kegiatan,
             'tingkat_prestasi' => $request->tingkat_prestasi,
-            'tahun'            => $request->tahun,
-            'status_validasi'  => $request->status_validasi,
+            'tahun' => $request->tahun,
+            'status_validasi' => $request->status_validasi,
+            'id_mahasiswa' => $request->id_mahasiswa
         ]);
 
         return redirect()->route('admin.prestasi.index')->with('success', 'Data prestasi berhasil diperbarui.');

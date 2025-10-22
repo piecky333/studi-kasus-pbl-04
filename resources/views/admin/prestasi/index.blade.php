@@ -20,7 +20,7 @@
                 <h2 class="text-center mb-4 fw-bold text-primary">Manajemen Prestasi Mahasiswa</h2>
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ route('prestasi.create') }}" class="btn btn-success mb-3"><i class="bi bi-plus-lg"></i> Tambah Data Prestasi</a>
+                        <a href="{{ route('admin.prestasi.create') }}" class="btn btn-success mb-3"><i class="bi bi-plus-lg"></i> Tambah Data Prestasi</a>
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover align-middle">
                                 <thead>
@@ -38,16 +38,15 @@
                                 <tbody>
                                     @forelse ($prestasis as $item)
                                         <tr>
-                                            <td class="fw-semibold">{{ $item->nim }}</td>
-                                            <td>{{ $item->nama }}</td>
-                                            <td>{{ $item->nama_lomba }}</td>
+                                            <td class="fw-semibold">{{ $item->mahasiswa->nim ?? '-' }}</td>
+                                            <td>{{ $item->mahasiswa->nama ?? '-' }}</td>
+                                            <td>{{ $item->nama_kegiatan }}</td>
                                             <td>{{ $item->tahun }}</td>
-                                            <td>{{ $item->tingkat }}</td>
-                                            <td>{{ $item->jenis_prestasi }}</td>
+                                            <td>{{ $item->tingkat_prestasi }}</td>
                                             <td>{{ $item->status_validasi }}</td>
                                             <td class="text-center" style="width: 15%;">
-                                                <form onsubmit="return confirm('Anda yakin ingin menghapus data ini?');" action="{{ route('prestasi.destroy', $item->id_mhsprestasi) }}" method="POST">
-                                                    <a href="{{ route('prestasi.edit', $item->id_mhsprestasi) }}" class="btn btn-sm btn-primary"><i class="bi bi-pencil-fill"></i></a>
+                                                <form onsubmit="return confirm('Anda yakin ingin menghapus data ini?');" action="{{ route('admin.prestasi.destroy', $item->id_prestasi) }}" method="POST">
+                                                    <a href="{{ route('admin.prestasi.edit', $item->id_prestasi) }}" class="btn btn-sm btn-primary"><i class="bi bi-pencil-fill"></i></a>
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash-fill"></i></button>
@@ -56,13 +55,13 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="8" class="text-center"><div class="alert alert-warning">Data belum tersedia.</div></td>
+                                            <td colspan="7" class="text-center"><div class="alert alert-warning">Data belum tersedia.</div></td>
                                         </tr>
                                     @endforelse
                                 </tbody>
                             </table>
                         </div>
-                        {!! $prestasis->links() !!}
+                        {!! $prestasi->links() !!}
                     </div>
                 </div>
             </div>
