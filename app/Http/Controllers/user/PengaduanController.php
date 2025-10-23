@@ -5,23 +5,24 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\laporan\Pengaduan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage; // Pastikan ini ada
 
 class PengaduanController extends Controller
 {
     /**
-     * Menampilkan daftar semua pengaduan (misal: untuk halaman publik).
+     * Menampilkan daftar semua pengaduan milik user.
      */
     public function index(Request $request)
     {
-        // pengaduan milik user yang sedang login
+        // Pengaduan milik user yang sedang login
         $query = Auth::user()->pengaduan()->latest();
 
         // Cek jika ada input pencarian
-        if ($request->has('search') && $request->search != '') {
+        if ($request->filled('search')) { // Gunakan filled() untuk cek lebih baik
             $query->where('judul', 'like', '%' . $request->search . '%');
         }
 
-        // data dengan paginasi
+        // Data dengan paginasi
         $pengaduan = $query->paginate(10);
 
         // Mengirim data ke view
@@ -33,7 +34,9 @@ class PengaduanController extends Controller
      */
     public function create()
     {
-        return view('user.pengaduan.create');
+        // === KOREKSI ===
+        // Path view harus lengkap dari folder 'views'
+        return view('user.pengaduan.create'); 
     }
 
     /**
@@ -41,28 +44,25 @@ class PengaduanController extends Controller
      */
     public function store(Request $request)
     {
-        // DIPERBAIKI: Aturan validasi disesuaikan
-        $request->validate([
+        // Validasi
+        $validatedData = $request->validate([
             'judul' => 'required|string|max:255',
             'jenis_kasus' => 'required|string|max:255',
             'deskripsi' => 'required|string',
+            // Gambar tidak divalidasi/diupload sesuai koreksi sebelumnya
         ]);
 
-        //proses pembuatan data
-        Pengaduan::create([
+        // Tambahkan id_user dan status default
+        $validatedData['id_user'] = Auth::id();
+        $validatedData['status'] = 'Terkirim'; 
+        // Anda mungkin perlu menambahkan 'tanggal_pengaduan' jika tidak otomatis
+        // $validatedData['tanggal_pengaduan'] = now(); 
 
-            //mengambil id user yang sedang login
-            'id_user' => Auth::id(),
-            'judul' => $request->judul,
-            'jenis_kasus' => $request->jenis_kasus,
-            'deskripsi' => $request->deskripsi,
-            'status' => 'Terkirim',
+        Pengaduan::create($validatedData);
 
-        ]);
-
-        //halaman dashnoard user
-        return redirect()->route('dashboard')
-            ->with('success', 'Pengaduan berhasil dikirim!');
+        // Redirect ke halaman dashboard user
+        return redirect()->route('user.dashboard')
+                         ->with('success', 'Pengaduan berhasil dikirim!');
     }
 
     /**
@@ -70,8 +70,10 @@ class PengaduanController extends Controller
      */
     public function show($id)
     {
-        //pengambilan data pengaduan
-        $pengaduan = Pengaduan::where('id_user', Auth::id())->with('user')->findOrFail($id);
+        // Ambil pengaduan milik user ini, atau 404
+        // Eager load 'user' (walaupun sudah tahu user-nya, mungkin berguna di view)
+        $pengaduan = Auth::user()->pengaduan()->with('user')->findOrFail($id);
+        
         return view('user.pengaduan.show', compact('pengaduan'));
     }
 
@@ -80,14 +82,15 @@ class PengaduanController extends Controller
      */
     public function destroy($id)
     {
-        $pengaduan = Pengaduan::findOrFail($id);
+        // Cari pengaduan milik user yang sedang login
+        $pengaduan = Auth::user()->pengaduan()->findOrFail($id);
 
-        //hanya admin atau user yang membuat pengaduan yang boleh menghapus
-        if (Auth::id() !== $pengaduan->id_user && !Auth::user()->hasRole('admin')) {
-            abort(403, 'Anda tidak memiliki izin untuk melakukan aksi ini.');
-        }
+        // === KOREKSI (Sesuai Struktur Database Anda) ===
+        // Hapus logika Storage::delete() karena tidak ada kolom 'image'
 
         $pengaduan->delete();
+
         return redirect()->route('user.dashboard')->with('success', 'Pengaduan berhasil dihapus.');
     }
 }
+

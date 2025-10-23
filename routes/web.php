@@ -46,7 +46,7 @@ Route::view('/dashboard', 'pages.dashboard');
 // ===========================
 // ROUTE UNTUK ADMIN
 // ===========================
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/berita', [AdminBeritaController::class, 'index'])->name('berita.index');
     Route::get('/berita/create', [AdminBeritaController::class, 'create'])->name('berita.create');
@@ -85,7 +85,7 @@ Route::delete('/sanksi/{id}', [AdminSanksiController::class, 'destroy'])->name('
 // ===========================
 // ROUTE UNTUK PENGURUS
 // ===========================
-Route::prefix('pengurus')->name('pengurus.')->group(function () {
+Route::prefix('pengurus')->name('pengurus.')->middleware(['auth', 'role:pengurus'])->group(function () {
     Route::get('/dashboard', [PengurusDashboardController::class, 'index'])->name('dashboard');
     Route::resource('divisi', PengurusDivisiController::class);
     Route::resource('jabatan', \App\Http\Controllers\Pengurus\JabatanController::class);
@@ -97,11 +97,12 @@ Route::prefix('pengurus')->name('pengurus.')->group(function () {
 // ===========================
 // ROUTE UNTUK USER BIASA
 // ===========================
+Route::prefix('user')->name('user.')->middleware(['auth', 'role:user'])->group(function () {
 Route::get('/dashboard', [UserDashboardController::class, 'index'])
     ->middleware(['auth'])->name('dashboard');
 Route::resource('berita', BeritaController::class);
 Route::resource('pengaduan', UserPengaduanController::class);
-
+});
 
 // ===========================
 // autentikasi dengan Google
