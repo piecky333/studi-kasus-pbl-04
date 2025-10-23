@@ -41,7 +41,6 @@ Route::view('/profile', 'public.profile');
 Route::view('/berita', 'public.berita.index');
 Route::view('/prestasi', 'public.prestasi');
 Route::view('/laporan', 'public.laporan');
-Route::view('/dashboard', 'pages.dashboard');
 
 // ===========================
 // ROUTE UNTUK ADMIN
@@ -68,7 +67,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // ---- PRESTASI (CRUD + AJAX Search Mahasiswa) ----
     Route::resource('prestasi', AdminPrestasiController::class);
     Route::get('/prestasi/cari-mahasiswa', [AdminPrestasiController::class, 'cariMahasiswa'])
-    ->name('prestasi.cariMahasiswa');
+        ->name('prestasi.cariMahasiswa');
 
     // ---- SANKSI (CRUD) ----
 Route::get('/sanksi', [AdminSanksiController::class, 'index'])->name('sanksi.index');
@@ -86,7 +85,7 @@ Route::delete('/sanksi/{id}', [AdminSanksiController::class, 'destroy'])->name('
 // ROUTE UNTUK PENGURUS
 // ===========================
 Route::prefix('pengurus')->name('pengurus.')->group(function () {
-    Route::get('/dashboard', [PengurusDashboardController::class, 'index'])->name('pengurus.dashboard');
+    Route::get('/dashboard', [PengurusDashboardController::class, 'index'])->name('dashboard');
     Route::resource('divisi', PengurusDivisiController::class);
     Route::resource('jabatan', \App\Http\Controllers\Pengurus\JabatanController::class);
     Route::resource('pengurus', \App\Http\Controllers\Pengurus\PengurusController::class);
@@ -98,7 +97,7 @@ Route::prefix('pengurus')->name('pengurus.')->group(function () {
 // ROUTE UNTUK USER BIASA
 // ===========================
 Route::get('/dashboard', [UserDashboardController::class, 'index'])
-    ->middleware(['auth'])->name('user.dashboard');
+    ->middleware(['auth'])->name('dashboard');
 Route::resource('berita', BeritaController::class);
 Route::resource('pengaduan', UserPengaduanController::class);
 

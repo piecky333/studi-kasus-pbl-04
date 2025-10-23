@@ -85,7 +85,7 @@
                 <div class="lg:col-span-2 bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 border-b border-gray-200 flex justify-between items-center">
                         <h3 class="text-lg font-semibold text-gray-900">Pengaduan Terakhir Anda</h3>
-                        <a href="{{ route('user.pengaduan.create') }}"
+                        <a href="{{ route('pengaduan.create') }}"
                             class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700">
                             Buat Pengaduan Baru
                         </a>
@@ -176,7 +176,7 @@
                     </div>
 
                     <div class="p-6 bg-gray-50 border-t border-gray-200 text-right">
-                    <a href="{{ route('user.pengaduan.index') }}" class="text-sm font-semibold text-indigo-600 hover:text-indigo-900 transition duration-150 ease-in-out">
+                    <a href="{{ route('pengaduan.index') }}" class="text-sm font-semibold text-indigo-600 hover:text-indigo-900 transition duration-150 ease-in-out">
                         Lihat Semua Riwayat Pengaduan &rarr;
                     </a>
                 </div>

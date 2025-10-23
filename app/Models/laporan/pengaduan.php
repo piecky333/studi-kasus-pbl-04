@@ -33,7 +33,7 @@ class Pengaduan extends Model
     ];
 
     /* ===========================
-        🔗 Relasi antar tabel
+        Relasi antar tabel
     =========================== */
 
     /**
