@@ -65,7 +65,7 @@
 
     <!-- Nav Item - Prestasi -->
     <li class="nav-item">
-        <a class="nav-link" href="charts.html">
+        <a class="nav-link" href="{{ route('admin.prestasi.index') }}">
             <i class="fas fa-fw bi bi-trophy-fill"></i>
             <span>Prestasi</span></a>
     </li>
