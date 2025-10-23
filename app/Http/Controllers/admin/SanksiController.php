@@ -11,7 +11,7 @@ class SanksiController extends Controller
 {
     public function index()
     {
-        $sanksi = Sanksi::with('mahasiswa')->latest()->get();
+        $sanksi = Sanksi::with('mahasiswa')->latest()->paginate(10);
         return view('pages.sanksi.index', compact('sanksi'));
     }
 

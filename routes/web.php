@@ -45,7 +45,7 @@ Route::view('/laporan', 'public.laporan');
 // ===========================
 // ROUTE UNTUK ADMIN
 // ===========================
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/berita', [AdminBeritaController::class, 'index'])->name('berita.index');
     Route::get('/berita/create', [AdminBeritaController::class, 'create'])->name('berita.create');
@@ -53,6 +53,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/berita/{id}/edit', [AdminBeritaController::class, 'edit'])->name('berita.edit');
     Route::put('/berita/{id}', [AdminBeritaController::class, 'update'])->name('berita.update');
     Route::delete('/berita/{id}', [AdminBeritaController::class, 'destroy'])->name('berita.destroy');
+    
+    // ----  MANAJEMEN AKUN   ----
+    Route::resource('pengurus', \App\Http\Controllers\Admin\PengurusController::class);
 
     // ---- DIVISI ----
     Route::get('/divisi', [AdminDivisiController::class, 'index'])->name('divisi.index');
@@ -64,7 +67,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::delete('/pengaduan/{id}', [AdminPengaduanController::class, 'destroy'])->name('pengaduan.destroy');
     Route::put('/pengaduan/{id}/verifikasi', [AdminPengaduanController::class, 'verifikasi'])->name('pengaduan.verifikasi');
 
-    // ---- PRESTASI (CRUD + AJAX Search Mahasiswa) ----
+    // ---- PRESTASI  ----
     Route::resource('prestasi', AdminPrestasiController::class);
     Route::get('/prestasi/cari-mahasiswa', [AdminPrestasiController::class, 'cariMahasiswa'])
         ->name('prestasi.cariMahasiswa');
@@ -76,15 +79,12 @@ Route::post('/sanksi', [AdminSanksiController::class, 'store'])->name('sanksi.st
 Route::get('/sanksi/{id}/edit', [AdminSanksiController::class, 'edit'])->name('sanksi.edit');
 Route::put('/sanksi/{id}', [AdminSanksiController::class, 'update'])->name('sanksi.update');
 Route::delete('/sanksi/{id}', [AdminSanksiController::class, 'destroy'])->name('sanksi.destroy');
-
-
-
 });
 
 // ===========================
 // ROUTE UNTUK PENGURUS
 // ===========================
-Route::prefix('pengurus')->name('pengurus.')->group(function () {
+Route::prefix('pengurus')->name('pengurus.')->middleware(['auth', 'role:pengurus'])->group(function () {
     Route::get('/dashboard', [PengurusDashboardController::class, 'index'])->name('dashboard');
     Route::resource('divisi', PengurusDivisiController::class);
     Route::resource('jabatan', \App\Http\Controllers\Pengurus\JabatanController::class);
@@ -96,11 +96,12 @@ Route::prefix('pengurus')->name('pengurus.')->group(function () {
 // ===========================
 // ROUTE UNTUK USER BIASA
 // ===========================
+Route::prefix('user')->name('user.')->middleware(['auth', 'role:user'])->group(function () {
 Route::get('/dashboard', [UserDashboardController::class, 'index'])
     ->middleware(['auth'])->name('dashboard');
 Route::resource('berita', BeritaController::class);
 Route::resource('pengaduan', UserPengaduanController::class);
-
+});
 
 // ===========================
 // autentikasi dengan Google

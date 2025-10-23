@@ -55,7 +55,6 @@ class User extends Authenticatable
 
     public function komentar()
     {
-        // KOREKSI: Tambahkan parameter ke-3 (Local Key)
         return $this->hasMany(komentar::class, 'id_user', 'id_user');
     }
 

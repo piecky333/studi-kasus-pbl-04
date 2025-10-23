@@ -1,7 +1,7 @@
 <ul class="navbar-nav  sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('pengurus.pengurus.dashboard') }}">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('pengurus.dashboard') }}">
         <div class="sidebar-brand-icon">
             <i class="bi bi-people-fill"></i>
         </div>
@@ -12,7 +12,7 @@
 
     <!-- Dashboard -->
     <li class="nav-item {{ request()->is('pengurus/dashboard') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('pengurus.pengurus.dashboard') }}">
+        <a class="nav-link" href="{{ route('pengurus.dashboard') }}">
             <i class="bi bi-speedometer2"></i>
             <span>Dashboard</span>
         </a>

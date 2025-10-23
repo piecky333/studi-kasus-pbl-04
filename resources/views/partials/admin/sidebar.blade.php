@@ -3,7 +3,7 @@
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
         <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-laugh-wink"></i>
+            <i class=""></i>
         </div>
         <div class="sidebar-brand-text mx-3">Sistem manajemen</div>
     </a>
@@ -13,7 +13,7 @@
 
     <!-- Nav Item - Dashboard -->
     <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="{{ route('admin.dashboard') }}">
             <i class="bi bi-grid"></i>
             <span>Dashboard</span></a>
     </li>
@@ -26,14 +26,21 @@
         Interface
     </div>
 
-    <!-- Nav Item - Manajemen akun -->
+    <!-- Nav Item - Laporan -->
+    <li class="nav-item ">
+        <a class="nav-link" href="{{ route('admin.pengaduan.index') }}">
+            <i class="fas fa-fw bi bi-chat-dots-fill"></i>
+            <span>Pengaduan</span></a>
+    </li>
+    
+    {{-- <!-- Nav Item - Manajemen akun -->
     <li class="nav-item">
         <a class="nav-link" href="charts.html">
             <i class="fas fa-fw bi bi-people-fill"></i>
             <span>Manajemen akun</span></a>
-    </li>
+    </li> --}}
 
-    <!-- Nav Item - anggota & divisi Collapse Menu -->
+    {{-- <!-- Nav Item - anggota & divisi Collapse Menu -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
             aria-controls="collapsePages">
@@ -47,6 +54,13 @@
                 <a class="collapse-item" href="forgot-password.html">Anggota per Divisi</a>
             </div>
         </div>
+    </li> --}}
+
+    <!-- Nav Item - Sanksi -->
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('admin.sanksi.index') }}">
+            <i class="fas fa-fw bi bi-exclamation-triangle-fill"></i>
+            <span>Sanksi</span></a>
     </li>
 
     <!-- Nav Item - Prestasi -->
@@ -63,19 +77,8 @@
             <span>Berita</span></a>
     </li>
 
-    <!-- Nav Item - Laporan -->
-    <li class="nav-item">
-        <a class="nav-link" href="{{ route('admin.pengaduan.index') }}">
-            <i class="fas fa-fw bi bi-chat-dots-fill"></i>
-            <span>Pengaduan</span></a>
-    </li>
+    
 
-    <!-- Nav Item - Sanksi -->
-    <li class="nav-item">
-        <a class="nav-link" href="{{ route('admin.sanksi.index') }}">
-            <i class="fas fa-fw bi bi-exclamation-triangle-fill"></i>
-            <span>Sanksi</span></a>
-    </li>
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
