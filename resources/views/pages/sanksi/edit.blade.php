@@ -1,7 +1,3 @@
-{{-- 
-    Keputusan Tepat:
-    Menggunakan layout 'layouts.admin' (Bootstrap 4) yang konsisten.
---}}
 @extends('layouts.admin')
 
 @section('content')
