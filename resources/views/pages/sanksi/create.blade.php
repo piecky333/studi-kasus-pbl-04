@@ -1,66 +1,82 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
-<div class="py-8">
-    <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-        <!-- Header -->
-        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-6 rounded-t-lg shadow-md text-white">
-            <h2 class="text-2xl font-bold">Tambah Data Sanksi</h2>
-            <p class="text-sm text-indigo-100 mt-1">Isi form di bawah untuk menambahkan data sanksi mahasiswa.</p>
-        </div>
 
-        <!-- Form -->
-        <div class="bg-white p-8 rounded-b-lg shadow-lg">
-            <form action="{{ route('admin.sanksi.store') }}" method="POST" class="space-y-5">
-                @csrf
+<!-- Page Heading -->
+<h1 class="h3 mb-4 text-gray-800">Tambah Data Sanksi</h1>
 
-                <!-- Mahasiswa -->
-                <div>
-                    <label for="id_mahasiswa" class="block text-sm font-medium text-gray-700 mb-1">
-                        Mahasiswa
-                    </label>
-                    <select name="id_mahasiswa" id="id_mahasiswa" 
-                            class="w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" 
-                            required>
-                        <option value="">-- Pilih Mahasiswa --</option>
-                        @foreach($mahasiswa as $mhs)
-                            <option value="{{ $mhs->id_mahasiswa }}">{{ $mhs->nama }}</option>
-                        @endforeach
-                    </select>
-                </div>
+<div class="card shadow mb-4">
+    <!-- Card Header -->
+    <div class="card-header py-3 bg-primary">
+        <h6 class="m-0 font-weight-bold text-white">Formulir Sanksi Mahasiswa</h6>
+    </div>
+    
+    <!-- Card Body -->
+    <div class="card-body">
 
-                <!-- Jenis Sanksi -->
-                <div>
-                    <label for="jenis_sanksi" class="block text-sm font-medium text-gray-700 mb-1">
-                        Jenis Sanksi
-                    </label>
-                    <input type="text" id="jenis_sanksi" name="jenis_sanksi" 
-                           class="w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" 
-                           required>
-                </div>
+        <!-- Tampilkan Error Validasi (Profesional) -->
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-                <!-- Tanggal Sanksi -->
-                <div>
-                    <label for="tanggal_sanksi" class="block text-sm font-medium text-gray-700 mb-1">
-                        Tanggal Sanksi
-                    </label>
-                    <input type="date" id="tanggal_sanksi" name="tanggal_sanksi" 
-                           class="w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-                </div>
+        <form action="{{ route('admin.sanksi.store') }}" method="POST">
+            @csrf
 
-                <!-- Tombol -->
-                <div class="flex justify-end space-x-3 pt-4">
-                    <a href="{{ route('admin.sanksi.index') }}"
-                       class="px-5 py-2 rounded-md bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium transition">
-                        <i class="bi bi-arrow-left-circle mr-1"></i> Kembali
-                    </a>
-                    <button type="submit"
-                            class="px-5 py-2 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition">
-                        <i class="bi bi-check2-circle mr-1"></i> Simpan
-                    </button>
-                </div>
-            </form>
-        </div>
+            <div class="form-group">
+                <label for="id_mahasiswa">Mahasiswa</label>
+                <select name="id_mahasiswa" id="id_mahasiswa" 
+                        class="form-control @error('id_mahasiswa') is-invalid @enderror" 
+                        required>
+                    <option value="">-- Pilih Mahasiswa --</option>
+                    @foreach($mahasiswa as $mhs)
+                        <option value="{{ $mhs->id_mahasiswa }}" {{ old('id_mahasiswa') == $mhs->id_mahasiswa ? 'selected' : '' }}>
+                            {{ $mhs->nama }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('id_mahasiswa')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Jenis Sanksi -->
+            <div class="form-group">
+                <label for="jenis_sanksi">Jenis Sanksi</label>
+                <input type="text" id="jenis_sanksi" name="jenis_sanksi" 
+                       class="form-control @error('jenis_sanksi') is-invalid @enderror"
+                       value="{{ old('jenis_sanksi') }}" required>
+                @error('jenis_sanksi')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Tanggal Sanksi -->
+            <div class="form-group">
+                <label for="tanggal_sanksi">Tanggal Sanksi</label>
+                <input type="date" id="tanggal_sanksi" name="tanggal_sanksi" 
+                       class="form-control @error('tanggal_sanksi') is-invalid @enderror"
+                       value="{{ old('tanggal_sanksi') }}">
+                @error('tanggal_sanksi')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Tombol -->
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save mr-1"></i> Simpan
+                </button>
+                <a href="{{ route('admin.sanksi.index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left mr-1"></i> Kembali
+                </a>
+            </div>
+        </form>
     </div>
 </div>
 @endsection

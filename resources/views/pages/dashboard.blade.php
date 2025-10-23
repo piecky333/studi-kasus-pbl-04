@@ -1,8 +1,3 @@
-{{-- 
-    Catatan Penting:
-    Layout diubah dari 'layouts.app' (Tailwind) ke 'layouts.admin' (Bootstrap 4)
-    agar sesuai dengan kelas CSS yang Anda gunakan (card, row, col-xl-3, dll.)
---}}
 @extends('layouts.admin')
 
 @section('content')
@@ -34,7 +29,6 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                 Total User </div>
-                            {{-- Dinamis: Menggunakan $totalUser --}}
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalUser ?? 0 }}</div>
                         </div>
                         <div class="col-auto">
@@ -53,7 +47,6 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                 Total Pengurus</div>
-                            {{-- Dinamis: Menggunakan $totalAnggota --}}
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalPengurus ?? 0 }}</div>
                         </div>
                         <div class="col-auto">
@@ -91,7 +84,6 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                 Total Laporan (Pengaduan)</div>
-                            {{-- Dinamis: Menggunakan $totalLaporan --}}
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalLaporan ?? 0 }}</div>
                         </div>
                         <div class="col-auto">
@@ -103,4 +95,3 @@
         </div>
     </div>
 @endsection
-

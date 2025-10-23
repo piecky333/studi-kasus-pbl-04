@@ -42,12 +42,22 @@
                         <tr>
                             <td>{{ $loop->iteration + $daftarPengaduan->firstItem() - 1 }}</td>
                             <td>
-                                
+                                {{-- 
+                                    Sudut Pandang (Data Safety):
+                                    Kita pakai '??' (Null Coalescing Operator) di sini.
+                                    Jika suatu saat data mahasiswa terhapus, 
+                                    halaman ini tidak akan error, tapi menampilkan 'User Dihapus'.
+                                --}}
                                 {{ $item->mahasiswa->nama ?? '[User Dihapus]' }}
                             </td>
                             <td>{{ $item->judul }}</td>
                             <td>
-                                
+                                {{-- 
+                                    Sudut Pandang (UI/UX):
+                                    Memberi warna pada status (badge) adalah keputusan UI
+                                    yang kuat. Ini membantu Admin memindai (scan) data
+                                    secara visual dengan jauh lebih cepat.
+                                --}}
                                 @if ($item->status == 'Terkirim')
                                     <span class="badge badge-primary">{{ $item->status }}</span>
                                 @elseif ($item->status == 'Diproses')
@@ -66,6 +76,14 @@
                                     <i class="fas fa-eye"></i> Detail
                                 </a>
 
+                                <!-- Tombol Hapus -->
+                                {{-- 
+                                    Sudut Pandang (Keamanan):
+                                    Aksi 'Hapus' (destroy) WAJIB menggunakan <form> dengan 
+                                    method="POST" dan @method('DELETE'). 
+                                    Ini adalah keputusan keamanan (security best practice) 
+                                    untuk mencegah CSRF.
+                                --}}
                                 <form action="{{ route('admin.pengaduan.destroy', $item->id_pengaduan) }}" 
                                       method="POST" 
                                       class="d-inline"

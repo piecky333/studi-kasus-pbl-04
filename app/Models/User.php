@@ -50,13 +50,11 @@ class User extends Authenticatable
 
     public function pengaduan()
     {
-        // KOREKSI: Tambahkan parameter ke-3 (Local Key)
         return $this->hasMany(pengaduan::class, 'id_user', 'id_user');
     }
 
     public function komentar()
     {
-        // KOREKSI: Tambahkan parameter ke-3 (Local Key)
         return $this->hasMany(komentar::class, 'id_user', 'id_user');
     }
 
