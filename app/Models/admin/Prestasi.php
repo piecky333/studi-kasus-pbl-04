@@ -3,8 +3,10 @@
 namespace App\Models\admin;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\admin\mahasiswa;
+use App\Models\admin\pengurus;
 
-class Prestasi extends Model
+class prestasi extends Model
 {
     protected $table = 'Prestasi';
     protected $primaryKey = 'id_prestasi';
@@ -12,11 +14,15 @@ class Prestasi extends Model
 
     public function mahasiswa()
     {
-        return $this->belongsTo(\App\Models\admin\dt_mahasiswa::class, 'id_mahasiswa');
+        return $this->belongsTo(Mahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 
-    public function anggota()
+    public function pengurus()
     {
-        return $this->hasMany(\App\Models\anggota::class, 'id_mhsprestasi');
+        return $this->hasMany(pengurus::class, 'prestasi');
+    }
+    public function admin()
+    {
+        return $this->belongsTo(\App\Models\admin\Admin::class, 'id_admin', 'id_admin');
     }
 }
