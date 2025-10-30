@@ -27,7 +27,7 @@ class DashboardController extends Controller
         $totalLaporan = pengaduan::count();
 
         // Mengirim semua data ke view
-        return view('pages.dashboard', [
+        return view('pages.admin.dashboard', [
             'totalUser' => $totalUser,
             'totalPengurus' => $totalPengurus,
             'totalBerita' => $totalBerita,

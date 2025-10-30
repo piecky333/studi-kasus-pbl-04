@@ -35,12 +35,14 @@ use App\Http\Controllers\pengurus\{
 // ===========================
 // ROUTE UNTUK PUBLIC
 // ===========================
-Route::get('/', fn() => view('public.home'))->name('home');
-Route::view('/divisi', 'public.divisi');
-Route::view('/profile', 'public.profile');
-Route::view('/berita', 'public.berita.index');
-Route::view('/prestasi', 'public.prestasi');
-Route::view('/laporan', 'public.laporan');
+
+Route::get('/s', fn() => view('welcome'))->name('rome');
+Route::get('/', fn() => view('pages.public.home'))->name('home');
+Route::view('/divisi', 'pages.public.divisi');
+Route::view('/profile', 'pages.public.profile');
+Route::view('/berita', 'pages.public.berita.index');
+Route::view('/prestasi', 'pages.public.prestasi');
+Route::view('/laporan', 'pages.public.laporan');
 Route::view('/dashboard', 'pages.dashboard');
 
 // ===========================

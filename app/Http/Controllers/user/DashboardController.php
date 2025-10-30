@@ -33,7 +33,7 @@ class DashboardController extends Controller
         $beritaTerbaru = Berita::latest()->take(5)->get();
 
         // Mengirim data ke view dashboard user
-        return view('user.dashboard', compact(
+        return view('pages.user.dashboard', compact(
             'totalPengaduan',
             'pengaduanDiproses',
             'pengaduanSelesai',

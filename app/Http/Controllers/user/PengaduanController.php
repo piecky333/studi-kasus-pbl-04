@@ -26,7 +26,7 @@ class PengaduanController extends Controller
         $pengaduan = $query->paginate(10);
 
         // Mengirim data ke view
-        return view('user.pengaduan.index', compact('pengaduan'));
+        return view('pages.user.pengaduan.index', compact('pengaduan'));
     }
 
     /**
@@ -36,7 +36,7 @@ class PengaduanController extends Controller
     {
         // === KOREKSI ===
         // Path view harus lengkap dari folder 'views'
-        return view('user.pengaduan.create'); 
+        return view('pages.user.pengaduan.create'); 
     }
 
     /**
@@ -74,7 +74,7 @@ class PengaduanController extends Controller
         // Eager load 'user' (walaupun sudah tahu user-nya, mungkin berguna di view)
         $pengaduan = Auth::user()->pengaduan()->with('user')->findOrFail($id);
         
-        return view('user.pengaduan.show', compact('pengaduan'));
+        return view('pages.user.pengaduan.show', compact('pengaduan'));
     }
 
     /**
