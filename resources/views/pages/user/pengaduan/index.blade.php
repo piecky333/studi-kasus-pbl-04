@@ -1,12 +1,11 @@
 {{-- Halaman ini menggunakan layout aplikasi utama --}}
 <x-app-layout>
-    <!-- Slot Header (Judul Halaman) -->
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Riwayat Pengaduan Saya') }}
             </h2>
-            <a href="{{ route('dashboard') }}"
+            <a href="{{ route('user.dashboard') }}"
                 class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
                 &larr;
             </a>
@@ -18,7 +17,6 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
 
-                    <!-- Header Konten: Judul dan Tombol Aksi Utama -->
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
                         <div>
                             <h3 class="text-lg leading-6 font-medium text-gray-900">
@@ -29,18 +27,16 @@
                             </p>
                         </div>
 
-                        <!-- ===== HANYA TOMBOL AKSI UTAMA YANG TERSISA DI SINI ===== -->
                         <div class="mt-4 sm:mt-0">
-                            <a href="{{ route('pengaduan.create') }}"
+                            <a href="{{ route('user.pengaduan.create') }}"
                                 class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
-                                + Buat Pengaduan Baru
+                                Buat Pengaduan Baru
                             </a>
                         </div>
                     </div>
 
-                    <!-- Fitur Pencarian -->
                     <div class="mb-4">
-                        <form action="{{ route('pengaduan.index') }}" method="GET">
+                        <form action="{{ route('user.pengaduan.index') }}" method="GET">
                             <div class="relative">
                                 <input type="text" name="search" placeholder="Cari berdasarkan judul pengaduan..."
                                     class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm pl-10"
@@ -56,9 +52,6 @@
                         </form>
                     </div>
 
-                    <!-- ... (Sisa kode tabel dan paginasi biarkan sama) ... -->
-
-                    <!-- Tabel Daftar Pengaduan -->
                     <div class="overflow-x-auto border-t border-gray-200">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
@@ -85,30 +78,44 @@
                                             {{ $loop->iteration + ($pengaduan->currentPage() - 1) * $pengaduan->perPage() }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            {{ Str::limit($p->judul, 40) }}</td>
+                                            {{ Str::limit($p->judul, 40) }}
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $p->created_at->format('d M Y') }}</td>
+                                            {{ $p->created_at->format('d M Y') }}
+                                        </td>
+
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                            @if($p->status == 'Diproses')
+                                            @php
+                                                // Bersihkan nilai status untuk perbandingan yang aman
+                                                $statusBersih = trim($p->status);
+                                            @endphp
+
+                                            @if(strcasecmp($statusBersih, 'Diproses') == 0)
                                                 <span
                                                     class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Diproses</span>
-                                            @elseif($p->status == 'Selesai')
+                                            @elseif(strcasecmp($statusBersih, 'Selesai') == 0)
                                                 <span
                                                     class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Selesai</span>
-                                            @elseif($p->status == 'Ditolak')
+                                            @elseif(strcasecmp($statusBersih, 'Ditolak') == 0)
                                                 <span
                                                     class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Ditolak</span>
-                                            @else
+                                            @elseif(strcasecmp($statusBersih, 'Terkirim') == 0)
+                                                {{-- Sekarang 'Terkirim' dicek secara eksplisit --}}
                                                 <span
                                                     class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Terkirim</span>
+                                            @else
+                                                {{-- Ini untuk menangani data kosong atau tidak valid --}}
+                                                <span
+                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">{{ $statusBersih ?: 'N/A' }}</span>
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-4">
-                                            <a href="{{ route('pengaduan.show', $p->id_pengaduan) }}"
+                                            <a href="{{ route('user.pengaduan.show', $p->id_pengaduan) }}"
                                                 class="text-indigo-600 hover:text-indigo-900">Detail</a>
-                                            @if($p->status == 'Terkirim')
-                                                <form action="{{ route('pengaduan.destroy', $p->id_pengaduan) }}" method="POST"
-                                                    class="inline-block">
+
+                                            @if(strcasecmp(trim($p->status), 'Terkirim') == 0)
+                                                <form action="{{ route('user.pengaduan.destroy', $p->id_pengaduan) }}"
+                                                    method="POST" class="inline-block">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="text-red-600 hover:text-red-900"
@@ -128,7 +135,6 @@
                         </table>
                     </div>
 
-                    <!-- Link Paginasi -->
                     <div class="mt-4">
                         {{ $pengaduan->links() }}
                     </div>

@@ -12,13 +12,13 @@ class SanksiController extends Controller
     public function index()
     {
         $sanksi = Sanksi::with('mahasiswa')->latest()->paginate(10);
-        return view('pages.sanksi.index', compact('sanksi'));
+        return view('pages.admin.sanksi.index', compact('sanksi'));
     }
 
     public function create()
     {
         $mahasiswa = Mahasiswa::all();
-        return view('pages.sanksi.create', compact('mahasiswa'));
+        return view('pages.admin.sanksi.create', compact('mahasiswa'));
     }
 
     public function store(Request $request)
@@ -38,7 +38,7 @@ class SanksiController extends Controller
     {
         $sanksi = Sanksi::findOrFail($id);
         $mahasiswa = Mahasiswa::all();
-        return view('pages.sanksi.edit', compact('sanksi', 'mahasiswa'));
+        return view('pages.admin.sanksi.edit', compact('sanksi', 'mahasiswa'));
     }
 
     public function update(Request $request, $id)

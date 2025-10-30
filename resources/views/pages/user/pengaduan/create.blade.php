@@ -44,7 +44,7 @@
                             </div>
                         @endif
 
-                        <form action="{{ route('pengaduan.store') }}" method="POST">
+                        <form action="{{ route('user.pengaduan.store') }}" method="POST">
                             @csrf
                             
                             <!-- Input Judul Pengaduan (Baru) -->
@@ -78,7 +78,7 @@
 
                             <!-- Tombol Aksi -->
                             <div class="flex items-center justify-end mt-6 ">
-                                <a href="{{ route('dashboard') }}" class="text-sm text-gray-600 hover:text-gray-900 underline mr-4 mx-6 px-8 py-2 rounded">
+                                <a href="{{ route('user.dashboard') }}" class="text-sm text-gray-600 hover:text-gray-900 underline mr-4 mx-6 px-8 py-2 rounded">
                                     Batal
                                 </a>
 

@@ -18,7 +18,7 @@ class PengaduanController extends Controller
                             ->latest()
                             ->paginate(10); 
 
-        return view('pages.pengaduan.index', compact('daftarPengaduan'));
+        return view('pages.admin.pengaduan.index', compact('daftarPengaduan'));
     }
 
     /**
@@ -29,7 +29,7 @@ class PengaduanController extends Controller
         $pengaduan = pengaduan::with(['mahasiswa', 'mahasiswa.user'])
                         ->findOrFail($id);
 
-        return view('pages.pengaduan.show', compact('pengaduan'));
+        return view('pages.admin.pengaduan.show', compact('pengaduan'));
     }
 
     /**
@@ -63,7 +63,7 @@ class PengaduanController extends Controller
         // Hapus data dari database
         $pengaduan->delete();
 
-        return redirect()->route('pengaduan.index')
+        return redirect()->route('admin.pengaduan.index')
                          ->with('success', 'Pengaduan telah berhasil dihapus.');
     }
 }
