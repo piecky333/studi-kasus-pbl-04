@@ -54,16 +54,10 @@ class Pengaduan extends Model
 
 
     public function mahasiswa()
-    {
-        return $this->hasOneThrough(
-            Mahasiswa::class,
-            User::class,
-            'id', 
-            'id_user', 
-            'id_user', 
-            'id' 
-        );
-    }
+{
+    return $this->hasOne(Mahasiswa::class, 'id_user', 'id_user');
+}
+
 
     /**
      * Mendapatkan semua terlapor untuk pengaduan ini.
