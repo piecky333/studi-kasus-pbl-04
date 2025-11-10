@@ -9,24 +9,40 @@
                     </a>
                 </div>
 
+                {{-- =============================================== --}}
+                {{-- == BAGIAN NAVIGASI DESKTOP YANG DIPERBAIKI == --}}
+                {{-- =============================================== --}}
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
 
                     <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
                         {{ __('Home') }}
                     </x-nav-link>
 
-                    {{-- DIUBAH: Menggunakan href anchor #divisi --}}
-                    <x-nav-link href="#divisi" :active="false">
+                    {{-- Link Profil (Divisi) --}}
+                    @php
+                        $profilHref = request()->routeIs('home') ? '#divisi' : route('home') . '#divisi';
+                        // Ganti 'profil.*' jika nama route Anda berbeda (misal: 'divisi.*')
+                        $profilActive = request()->routeIs('profil.*'); 
+                    @endphp
+                    <x-nav-link :href="$profilHref" :active="$profilActive">
                         {{ __('Profil') }}
                     </x-nav-link>
 
-                    {{-- DIUBAH: Menggunakan href anchor #berita --}}
-                    <x-nav-link href="#berita" :active="false">
+                    {{-- Link Berita --}}
+                    @php
+                        $beritaHref = request()->routeIs('home') ? '#berita' : route('home') . '#berita';
+                        $beritaActive = request()->routeIs('berita.*'); 
+                    @endphp
+                    <x-nav-link :href="$beritaHref" :active="$beritaActive">
                         {{ __('Berita') }}
                     </x-nav-link>
 
-                    {{-- DIUBAH: Menggunakan href anchor #prestasi --}}
-                    <x-nav-link href="#prestasi" :active="false">
+                    {{-- Link Prestasi --}}
+                    @php
+                        $prestasiHref = request()->routeIs('home') ? '#prestasi' : route('home') . '#prestasi';
+                        $prestasiActive = request()->routeIs('prestasi.*');
+                    @endphp
+                    <x-nav-link :href="$prestasiHref" :active="$prestasiActive">
                         {{ __('Prestasi') }}
                     </x-nav-link>
                 </div>
@@ -70,24 +86,39 @@
         </div>
     </div>
 
+    {{-- ============================================= --}}
+    {{-- == BAGIAN NAVIGASI MOBILE YANG DIPERBAIKI == --}}
+    {{-- ============================================= --}}
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-blue-700">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
                 {{ __('Home') }}
             </x-responsive-nav-link>
 
-            {{-- DIUBAH: Menggunakan href anchor #divisi --}}
-            <x-responsive-nav-link href="#profil" :active="false">
+            {{-- Link Profil (Divisi) --}}
+            @php
+                $profilHref = request()->routeIs('home') ? '#divisi' : route('home') . '#divisi';
+                $profilActive = request()->routeIs('profil.*');
+            @endphp
+            <x-responsive-nav-link :href="$profilHref" :active="$profilActive">
                 {{ __('Profil') }}
             </x-responsive-nav-link>
 
-            {{-- DIUBAH: Menggunakan href anchor #berita --}}
-            <x-responsive-nav-link href="#berita" :active="false">
+            {{-- Link Berita --}}
+            @php
+                $beritaHref = request()->routeIs('home') ? '#berita' : route('home') . '#berita';
+                $beritaActive = request()->routeIs('berita.*');
+            @endphp
+            <x-responsive-nav-link :href="$beritaHref" :active="$beritaActive">
                 {{ __('Berita') }}
             </x-responsive-nav-link>
 
-            {{-- DIUBAH: Menggunakan href anchor #prestasi --}}
-            <x-responsive-nav-link href="#prestasi" :active="false">
+            {{-- Link Prestasi --}}
+            @php
+                $prestasiHref = request()->routeIs('home') ? '#prestasi' : route('home') . '#prestasi';
+                $prestasiActive = request()->routeIs('prestasi.*');
+            @endphp
+            <x-responsive-nav-link :href="$prestasiHref" :active="$prestasiActive">
                 {{ __('Prestasi') }}
             </x-responsive-nav-link>
         </div>
