@@ -1,21 +1,116 @@
-{{-- Navbar --}}
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand text-white" href="{{ url('/') }}">Sistem Informasi HIMA</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+<nav x-data="{ open: false }" class="bg-blue-800 border-b border-blue-900 fixed w-full z-50 top-0 start-0">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <div class="flex items-center">
+                <div class="shrink-0 flex items-center">
+                    <img src="{{ asset('img/Logo hima.png') }}" alt="Logo HIMA-TI" class="h-16 w-16 me- ">
+                    <a href="{{ route('home') }}">
+                        <span class="text-white text-xl font-bold">HIMA-TI</span>
+                    </a>
+                </div>
 
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/') }}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/divisi') }}">Divisi</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/profile') }}">Profil</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/berita') }}">Berita</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/prestasi') }}">Prestasi Mahasiswa</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/pengaduan') }}">Laporan</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/login') }}">Login</a></li>
-                </ul>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+
+                    <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
+                        {{ __('Home') }}
+                    </x-nav-link>
+
+                    {{-- DIUBAH: Menggunakan href anchor #divisi --}}
+                    <x-nav-link href="#divisi" :active="false">
+                        {{ __('Profil') }}
+                    </x-nav-link>
+
+                    {{-- DIUBAH: Menggunakan href anchor #berita --}}
+                    <x-nav-link href="#berita" :active="false">
+                        {{ __('Berita') }}
+                    </x-nav-link>
+
+                    {{-- DIUBAH: Menggunakan href anchor #prestasi --}}
+                    <x-nav-link href="#prestasi" :active="false">
+                        {{ __('Prestasi') }}
+                    </x-nav-link>
+                </div>
+            </div>
+
+            <div class="hidden sm:flex sm:items-center sm:ms-6">
+                @auth
+                    @php
+                        $dashboardRoute = 'dashboard';
+                        if (Auth::user()->role === 'admin')
+                            $dashboardRoute = 'admin.dashboard';
+                        elseif (Auth::user()->role === 'pengurus')
+                            $dashboardRoute = 'pengurus.dashboard';
+                        elseif (Auth::user()->role === 'user')
+                            $dashboardRoute = 'user.dashboard';
+                    @endphp
+                    <a href="{{ route($dashboardRoute) }}"
+                        class="inline-flex items-center px-4 py-2 bg-yellow-400 border border-transparent rounded-md font-semibold text-xs text-blue-900 uppercase tracking-widest hover:bg-yellow-300 focus:bg-yellow-300 active:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                        Dashboard
+                    </a>
+                @else
+                    <a href="{{ route('login') }}"
+                        class="inline-flex items-center px-4 py-2 bg-white border border-transparent rounded-md font-semibold text-xs text-blue-800 uppercase tracking-widest hover:bg-gray-100 focus:bg-gray-100 active:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                        Login
+                    </a>
+                @endauth
+            </div>
+
+            <div class="-me-2 flex items-center sm:hidden">
+                <button @click="open = ! open"
+                    class="inline-flex items-center justify-center p-2 rounded-md text-gray-300 hover:text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 focus:text-white transition duration-150 ease-in-out">
+                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
             </div>
         </div>
-    </nav>
+    </div>
+
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-blue-700">
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
+                {{ __('Home') }}
+            </x-responsive-nav-link>
+
+            {{-- DIUBAH: Menggunakan href anchor #divisi --}}
+            <x-responsive-nav-link href="#profil" :active="false">
+                {{ __('Profil') }}
+            </x-responsive-nav-link>
+
+            {{-- DIUBAH: Menggunakan href anchor #berita --}}
+            <x-responsive-nav-link href="#berita" :active="false">
+                {{ __('Berita') }}
+            </x-responsive-nav-link>
+
+            {{-- DIUBAH: Menggunakan href anchor #prestasi --}}
+            <x-responsive-nav-link href="#prestasi" :active="false">
+                {{ __('Prestasi') }}
+            </x-responsive-nav-link>
+        </div>
+
+        <div class="pt-4 pb-3 border-t border-blue-600">
+            <div class="px-4">
+                @auth
+                    @php
+                        $dashboardRoute = 'dashboard';
+                        if (Auth::user()->role === 'admin')
+                            $dashboardRoute = 'admin.dashboard';
+                        elseif (Auth::user()->role === 'pengurus')
+                            $dashboardRoute = 'pengurus.dashboard';
+                        elseif (Auth::user()->role === 'user')
+                            $dashboardRoute = 'user.dashboard';
+                    @endphp
+                    <a href="{{ route($dashboardRoute) }}"
+                        class="block w-full text-left px-3 py-2 text-base font-medium text-yellow-300 bg-blue-800 rounded-md">Dashboard</a>
+                @else
+                    <a href="{{ route('login') }}"
+                        class="block w-full text-left px-3 py-2 text-base font-medium text-blue-900 bg-white rounded-md">Login</a>
+                @endauth
+            </div>
+        </div>
+    </div>
+</nav>

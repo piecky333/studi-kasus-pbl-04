@@ -11,11 +11,21 @@ class komentar extends Model
 
     protected $table = 'komentar';
     protected $primaryKey = 'id_komentar';
+    
+    // PERBARUI FILLABLE
     protected $fillable = [
         'id_berita',
         'id_user',
-        'isi'
+        'nama_komentator', 
+        'isi',
+        'parent_id',
     ];
+
+    public function parent()
+    {
+        // Satu balasan HANYA memiliki SATU induk
+        return $this->belongsTo(komentar::class, 'parent_id');
+    }
 
     public function berita()
     {
@@ -25,5 +35,11 @@ class komentar extends Model
     public function user()
     {
         return $this->belongsTo(\App\Models\User::class, 'id_user', 'id_user');
+    }
+
+    public function replies()
+    {
+        // Satu komentar bisa memiliki BANYAK balasan
+        return $this->hasMany(komentar::class, 'parent_id');
     }
 }

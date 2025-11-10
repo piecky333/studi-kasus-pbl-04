@@ -6,6 +6,14 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GoogleAuthController;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\public\{
+    HomeController as PublicHomeController,
+    DivisiController as PublicDivisiController,
+    PrestasiController as PublicPrestasiController,
+    BeritaController as publicBeritaController,
+    KomentarController as PublicKomentarController 
+};
+
 use App\Http\Controllers\{
     BeritaController,
     JabatanController,
@@ -14,7 +22,8 @@ use App\Http\Controllers\{
 
 use App\Http\Controllers\user\{
     DashboardController as UserDashboardController,
-    PengaduanController as UserPengaduanController
+    PengaduanController as UserPengaduanController,
+    BeritaController as UserBeritaController
 };
 
 use App\Http\Controllers\Admin\{
@@ -36,14 +45,27 @@ use App\Http\Controllers\pengurus\{
 // ROUTE UNTUK PUBLIC
 // ===========================
 
-Route::get('/s', fn() => view('welcome'))->name('rome');
-Route::get('/', fn() => view('pages.public.home'))->name('home');
-Route::view('/divisi', 'pages.public.divisi');
-Route::view('/profile', 'pages.public.profile');
-Route::view('/berita', 'pages.public.berita.index');
-Route::view('/prestasi', 'pages.public.prestasi');
-Route::view('/laporan', 'pages.public.laporan');
-Route::view('/dashboard', 'pages.dashboard');
+Route::get('/', [PublicHomeController::class, 'index'])->name('home');
+
+// --- Rute Berita ---
+Route::get('/berita', [PublicBeritaController::class, 'index'])->name('berita.index');
+Route::get('/berita/{berita}', [PublicBeritaController::class, 'show'])->name('berita.show'); // Menggunakan Route Model Binding
+
+// --- Rute Divisi ---
+Route::get('/divisi', [PublicDivisiController::class, 'index'])->name('divisi.index');
+Route::get('/divisi/{id}', [PublicDivisiController::class, 'show'])->name('divisi.show');
+
+// --- Rute Prestasi ---
+Route::get('/prestasi', [PublicPrestasiController::class, 'index'])->name('prestasi.index');
+Route::get('/prestasi/{id}', [PublicPrestasiController::class, 'show'])->name('prestasi.show');
+
+
+// === 2. TAMBAHKAN RUTE 'STORE' (BUAT) KOMENTAR DI SINI (PUBLIC) ===
+// Rute ini menangani form "Kirim Komentar"
+// Kita gunakan {id_berita} sesuai parameter di KomentarController@store
+Route::post('/berita/{id_berita}/komentar', [PublicKomentarController::class, 'store'])
+    ->name('komentar.store');
+
 
 // ===========================
 // ROUTE UNTUK ADMIN
@@ -56,8 +78,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('/berita/{id}/edit', [AdminBeritaController::class, 'edit'])->name('berita.edit');
     Route::put('/berita/{id}', [AdminBeritaController::class, 'update'])->name('berita.update');
     Route::delete('/berita/{id}', [AdminBeritaController::class, 'destroy'])->name('berita.destroy');
-    
-    // ----  MANAJEMEN AKUN   ----
+
+    // ----  MANAJEMEN AKUN   ----
     Route::resource('pengurus', \App\Http\Controllers\Admin\PengurusController::class);
 
     // ---- DIVISI ----
@@ -70,18 +92,18 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::delete('/pengaduan/{id}', [AdminPengaduanController::class, 'destroy'])->name('pengaduan.destroy');
     Route::put('/pengaduan/{id}/verifikasi', [AdminPengaduanController::class, 'verifikasi'])->name('pengaduan.verifikasi');
 
-    // ---- PRESTASI  ----
+    // ---- PRESTASI  ----
     Route::resource('prestasi', AdminPrestasiController::class);
     Route::get('/prestasi/cari-mahasiswa', [AdminPrestasiController::class, 'cariMahasiswa'])
         ->name('prestasi.cariMahasiswa');
 
     // ---- SANKSI (CRUD) ----
-Route::get('/sanksi', [AdminSanksiController::class, 'index'])->name('sanksi.index');
-Route::get('/sanksi/create', [AdminSanksiController::class, 'create'])->name('sanksi.create');
-Route::post('/sanksi', [AdminSanksiController::class, 'store'])->name('sanksi.store');
-Route::get('/sanksi/{id}/edit', [AdminSanksiController::class, 'edit'])->name('sanksi.edit');
-Route::put('/sanksi/{id}', [AdminSanksiController::class, 'update'])->name('sanksi.update');
-Route::delete('/sanksi/{id}', [AdminSanksiController::class, 'destroy'])->name('sanksi.destroy');
+    Route::get('/sanksi', [AdminSanksiController::class, 'index'])->name('sanksi.index');
+    Route::get('/sanksi/create', [AdminSanksiController::class, 'create'])->name('sanksi.create');
+    Route::post('/sanksi', [AdminSanksiController::class, 'store'])->name('sanksi.store');
+    Route::get('/sanksi/{id}/edit', [AdminSanksiController::class, 'edit'])->name('sanksi.edit');
+    Route::put('/sanksi/{id}', [AdminSanksiController::class, 'update'])->name('sanksi.update');
+    Route::delete('/sanksi/{id}', [AdminSanksiController::class, 'destroy'])->name('sanksi.destroy');
 });
 
 // ===========================
@@ -100,10 +122,10 @@ Route::prefix('pengurus')->name('pengurus.')->middleware(['auth', 'role:pengurus
 // ROUTE UNTUK USER BIASA
 // ===========================
 Route::prefix('user')->name('user.')->middleware(['auth', 'role:user'])->group(function () {
-Route::get('/dashboard', [UserDashboardController::class, 'index'])
-    ->middleware(['auth'])->name('dashboard');
-Route::resource('berita', BeritaController::class);
-Route::resource('pengaduan', UserPengaduanController::class);
+    Route::get('/dashboard', [UserDashboardController::class, 'index'])
+        ->middleware(['auth'])->name('dashboard');
+    Route::resource('berita', UserBeritaController::class);
+    Route::resource('pengaduan', UserPengaduanController::class);
 });
 
 // ===========================
@@ -114,10 +136,16 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
 
 
 // ===========================
-// merubah profil user
+// RUTE UMUM UNTUK USER LOGIN (PROFIL, KOMENTAR, DLL)
 // ===========================
 Route::middleware('auth')->group(function () {
+    // --- Rute Profil (Sudah ada) ---
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::put('/komentar/{komentar}', [PublicKomentarController::class, 'update'])
+        ->name('komentar.update');
+    Route::delete('/komentar/{komentar}', [PublicKomentarController::class, 'destroy'])
+        ->name('komentar.destroy');
 });
