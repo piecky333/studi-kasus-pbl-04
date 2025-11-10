@@ -127,7 +127,7 @@
                                 @empty
                                     <tr>
                                         <td colspan="5" class="px-6 py-10 text-center text-gray-500">
-                                            Tidak ada pengaduan yang cocok dengan pencarian Anda.
+                                            Tidak ada pengaduan yang anda buat
                                         </td>
                                     </tr>
                                 @endforelse
