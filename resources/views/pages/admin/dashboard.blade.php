@@ -17,11 +17,10 @@
         <h1 class="h3 mb-0 text-gray-800">Dashboard Admin</h1>
     </div>
 
-    <!-- Content Row -->
+    <!-- Content Row (STATISTIK CARDS) -->
     <div class="row">
 
         <!-- Data User -->
-        {{-- Koreksi: col-md-1 diubah menjadi col-md-6 agar rapi di layar sedang --}}
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
@@ -94,4 +93,78 @@
             </div>
         </div>
     </div>
+    <!-- AKHIR DARI CONTENT ROW (STATISTIK CARDS) -->
+
+
+    <!-- Content Row Baru untuk Chart (Blok A) -->
+    <div class="row">
+
+        <!-- Area Chart -->
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-4">
+                <!-- Card Header -->
+                <div
+                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Laporan Pengaduan per Bulan (Tahun Ini)</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="laporanChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Akhir Content Row Baru untuk Chart -->
+
+
+    <!-- SCRIPT UNTUK CHART.JS (Blok B) -->
+    <!-- 1. Memuat library Chart.js dari CDN (Link sudah diperbaiki) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- 2. Script untuk menggambar chart kita -->
+    <script>
+        // Pastikan variabel ini ada sebelum digunakan
+        if (typeof @json($chartLabels) !== 'undefined' && typeof @json($chartData) !== 'undefined') {
+            
+            // Ambil data 'labels' dan 'data' yang kita kirim dari Controller
+            const chartLabels = @json($chartLabels);
+            const chartData = @json($chartData);
+
+            // Cari elemen <canvas> yang kita buat tadi
+            const ctx = document.getElementById('laporanChart');
+
+            if (ctx) {
+                // Buat chart baru
+                new Chart(ctx.getContext('2d'), {
+                    type: 'line', // Tipe chart: 'line' (garis), 'bar' (batang), 'pie', dll.
+                    data: {
+                        labels: chartLabels, // Label sumbu X (Jan, Feb, Mar, ...)
+                        datasets: [{
+                            label: 'Jumlah Pengaduan',
+                            data: chartData, // Data sumbu Y (angka laporannya)
+                            fill: false,
+                            borderColor: '#4e73df', // Warna garis (Biru Primary SB Admin)
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false, // Agar chart bisa responsif
+                        scales: {
+                            y: {
+                                beginAtZero: true, // Mulai sumbu Y dari 0
+                                ticks: {
+                                    // Memastikan angka di sumbu Y adalah bilangan bulat
+                                    precision: 0 
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+    </script>
+    <!-- AKHIR DARI SCRIPT CHART.JS -->
+
 @endsection
