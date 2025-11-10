@@ -11,13 +11,13 @@ class DivisiController extends Controller
     public function index()
     {
         $divisi = Divisi::orderBy('created_at', 'desc')->get();
-        return view('pages.divisi.index', compact('divisi'));
+        return view('pages.admin.divisi.index', compact('divisi'));
     }
 
     // Lihat detail divisi
     public function show($id)
     {
         $divisi = Divisi::findOrFail($id);
-        return view('pages.divisi.show', compact('divisi'));
+        return view('pages.admin.divisi.show', compact('divisi'));
     }
 }

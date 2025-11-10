@@ -16,7 +16,7 @@ class PrestasiController extends Controller
     public function index()
     {
         $prestasi = Prestasi::with(['mahasiswa'])->latest()->get();
-        return view('pages.prestasi.index', compact('prestasi'));
+        return view('pages.admin.prestasi.index', compact('prestasi'));
     }
 
     /**
@@ -25,7 +25,7 @@ class PrestasiController extends Controller
     public function create()
     {
         // Form tambah prestasi, NIM dicari via AJAX
-        return view('pages.prestasi.create');
+        return view('pages.admin.prestasi.create');
     }
 
     /**
@@ -63,7 +63,7 @@ class PrestasiController extends Controller
     public function show(string $id)
     {
         $prestasi = Prestasi::with('mahasiswa')->findOrFail($id);
-        return view('pages.prestasi.show', compact('prestasi'));
+        return view('pages.admin.prestasi.show', compact('prestasi'));
     }
 
     /**
@@ -72,7 +72,7 @@ class PrestasiController extends Controller
     public function edit(string $id)
     {
         $prestasi = Prestasi::with('mahasiswa')->findOrFail($id);
-        return view('pages.prestasi.edit', compact('prestasi'));
+        return view('pages.admin.prestasi.edit', compact('prestasi'));
     }
 
     /**

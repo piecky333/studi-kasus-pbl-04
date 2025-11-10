@@ -12,13 +12,13 @@ class BeritaController extends Controller
     public function index()
     {
         $beritas = Berita::latest()->get();
-        return view('pages.berita.index', compact('beritas'));
+        return view('pages.admin.berita.index', compact('beritas'));
     }
 
     // Form tambah berita
     public function create()
     {
-        return view('pages.berita.create');
+        return view('pages.admin.berita.create');
     }
 
     // Simpan berita baru
@@ -47,7 +47,7 @@ class BeritaController extends Controller
     public function edit($id)
     {
         $berita = Berita::findOrFail($id);
-        return view('pages.berita.edit', compact('berita'));
+        return view('pages.admin.berita.edit', compact('berita'));
     }
 
     // Update berita
