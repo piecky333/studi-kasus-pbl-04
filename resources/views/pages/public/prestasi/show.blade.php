@@ -103,7 +103,7 @@
                 {{-- Kolom Sidebar (Berita Terkait) --}}
                 <aside class="lg:col-span-1">
                     <div class="sticky top-24 p-6 bg-white rounded-lg shadow-lg">
-                        <h3 class="text-xl font-bold text-blue-800 mb-4">Berita Terkait</h3>
+                        <h3 class="text-xl font-bold text-blue-800 mb-4">Beberapa Prestasi yang mungkin anda tertarik</h3>
                         <div class="space-y-4">
                             @forelse ($beritaTerkait as $terkait)
                                 <div class="flex space-x-3 group">
@@ -113,19 +113,19 @@
                                     <div>
                                         <h4 class="font-semibold text-gray-800 group-hover:text-blue-700 leading-tight">
                                             <a
-                                                href="{{ route('berita.show', $terkait->id_berita) }}">{{ Str::limit($terkait->judul_berita, 50) }}</a>
+                                                href="{{ route('prestasi.show', $terkait->id_berita) }}">{{ Str::limit($terkait->judul_berita, 50) }}</a>
                                         </h4>
                                         <span class="text-xs text-gray-500">{{ $terkait->created_at->format('d M Y') }}</span>
                                     </div>
                                 </div>
                             @empty
-                                <p class="text-gray-500">Tidak ada berita terkait.</p>
+                                <p class="text-gray-500">Tidak ada Prestasi terkait.</p>
                             @endforelse
                         </div>
 
                         {{-- Tombol Kembali --}}
                         <div class="mt-8 pt-6 border-t border-gray-200">
-                            <a href="{{ route('berita.index') }}"
+                            <a href="{{ route('prestasi.index') }}"
                                 class="inline-flex items-center justify-center w-full px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-md hover:bg-gray-200 transition">
                                 {{-- Icon Panah Kiri --}}
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
@@ -134,12 +134,11 @@
                                         d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z"
                                         clip-rule="evenodd" />
                                 </svg>
-                                Kembali ke Daftar Berita
+                                Kembali ke Daftar Prestasi
                             </a>
                         </div>
                     </div>
                 </aside>
-
             </div>
         </div>
     </section>
@@ -162,4 +161,5 @@
             }
         </script>
     @endpush
+
 @endsection

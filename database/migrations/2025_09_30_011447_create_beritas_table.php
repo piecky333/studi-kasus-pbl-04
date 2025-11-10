@@ -11,8 +11,8 @@ return new class extends Migration {
             $table->unsignedBigInteger('id_user');
             $table->string('judul_berita');
             $table->text('isi_berita');
+            $table->string('kategori')->default('kegiatan')->index();
             $table->string('gambar_berita')->nullable();
-            $table->date('tanggal_berita')->nullable();
             $table->timestamps();
 
             // foreign key manual

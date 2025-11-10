@@ -16,7 +16,7 @@ class berita extends Model
         'judul_berita',
         'isi_berita',
         'gambar_berita',
-        'tanggal_berita'
+        'kategori',
     ];
 
     public function user()
