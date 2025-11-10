@@ -54,11 +54,14 @@ class Pengaduan extends Model
 
 
     public function mahasiswa()
-    {
-        return $this->hasOne(Mahasiswa::class, 'id_user', 'id_user');
-    }
+{
+    return $this->hasOne(Mahasiswa::class, 'id_user', 'id_user');
+}
 
-    //
+
+    /**
+     * Mendapatkan semua terlapor untuk pengaduan ini.
+     */
     public function terlapor()
     {
         return $this->hasMany(Terlapor::class, 'id_pengaduan');

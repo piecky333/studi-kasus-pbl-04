@@ -20,7 +20,6 @@ class GoogleAuthController extends Controller
         try {
             $googleUser = Socialite::driver('google')->user();
 
-            // ===== PERIKSA BAGIAN INI DENGAN TELITI =====
             $user = User::updateOrCreate(
                 [
                     'google_id' => $googleUser->getId() // Kunci pencarian
@@ -40,7 +39,7 @@ class GoogleAuthController extends Controller
 
             Auth::login($user);
 
-            // --- Logika Redirect Berdasarkan Role ---
+          
              if ($user->role === 'admin') {
                 return redirect()->intended(route('admin.dashboard', absolute: false));
             } elseif ($user->role === 'pengurus') {

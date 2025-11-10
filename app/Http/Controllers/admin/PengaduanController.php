@@ -67,4 +67,3 @@ class PengaduanController extends Controller
                          ->with('success', 'Pengaduan telah berhasil dihapus.');
     }
 }
-

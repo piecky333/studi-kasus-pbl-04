@@ -11,9 +11,29 @@
             <span class="text-xs text-gray-500">{{ $komen->created_at->diffForHumans() }}</span>
         </div>
         <p class="text-gray-700 mt-1">{{ $komen->isi }}</p>
-        <button onclick="tampilkanFormBalas({{ $komen->id_komentar }}, {{ json_encode($komen->nama_komentator) }})" class="text-sm font-semibold text-blue-600 hover:text-blue-800 mt-2">
-            Balas
-        </button>
+        
+        {{-- TOMBOL AKSI --}}
+        <div class="flex items-center space-x-3 mt-2">
+            
+            {{-- Tombol Balas (Reply) --}}
+            <button onclick="tampilkanFormBalas({{ $komen->id_komentar }}, {{ json_encode($komen->nama_komentator) }})" class="text-sm font-semibold text-blue-600 hover:text-blue-800">
+                Balas
+            </button>
+
+            {{-- TOMBOL HAPUS (DELETE) - Hanya Tampil Jika User Memiliki Izin --}}
+            {{-- Pemeriksaan izin menggunakan @can('destroy', $komen) berdasarkan KomentarPolicy --}}
+            @can('destroy', $komen)
+                <form action="{{ route('komentar.destroy', $komen->id_komentar) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus komentar ini? Ini akan menghapus semua balasannya.');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="text-sm font-semibold text-red-600 hover:text-red-800 focus:outline-none">
+                        Hapus
+                    </button>
+                </form>
+            @endcan
+
+        </div>
+        {{-- END TOMBOL AKSI --}}
     </div>
 </div>
 
@@ -45,4 +65,4 @@
             @endforeach
         </div>
     @endif
-</div>
+</div>  

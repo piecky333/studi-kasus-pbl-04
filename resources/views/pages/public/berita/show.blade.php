@@ -4,9 +4,20 @@
 @section('title', $berita->judul_berita)
 
 @section('hero')
-    <section id="berita-hero" class="relative w-full overflow-hidden" style="height: 40vh;">
-        <img src="{{ asset('storage/' . $berita->gambar_berita) }}" alt="{{ $berita->judul_berita }}">
-        <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+    {{-- MENGATUR TINGGI HERO KE 70% VIEWPORT (70vh) --}}
+    <section id="berita-hero" class="relative w-full overflow-hidden" style="height: 70vh;"> 
+        
+        {{-- WRAP GAMBAR DENGAN LINK YANG MEMANGGIL FUNGSI LIGHTBOX --}}
+        <a href="javascript:void(0)" onclick="openLightbox('{{ asset('storage/' . $berita->gambar_berita) }}')" 
+           class="absolute inset-0 block cursor-pointer transition duration-300 hover:opacity-90">
+            
+            {{-- KUNCI: object-cover diaktifkan kembali untuk mengisi penuh area 70vh --}}
+            <img src="{{ asset('storage/' . $berita->gambar_berita) }}" alt="{{ $berita->judul_berita }}" 
+                 class="w-full h-full object-cover">
+        </a>
+             
+        {{-- Overlay hitam transparan, pointer-events-none agar bisa klik link di bawahnya --}}
+        <div class="absolute inset-0 bg-black bg-opacity-30 pointer-events-none"></div>
     </section>
 @endsection
 
@@ -14,12 +25,14 @@
 {{-- Konten Utama --}}
 @section('content')
 
-    <section id="berita-detail" class="py-16 sm:py-20 bg-gray-50">
+    {{-- KONTEN UTAMA DIBUAT DYNAMIC: transform -translate-y-24 mengangkat section ini 
+       agar menimpa lebih banyak bagian bawah hero, mengurangi kesan kaku --}}
+    <section id="berita-detail" class="py-16 sm:py-20 bg-gray-50 relative transform -translate-y-24 z-10">
         <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
 
                 {{-- Kolom Konten Utama (Berita) --}}
-                <div class="lg:col-span-2 bg-white p-6 sm:p-8 rounded-lg shadow-lg">
+                <div class="lg:col-span-2 bg-white p-6 sm:p-8 rounded-2xl shadow-xl"> 
 
                     {{-- Info Penulis --}}
                     <div class="flex items-center text-sm text-gray-500 mb-6">
@@ -65,7 +78,7 @@
                                         <div class="mb-2">
                                             <label for="nama_komentator" class="sr-only">Nama Anda</label>
                                             <input type="text" name="nama_komentator" id="nama_komentator" required
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                                 placeholder="Tulis nama Anda..." value="{{ old('nama_komentator') }}">
                                             @error('nama_komentator') <span class="text-red-500 text-sm">{{ $message }}</span>
                                             @enderror
@@ -74,14 +87,14 @@
                                     <div>
                                         <label for="isi" class="sr-only">Komentar Anda</label>
                                         <textarea name="isi" id="isi" rows="3" required
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                             placeholder="Tulis komentar Anda...">{{ old('isi') }}</textarea>
                                         @error('isi') <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
                                         @enderror
                                     </div>
                                     <div class="text-right mt-3">
                                         <button type="submit"
-                                            class="inline-flex items-center px-6 py-2 bg-blue-700 border border-transparent rounded-md font-semibold text-white hover:bg-blue-800 transition">
+                                            class="inline-flex items-center px-6 py-2 bg-blue-700 border border-transparent rounded-lg font-semibold text-white hover:bg-blue-800 transition">
                                             Kirim Komentar
                                         </button>
                                     </div>
@@ -102,14 +115,14 @@
 
                 {{-- Kolom Sidebar (Berita Terkait) --}}
                 <aside class="lg:col-span-1">
-                    <div class="sticky top-24 p-6 bg-white rounded-lg shadow-lg">
+                    <div class="sticky top-24 p-6 bg-white rounded-2xl shadow-xl">
                         <h3 class="text-xl font-bold text-blue-800 mb-4">Berita Terkait</h3>
                         <div class="space-y-4">
                             @forelse ($beritaTerkait as $terkait)
                                 <div class="flex space-x-3 group">
                                     <img src="{{ asset('storage/' . $terkait->gambar_berita) }}"
                                         alt="{{ $terkait->judul_berita }}"
-                                        class="w-20 h-20 rounded-md object-cover flex-shrink-0">
+                                        class="w-20 h-20 rounded-lg object-cover flex-shrink-0">
                                     <div>
                                         <h4 class="font-semibold text-gray-800 group-hover:text-blue-700 leading-tight">
                                             <a
@@ -126,15 +139,9 @@
                         {{-- Tombol Kembali --}}
                         <div class="mt-8 pt-6 border-t border-gray-200">
                             <a href="{{ route('berita.index') }}"
-                                class="inline-flex items-center justify-center w-full px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-md hover:bg-gray-200 transition">
-                                {{-- Icon Panah Kiri --}}
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                    class="w-5 h-5 mr-2">
-                                    <path fill-rule="evenodd"
-                                        d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                Kembali ke Daftar Berita
+                                class="inline-flex items-center justify-center w-full px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition">
+
+                                Lihat Semua Berita
                             </a>
                         </div>
                     </div>
@@ -144,9 +151,21 @@
         </div>
     </section>
 
+    {{-- ============ MODAL LIGHTBOX (TAMBAHAN UNTUK GAMBAR UTUH) ============ --}}
+    {{-- backdrop-blur-md ditambahkan di sini untuk efek blur --}}
+    <div id="lightbox-modal" class="fixed inset-0 bg-black bg-opacity-90 z-[9999] hidden items-center justify-center backdrop-blur-md" onclick="closeLightbox()">
+        <div class="relative max-w-full max-h-full p-4" onclick="event.stopPropagation()">
+            <img id="lightbox-image" src="" alt="Gambar Penuh" class="max-w-full max-h-screen object-contain">
+            <button onclick="closeLightbox()" class="absolute top-4 right-4 text-white text-3xl font-bold p-2 hover:text-gray-400">
+                &times;
+            </button>
+        </div>
+    </div>
+
+
     @push('scripts')
         <script>
-            // FUNGSI JS INI TETAP DIPERLUKAN
+            // FUNGSI JS INI TETAP DIPERLUKAN (Komentar)
             function tampilkanFormBalas(id, namaParent) {
                 document.querySelectorAll('[id^="form-balas-"]').forEach(form => {
                     if (form.id !== 'form-balas-' + id) {
@@ -159,6 +178,20 @@
                     var spanNama = document.getElementById('nama-parent-' + id);
                     spanNama.textContent = '@' + namaParent;
                 }
+            }
+            
+            // FUNGSI JAVASCRIPT UNTUK LIGHTBOX
+            function openLightbox(imageUrl) {
+                document.getElementById('lightbox-image').src = imageUrl;
+                document.getElementById('lightbox-modal').classList.remove('hidden');
+                document.getElementById('lightbox-modal').classList.add('flex');
+                document.body.style.overflow = 'hidden'; // Mencegah scrolling
+            }
+
+            function closeLightbox() {
+                document.getElementById('lightbox-modal').classList.add('hidden');
+                document.getElementById('lightbox-modal').classList.remove('flex');
+                document.body.style.overflow = 'auto'; // Mengizinkan scrolling lagi
             }
         </script>
     @endpush
