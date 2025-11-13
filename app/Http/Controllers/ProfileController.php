@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
+// ===============================================
+// == TAMBAHAN WAJIB: Untuk 'Storage' (Foto) ==
+// ===============================================
+use Illuminate\Support\Facades\Storage; 
+
 class ProfileController extends Controller
 {
     /**
@@ -26,14 +31,33 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        //mengupdate profile user
-        $request->user()->fill($request->validated());
+        // Ambil data user
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // Mengisi data user (name, email, no_telpon) dari validasi
+        // $request->validated() SUDAH diatur oleh ProfileUpdateRequest.php
+        $user->fill($request->validated());
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        // ==========================================================
+        // == TAMBAHAN: LOGIKA SIMPAN FOTO PROFIL ==
+        // ==========================================================
+        if ($request->hasFile('photo')) {
+            // Hapus foto lama jika ada
+            if ($user->profile_photo_path) {
+                Storage::disk('public')->delete($user->profile_photo_path);
+            }
+            // Simpan foto baru ke 'storage/app/public/profile-photos'
+            $path = $request->file('photo')->store('profile-photos', 'public');
+            $user->profile_photo_path = $path;
+        }
+        // ===============================================
+        
+        // Simpan semua perubahan (termasuk foto)
+        $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
@@ -49,7 +73,15 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
-        Auth::logout();
+        Auth::logout();   
+
+        // ==========================================================
+        // == TAMBAHAN: LOGIKA HAPUS FOTO SAAT HAPUS AKUN ==
+        // ==========================================================
+        if ($user->profile_photo_path) {
+            Storage::disk('public')->delete($user->profile_photo_path);
+        }
+        // ===============================================
 
         $user->delete();
 
