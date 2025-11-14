@@ -96,11 +96,12 @@
     <!-- AKHIR DARI CONTENT ROW (STATISTIK CARDS) -->
 
 
-    <!-- Content Row Baru untuk Chart (Blok A) -->
+    <!-- Content Row Baru untuk KEDUA Chart -->
     <div class="row">
 
-        <!-- Area Chart -->
-        <div class="col-xl-12 col-lg-12">
+        <!-- Area Chart (LINE CHART ANDA) -->
+        {{-- DIUBAH: lebarnya jadi 8 kolom --}}
+        <div class="col-xl-8 col-lg-7">
             <div class="card shadow mb-4">
                 <!-- Card Header -->
                 <div
@@ -115,17 +116,37 @@
                 </div>
             </div>
         </div>
+
+        <!-- Pie Chart (BARU) -->
+        {{-- TAMBAHAN: Pie chart 4 kolom --}}
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <!-- Card Header -->
+                <div
+                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Status Laporan</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    {{-- Wadah untuk Pie chart --}}
+                    <div class="chart-pie pt-4 pb-2">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
     </div>
     <!-- Akhir Content Row Baru untuk Chart -->
 
 
     <!-- SCRIPT UNTUK CHART.JS (Blok B) -->
-    <!-- 1. Memuat library Chart.js dari CDN (Link sudah diperbaiki) -->
+    <!-- 1. Memuat library Chart.js dari CDN (Cukup satu kali) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- 2. Script untuk menggambar chart kita -->
+    <!-- 2. Script untuk menggambar KEDUA chart -->
     <script>
-        // Pastikan variabel ini ada sebelum digunakan
+        // SCRIPT UNTUK LINE CHART (dari kode Anda)
         if (typeof @json($chartLabels) !== 'undefined' && typeof @json($chartData) !== 'undefined') {
             
             // Ambil data 'labels' dan 'data' yang kita kirim dari Controller
@@ -158,6 +179,37 @@
                                     // Memastikan angka di sumbu Y adalah bilangan bulat
                                     precision: 0 
                                 }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // SCRIPT UNTUK PIE CHART (Baru ditambahkan)
+        if (typeof @json($pieLabels) !== 'undefined' && typeof @json($pieData) !== 'undefined') {
+            
+            const pieLabels = @json($pieLabels);
+            const pieData = @json($pieData);
+            const ctxPie = document.getElementById('statusChart'); // ID canvas baru
+
+            if (ctxPie) {
+                new Chart(ctxPie.getContext('2d'), {
+                    type: 'doughnut', // Tipe chart: doughnut atau pie
+                    data: {
+                        labels: pieLabels, // Label (Pending, Selesai, dll)
+                        datasets: [{
+                            data: pieData, // Angka datanya
+                            // Warna-warna ini adalah standar SB Admin
+                            backgroundColor: ['#f6c23e', '#1cc88a', '#36b9cc', '#4e73df', '#e74a3b'],
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom', // Menampilkan legenda di bawah chart
                             }
                         }
                     }
