@@ -27,7 +27,7 @@ class DashboardController extends Controller
         // DIUBAH: Menggunakan model tim Anda (huruf kecil)
         $totalPengaduan = pengaduan::count(); 
 
-        // 2. MENGAMBIL DATA BARU UNTUK CHART
+        // 2A. MENGAMBIL DATA UNTUK LINE CHART (Laporan per Bulan)
         // DIUBAH: Menggunakan model tim Anda (huruf kecil)
         $laporanPerBulan = pengaduan::select(
             DB::raw('MONTH(created_at) as bulan'),
@@ -38,7 +38,13 @@ class DashboardController extends Controller
         ->orderBy('bulan')
         ->get();
 
-        // 3. FORMAT DATA UNTUK CHART.JS
+        // 2B. MENGAMBIL DATA UNTUK PIE CHART (Status Laporan)
+        // (Kode baru dari panduan)
+        $statusLaporan = pengaduan::select('status', DB::raw('COUNT(*) as jumlah'))
+            ->groupBy('status')
+            ->get();
+
+        // 3A. FORMAT DATA UNTUK LINE CHART
         $labels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
         $data = array_fill(0, 12, 0);
 
@@ -48,6 +54,16 @@ class DashboardController extends Controller
             }
         }
 
+        // 3B. FORMAT DATA UNTUK PIE CHART
+        // (Kode baru dari panduan)
+        $pieLabels = [];
+        $pieData = [];
+        
+        foreach ($statusLaporan as $status) {
+            $pieLabels[] = ucfirst($status->status ?? 'Tidak Diketahui');
+            $pieData[] = $status->jumlah;
+        }
+
         // 4. KIRIM SEMUA DATA KE VIEW (Menggunakan path view tim Anda)
         return view('pages.admin.dashboard', [
             'totalUser' => $totalUser,
@@ -55,8 +71,10 @@ class DashboardController extends Controller
             'totalBerita' => $totalBerita,
             // DIUBAH: Mengirimkan var $totalPengaduan sebagai $totalLaporan (sesuai view tim Anda)
             'totalLaporan' => $totalPengaduan, 
-            'chartLabels' => $labels, // Data label untuk chart
-            'chartData' => $data,   // Data angka untuk chart
+            'chartLabels' => $labels, // Data label untuk LINE chart
+            'chartData' => $data,   // Data angka untuk LINE chart
+            'pieLabels' => $pieLabels, // Data label untuk PIE chart
+            'pieData' => $pieData,   // Data angka untuk PIE chart
         ]);
     }
 }
