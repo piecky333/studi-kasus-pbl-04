@@ -4,26 +4,29 @@ namespace App\Http\Controllers\public;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\berita; 
+use App\Models\berita;
+use App\Models\Admin\Divisi;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        // 1. Ambil 3 Berita Kegiatan (Aktivitas, Seminar, Event) terbaru
         $kegiatanTerbaru = berita::where('kategori', 'kegiatan')
-                                     ->latest() 
-                                     ->take(3)
-                                     ->get();
-        
-        // 2. Ambil 3 Berita Prestasi Mahasiswa terbaru
+            ->latest()
+            ->take(3)
+            ->get();
+
         $prestasiTerbaru = berita::where('kategori', 'prestasi')
-                                     ->latest()
-                                     ->take(3)
-                                     ->get();
+            ->latest()
+            ->take(3)
+            ->get();
 
-        // 3. Kirim kedua variabel tersebut ke view 'welcome.blade.php'
-        return view('pages.public.welcome', compact('kegiatanTerbaru', 'prestasiTerbaru'));
+        $divisi = Divisi::all();  // 🔥 tambahkan ini
 
+        return view('pages.public.welcome', compact(
+            'kegiatanTerbaru',
+            'prestasiTerbaru',
+            'divisi'
+        ));
     }
 }
