@@ -1,10 +1,11 @@
-<footer class="bg-blue-900" aria-labelledby="footer-heading">
+<footer class="bg-brand" aria-labelledby="footer-heading">
     <h2 id="footer-heading" class="sr-only">Footer</h2>
     <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
         <div class="xl:grid xl:grid-cols-3 xl:gap-8">
 
             <!-- Kolom 1: Identitas & Sosial Media -->
-            <div class="space-y-8 xl:col-span-1">
+            {{-- MODIFIKASI: Menambahkan 'wow' dan 'delay' --}}
+            <div class="space-y-8 xl:col-span-1 wow fadeInUp" data-wow-delay="0.1s">
                 {{-- Logo Anda --}}
                 <a href="{{ route('home') }}" class="flex items-center space-x-2">
                     <img class="h-10 w-auto" src="{{ asset('img/Logo hima.png') }}" alt="Logo HIMA-TI">
@@ -15,7 +16,8 @@
                 </p>
                 {{-- Ikon Sosial Media --}}
                 <div class="flex space-x-6">
-                    <a href="#" class="text-gray-400 hover:text-white">
+                    {{-- MODIFIKASI: Menambahkan 'transition' dan 'hover:-translate-y-1' --}}
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300 transform hover:-translate-y-1">
                         <span class="sr-only">Facebook</span>
                         <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path fill-rule="evenodd"
@@ -23,8 +25,9 @@
                                 clip-rule="evenodd" />
                         </svg>
                     </a>
+                    {{-- MODIFIKASI: Menambahkan 'transition' dan 'hover:-translate-y-1' --}}
                     <a href="https://www.instagram.com/akun-hima-ti" target="_blank" rel="noopener noreferrer"
-                        class="text-gray-400 hover:text-white">
+                        class="text-gray-400 hover:text-white transition duration-300 transform hover:-translate-y-1">
                         <span class="sr-only">Instagram</span>
                         <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path fill-rule="evenodd"
@@ -32,7 +35,8 @@
                                 clip-rule="evenodd" />
                         </svg>
                     </a>
-                    <a href="#" class="text-gray-400 hover:text-white">
+                    {{-- MODIFIKASI: Menambahkan 'transition' dan 'hover:-translate-y-1' --}}
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300 transform hover:-translate-y-1">
                         <span class="sr-only">LinkedIn</span>
                         <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path fill-rule="evenodd"
@@ -44,20 +48,22 @@
             </div>
 
             <!-- Kolom 2 & 3: Navigasi Cepat & Tautan Terkait -->
-            <div class="grid grid-cols-2 gap-8 xl:col-span-2">
+            {{-- MODIFIKASI: Menambahkan 'wow' dan 'delay' --}}
+            <div class="grid grid-cols-2 gap-8 xl:col-span-2 wow fadeInUp" data-wow-delay="0.3s">
                 <div class="md:grid md:grid-cols-2 md:gap-8">
                     {{-- Navigasi Cepat --}}
                     <div>
                         <h3 class="text-sm font-semibold text-gray-200 uppercase tracking-wider">Navigasi</h3>
                         <ul role="list" class="mt-4 space-y-3">
-                            <li><a href="{{ route('home') }}" class="text-sm text-gray-400 hover:text-white">Home</a>
+                            {{-- MODIFIKASI: Menambahkan 'transition-colors' --}}
+                            <li><a href="{{ route('home') }}" class="text-sm text-gray-400 hover:text-white transition-colors duration-300">Home</a>
                             </li>
-                            <li><a href="#" class="text-sm text-gray-400 hover:text-white">Profil Organisasi</a></li>
-                            <li><a href="#" class="text-sm text-gray-400 hover:text-white">Divisi</a></li>
+                            <li><a href="#" class="text-sm text-gray-400 hover:text-white transition-colors duration-300">Profil Organisasi</a></li>
+                            <li><a href="#" class="text-sm text-gray-400 hover:text-white transition-colors duration-300">Divisi</a></li>
                             <li><a href="{{ route('berita.index') }}"
-                                    class="text-sm text-gray-400 hover:text-white">Berita</a></li>
+                                    class="text-sm text-gray-400 hover:text-white transition-colors duration-300">Berita</a></li>
                             <li><a href="{{ route('prestasi.index') }}"
-                                    class="text-sm text-gray-400 hover:text-white">Prestasi</a></li>
+                                    class="text-sm text-gray-400 hover:text-white transition-colors duration-300">Prestasi</a></li>
                         </ul>
                     </div>
                     {{-- Tautan Terkait --}}
@@ -65,11 +71,11 @@
                         <h3 class="text-sm font-semibold text-gray-200 uppercase tracking-wider">Tautan Terkait</h3>
                         <ul role="list" class="mt-4 space-y-3">
                             <li><a href="https://politala.ac.id" target="_blank" rel="noopener noreferrer"
-                                    class="text-sm text-gray-400 hover:text-white">Politeknik Negeri Tanah Laut</a></li>
-                            <li><a href="{{ route('login') }}" class="text-sm text-gray-400 hover:text-white">Login
+                                    class="text-sm text-gray-400 hover:text-white transition-colors duration-300">Politeknik Negeri Tanah Laut</a></li>
+                            <li><a href="{{ route('login') }}" class="text-sm text-gray-400 hover:text-white transition-colors duration-300">Login
                                     Anggota</a></li>
-                            <li><a href="#" class="text-sm text-gray-400 hover:text-white">Buat Pengaduan</a></li>
-                            <li><a href="#" class="text-sm text-gray-400 hover:text-white">Kontak Kami</a></li>
+                            <li><a href="#" class="text-sm text-gray-400 hover:text-white transition-colors duration-300">Buat Pengaduan</a></li>
+                            <li><a href="#" class="text-sm text-gray-400 hover:text-white transition-colors duration-300">Kontak Kami</a></li>
                         </ul>
                     </div>
                 </div>
@@ -77,14 +83,16 @@
         </div>
 
         <!-- Bottom Bar: Copyright & Tautan Sekunder -->
-        <div class="mt-12 border-t border-blue-800 pt-8">
+        {{-- MODIFIKASI: Menambahkan 'wow' dan 'delay' --}}
+        <div class="mt-12 border-t border-white-800 pt-8 wow fadeInUp" data-wow-delay="0.5s">
             <p class="text-sm text-white text-center">
                 &copy; {{ date('Y') }} Himpunan Mahasiswa Teknologi Informasi. All rights reserved.
             </p>
-
-            <div class="mt-4 sm:mt-0 sm:order-1 flex space-x-6">
-                <a href="#" class="text-sm text-gray-400 hover:text-white">Kebijakan Privasi</a>
-                <a href="#" class="text-sm text-gray-400 hover:text-white">Ketentuan Layanan</a>
+            
+            {{-- MODIFIKASI: Dibuat 'flex justify-center' agar rapi --}}
+            <div class="mt-4 flex justify-center space-x-6">
+                <a href="#" class="text-sm text-gray-400 hover:text-white transition-colors duration-300">Kebijakan Privasi</a>
+                <a href="#" class="text-sm text-gray-400 hover:text-white transition-colors duration-300">Ketentuan Layanan</a>
             </div>
 
         </div>

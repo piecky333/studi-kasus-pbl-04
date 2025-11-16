@@ -6,10 +6,16 @@
 
 {{-- HERO SECTION BARU (Copywriting berfokus pada Prestasi) --}}
 @section('hero')
-    <section id="prestasi-hero" class="flex items-center justify-center text-center text-white" 
-             style="height: 90vh; background: linear-gradient(135deg, #002855 60%, #004080);">
-        <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 class="font-bold text-4xl sm:text-5xl mb-3">Capaian & Prestasi Mahasiswa</h1>
+    {{-- MODIFIKASI: Menggunakan 'bg-fixed' untuk paralaks dan gambar latar --}}
+    <section id="prestasi-hero" class="relative flex items-center justify-center text-center text-white h-[90vh] bg-cover bg-center bg-fixed"
+             style="background-image: url('{{ asset('img/gkt.jpg') }}');"> {{-- Menggunakan salah satu gambar slider Anda --}}
+        
+        {{-- Overlay gelap (sama seperti beranda) --}}
+        <div class="absolute inset-0 bg-black bg-opacity-70 z-10"></div>
+        
+        {{-- Konten Hero (diberi ID dan z-20 untuk script paralaks) --}}
+        <div id="prestasi-hero-content" class="relative z-20 container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 wow fadeInDown" data-wow-duration="1.5s">
+            <h1 class="font-bold text-4xl sm:text-5xl mb-3 shadow-text">Capaian & Prestasi Mahasiswa</h1>
             <p class="text-lg sm:text-xl text-gray-200 mb-4 max-w-3xl mx-auto">
                 Kami bangga membagikan pencapaian luar biasa dari mahasiswa Teknologi Informasi Politala. Temukan inspirasi dari dedikasi dan kerja keras mereka.
             </p>
@@ -22,8 +28,10 @@
 @section('content')
     <section id="daftar-prestasi" class="py-16 sm:py-20 bg-gray-50">
         <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl sm:text-4xl font-bold text-blue-800 text-center mb-4">Galeri Prestasi</h2>
-            <p class="text-gray-600 text-center mb-10 max-w-2xl mx-auto">
+            
+            {{-- MODIFIKASI: Menambahkan animasi WOW.js --}}
+            <h2 class="text-3xl sm:text-4xl font-bold text-blue-800 text-center mb-4 wow fadeInDown">Galeri Prestasi</h2>
+            <p class="text-gray-600 text-center mb-10 max-w-2xl mx-auto wow fadeInUp">
                 Menampilkan karya, penghargaan, dan pencapaian mahasiswa kami di berbagai bidang, baik akademik maupun non-akademik.
             </p>
 
@@ -32,17 +40,23 @@
                 
                 {{-- looping setiap berita jenis prestasi --}}
                 @forelse($semuaPrestasi as $item)
-                    <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
+                    {{-- MODIFIKASI: Menambahkan 'rounded-xl', 'wow fadeInUp', dan 'hover:shadow-xl' --}}
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col wow fadeInUp transition duration-300 hover:shadow-xl" data-wow-delay="0.{{ $loop->index % 3 }}s">
                         
                         {{-- Link dan Gambar --}}
-                        <a href="{{ route('berita.show', $item->id_berita) }}">
+                        {{-- MODIFIKASI: Menambahkan 'overflow-hidden' dan 'hover:scale-105' pada gambar --}}
+                        
+                        {{-- ========================================================== --}}
+                        {{-- == PERBAIKAN: Mengganti route('berita.show') menjadi 'prestasi.show' == --}}
+                        {{-- ========================================================== --}}
+                        <a href="{{ route('prestasi.show', $item->id_berita) }}" class="block overflow-hidden h-48">
                             @if ($item->gambar_berita)
                                 <img src="{{ asset('storage/' . $item->gambar_berita) }}" alt="{{ $item->judul_berita }}"
-                                     class="w-full h-48 object-cover">
+                                     class="w-full h-full object-cover transform hover:scale-105 transition duration-500">
                             @else
                                 {{-- Fallback jika tidak ada gambar --}}
-                                <img src="https://via.placeholder.com/400x220.png?text=Prestasi" alt="Placeholder Prestasi"
-                                     class="w-full h-48 object-cover">
+                                <img src="https://placehold.co/400x220/002855/FFFFFF?text=Prestasi" alt="Placeholder Prestasi"
+                                     class="w-full h-full object-cover transform hover:scale-105 transition duration-500">
                             @endif
                         </a>
                         
@@ -50,14 +64,21 @@
                         <div class="p-6 flex flex-col flex-grow">
                             
                             {{-- Judul Berita --}}
-                            <h3 class="font-bold text-lg text-gray-900 my-2 hover:text-blue-700">
-                                <a href="{{ route('berita.show', $item->id_berita) }}">
+                            {{-- MODIFIKASI: Menambahkan 'line-clamp-2' dan 'min-h' untuk konsistensi --}}
+                            <h3 class="font-bold text-lg text-gray-900 my-2 hover:text-blue-700 line-clamp-2 min-h-[3.5rem] transition duration-300">
+                                
+                                {{-- ========================================================== --}}
+                                {{-- == PERBAIKAN: Mengganti route('berita.show') menjadi 'prestasi.show' == --}}
+                                {{-- ========================================================== --}}
+                                {{-- MODIFIKASI: Menambahkan kelas 'link-animasi' --}}
+                                <a href="{{ route('prestasi.show', $item->id_berita) }}" class="link-animasi">
                                     {{ Str::limit($item->judul_berita, 50) }}
                                 </a>
                             </h3>
                             
                             {{-- Deskripsi/Isi (flex-grow mengisi ruang) --}}
-                            <p class="text-gray-600 text-sm mb-4 flex-grow">
+                             {{-- MODIFIKASI: Menambahkan 'line-clamp-3' dan 'min-h' untuk konsistensi --}}
+                            <p class="text-gray-600 text-sm mb-4 flex-grow line-clamp-3 min-h-[3.75rem]">
                                 {{ Str::limit(strip_tags($item->isi_berita), 100) }}
                             </p>
                             
@@ -84,3 +105,97 @@
         </div>
     </section>
 @endsection
+
+{{-- TAMBAHAN: Styles dan Scripts untuk Animasi --}}
+@push('styles')
+    {{-- Memuat Animate.css untuk animasi WOW.js --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        /* Gaya Shadow untuk Teks Hero (dari beranda) */
+        .shadow-text {
+            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        /* == TAMBAHAN UNTUK ANIMASI UNDERLINE PADA JUDUL KARTU == */
+        .link-animasi {
+            position: relative;
+            display: inline-block;
+            text-decoration: none;
+            padding-bottom: 2px;
+        }
+
+        .link-animasi::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #1D4ED8; /* blue-700 */
+            transition: width 0.3s ease-out;
+        }
+
+        .link-animasi:hover::after {
+            width: 100%;
+        }
+
+        /* == TAMBAHAN UNTUK ANIMASI UNDERLINE NAVBAR == */
+        .link-animasi-nav {
+            position: relative;
+            padding-bottom: 4px; /* Sedikit padding bawah untuk garis */
+        }
+
+        .link-animasi-nav::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            /* Garisnya warna putih agar kontras di navbar biru */
+            background-color: #FACC15; /* GANTI DARI PUTIH KE KUNING (yellow-400) */ 
+            transition: width 0.3s ease-out;
+        }
+
+        /* Jangan tampilkan garis jika link-nya sedang 'active' */
+        .link-animasi-nav[aria-current="page"]::after {
+            display: none;
+        }
+
+        .link-animasi-nav:hover::after {
+            width: 100%;
+        }
+    </style>
+@endpush
+
+@push('scripts')
+    {{-- Memuat WOW.js untuk animasi scroll --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. Inisialisasi WOW.js (Sangat Penting)
+            new WOW().init();
+            
+            // 2. Skrip Paralaks untuk Hero Prestasi
+            const heroContent = document.getElementById('prestasi-hero-content');
+            const heroSection = document.getElementById('prestasi-hero');
+            
+            if (heroContent && heroSection) {
+                window.addEventListener('scroll', function() {
+                    const scrollPosition = window.pageYOffset;
+                    const heroHeight = heroSection.offsetHeight;
+
+                    // Hanya terapkan efek jika scroll berada di area hero
+                    if (scrollPosition < heroHeight) {
+                        // Gerakkan konten Hero ke atas 0.3x kecepatan scroll
+                        const translateY = scrollPosition * 0.3; 
+                        heroContent.style.transform = `translate3d(0, ${translateY}px, 0)`; 
+                    } else {
+                        heroContent.style.transform = 'none';
+                    }
+                });
+            }
+        });
+    </script>
+@endpush

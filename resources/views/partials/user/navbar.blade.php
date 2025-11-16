@@ -1,6 +1,6 @@
 {{-- File: resources/views/layouts/navigation.blade.php --}}
 
-<nav x-data="{ open: false }" class="bg-indigo-700 border-b border-indigo-800 shadow-sm">
+<nav x-data="{ open: false }" class="bg-brand border-b border-brand shadow-sm">
     
     <div class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
         <div class="flex justify-between h-16">
@@ -25,7 +25,7 @@
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-indigo-100 bg-indigo-700 hover:text-white focus:outline-none transition ease-in-out duration-150">
+                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-indigo-100 bg-brand hover:text-white focus:outline-none transition ease-in-out duration-150">
                             
                             {{-- === AVATAR & FALLBACK INISIAL === --}}
                             @if (Auth::user()->avatar) 
