@@ -22,7 +22,7 @@
                         <th>Nama</th>
                         <th>Divisi</th>
                         <th>Posisi Jabatan</th>
-                        <th>Aksi</th>
+                        <th>Role</th> <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -32,6 +32,9 @@
                             <td>{{ $p->user->nama ?? '-' }}</td>
                             <td>{{ $p->divisi->nama_divisi ?? '-' }}</td>
                             <td>{{ $p->posisi_jabatan }}</td>
+                            
+                            <td>{{ $p->user->role ?? '-' }}</td> 
+                            
                             <td>
                                 <a href="{{ route('pengurus.pengurus.edit', $p->id_pengurus) }}" class="btn btn-warning btn-sm">
                                     <i class="bi bi-pencil"></i>
@@ -46,7 +49,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="5" class="text-center">Belum ada data pengurus</td></tr>
+                        <tr><td colspan="6" class="text-center">Belum ada data pengurus</td></tr>
                     @endforelse
                 </tbody>
             </table>
