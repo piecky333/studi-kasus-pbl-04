@@ -41,6 +41,8 @@ use App\Http\Controllers\pengurus\{
     PengurusDashboardController
 };
 
+use App\Http\Controllers\SpkController;
+
 // ===========================
 // ROUTE UNTUK PUBLIC
 // ===========================
@@ -148,4 +150,11 @@ Route::middleware('auth')->group(function () {
         ->name('komentar.update');
     Route::delete('/komentar/{komentar}', [PublicKomentarController::class, 'destroy'])
         ->name('komentar.destroy');
+
+
+// ===========================
+// RUTE UNTUK PERHITUNGAN SPK SAW
+// ===========================
+
+Route::get('/ranking-mahasiswa', [SpkController::class, 'showRanking']);
 });

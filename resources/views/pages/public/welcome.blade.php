@@ -137,7 +137,7 @@
                     <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col wow fadeInUp">
 
                         <a href="{{ route('berita.show', $kegiatan->id_berita) }}">
-                            <img src="{{ asset('storage/'. $kegiatan->gambar_berita) }}" alt="{{ $kegiatan->judul_berita }}"
+                            <img src="{{ asset('storage/' . $kegiatan->gambar_berita) }}" alt="{{ $kegiatan->judul_berita }}"
                                 class="w-full h-48 object-cover">
                         </a>
 
@@ -184,7 +184,7 @@
                     {{-- 1. Card wrapper: Tambahkan 'flex flex-col' --}}
                     <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col wow fadeInUp">
                         <a href="{{ route('prestasi.show', $prestasi->id_berita) }}">
-                            <img src="{{ asset('storage/'. $prestasi->gambar_berita) }}" alt="{{ $prestasi->judul_berita }}"
+                            <img src="{{ asset('storage/' . $prestasi->gambar_berita) }}" alt="{{ $prestasi->judul_berita }}"
                                 class="w-full h-48 object-cover">
                         </a>
 
