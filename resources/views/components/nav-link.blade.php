@@ -1,11 +1,15 @@
 @props(['active'])
 
 @php
-    $classes = ($active ?? false)
-        ? 'inline-flex items-center px-1 pt-1 border-b-2 border-yellow-400 text-sm font-medium leading-5 text-white focus:outline-none focus:border-yellow-700 transition duration-150 ease-in-out'
-        : 'inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-white hover:text-gray-300 focus:outline-none focus:text-gray-300 focus:border-gray-300 transition duration-150 ease-in-out';
+// INI KUNCINYA:
+// Jika 'active', kita pakai border-yellow-400 (kuning, statis).
+// Jika tidak 'active', kita pakai 'link-animasi-nav' (untuk animasi garis bawah saat hover).
+$classes = ($active ?? false)
+            ? 'inline-flex items-center px-1 pt-1 border-b-2 border-yellow-400 text-sm font-medium leading-5 text-white focus:outline-none focus:border-yellow-400 transition duration-150 ease-in-out'
+            : 'inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-300 hover:text-white focus:outline-none focus:text-white transition duration-150 ease-in-out link-animasi-nav'; // MODIFIKASI: Tambah kelas 'link-animasi-nav'
 @endphp
 
+{{-- File ini HANYA berisi tag <a>. TIDAK BOLEH ADA @extends --}}
 <a {{ $attributes->merge(['class' => $classes]) }}>
     {{ $slot }}
 </a>

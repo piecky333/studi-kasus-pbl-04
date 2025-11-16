@@ -1,4 +1,16 @@
-<nav x-data="{ open: false }" class="bg-blue-800 border-b border-blue-900 fixed w-full z-50 top-0 start-0">
+{{-- 
+  MODIFIKASI:
+  1. x-data: Ditambah 'showNav: false'
+  2. x-init: Menjalankan timer untuk 'showNav = true' (ini yang memicu animasi)
+  3. :class: Ditambah logika transform (slide-in)
+  4. class: Ditambah 'transform' dan 'transition-all'
+--}}
+<nav x-data="{ open: false, scrolled: false, showNav: false }"
+     x-init="setTimeout(() => showNav = true, 100)"
+     @scroll.window="scrolled = (window.pageYOffset > 10)"
+     :class="{ 'shadow-lg': scrolled, '-translate-y-full': !showNav, 'translate-y-0': showNav }"
+     class="bg-brand border-b border-brand fixed w-full z-50 top-0 start-0 transform transition-all duration-500 ease-out">
+    
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex items-center">

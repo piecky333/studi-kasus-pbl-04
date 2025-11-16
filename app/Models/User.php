@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models; // PERBAIKAN: Namespace harus App\Models, bukan App
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -11,38 +11,65 @@ use App\Models\komentar;
 use App\Models\berita;
 use App\Models\Mahasiswa; 
 
+// PERBAIKAN: Hapus 'MustVerifyEmail'
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $table = 'user';
-    
-    protected $primaryKey = 'id_user';
+    // Ini sudah benar sesuai migrasimu
+    protected $table = 'user'; 
+    protected $primaryKey = 'id_user'; 
 
     public $incrementing = true;
     protected $keyType = 'int';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
-        'nama', 'username', 'email', 'password', 'role', 'google_id', 'avatar',
+        'nama', // Ini sudah benar (sesuai migrasimu)
+        'username', 
+        'email', 
+        'password', 
+        'role', 
+        'google_id', 
+        'avatar',
+        'no_telpon', // TAMBAHAN
+        'profile_photo_path', // TAMBAHAN
     ];
 
-    protected $hidden = ['password'];
-    protected $casts = ['password' => 'hashed'];
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token', // Tambahkan ini (wajib ada)
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        // Hapus 'email_verified_at' karena tidak ada di migrasi
+        'password' => 'hashed',
+    ];
 
     /* ==================================================
-    Relasi antar tabel
-    ================================================== */
+     Relasi antar tabel
+     ================================================== */
 
+     // PERBAIKAN: Sesuaikan foreign key dan local key ke 'id_user'
     public function admin()
     {
-        // KOREKSI: Tambahkan parameter ke-3 (Local Key)
         return $this->hasOne(admin::class, 'id_user', 'id_user');
     }
 
-    /**
-     * === INI KUNCI #2 (PENYEBAB ERROR ANDA) ===
-     * Relasi ini HARUS punya 3 parameter
-     */
     public function mahasiswa()
     {
         return $this->hasOne(Mahasiswa::class, 'id_user', 'id_user');
@@ -50,7 +77,7 @@ class User extends Authenticatable
 
     public function pengaduan()
     {
-        return $this->hasMany(pengaduan::class, 'id_user', 'id_user');
+        return $this->hasMany(Pengaduan::class, 'id_user', 'id_user');
     }
 
     public function komentar()
@@ -60,14 +87,11 @@ class User extends Authenticatable
 
     public function berita()
     {
-        // KOREKSI: Tambahkan parameter ke-3 (Local Key)
         return $this->hasMany(berita::class, 'id_user', 'id_user');
     }
 
     public function user()
     {
-        // Pastikan parameter ke-3 ada
         return $this->belongsTo(User::class, 'id_user', 'id_user');
     }
-    
 }
