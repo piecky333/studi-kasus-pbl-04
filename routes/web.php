@@ -86,6 +86,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('/berita/{id}/edit', [AdminBeritaController::class, 'edit'])->name('berita.edit');
     Route::put('/berita/{id}', [AdminBeritaController::class, 'update'])->name('berita.update');
     Route::delete('/berita/{id}', [AdminBeritaController::class, 'destroy'])->name('berita.destroy');
+    Route::put('/berita/{id}/verifikasi', [AdminBeritaController::class, 'verifikasi'])->name('berita.verifikasi');
+    Route::put('/berita/{id}/tolak', [AdminBeritaController::class, 'tolak'])->name('berita.tolak');
+
 
     // Pengurus (CRUD)
     Route::resource('pengurus', \App\Http\Controllers\Admin\PengurusController::class);
@@ -135,6 +138,9 @@ Route::prefix('pengurus')->name('pengurus.')->middleware(['auth', 'role:pengurus
 
     // Keuangan
     Route::resource('keuangan', \App\Http\Controllers\Pengurus\KeuanganController::class);
+
+    //berita
+     Route::resource('berita', \App\Http\Controllers\Pengurus\BeritaController::class);
 });
 
 
