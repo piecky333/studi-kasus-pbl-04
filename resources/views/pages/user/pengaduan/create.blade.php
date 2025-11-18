@@ -78,7 +78,7 @@
 
                             <!-- Tombol Aksi -->
                             <div class="flex items-center justify-end mt-6 ">
-                                <a href="{{ route('user.dashboard') }}" class="text-sm text-gray-600 hover:text-gray-900 underline mr-4 mx-6 px-8 py-2 rounded">
+                                <a href="{{ route('user.dashboard') }}" class="text-sm text-red-600 hover:text-red-900 underline mr-4 mx-6 px-8 py-2 rounded">
                                     Batal
                                 </a>
 
