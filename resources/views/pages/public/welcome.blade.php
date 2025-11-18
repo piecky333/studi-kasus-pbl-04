@@ -82,7 +82,7 @@
                     <h2 class="text-3xl sm:text-4xl font-extrabold text-blue-800 mb-4 border-b-4 border-blue-500 pb-2 inline-block">Tentang HIMA-TI</h2>
                     <p class="text-gray-700 mb-4 leading-relaxed">
                         Himpunan Mahasiswa Teknologi Informasi (HIMA-TI) merupakan organisasi kemahasiswaan yang berperan
-                        sebagai **wadah aspirasi, pengembangan, dan kolaborasi** antar mahasiswa di bidang teknologi informasi.
+                        sebagai <b>wadah aspirasi, pengembangan, dan kolaborasi</b> antar mahasiswa di bidang teknologi informasi.
                     </p>
                     <p class="text-gray-700 mb-6 leading-relaxed">
                         Kami berkomitmen menciptakan lingkungan akademik yang aktif, inovatif, dan berdampak positif bagi

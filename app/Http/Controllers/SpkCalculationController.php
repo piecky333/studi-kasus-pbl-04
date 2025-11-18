@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\keputusan;
-use App\Models\hasilakhir;
-use App\Services\SawService; //mengambil layanan SawService
-use App\Services\WeightService; // Untuk mendapatkan data bobot dan tipe
+use App\Models\spkkeputusan;
+use App\Services\SawService; 
+use App\Services\WeightService; 
 
 class SpkCalculationController extends Controller
 {
@@ -21,13 +20,15 @@ class SpkCalculationController extends Controller
 
     /**
      * Menampilkan detail Perhitungan (Data Perhitungan: Normalisasi & Pembobotan).
+     * Memanggil calculateProcessData dari SawService yang sudah diimplementasikan.
+     * * @param int $idKeputusan ID Keputusan yang akan diproses
      */
     public function showPerhitungan($idKeputusan)
     {
-        $keputusan = keputusan::findOrFail($idKeputusan);
+        $keputusan = spkkeputusan::findOrFail($idKeputusan);
         
         try {
-            // Panggil metode publik baru di SawService yang mengurus semua langkah
+            // Memanggil metode publik baru yang menjalankan Normalisasi dan Ranking tanpa menyimpan
             $perhitunganData = $this->sawService->calculateProcessData($idKeputusan);
 
             // Ambil Bobot & Tipe untuk header tabel dari WeightService
@@ -43,12 +44,13 @@ class SpkCalculationController extends Controller
             ]);
 
         } catch (\Exception $e) {
+            // Tangkap exception (misalnya jika AHP tidak konsisten atau data kosong)
             return back()->with('error', 'Gagal memuat data perhitungan: ' . $e->getMessage());
         }
     }
 
     /**
-     * Menjalankan proses perhitungan SPK dan menyimpan Hasil Akhir (Data Hasil Akhir).
+     * Menjalankan proses perhitungan SPK dan menyimpan Hasil Akhir.
      */
     public function runCalculation($idKeputusan)
     {
@@ -59,7 +61,6 @@ class SpkCalculationController extends Controller
             return redirect()->route('spk.manage.hasil', $idKeputusan)
                              ->with('success', 'Perhitungan SAW berhasil dieksekusi dan hasil disimpan!');
         } catch (\Exception $e) {
-            // Jika AHP tidak konsisten atau data tidak ditemukan
             return back()->with('error', 'Gagal melakukan perhitungan: ' . $e->getMessage());
         }
     }

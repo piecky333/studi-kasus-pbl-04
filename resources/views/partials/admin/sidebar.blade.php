@@ -33,29 +33,6 @@
             <span>Pengaduan</span></a>
     </li>
     
-    {{-- <!-- Nav Item - Manajemen akun -->
-    <li class="nav-item">
-        <a class="nav-link" href="charts.html">
-            <i class="fas fa-fw bi bi-people-fill"></i>
-            <span>Manajemen akun</span></a>
-    </li> --}}
-
-    {{-- <!-- Nav Item - anggota & divisi Collapse Menu -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
-            aria-controls="collapsePages">
-            <i class="fas fa-fw bi bi-diagram-3-fill"></i>
-            <span>Anggota & divisi</span>
-        </a>
-        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="login.html">Daftar anggota HIMA-TI</a>
-                <a class="collapse-item" href="register.html">Struktur Divisi</a>
-                <a class="collapse-item" href="forgot-password.html">Anggota per Divisi</a>
-            </div>
-        </div>
-    </li> --}}
-
     <!-- Nav Item - Sanksi -->
     <li class="nav-item">
         <a class="nav-link" href="{{ route('admin.sanksi.index') }}">
@@ -76,7 +53,66 @@
             <i class="fas fa-fw bi bi-newspaper"></i>
             <span>Berita</span></a>
     </li>
- <!-- Kembali ke Website -->
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        MANAJEMEN DATA
+    </div>
+    
+    <!-- Tautan Utama ke Daftar Keputusan -->
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('admin.spk.index') }}">
+            <i class="fas fa-fw bi bi-list-task"></i>
+            <span>Daftar Keputusan (SPK)</span>
+        </a>
+    </li>
+
+    {{-- MENU STATIS SPK (MENGGUNAKAN ID 1 SEBAGAI PLACEHOLDER) --}}
+    
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('admin.spk.manage.kriteria', 1) }}">
+            <i class="fas fa-fw bi bi-card-checklist"></i>
+            <span>Data Kriteria</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('admin.spk.manage.alternatif', 1) }}">
+            <i class="fas fa-fw bi bi-people-fill"></i>
+            <span>Data Alternatif</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('admin.spk.manage.penilaian', 1) }}">
+            <i class="fas fa-fw bi bi-pencil-square"></i>
+            <span>Data Penilaian</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('admin.spk.calculate.proses', 1) }}">
+            <i class="fas fa-fw bi bi-calculator-fill"></i>
+            <span>Data Perhitungan</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('admin.spk.manage.hasil', 1) }}">
+            <i class="fas fa-fw bi bi-bar-chart-line-fill"></i>
+            <span>Data Hasil Akhir</span>
+        </a>
+    </li>
+    {{-- AKHIR MENU STATIS SPK --}}
+
+
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+    
+    <!-- Kembali ke Website -->
     <li class="nav-item">
         <a class="nav-link" href="{{ url('/') }}">
             <i class="bi bi-house-door"></i>
@@ -84,8 +120,6 @@
         </a>
     </li>
     
-
-
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 
@@ -94,5 +128,4 @@
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
     </div>
     
-
 </ul>

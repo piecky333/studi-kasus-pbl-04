@@ -6,6 +6,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GoogleAuthController;
 use Illuminate\Support\Facades\Route;
 
+// Import Controller SPK yang baru
+use App\Http\Controllers\SpkManagementController;
+use App\Http\Controllers\SpkCalculationController;
+
 use App\Http\Controllers\public\{
     HomeController as PublicHomeController,
     DivisiController as PublicDivisiController,
@@ -41,8 +45,6 @@ use App\Http\Controllers\pengurus\{
     PengurusDashboardController
 };
 
-use App\Http\Controllers\SpkController;
-
 // ===========================
 // ROUTE UNTUK PUBLIC
 // ===========================
@@ -62,9 +64,7 @@ Route::get('/prestasi', [PublicPrestasiController::class, 'index'])->name('prest
 Route::get('/prestasi/{id}', [PublicPrestasiController::class, 'show'])->name('prestasi.show');
 
 
-// === 2. TAMBAHKAN RUTE 'STORE' (BUAT) KOMENTAR DI SINI (PUBLIC) ===
-// Rute ini menangani form "Kirim Komentar"
-// Kita gunakan {id_berita} sesuai parameter di KomentarController@store
+// === TAMBAHKAN RUTE 'STORE' (BUAT) KOMENTAR DI SINI (PUBLIC) ===
 Route::post('/berita/{id_berita}/komentar', [PublicKomentarController::class, 'store'])
     ->name('komentar.store');
 
@@ -74,6 +74,8 @@ Route::post('/berita/{id_berita}/komentar', [PublicKomentarController::class, 's
 // ===========================
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+    // ---- BERITA ----
     Route::get('/berita', [AdminBeritaController::class, 'index'])->name('berita.index');
     Route::get('/berita/create', [AdminBeritaController::class, 'create'])->name('berita.create');
     Route::post('/berita', [AdminBeritaController::class, 'store'])->name('berita.store');
@@ -81,7 +83,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::put('/berita/{id}', [AdminBeritaController::class, 'update'])->name('berita.update');
     Route::delete('/berita/{id}', [AdminBeritaController::class, 'destroy'])->name('berita.destroy');
 
-    // ----  MANAJEMEN AKUN   ----
+    // ---- MANAJEMEN AKUN ----
     Route::resource('pengurus', \App\Http\Controllers\Admin\PengurusController::class);
 
     // ---- DIVISI ----
@@ -94,7 +96,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::delete('/pengaduan/{id}', [AdminPengaduanController::class, 'destroy'])->name('pengaduan.destroy');
     Route::put('/pengaduan/{id}/verifikasi', [AdminPengaduanController::class, 'verifikasi'])->name('pengaduan.verifikasi');
 
-    // ---- PRESTASI  ----
+    // ---- PRESTASI ----
     Route::resource('prestasi', AdminPrestasiController::class);
     Route::get('/prestasi/cari-mahasiswa', [AdminPrestasiController::class, 'cariMahasiswa'])
         ->name('prestasi.cariMahasiswa');
@@ -106,6 +108,41 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('/sanksi/{id}/edit', [AdminSanksiController::class, 'edit'])->name('sanksi.edit');
     Route::put('/sanksi/{id}', [AdminSanksiController::class, 'update'])->name('sanksi.update');
     Route::delete('/sanksi/{id}', [AdminSanksiController::class, 'destroy'])->name('sanksi.destroy');
+    
+    //ahp & saw
+    Route::get('spk', [SpkManagementController::class, 'index'])->name('spk.index');
+    Route::post('spk', [SpkManagementController::class, 'store'])->name('spk.store');
+    Route::get('spk/create', [SpkManagementController::class, 'create'])->name('spk.create');
+
+    
+    // =========================================================================
+    // RUTE BARU: SPK (SISTEM PENDUKUNG KEPUTUSAN)
+    // URL: /admin/spk/{idKeputusan}/...
+    // =========================================================================
+    Route::prefix('spk/{idKeputusan}')->name('spk.')->group(function () {
+        
+        // 1. MANAJEMEN DATA (Data Master & Input)
+        Route::prefix('manage')->name('manage.')->group(function () {
+            // View Data Kriteria dan Sub Kriteria
+            Route::get('kriteria', [SpkManagementController::class, 'showKriteria'])->name('kriteria');
+            // View Data Alternatif
+            Route::get('alternatif', [SpkManagementController::class, 'showAlternatif'])->name('alternatif');
+            // View Data Penilaian (Matriks Keputusan - Xij)
+            Route::get('penilaian', [SpkManagementController::class, 'showPenilaian'])->name('penilaian');
+            // View Data Hasil Akhir (Output yang sudah disimpan)
+            Route::get('hasil', [SpkManagementController::class, 'showHasilAkhir'])->name('hasil');
+        });
+
+        // 2. PERHITUNGAN (Proses & Eksekusi)
+        Route::prefix('calculate')->name('calculate.')->group(function () {
+            // View Data Perhitungan (Normalisasi dan Terbobot)
+            Route::get('proses', [SpkCalculationController::class, 'showPerhitungan'])->name('proses');
+            // Eksekusi Perhitungan & Simpan Hasil Akhir
+            Route::get('run', [SpkCalculationController::class, 'runCalculation'])->name('run');
+        });
+    });
+    // =========================================================================
+
 });
 
 // ===========================
@@ -150,11 +187,4 @@ Route::middleware('auth')->group(function () {
         ->name('komentar.update');
     Route::delete('/komentar/{komentar}', [PublicKomentarController::class, 'destroy'])
         ->name('komentar.destroy');
-
-
-// ===========================
-// RUTE UNTUK PERHITUNGAN SPK SAW
-// ===========================
-
-Route::get('/ranking-mahasiswa', [SpkController::class, 'showRanking']);
 });
