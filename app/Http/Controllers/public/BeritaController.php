@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\public;
+namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\berita; // Pastikan model berita di-import
+use App\Models\Berita;
 
 class BeritaController extends Controller
 {
     /**
-     * Menampilkan halaman DAFTAR SEMUA berita/kegiatan.
+     * Menampilkan halaman DAFTAR SEMUA berita/kegiatan yang sudah diverifikasi.
      */
     public function index()
     {
-        // Ini sudah benar
-        $daftarKegiatan = berita::where('kategori', 'kegiatan')
+        $daftarKegiatan = Berita::where('kategori', 'kegiatan')
+            ->where('status', 'verified') // hanya berita yang sudah diverifikasi
             ->latest()
             ->paginate(9);
 
@@ -22,30 +22,30 @@ class BeritaController extends Controller
     }
 
     /**
-     * Menampilkan halaman DETAIL SATU berita.
-     * (INI BAGIAN YANG DIPERBAIKI)
+     * Menampilkan halaman DETAIL SATU berita yang sudah diverifikasi.
      */
     public function show($id)
     {
-        // 1. Ambil satu berita (lebih aman filter by kategori juga)
-        $berita = berita::where('kategori', 'kegiatan')
+        // Ambil berita satuan
+        $berita = Berita::where('kategori', 'kegiatan')
+            ->where('status', 'verified') // filter verified
             ->findOrFail($id);
 
-        // 2. Ambil berita terkait (ini sudah benar)
-        $beritaTerkait = berita::where('kategori', 'kegiatan') // diganti ke 'kegiatan'
+        // Ambil berita terkait (3 berita terbaru, selain yang ini)
+        $beritaTerkait = Berita::where('kategori', 'kegiatan')
+            ->where('status', 'verified') // filter verified
             ->where('id_berita', '!=', $id)
             ->latest()
-            ->take(3) 
+            ->take(3)
             ->get();
 
-        // 3. (PERBAIKAN) Ambil komentar induk DENGAN relasi balasannya
+        // Ambil komentar induk beserta balasannya
         $komentar_induk = $berita->komentar()
             ->whereNull('parent_id')
-            ->with(['replies.parent']) 
+            ->with(['replies.parent'])
             ->latest()
             ->get();
 
-        // 4. (PERBAIKAN) Kirim SEMUA data ke view
         return view('pages.public.berita.show', compact(
             'berita',
             'beritaTerkait',

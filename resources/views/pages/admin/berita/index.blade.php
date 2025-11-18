@@ -26,15 +26,15 @@
         <h6 class="m-0 font-weight-bold text-primary">Daftar Berita</h6>
     </div>
     <div class="card-body">
-        {{-- Koreksi: 'table' polos diganti 'table-responsive' --}}
         <div class="table-responsive">
             <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
                 <thead class="thead-light">
                     <tr>
                         <th width="5%">No</th>
                         <th>Judul</th>
-                        <th width="20%">Tanggal Publikasi</th>
-                        <th width="20%" class="text-center">Aksi</th>
+                        <th width="15%">Tanggal Publikasi</th>
+                        <th width="15%">Status</th>
+                        <th width="25%" class="text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -43,10 +43,33 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $berita->judul_berita }}</td>
                             <td>{{ $berita->created_at->format('d M Y, H:i') }}</td>
+                            <td>
+                                @if($berita->status == 'pending')
+                                    <span class="badge badge-warning">Pending</span>
+                                @elseif($berita->status == 'verified')
+                                    <span class="badge badge-success">Verified</span>
+                                @else
+                                    <span class="badge badge-danger">Rejected</span>
+                                @endif
+                            </td>
                             <td class="text-center">
                                 <a href="{{ route('admin.berita.edit', $berita->id_berita) }}" class="btn btn-info btn-sm" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </a>
+
+                                {{-- Tombol Verifikasi / Tolak hanya muncul jika status pending --}}
+                                @if($berita->status == 'pending')
+                                    <form action="{{ route('admin.berita.verifikasi', $berita->id_berita) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <button class="btn btn-success btn-sm" title="Verifikasi">Verifikasi</button>
+                                    </form>
+                                    <form action="{{ route('admin.berita.tolak', $berita->id_berita) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <button class="btn btn-warning btn-sm" title="Tolak">Tolak</button>
+                                    </form>
+                                @endif
                                 
                                 <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal-{{ $berita->id_berita }}" title="Hapus">
                                     <i class="fas fa-trash"></i>
@@ -68,7 +91,6 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                                                {{-- Form Hapus --}}
                                                 <form action="{{ route('admin.berita.destroy', $berita->id_berita) }}" method="POST" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
@@ -78,17 +100,17 @@
                                         </div>
                                     </div>
                                 </div>
+
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center">Belum ada berita.</td>
+                            <td colspan="5" class="text-center">Belum ada berita.</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
-
     </div>
 </div>
 @endsection

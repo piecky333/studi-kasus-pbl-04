@@ -17,6 +17,7 @@ class berita extends Model
         'isi_berita',
         'gambar_berita',
         'kategori',
+        'status',
     ];
 
     public function user()
