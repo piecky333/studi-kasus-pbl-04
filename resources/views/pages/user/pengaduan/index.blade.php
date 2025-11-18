@@ -19,7 +19,7 @@
 
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
                         <div>
-                            <h3 class="text-lg leading-6 font-medium text-gray-900">
+                            <h3 class="text-lg leading-6 font-semibold text-Black-1000">
                                 Semua Pengaduan Anda
                             </h3>
                             <p class="mt-1 max-w-2xl text-sm text-gray-500">
@@ -30,7 +30,7 @@
                         <div class="mt-4 sm:mt-0">
                             <a href="{{ route('user.pengaduan.create') }}"
                                 class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
-                                Buat Pengaduan Baru
+                                 Buat Pengaduan Baru 
                             </a>
                         </div>
                     </div>
@@ -54,19 +54,19 @@
 
                     <div class="overflow-x-auto border-t border-gray-200">
                         <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                            <thead class="bg-blue-100">
                                 <tr>
                                     <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
                                         No</th>
                                     <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
                                         Judul</th>
                                     <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
                                         Tanggal</th>
                                     <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
                                         Status</th>
                                     <th scope="col" class="relative px-6 py-3"><span class="sr-only">Aksi</span></th>
                                 </tr>
