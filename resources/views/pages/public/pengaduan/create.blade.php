@@ -24,11 +24,11 @@
 
     {{-- FORM INPUT --}}
     <div class="card shadow-sm border-0 rounded-4 p-4">
-        <form action="{{ route('pengaduan.store') }}" method="POST">
-            @csrf
+        <form action="{{ route('pengaduan.store') }}" 
+              method="POST" 
+              enctype="multipart/form-data"> {{-- WAJIB untuk upload --}}
 
-            {{-- sementara id_user diset manual --}}
-            <input type="hidden" name="id_user" value="1">
+            @csrf
 
             {{-- Tanggal Pengaduan --}}
             <div class="mb-3">
@@ -59,6 +59,17 @@
                           class="form-control rounded-3 @error('deskripsi') is-invalid @enderror"
                           placeholder="Tuliskan kronologi kejadian secara detail..." required></textarea>
                 @error('deskripsi')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            {{-- Upload Gambar Bukti --}}
+            <div class="mb-3">
+                <label for="gambar_bukti" class="form-label fw-semibold">Upload Bukti (Opsional)</label>
+                <input type="file" name="gambar_bukti" id="gambar_bukti"
+                       class="form-control rounded-3 @error('gambar_bukti') is-invalid @enderror"
+                       accept="image/*">
+                @error('gambar_bukti')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>

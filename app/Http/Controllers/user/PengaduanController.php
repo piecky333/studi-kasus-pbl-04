@@ -1,96 +1,84 @@
 <?php
 
 namespace App\Http\Controllers\user;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\laporan\Pengaduan;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage; // Pastikan ini ada
+use Illuminate\Support\Facades\Storage;
 
 class PengaduanController extends Controller
 {
-    /**
-     * Menampilkan daftar semua pengaduan milik user.
-     */
     public function index(Request $request)
     {
-        // Pengaduan milik user yang sedang login
         $query = Auth::user()->pengaduan()->latest();
 
-        // Cek jika ada input pencarian
-        if ($request->filled('search')) { // Gunakan filled() untuk cek lebih baik
+        if ($request->filled('search')) {
             $query->where('judul', 'like', '%' . $request->search . '%');
         }
 
-        // Data dengan paginasi
         $pengaduan = $query->paginate(10);
-
-        // Mengirim data ke view
         return view('pages.user.pengaduan.index', compact('pengaduan'));
     }
 
-    /**
-     * Menampilkan form untuk membuat pengaduan baru.
-     */
     public function create()
     {
-        // === KOREKSI ===
-        // Path view harus lengkap dari folder 'views'
-        return view('pages.user.pengaduan.create'); 
+        return view('pages.user.pengaduan.create');
     }
 
-    /**
-     * Menyimpan pengaduan baru ke database.
-     */
     public function store(Request $request)
     {
-        // Validasi
+        // VALIDASI
         $validatedData = $request->validate([
-            'judul' => 'required|string|max:255',
-            'jenis_kasus' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
-            // Gambar tidak divalidasi/diupload sesuai koreksi sebelumnya
+            'judul'            => 'required|string|max:255',
+            'jenis_kasus'      => 'required|string|max:255',
+            'deskripsi'        => 'required|string',
+            'tanggal_pengaduan'=> 'nullable|date',
+            'gambar_bukti'     => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        // Tambahkan id_user dan status default
+        // TAMBAH FIELD TAMBAHAN
         $validatedData['id_user'] = Auth::id();
-        $validatedData['status'] = 'Terkirim'; 
-        // Anda mungkin perlu menambahkan 'tanggal_pengaduan' jika tidak otomatis
-        // $validatedData['tanggal_pengaduan'] = now(); 
+        $validatedData['status'] = 'Terkirim';
 
+        // UPLOAD FILE
+        if ($request->hasFile('gambar_bukti')) {
+            $validatedData['gambar_bukti'] = 
+                $request->file('gambar_bukti')->store('bukti_pengaduan', 'public');
+        }
+
+        // SIMPAN
         Pengaduan::create($validatedData);
 
-        // Redirect ke halaman dashboard user
-        return redirect()->route('user.dashboard')
-                         ->with('success', 'Pengaduan berhasil dikirim!');
+        return redirect()
+            ->route('user.dashboard')
+            ->with('success', 'Pengaduan berhasil dikirim!');
     }
 
-    /**
-     * Menampilkan detail satu pengaduan.
-     */
     public function show($id)
     {
-        // Ambil pengaduan milik user ini, atau 404
-        // Eager load 'user' (walaupun sudah tahu user-nya, mungkin berguna di view)
-        $pengaduan = Auth::user()->pengaduan()->with('user')->findOrFail($id);
-        
+        $pengaduan = Auth::user()
+            ->pengaduan()
+            ->with('user')
+            ->findOrFail($id);
+
         return view('pages.user.pengaduan.show', compact('pengaduan'));
     }
 
-    /**
-     * Menghapus pengaduan.
-     */
     public function destroy($id)
     {
-        // Cari pengaduan milik user yang sedang login
         $pengaduan = Auth::user()->pengaduan()->findOrFail($id);
 
-        // === KOREKSI (Sesuai Struktur Database Anda) ===
-        // Hapus logika Storage::delete() karena tidak ada kolom 'image'
+        // DELETE FILE BUKTI
+        if ($pengaduan->gambar_bukti && Storage::disk('public')->exists($pengaduan->gambar_bukti)) {
+            Storage::disk('public')->delete($pengaduan->gambar_bukti);
+        }
 
         $pengaduan->delete();
 
-        return redirect()->route('user.dashboard')->with('success', 'Pengaduan berhasil dihapus.');
+        return redirect()
+            ->route('user.dashboard')
+            ->with('success', 'Pengaduan berhasil dihapus.');
     }
 }
-
