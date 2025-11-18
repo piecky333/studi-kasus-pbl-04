@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\admin\Prestasi;
-use App\Models\admin\Mahasiswa;
+use App\Models\admin\Mahasiswa; // Pastikan namespace ini benar
 use Illuminate\Support\Facades\Auth;
 
 class PrestasiController extends Controller
@@ -24,37 +24,42 @@ class PrestasiController extends Controller
      */
     public function create()
     {
-        // Form tambah prestasi, NIM dicari via AJAX
         return view('pages.admin.prestasi.create');
     }
 
     /**
      * Simpan data prestasi baru.
+     *
+     * === PERUBAHAN DI SINI ===
+     * Kita tidak lagi memvalidasi 'nim'.
+     * Kita memvalidasi 'id_mahasiswa' yang didapat dari AJAX.
      */
     public function store(Request $request)
-{
-    $request->validate([
-        'nim'         => 'required|exists:mahasiswa,nim',
-        'judul_prestasi' => 'required|string|max:255',
-        'tingkat'     => 'required|string|max:255',
-        'tanggal'     => 'required|date',
-        'deskripsi'   => 'nullable|string',
-    ]);
+    {
+        $request->validate([
+            // 'nim' tidak perlu lagi, kita pakai 'id_mahasiswa'
+            'id_mahasiswa' => 'required|integer|exists:mahasiswa,id_mahasiswa', // Pastikan nama kolom 'id_mahasiswa' benar
+            'judul_prestasi' => 'required|string|max:255',
+            'tingkat'      => 'required|string|max:255',
+            'tanggal'      => 'required|date',
+            'deskripsi'    => 'nullable|string',
+        ]);
 
-    $mahasiswa = Mahasiswa::where('nim', $request->nim)->first();
+        // Tidak perlu cari mahasiswa lagi, kita sudah punya ID-nya
+        // $mahasiswa = Mahasiswa::where('nim', $request->nim)->first(); // <- INI DIHAPUS
 
-    Prestasi::create([
-        'id_mahasiswa'     => $mahasiswa->id_mahasiswa,
-        'id_admin'         => Auth::user()->id_admin ?? null,
-        'nama_kegiatan'    => $request->judul_prestasi,
-        'tingkat_prestasi' => $request->tingkat,
-        'tahun'            => date('Y', strtotime($request->tanggal)),
-        'status_validasi'  => 'menunggu',
-        'deskripsi'        => $request->deskripsi,
-    ]);
+        Prestasi::create([
+            'id_mahasiswa'   => $request->id_mahasiswa, // Langsung pakai dari request
+            'id_admin'       => Auth::user()->id_admin ?? null,
+            'nama_kegiatan'  => $request->judul_prestasi,
+            'tingkat_prestasi' => $request->tingkat,
+            'tahun'          => date('Y', strtotime($request->tanggal)),
+            'status_validasi' => 'menunggu',
+            'deskripsi'      => $request->deskripsi,
+        ]);
 
-    return redirect()->route('admin.prestasi.index')->with('success', 'Data prestasi berhasil ditambahkan.');
-}
+        return redirect()->route('admin.prestasi.index')->with('success', 'Data prestasi berhasil ditambahkan.');
+    }
 
 
     /**
@@ -111,6 +116,13 @@ class PrestasiController extends Controller
 
     /**
      * AJAX: cari mahasiswa berdasarkan NIM.
+     *
+     * === PERUBAHAN DI SINI (ASUMSI) ===
+     * Saya asumsikan primary key Anda adalah 'id_mahasiswa'.
+     * Jika primary key Anda hanya 'id', ganti 'id_mahasiswa' => $mahasiswa->id_mahasiswa
+     * menjadi 'id_mahasiswa' => $mahasiswa->id
+     *
+     * Dan pastikan kolom di tabel mahasiswa juga 'id_mahasiswa'
      */
     public function cariMahasiswa(Request $request)
     {
@@ -129,7 +141,10 @@ class PrestasiController extends Controller
             return response()->json([
                 'success' => true,
                 'mahasiswa' => [
-                    'id_mahasiswa' => $mahasiswa->id_mahasiswa,
+                    // PASTIKAN NAMA KOLOM INI BENAR
+                    // Jika primary key di tabel mahasiswa adalah 'id', ganti di bawah ini menjadi $mahasiswa->id
+                    'id_mahasiswa' => $mahasiswa->id_mahasiswa, 
+                    
                     'nama' => $mahasiswa->nama,
                     'nim' => $mahasiswa->nim,
                     'email' => $mahasiswa->email,

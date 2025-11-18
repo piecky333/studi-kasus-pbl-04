@@ -30,6 +30,7 @@ class Pengaduan extends Model
         'jenis_kasus',
         'deskripsi',
         'status',
+        'gambar_bukti_path',
     ];
 
     /* ===========================
