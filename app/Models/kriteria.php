@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Model untuk tabel kriteria.
- * Menyimpan detail kriteria dan bobot yang dihasilkan (misalnya, dari AHP).
+ * Menyimpan detail kriteria dan bobot.
  */
 class kriteria extends Model
 {
@@ -25,15 +25,27 @@ class kriteria extends Model
         'bobot_kriteria',
     ];
 
-    // Relasi Many-to-One: Kriteria dimiliki oleh satu keputusan
+    /**
+     * Relasi Many-to-One: Kriteria dimiliki oleh satu keputusan.
+     */
     public function keputusan()
     {
         return $this->belongsTo(spkkeputusan::class, 'id_keputusan');
     }
 
-    // Relasi One-to-Many: Satu kriteria memiliki banyak penilaian
+    /**
+     * Relasi One-to-Many: Satu kriteria memiliki banyak penilaian.
+     */
     public function penilaian()
     {
         return $this->hasMany(Penilaian::class, 'id_kriteria');
+    }
+
+    /**
+     * Relasi One-to-Many: Satu kriteria memiliki banyak sub kriteria.
+     */
+    public function subKriteria()
+    {
+        return $this->hasMany(subkriteria::class, 'id_kriteria');
     }
 }

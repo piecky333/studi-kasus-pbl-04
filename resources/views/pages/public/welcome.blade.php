@@ -98,80 +98,51 @@
     </section>
 
     {{-- DIVISI SECTION --}}
-    <section id="divisi" class="py-16 sm:py-20 bg-gray-50">
-        <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            {{-- PERUBAHAN: Hapus 'wow fadeInDown', ganti 'js-animate' --}}
-            <h2 class="text-3xl sm:text-4xl font-extrabold text-blue-800 mb-4 js-animate" data-animation="fadeInDown">Divisi Unggulan HIMA-TI</h2>
-            {{-- PERUBAHAN: Hapus 'wow fadeInUp', ganti 'js-animate' --}}
-            <p class="text-gray-600 mb-10 max-w-2xl mx-auto js-animate" data-animation="fadeInUp">Kami memiliki berbagai divisi yang berperan aktif dalam
-                mendukung kegiatan organisasi dan pengembangan mahasiswa.</p>
+<section id="divisi" class="py-16 sm:py-20 bg-gray-50">
+    <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-blue-800 mb-4 js-animate" data-animation="fadeInDown">
+            Divisi Unggulan HIMA-TI
+        </h2>
 
-                {{-- 
-                    PERUBAHAN: 
-                    - Hapus 'wow fadeInUp'
-                    - Hapus 'data-wow-delay'
-                    - Tambah 'js-animate' dan 'data-delay' (misal: 100)
-                --}}
-                <div class="bg-white rounded-xl shadow-xl hover:shadow-2xl transition duration-500 text-center flex flex-col items-center p-6 js-animate group"
-                    data-animation="fadeInUp" data-delay="100">
-                    <div class="mb-4 bg-blue-100 rounded-full p-4 transition duration-300 transform group-hover:scale-110 group-hover:rotate-6">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-10 h-10 text-blue-700">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M9 17.25v1.007a3 3 0 0 1-.879 2.122l-.72.72m0-12.245 2.12-.213A2.25 2.25 0 0 1 15 7.12v4.205m-3 7.622-3 .344-3.086 3.086a2.25 2.25 0 0 1-3.182 0l-.51-.51m10.87-4.482.468.468a2.25 2.25 0 0 1 0 3.182l-2.094 2.093a2.25 2.25 0 0 1-3.182 0l-.499-.5m10.426-11.854L19.5 2.25m-2.25 2.25h1.5A2.25 2.25 0 0 1 21 6v15M10.75 8.75V15.5" />
-                        </svg>
-                    </div>
-                    <h3 class="font-bold text-xl text-gray-900 mb-2">Riset & Teknologi</h3>
-                    <p class="text-sm text-gray-500">Mengembangkan kemampuan teknis dan inovasi produk.</p>
-                </div>
+        <p class="text-gray-600 mb-10 max-w-2xl mx-auto js-animate" data-animation="fadeInUp">
+            Kami memiliki berbagai divisi yang berperan aktif dalam mendukung kegiatan organisasi dan pengembangan mahasiswa.
+        </p>
 
-                {{-- PERUBAHAN: Ganti wow.js ke 'js-animate' dengan delay 200 --}}
-                <div class="bg-white rounded-xl shadow-xl hover:shadow-2xl transition duration-500 text-center flex flex-col items-center p-6 js-animate group"
-                    data-animation="fadeInUp" data-delay="200">
-                    <div class="mb-4 bg-blue-100 rounded-full p-4 transition duration-300 transform group-hover:scale-110 group-hover:rotate-6">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-10 h-10 text-blue-700">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M18 18.72a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm-9.5-3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM21 12c0 2.896-.75 5.584-2.036 7.926l-1.638-3.275a5.5 5.5 0 0 0-9.652 0l-1.638 3.275C3.75 17.584 3 14.896 3 12c0-5.523 4.477-10 10-10a10 10 0 0 1 8 4h-2a8 8 0 0 0-6-3" />
-                        </svg>
-                    </div>
-                    <h3 class="font-bold text-xl text-gray-900 mb-2">Humas</h3>
-                    <p class="text-sm text-gray-500">Membangun citra positif dan menjalin relasi eksternal.</p>
-                </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
 
-                {{-- PERUBAHAN: Ganti wow.js ke 'js-animate' dengan delay 300 --}}
-                <div class="bg-white rounded-xl shadow-xl hover:shadow-2xl transition duration-500 text-center flex flex-col items-center p-6 js-animate group"
-                    data-animation="fadeInUp" data-delay="300">
-                    <div class="mb-4 bg-blue-100 rounded-full p-4 transition duration-300 transform group-hover:scale-110 group-hover:rotate-6">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-10 h-10 text-blue-700">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M9.53 16.122a3 3 0 0 0-5.78 1.124l-3 5a3 3 0 0 0 2.27 3.75l20.5-5.5a3 3 0 0 0-1.25-5.5l-2.45-1.9a3.003 3.003 0 0 0-2.497-.37l-2.75 2.75a3 3 0 0 0-4.242 0l-1.75 1.75" />
-                        </svg>
-                    </div>
-                    <h3 class="font-bold text-xl text-gray-900 mb-2">Minat & Bakat</h3>
-                    <p class="text-sm text-gray-500">Mengembangkan potensi non-akademik dan kreatifitas.</p>
-                </div>
+            @foreach ($divisi as $index => $div)
+    <div class="bg-white rounded-xl shadow-xl hover:shadow-2xl transition 
+                duration-500 text-center flex flex-col items-center p-6 
+                js-animate group"
+         data-animation="fadeInUp" data-delay="{{ ($index + 1) * 100 }}">
 
-                {{-- PERUBAHAN: Ganti wow.js ke 'js-animate' dengan delay 400 --}}
-                <div class="bg-white rounded-xl shadow-xl hover:shadow-2xl transition duration-500 text-center flex flex-col items-center p-6 js-animate group"
-                    data-animation="fadeInUp" data-delay="400">
-                    <div class="mb-4 bg-blue-100 rounded-full p-4 transition duration-300 transform group-hover:scale-110 group-hover:rotate-6">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-10 h-10 text-blue-700">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM15.75 10.5H12a2.25 2.25 0 0 0-2.25 2.25v4.5M10.5 7.5h.008v.008H10.5V7.5Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                        </svg>
-                    </div>
-                    <h3 class="font-bold text-xl text-gray-900 mb-2">Akademik</h3>
-                    <p class="text-sm text-gray-500">Meningkatkan kualitas pembelajaran dan prestasi akademis.</p>
-                </div>
+        <!-- Foto Divisi -->
+        <div class="mb-4">
+            <img src="{{ asset('storage/uploads/divisi/' . $div->foto_divisi) }}"
+     alt="{{ $div->nama_divisi }}"
+     class="w-28 h-28 object-cover group-hover:scale-110 group-hover:rotate-2 transition">
 
-            </div>
         </div>
-    </section>
+
+        <!-- Nama Divisi -->
+        <h3 class="font-bold text-xl text-gray-900 mb-2">
+            {{ $div->nama_divisi }}
+        </h3>
+
+        <!-- Isi Deskripsi -->
+        <p class="text-sm text-gray-500">
+            {{ $div->isi_divisi }}
+        </p>
+
+    </div>
+@endforeach
+
+
+        </div>
+    </div>
+</section>
+
 
     {{-- BERITA SECTION (DINAMIS) --}}
     <section id="berita" class="py-16 sm:py-20 bg-white">

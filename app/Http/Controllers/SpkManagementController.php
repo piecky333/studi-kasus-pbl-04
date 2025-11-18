@@ -8,7 +8,7 @@ use App\Models\kriteria;
 use App\Models\alternatif;
 use App\Models\penilaian;
 use App\Models\hasilakhir;
-use App\Models\subkriteria; // Diperlukan untuk penghapusan terstruktur (pastikan model ini ada)
+use App\Models\subkriteria; // Diperlukan untuk penghapusan bertingkat (cascading delete)
 
 class SpkManagementController extends Controller
 {
@@ -19,7 +19,7 @@ class SpkManagementController extends Controller
     public function index()
     {
         $keputusanList = spkkeputusan::all();
-        return view('pages.admin.spk.index', [ 
+        return view('pages.admin.spk.daftar_keputusan.index', [ 
             'keputusanList' => $keputusanList,
             'pageTitle' => 'Daftar Keputusan SPK'
         ]);
@@ -27,7 +27,7 @@ class SpkManagementController extends Controller
     
     public function create()
     {
-        return view('pages.admin.spk.create', [
+        return view('pages.admin.spk.daftar_keputusan.create', [
             'pageTitle' => 'Buat Keputusan SPK Baru'
         ]);
     }
@@ -106,7 +106,7 @@ class SpkManagementController extends Controller
                             ->with('subKriteria') 
                             ->get();
 
-        return view('pages.admin.spk.kriteria_view', [
+        return view('pages.admin.spk.kriteria.index', [
             'keputusan' => $keputusan,
             'kriteriaData' => $kriteria,
             'pageTitle' => 'Manajemen Kriteria & Sub Kriteria'
@@ -117,7 +117,7 @@ class SpkManagementController extends Controller
     {
         $keputusan = spkkeputusan::findOrFail($idKeputusan);
         
-        return view('pages.admin.spk.kriteria_create', [
+        return view('pages.admin.spk.kriteria.create', [
             'keputusan' => $keputusan,
             'pageTitle' => 'Tambah Kriteria Baru'
         ]);
@@ -126,7 +126,6 @@ class SpkManagementController extends Controller
     public function storeKriteria(Request $request, $idKeputusan)
     {
         $validated = $request->validate([
-            // unique per id_keputusan
             'kode_kriteria' => 'required|string|max:10|unique:kriteria,kode_kriteria,NULL,id_kriteria,id_keputusan,'.$idKeputusan, 
             'nama_kriteria' => 'required|string|max:255',
             'jenis_kriteria' => 'required|in:Benefit,Cost',
@@ -162,7 +161,6 @@ class SpkManagementController extends Controller
         $kriteria = kriteria::where('id_keputusan', $idKeputusan)->where('id_kriteria', $idKriteria)->firstOrFail();
         
         $validated = $request->validate([
-            // unique harus mengecualikan ID kriteria yang sedang diupdate
             'kode_kriteria' => 'required|string|max:10|unique:kriteria,kode_kriteria,'.$idKriteria.',id_kriteria,id_keputusan,'.$idKeputusan,
             'nama_kriteria' => 'required|string|max:255',
             'jenis_kriteria' => 'required|in:Benefit,Cost',
@@ -201,7 +199,7 @@ class SpkManagementController extends Controller
         $keputusan = spkkeputusan::findOrFail($idKeputusan);
         $alternatif = alternatif::where('id_keputusan', $idKeputusan)->get();
 
-        return view('pages.admin.spk.alternatif_view', [
+        return view('pages.admin.spk.alternatif.index', [
             'keputusan' => $keputusan,
             'alternatifData' => $alternatif,
             'pageTitle' => 'Manajemen Data Alternatif'
@@ -295,7 +293,7 @@ class SpkManagementController extends Controller
             $query->where('id_keputusan', $idKeputusan);
         })->get()->groupBy('id_alternatif');
 
-        return view('pages.admin.spk.penilaian_view', [ // Perbaikan: ganti pages.admin.spk.penilaian menjadi pages.admin.spk.penilaian_view (sesuai convention Anda)
+        return view('pages.admin.spk.penilaian.index', [ 
             'keputusan' => $keputusan,
             'kriteria' => $kriteria,
             'alternatif' => $alternatif,
@@ -315,7 +313,7 @@ class SpkManagementController extends Controller
                            ->orderBy('rangking', 'asc')
                            ->get();
 
-        return view('pages.admin.spk.hasil_akhir_view', [ // Perbaikan: ganti pages.admin.spk.hasil_akhir menjadi pages.admin.spk.hasil_akhir_view
+        return view('pages.admin.spk.hasil_akhir_view', [ 
             'keputusan' => $keputusan,
             'hasilData' => $hasil,
             'pageTitle' => 'Hasil Akhir Keputusan'
