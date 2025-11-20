@@ -26,7 +26,7 @@
             <i class="fas fa-fw bi bi-chat-dots-fill"></i>
             <span>Pengaduan</span></a>
     </li>
-    
+
     <li class="nav-item">
         <a class="nav-link" href="{{ route('admin.sanksi.index') }}">
             <i class="fas fa-fw bi bi-exclamation-triangle-fill"></i>
@@ -50,7 +50,7 @@
     <div class="sidebar-heading">
         MANAJEMEN DATA
     </div>
-    
+
     <li class="nav-item">
         <a class="nav-link" href="{{ route('admin.spk.index') }}">
             <i class="fas fa-fw bi bi-list-task"></i>
@@ -58,64 +58,19 @@
         </a>
     </li>
 
-    {{-- MENU STATIS SPK (MENGGUNAKAN ID 1 SEBAGAI PLACEHOLDER) --}}
-    
-    <li class="nav-item">
-        <a class="nav-link" href="{{ route('admin.spk.manage.kriteria', 1) }}">
-            <i class="fas fa-fw bi bi-card-checklist"></i>
-            <span>Data Kriteria</span>
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link" href="{{ route('admin.spk.manage.subkriteria', 1) }}">
-            <i class="fas fa-fw bi bi-bar-chart-steps"></i>
-            <span>Data Sub Kriteria</span>
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{{ route('admin.spk.manage.alternatif', 1) }}">
-            <i class="fas fa-fw bi bi-people-fill"></i>
-            <span>Data Alternatif</span>
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link" href="{{ route('admin.spk.manage.penilaian', 1) }}">
-            <i class="fas fa-fw bi bi-pencil-square"></i>
-            <span>Data Penilaian</span>
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link" href="{{ route('admin.spk.calculate.proses', 1) }}">
-            <i class="fas fa-fw bi bi-calculator-fill"></i>
-            <span>Data Perhitungan</span>
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link" href="{{ route('admin.spk.manage.hasil', 1) }}">
-            <i class="fas fa-fw bi bi-bar-chart-line-fill"></i>
-            <span>Data Hasil Akhir</span>
-        </a>
-    </li>
-    {{-- AKHIR MENU STATIS SPK --}}
-
-
     <hr class="sidebar-divider d-none d-md-block">
-    
+
     <li class="nav-item">
         <a class="nav-link" href="{{ url('/') }}">
             <i class="bi bi-house-door"></i>
             <span>Kembali ke Website</span>
         </a>
     </li>
-    
+
     <hr class="sidebar-divider d-none d-md-block">
 
     <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
     </div>
-    
+
 </ul>

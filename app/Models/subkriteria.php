@@ -10,18 +10,19 @@ use Illuminate\Database\Eloquent\Model;
  * Menyimpan detail skala penilaian bertingkat (misalnya, 
  * 'Sangat Baik' = 5) yang terkait dengan Kriteria tertentu.
  */
-class subkriteria extends Model
+class Subkriteria extends Model 
 {
     use HasFactory;
 
-    protected $table = 'sub_kriteria'; // Sesuaikan dengan nama tabel Anda di database
+    // KOREKSI: Menggunakan huruf kecil semua agar sesuai dengan konvensi database MySQL
+    protected $table = 'subkriteria'; 
     protected $primaryKey = 'id_subkriteria';
     public $timestamps = false; 
 
     protected $fillable = [
         'id_kriteria', // Foreign Key ke tabel Kriteria
         'deskripsi',
-        'nilai_skala', // Nilai numerik yang akan digunakan untuk normalisasi
+        'nilai_skala', 
     ];
 
     /**
@@ -29,7 +30,6 @@ class subkriteria extends Model
      */
     public function kriteria()
     {
-        // Sesuaikan dengan nama Model Kriteria Anda
-        return $this->belongsTo(kriteria::class, 'id_kriteria'); 
+        return $this->belongsTo(Kriteria::class, 'id_kriteria');
     }
 }

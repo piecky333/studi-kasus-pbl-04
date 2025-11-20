@@ -21,7 +21,7 @@ class HomeController extends Controller
             ->take(3)
             ->get();
 
-        $divisi = Divisi::all();  // 🔥 tambahkan ini
+        $divisi = Divisi::all();  
 
         return view('pages.public.welcome', compact(
             'kegiatanTerbaru',

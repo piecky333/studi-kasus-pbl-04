@@ -2,177 +2,173 @@
 
 namespace App\Services;
 
-use App\Models\hasilakhir; 
-use App\Models\alternatif; 
-use App\Services\SpkDataService; 
-use Illuminate\Support\Facades\DB; 
-use App\Services\WeightService; // Pastikan import ini ada
+use App\Services\SpkDataService; // Untuk mengambil data mentah
+use App\Services\WeightService;  // Untuk mengambil bobot dan tipe kriteria
 
 /**
- * Layanan untuk menghitung perangkingan menggunakan metode Simple Additive Weighting (SAW).
+ * Layanan yang bertanggung jawab untuk melakukan perhitungan metode Simple Additive Weighting (SAW).
  */
 class SawService
 {
+    protected SpkDataService $dataService;
     protected WeightService $weightService;
-    protected SpkDataService $spkDataService;
 
-    public function __construct(WeightService $weightService, SpkDataService $spkDataService)
+    public function __construct(SpkDataService $dataService, WeightService $weightService)
     {
+        $this->dataService = $dataService;
         $this->weightService = $weightService;
-        $this->spkDataService = $spkDataService;
     }
 
     /**
-     * Metode publik baru untuk menampilkan data proses perhitungan (tanpa menyimpan).
-     * Dipanggil oleh SpkCalculationController::showPerhitungan.
-     *
-     * @param int $idKeputusan
-     * @return array Data perhitungan yang sudah di-rank.
+     * Menjalankan seluruh proses perhitungan SAW (Normalisasi hingga Ranking).
+     * * @param int $idKeputusan
+     * @return array Data lengkap proses perhitungan.
      */
     public function calculateProcessData(int $idKeputusan): array
     {
-        // 0. Ambil Data Mentah
-        $dataResult = $this->spkDataService->getSpkRawData($idKeputusan);
-        $rawData = $dataResult['alternatives'];
+        // 1. Ambil Data Mentah (Xij)
+        $rawData = $this->dataService->getSpkRawData($idKeputusan);
+        $alternatives = $rawData['alternatives'];
+        $criteriaList = $rawData['criteria']; // Daftar Kriteria (id, kode, jenis)
 
-        if (empty($rawData)) {
-            throw new \Exception("Tidak ada data alternatif atau penilaian yang ditemukan untuk perhitungan.");
+        if (empty($alternatives) || $criteriaList->isEmpty()) {
+            throw new \Exception("Data Kriteria atau Alternatif tidak lengkap untuk Keputusan ID: " . $idKeputusan);
         }
 
-        // 1. Normalisasi Data (memanggil protected method)
-        $normalizedData = $this->normalizeData($rawData, $idKeputusan);
+        // 2. Ambil Bobot (Wj) dan Tipe Kriteria
+        $weights = $this->weightService->getSawWeights($idKeputusan); // [KodeKriteria => Bobot]
+        $criteriaType = $this->weightService->getCriteriaType($idKeputusan); // [KodeKriteria => Jenis]
+        $criteriaKeys = $criteriaList->pluck('kode_kriteria')->toArray();
 
-        // 2. Hitung Nilai Preferensi dan Peringkat (memanggil protected method)
-        $rankedData = $this->rankData($normalizedData, $idKeputusan);
+        // 3. Normalisasi Matriks (Rij)
+        $normalizationData = $this->normalizeMatrix($alternatives, $criteriaKeys, $criteriaType);
+
+        // 4. Perhitungan Nilai Preferensi (Vi)
+        $rankingData = $this->calculatePreferences($normalizationData['normalized_matrix'], $weights, $alternatives, $criteriaKeys);
         
-        return $rankedData;
+        // 5. Sorting (Perangkingan)
+        usort($rankingData, function ($a, $b) {
+            return $b['final_score'] <=> $a['final_score']; // Sorting menurun (descending)
+        });
+
+        // 6. Tambahkan Ranking
+        foreach ($rankingData as $index => &$item) {
+            $item['rank'] = $index + 1;
+        }
+
+        return [
+            'raw_data' => $alternatives,
+            'criteria_metadata' => $criteriaList,
+            'weights' => $weights,
+            'criteria_type' => $criteriaType,
+            'normalization_summary' => $normalizationData['summary'], // Max/Min per kriteria
+            'normalized_matrix' => $normalizationData['normalized_matrix'], // Matriks Rij
+            'ranking_results' => $rankingData, // Hasil Vi
+        ];
     }
 
     /**
-     * Metode utama untuk mengeksekusi perhitungan dan menyimpan hasil.
-     * (executeAndSaveResult tetap sama)
+     * Melakukan proses normalisasi matriks Xij menjadi Rij.
      */
-    public function executeAndSaveResult(int $idKeputusan): array
+    protected function normalizeMatrix(array $alternatives, array $criteriaKeys, array $criteriaType): array
     {
-        // ... (Logika executeAndSaveResult tetap sama)
-        $dataResult = $this->spkDataService->getSpkRawData($idKeputusan);
-        $rawData = $dataResult['alternatives'];
+        $summary = [];
+        $normalizedMatrix = [];
 
-        if (empty($rawData)) {
-            throw new \Exception("Tidak ada data alternatif atau penilaian yang ditemukan.");
-        }
-
-        $normalizedData = $this->normalizeData($rawData, $idKeputusan);
-        $rankedData = $this->rankData($normalizedData, $idKeputusan);
-
-        $this->saveResults($idKeputusan, $rankedData);
-
-        return $rankedData;
-    }
-    
-    // ... (protected function normalizeData tetap sama)
-    protected function normalizeData(array $rawData, int $idKeputusan): array
-    {
-        // ... (Logika Normalisasi Anda) ...
-        $weights = $this->weightService->getSawWeights($idKeputusan);
-        $criteriaType = $this->weightService->getCriteriaType($idKeputusan);
-        
-        $criteriaKeys = array_keys($weights);
-        $minMaxValues = [];
-        $normalizedData = [];
-
-        foreach ($criteriaKeys as $key) {
-            $values = array_column($rawData, $key);
-            $minMaxValues[$key]['max'] = max($values) ?: 1e-9;
-            $minMaxValues[$key]['min'] = min($values) ?: 1e-9;
-        }
-
-        foreach ($rawData as $alternatif) {
-            $normalizedAlternatif = [
-                'id_alternatif' => $alternatif['id_alternatif'], 
-                'nama' => $alternatif['nama'],
-                'normalized' => [], 
+        // 3a. Cari Nilai Max/Min per Kriteria
+        foreach ($criteriaKeys as $kodeKriteria) {
+            $values = array_column($alternatives, $kodeKriteria);
+            $summary[$kodeKriteria] = [
+                'max' => max($values),
+                'min' => min($values),
             ];
+        }
 
-            foreach ($criteriaKeys as $key) {
-                $value = $alternatif[$key];
-                $max = $minMaxValues[$key]['max'];
-                $min = $minMaxValues[$key]['min'];
-                $type = $criteriaType[$key]; 
+        // 3b. Hitung Rij (Normalisasi)
+        foreach ($alternatives as $altIndex => $alt) {
+            $normalizedMatrix[$altIndex] = $alt;
+            
+            foreach ($criteriaKeys as $kodeKriteria) {
+                $max = $summary[$kodeKriteria]['max'];
+                $min = $summary[$kodeKriteria]['min'];
+                $xij = $alt[$kodeKriteria];
+                $type = $criteriaType[$kodeKriteria];
 
-                $rij = 0; 
+                $rij = 0;
+                
+                // Rumus Normalisasi SAW
                 if ($type === 'benefit') {
-                    $rij = $value / $max;
+                    // Benefit: Rij = Xij / Max(Xij)
+                    $rij = ($max != 0) ? $xij / $max : 0;
                 } elseif ($type === 'cost') {
-                    $rij = $min / ($value ?: 1e-9);
+                    // Cost: Rij = Min(Xij) / Xij
+                    $rij = ($xij != 0) ? $min / $xij : 0;
                 }
 
-                $normalizedAlternatif['normalized'][$key] = $rij;
+                $normalizedMatrix[$altIndex][$kodeKriteria] = $rij;
             }
-            $normalizedData[] = $normalizedAlternatif;
         }
 
-        return $normalizedData;
+        return [
+            'summary' => $summary,
+            'normalized_matrix' => $normalizedMatrix,
+        ];
     }
-    
-    // ... (protected function rankData tetap sama)
-    protected function rankData(array $normalizedData, int $idKeputusan): array
-    {
-        // ... (Logika Ranking Anda) ...
-        $weights = $this->weightService->getSawWeights($idKeputusan);
-        $criteriaKeys = array_keys($weights);
-        $rankedData = [];
 
-        foreach ($normalizedData as $item) {
-            $preferenceValue = 0;
-            
-            foreach ($criteriaKeys as $key) {
-                $weight = $weights[$key]; 
-                $normalizedScore = $item['normalized'][$key];
-                $preferenceValue += ($weight * $normalizedScore);
+    /**
+     * Menghitung nilai preferensi akhir (Vi) untuk setiap alternatif.
+     */
+    protected function calculatePreferences(array $normalizedMatrix, array $weights, array $alternatives, array $criteriaKeys): array
+    {
+        $rankingData = [];
+
+        foreach ($normalizedMatrix as $altIndex => $altRij) {
+            $finalScore = 0;
+
+            // Vi = SUM (Wj * Rij)
+            foreach ($criteriaKeys as $kodeKriteria) {
+                $rij = $altRij[$kodeKriteria];
+                $wj = $weights[$kodeKriteria];
+                
+                $finalScore += $rij * $wj;
             }
 
-            $rankedData[] = [
-                'id_alternatif' => $item['id_alternatif'], 
-                'nama' => $item['nama'],
-                'nilai_preferensi_V' => round($preferenceValue, 4), 
-                'normalized_scores' => $item['normalized'],
+            $rankingData[] = [
+                'id_alternatif' => $alternatives[$altIndex]['id_alternatif'],
+                'nama' => $alternatives[$altIndex]['nama'],
+                'final_score' => $finalScore,
+                // Matriks Ternormalisasi (Rij) dimasukkan untuk kemudahan display
+                'rij_data' => $altRij, 
             ];
         }
 
-        usort($rankedData, function ($a, $b) {
-            return $b['nilai_preferensi_V'] <=> $a['nilai_preferensi_V'];
-        });
-
-        $rank = 1;
-        $prevValue = null;
-        foreach ($rankedData as $index => &$item) {
-            if ($prevValue !== null && $item['nilai_preferensi_V'] < $prevValue) {
-                $rank = $index + 1;
-            }
-            $item['peringkat'] = $rank;
-            $prevValue = $item['nilai_preferensi_V'];
-        }
-
-        return $rankedData;
+        return $rankingData;
     }
-
-    // ... (protected function saveResults tetap sama)
-    protected function saveResults(int $idKeputusan, array $rankedData): void
+    
+    /**
+     * Menyimpan hasil ranking dan skor akhir ke database.
+     * Metode ini akan dipanggil oleh SpkCalculationController@runCalculation.
+     */
+    public function executeAndSaveResult(int $idKeputusan): void
     {
-        DB::transaction(function () use ($idKeputusan, $rankedData) {
-            $alternatifIds = alternatif::where('id_keputusan', $idKeputusan)->pluck('id_alternatif');
-            hasilakhir::whereIn('id_alternatif', $alternatifIds)->delete();
-
-            $insertData = [];
-            foreach ($rankedData as $data) {
-                $insertData[] = [
-                    'id_alternatif' => $data['id_alternatif'],
-                    'skor_akhir' => $data['nilai_preferensi_V'],
-                    'rangking' => $data['peringkat'],
-                ];
-            }
-            hasilakhir::insert($insertData);
-        });
+        $results = $this->calculateProcessData($idKeputusan);
+        
+        // Asumsi: Anda memiliki Model HasilAkhir yang siap di-insert
+        // Misalnya: use App\Models\HasilAkhir; 
+        
+        foreach ($results['ranking_results'] as $result) {
+            \App\Models\HasilAkhir::updateOrCreate(
+                [
+                    'id_keputusan' => $idKeputusan,
+                    'id_alternatif' => $result['id_alternatif'],
+                ],
+                [
+                    'nilai_preferensi' => $result['final_score'],
+                    'ranking' => $result['rank'],
+                    // Anda mungkin juga menyimpan bobot yang digunakan saat perhitungan
+                    // 'bobot_digunakan' => json_encode($results['weights']),
+                ]
+            );
+        }
     }
 }

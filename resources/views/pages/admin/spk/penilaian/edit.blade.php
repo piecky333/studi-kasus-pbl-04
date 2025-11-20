@@ -2,95 +2,112 @@
 
 @section('content')
 
-<div class="max-w-full mx-auto py-6 sm:px-6 lg:px-8">
-<div class="bg-white shadow-xl overflow-hidden rounded-lg p-6">
-<header class="mb-6 border-b pb-4">
-<h1 class="text-2xl font-bold text-gray-900 leading-tight">{{ $pageTitle }}</h1>
-<p class="mt-1 text-sm text-gray-500">Keputusan: {{ $keputusan->nama_keputusan }} | Isi atau perbarui nilai mentah ($X\_{ij}$) setiap alternatif.</p>
-</header>
+<div class="max-w-6xl mx-auto py-8 sm:px-6 lg:px-8">
+    <div class="bg-white shadow-xl rounded-lg p-8">
+        <header class="mb-6 border-b pb-4">
+            <h1 class="text-2xl font-bold text-gray-900 leading-tight">{{ $pageTitle }}</h1>
+            <p class="text-sm text-gray-600">
+                Input Penilaian untuk: <span class="font-semibold text-indigo-600 text-base">{{ $alternatif->nama_alternatif }}</span>
+            </p>
+        </header>
 
-    {{-- Pesan Error Global --}}
-    @if (session('error'))
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-sm">
-            <strong class="font-bold">Error:</strong> {{ session('error') }}
-        </div>
-    @endif
-    
-    {{-- Pesan Peringatan --}}
-    @if ($kriteria->isEmpty() || $alternatif->isEmpty())
-        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6" role="alert">
-            <p class="font-bold">Perhatian!</p>
-            <p>Data Kriteria ({{ $kriteria->count() }}) atau Alternatif ({{ $alternatif->count() }}) masih kosong. Anda tidak dapat mengisi matriks saat ini.</p>
-        </div>
-    @endif
+        @if ($errors->any())
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 text-sm">
+                <strong class="font-bold">Oops! Ada masalah dengan input Anda:</strong>
+                <ul class="mt-2 list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-    {{-- FORM MASS UPDATE --}}
-    <form action="{{ route('admin.spk.manage.penilaian.update', $keputusan->id_keputusan) }}" method="POST">
-        @csrf
-        
-        <div class="overflow-x-auto border border-gray-200 rounded-lg">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="sticky left-0 bg-gray-100 px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r w-1/4">Alternatif (A)</th>
-                        @foreach($kriteria as $k)
-                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider" 
-                            title="Kriteria: {{ $k->nama_kriteria }} ({{ $k->jenis_kriteria }})">
-                            {{ $k->kode_kriteria }}
-                        </th>
-                        @endforeach
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @forelse($alternatif as $alt)
-                    <tr class="hover:bg-gray-50">
-                        <td class="sticky left-0 bg-white px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-r">
-                            {{ $alt->nama_alternatif }}
-                        </td>
-                        
-                        {{-- Loop Input untuk setiap Kriteria --}}
-                        @foreach($kriteria as $k)
-                        <td class="px-4 py-2 whitespace-nowrap text-sm text-center">
-                            @php
-                                $key = $alt->id_alternatif . '_' . $k->id_kriteria;
-                                $nilai_saat_ini = $penilaianData->has($key) ? $penilaianData->get($key)->nilai : '';
-                            @endphp
+        <form action="{{ route('penilaian.update', [$keputusan->id_keputusan, $alternatif->id_alternatif]) }}" method="POST">
+            @csrf
+            @method('PUT')
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                {{-- Kolom Kiri: Form Input --}}
+                <div class="space-y-6">
+                    <h3 class="text-lg font-bold text-gray-800 border-b pb-2">Input Nilai Berdasarkan Kriteria</h3>
+                    
+                    @forelse($kriteriaList as $kriteria)
+                        @php
+                            $nilaiSaatIni = $penilaianData[$kriteria->id_kriteria] ?? 0;
+                            $inputName = "nilai_kriteria[{$kriteria->id_kriteria}]";
+                            $isSubkriteria = isset($subKriteriaMap[$kriteria->id_kriteria]);
+                        @endphp
 
-                            <input type="number" 
-                                   step="0.01" 
-                                   name="penilaian[{{ $alt->id_alternatif }}][{{ $k->id_kriteria }}]"
-                                   value="{{ old('penilaian.' . $alt->id_alternatif . '.' . $k->id_kriteria, $nilai_saat_ini) }}"
-                                   placeholder="Nilai"
-                                   required
-                                   class="w-full text-center text-sm border border-gray-300 rounded-md p-1 focus:border-blue-500 focus:ring-blue-500 @error('penilaian.' . $alt->id_alternatif . '.' . $k->id_kriteria) border-red-500 @enderror">
-                        </td>
-                        @endforeach
-                    </tr>
+                        <div class="p-4 border rounded-md {{ $isSubkriteria ? 'bg-indigo-50 border-indigo-200' : 'bg-gray-50 border-gray-200' }}">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                {{ $kriteria->kode_kriteria }} - {{ $kriteria->nama_kriteria }}
+                                <span class="text-xs italic text-gray-500">({{ $kriteria->jenis_kriteria }})</span>
+                            </label>
+
+                            @if($isSubkriteria)
+                                {{-- Jika Sub Kriteria (Dropdown) --}}
+                                <select name="{{ $inputName }}" 
+                                        class="mt-1 block w-full py-2 px-3 text-base border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" required>
+                                    <option value="" disabled selected>-- Pilih Nilai Sub Kriteria --</option>
+                                    @foreach($subKriteriaMap[$kriteria->id_kriteria] as $konversi => $namaSub)
+                                        <option value="{{ $konversi }}" {{ (string)$nilaiSaatIni == (string)$konversi ? 'selected' : '' }}>
+                                            {{ $namaSub }} (Nilai: {{ number_format($konversi, 4) }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            @else
+                                {{-- Jika Input Langsung (Angka) --}}
+                                <input type="number" name="{{ $inputName }}" 
+                                       value="{{ old($inputName, number_format($nilaiSaatIni, 4, '.', '')) }}"
+                                       step="any" min="0" 
+                                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                       placeholder="Masukkan nilai numerik" required>
+                            @endif
+                            @error($inputName)
+                                <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                            @enderror
+                        </div>
                     @empty
-                    <tr>
-                        <td colspan="{{ $kriteria->count() + 1 }}" class="px-6 py-4 text-center text-sm font-medium text-gray-500 bg-gray-50">
-                            Tidak ada Alternatif yang tersedia.
-                        </td>
-                    </tr>
+                        <p class="text-gray-500">Belum ada Kriteria yang didaftarkan.</p>
                     @endforelse
-                </tbody>
-            </table>
-        </div>
+                </div>
 
-        <div class="mt-6 flex justify-end space-x-3">
-            <a href="{{ route('admin.spk.manage.penilaian', $keputusan->id_keputusan) }}" 
-               class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition duration-150">
-                <i class="fas fa-arrow-left mr-2"></i> Batalkan Edit
-            </a>
-            {{-- Tombol Submit --}}
-            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150">
-                <i class="fas fa-save mr-2"></i> Simpan Matriks Penilaian
-            </button>
-        </div>
-    </form>
+                {{-- Kolom Kanan: Panduan Penilaian --}}
+                <div class="space-y-6">
+                    <h3 class="text-lg font-bold text-gray-800 border-b pb-2">Panduan Nilai Sub Kriteria</h3>
+                    
+                    @forelse($kriteriaList as $kriteria)
+                        @if ($kriteria->subKriteria->count() > 0)
+                            <div class="p-4 bg-white rounded-md shadow-sm border border-indigo-300">
+                                <p class="font-bold text-base text-indigo-700">{{ $kriteria->kode_kriteria }} - {{ $kriteria->nama_kriteria }}</p>
+                                <p class="text-sm italic text-gray-600">Pilih salah satu dari:</p>
+                                <ul class="list-disc list-inside mt-2 text-sm text-gray-700 space-y-1">
+                                    @foreach($kriteria->subKriteria as $sub)
+                                        <li>{{ $sub->nama_subkriteria }} (Konversi: **{{ number_format($sub->nilai_konversi, 4) }}**)</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                    @empty
+                        <p class="text-gray-500">Tidak ada kriteria yang menggunakan Sub Kriteria.</p>
+                    @endforelse
+                </div>
+            </div>
 
+            {{-- Tombol Aksi --}}
+            <div class="mt-8 flex justify-end space-x-3">
+                <a href="{{ route('penilaian.index', $keputusan->id_keputusan) }}" 
+                   class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition duration-150 shadow-sm">
+                    Batal
+                </a>
+                <button type="submit"
+                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">
+                    <i class="fas fa-check mr-2"></i> Selesai & Simpan Penilaian
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
-
-</div>
 @endsection

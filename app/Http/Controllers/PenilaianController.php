@@ -4,118 +4,91 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\spkkeputusan;
-use App\Models\kriteria;
 use App\Models\alternatif;
+use App\Models\kriteria;
 use App\Models\penilaian;
-use Illuminate\Support\Facades\DB; // Untuk transaksi database
 
 /**
- * Mengelola tampilan dan Mass Update Matriks Penilaian (Xij)
- * dalam sebuah Keputusan SPK.
- * Terikat pada parameter {idKeputusan}.
+ * Mengelola Matriks Penilaian (Xij) untuk semua Alternatif dan Kriteria.
  */
 class PenilaianController extends Controller
 {
     /**
-     * Menampilkan Matriks Penilaian saat ini (View: pages.admin.spk.penilaian_view).
-     * (Menggantikan showPenilaian di SpkManagementController)
+     * Menampilkan Matriks Penilaian.
      */
     public function index($idKeputusan)
     {
         $keputusan = spkkeputusan::findOrFail($idKeputusan);
-        $kriteria = kriteria::where('id_keputusan', $idKeputusan)->get();
-        $alternatif = alternatif::where('id_keputusan', $idKeputusan)->get();
+        
+        // 1. Ambil semua Kriteria (termasuk relasi subkriteria)
+        $kriteriaList = kriteria::where('id_keputusan', $idKeputusan)
+                                ->with('subKriteria')
+                                ->orderBy('kode_kriteria')
+                                ->get();
 
-        // Mengambil semua data Penilaian yang dikelompokkan berdasarkan Alternatif
-        $penilaian = penilaian::whereHas('alternatif', function($query) use ($idKeputusan) {
-            $query->where('id_keputusan', $idKeputusan);
-        })->get()->groupBy('id_alternatif');
+        // 2. Ambil semua Alternatif (termasuk relasi penilaian)
+        $alternatifData = alternatif::where('id_keputusan', $idKeputusan)
+                                    ->with('penilaian')
+                                    ->get();
+
+        // 3. Konversi Sub Kriteria ke map untuk display di view
+        $subKriteriaMap = [];
+        foreach ($kriteriaList as $kriteria) {
+            if ($kriteria->subKriteria->count() > 0) {
+                // Buat map [nilai_konversi => nama_subkriteria]
+                $subKriteriaMap[$kriteria->id_kriteria] = $kriteria->subKriteria
+                    ->pluck('nama_subkriteria', 'nilai_konversi');
+            }
+        }
+        
+        // 4. Konversi Penilaian ke map [id_alternatif][id_kriteria] = nilai
+        $penilaianMatrix = [];
+        foreach ($alternatifData as $alternatif) {
+            foreach ($alternatif->penilaian as $penilaian) {
+                $penilaianMatrix[$alternatif->id_alternatif][$penilaian->id_kriteria] = $penilaian->nilai;
+            }
+        }
 
         return view('pages.admin.spk.penilaian.index', [
             'keputusan' => $keputusan,
-            'kriteria' => $kriteria,
-            'alternatif' => $alternatif,
-            'penilaianMatrix' => $penilaian,
-            'pageTitle' => 'Matriks Penilaian (Input Data)'
+            'kriteriaList' => $kriteriaList,
+            'alternatifData' => $alternatifData,
+            'penilaianMatrix' => $penilaianMatrix,
+            'subKriteriaMap' => $subKriteriaMap,
+            'pageTitle' => 'Manajemen Matriks Penilaian'
         ]);
     }
 
     /**
-     * Menampilkan formulir untuk MENGEDIT SELURUH MATRIKS PENILAIAN (Mass Edit).
+     * Menyimpan pembaruan Matriks Penilaian secara massal.
      */
-    public function editMatriks($idKeputusan)
+    public function update(Request $request, $idKeputusan)
     {
-        $keputusan = spkkeputusan::findOrFail($idKeputusan);
-        $kriteria = kriteria::where('id_keputusan', $idKeputusan)->get();
-        $alternatif = alternatif::where('id_keputusan', $idKeputusan)->get();
-
-        // Mengambil semua data Penilaian yang dikelompokkan (siap untuk pre-fill form)
-        $penilaian = penilaian::whereHas('alternatif', function($query) use ($idKeputusan) {
-            $query->where('id_keputusan', $idKeputusan);
-        })->get()->keyBy(function ($item) {
-            // Menggunakan key kombinasi untuk memudahkan pencarian nilai di view (AlternatifID_KriteriaID)
-            return $item->id_alternatif . '_' . $item->id_kriteria;
-        });
-
-        return view('pages.admin.spk.penilaian_edit_matriks', [
-            'keputusan' => $keputusan,
-            'kriteria' => $kriteria,
-            'alternatif' => $alternatif,
-            'penilaianData' => $penilaian, // Data Penilaian yang sudah ada
-            'pageTitle' => 'Edit Matriks Penilaian'
+        // Validasi massal
+        $request->validate([
+            'nilai_penilaian' => 'required|array',
+            'nilai_penilaian.*.*' => 'required|numeric|min:0', // nilai_penilaian[alt_id][krit_id]
         ]);
-    }
 
-    /**
-     * Menyimpan atau memperbarui SELURUH MATRIKS PENILAIAN (Mass Update).
-     */
-    public function updateMatriks(Request $request, $idKeputusan)
-    {
-        $alternatif = alternatif::where('id_keputusan', $idKeputusan)->pluck('id_alternatif')->toArray();
-        $kriteria = kriteria::where('id_keputusan', $idKeputusan)->pluck('id_kriteria')->toArray();
-        $inputPenilaian = $request->input('penilaian'); // Input adalah array [id_alternatif => [id_kriteria => nilai]]
-
-        if (empty($inputPenilaian)) {
-            return back()->with('error', 'Tidak ada data penilaian yang dikirimkan.');
-        }
-
-        DB::beginTransaction();
-        try {
-            foreach ($inputPenilaian as $idAlt => $kriteriaNilai) {
-                // Pastikan idAlt adalah bagian dari alternatif keputusan ini (opsional tapi aman)
-                if (!in_array($idAlt, $alternatif)) continue; 
-
-                foreach ($kriteriaNilai as $idKrit => $nilai) {
-                    // Pastikan idKrit adalah bagian dari kriteria keputusan ini (opsional tapi aman)
-                    if (!in_array($idKrit, $kriteria)) continue;
-
-                    // Validasi nilai spesifik (contoh sederhana)
-                    if (!is_numeric($nilai) || $nilai < 0) {
-                        DB::rollBack();
-                        return back()->with('error', 'Nilai penilaian harus berupa angka positif.');
-                    }
-                    
-                    // Lakukan Mass Update atau Insert (upsert)
-                    penilaian::updateOrCreate(
-                        [
-                            'id_alternatif' => $idAlt,
-                            'id_kriteria' => $idKrit,
-                        ],
-                        [
-                            'nilai' => (float) $nilai, // Simpan sebagai float
-                        ]
-                    );
-                }
+        $updatesCount = 0;
+        
+        foreach ($request->nilai_penilaian as $idAlternatif => $penilaianPerAlternatif) {
+            foreach ($penilaianPerAlternatif as $idKriteria => $nilai) {
+                // Mencari atau membuat entri penilaian (seharusnya sudah ada saat alternatif/kriteria dibuat)
+                penilaian::updateOrCreate(
+                    [
+                        'id_alternatif' => $idAlternatif,
+                        'id_kriteria' => $idKriteria,
+                    ],
+                    [
+                        'nilai' => (float) $nilai,
+                    ]
+                );
+                $updatesCount++;
             }
-
-            DB::commit();
-            return redirect()->route('admin.spk.manage.penilaian', $idKeputusan)
-                             ->with('success', 'Matriks Penilaian berhasil diperbarui dan disimpan.');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            return back()->with('error', 'Gagal menyimpan matriks penilaian: ' . $e->getMessage());
         }
+
+        return redirect()->route('penilaian.index', $idKeputusan)
+                         ->with('success', "{$updatesCount} nilai penilaian berhasil diperbarui.");
     }
 }

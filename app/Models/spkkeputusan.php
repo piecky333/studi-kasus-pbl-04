@@ -5,40 +5,36 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Model untuk tabel spk_keputusan (Induk/Header dari setiap proses SPK).
- * Berfungsi sebagai arsip dan konteks keputusan yang sedang berjalan.
- */
 class spkkeputusan extends Model
 {
     use HasFactory;
 
-    // Nama tabel sesuai skema
-    protected $table = 'spk_keputusan';
+    protected $table = 'spkkeputusan';  
 
-    // Atur primary key
-    protected $primaryKey = 'id_keputusan';
-    
-    // Matikan timestamps default Laravel jika tidak diperlukan
-    public $timestamps = false; 
+    // PRIMARY KEY
+    protected $primaryKey = 'id_keputusan'; 
+    public $incrementing = true; 
 
-    // Kolom yang boleh diisi (Fillable)
     protected $fillable = [
-        'nama_keputusan',
-        'metode_yang_digunakan',
-        'tanggal_dibuat',
-        'status',
+        'nama_keputusan', 
+        'metode_yang_digunakan', 
+        'tanggal_dibuat', // Jika ini diisi dari controller, masukkan.
+        'status',         // Jika ini diisi dari controller, masukkan.
     ];
 
-    // Relasi One-to-Many: Satu keputusan memiliki banyak kriteria
+    // Kolom yang harus di-cast ke tipe data tertentu (opsional)
+    protected $casts = [
+        'tanggal_dibuat' => 'datetime',
+    ];
+    
     public function kriteria()
     {
-        return $this->hasMany(kriteria::class, 'id_keputusan');
+        return $this->hasMany(kriteria::class, 'id_keputusan', 'id');
     }
-
-    // Relasi One-to-Many: Satu keputusan memiliki banyak alternatif
+    
     public function alternatif()
     {
-        return $this->hasMany(alternatif::class, 'id_keputusan');
+        return $this->hasMany(alternatif::class, 'id_keputusan', 'id');
     }
+
 }

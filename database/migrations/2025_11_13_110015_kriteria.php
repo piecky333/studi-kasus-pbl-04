@@ -6,35 +6,35 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Jalankan migrasi.
-     */
     public function up(): void
     {
+        // KOREKSI: Mengganti Schema::table menjadi Schema::create
         Schema::create('kriteria', function (Blueprint $table) {
-            // PK id_kriteria
-            $table->bigIncrements('id_kriteria');
             
-            // FK id_keputusan (Relasi ke tabel spk_keputusan)
+            $table->id('id_kriteria'); // Primary Key Kriteria
+            
+            // KOREKSI UTAMA: Deklarasi Foreign Key secara eksplisit
             $table->unsignedBigInteger('id_keputusan');
-
-            // Kolom utama
-            $table->string('nama_kriteria', 100);
-            $table->string('kode_kriteria', 10)->unique(); // C1, C2, C3, dll.
-            $table->enum('jenis_kriteria', ['benefit', 'cost']);
-            $table->decimal('bobot_kriteria', 8, 4)->default(0.0000); // Bobot dari AHP/Input
-
-            // Definisi Foreign Key
+            
+            // PENTING: Mereferensikan ke kolom PRIMARY KEY yang BENAR di tabel induk
             $table->foreign('id_keputusan')
-                  ->references('id_keputusan')
-                  ->on('spk_keputusan')
+                  ->references('id_keputusan') 
+                  ->on('spkkeputusan') 
                   ->onDelete('cascade');
+                  
+            // Kolom Data Kriteria (sesuai Model Anda)
+            $table->string('nama_kriteria');
+            $table->string('kode_kriteria', 10)->unique();
+            $table->string('jenis_kriteria', 10)->comment('Benefit atau Cost');
+            
+            $table->decimal('bobot_kriteria', 8, 4)->default(0); 
+            
+            $table->string('cara_penilaian')->default('Input Langsung');
+            
+            $table->timestamps();
         });
     }
 
-    /**
-     * Batalkan migrasi.
-     */
     public function down(): void
     {
         Schema::dropIfExists('kriteria');

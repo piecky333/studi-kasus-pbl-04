@@ -2,159 +2,127 @@
 
 namespace App\Services;
 
-/**
- * Layanan untuk menghitung bobot kriteria menggunakan metode Analytic Hierarchy Process (AHP).
- * Hasil bobot (eigenvector) ini nantinya dapat digunakan oleh SAW.
- */
 class AhpService
 {
-    // Indeks Acak (Random Index - RI) untuk matriks berukuran n x n
-    // Digunakan untuk menghitung Consistency Ratio (CR)
-    protected const RANDOM_INDEX = [
-        1 => 0.00, 2 => 0.00, 3 => 0.58, 4 => 0.90, 5 => 1.12,
-        6 => 1.24, 7 => 1.32, 8 => 1.41, 9 => 1.45, 10 => 1.49,
-    ];
+    // ... (buildMatrix tetap sama) ...
 
     /**
-     * Matriks Perbandingan Berpasangan (Pairwise Comparison Matrix - PCM).
-     * Nilai 1-9 berdasarkan skala Saaty.
-     * Contoh ini menunjukkan: C1 dianggap 3x lebih penting dari C2, 5x dari C3.
+     * Membentuk matrix pairwise dari input user
      */
-    protected array $comparisonMatrix = [
-        // C1_IPK        C2_SkorPrestasi C3_JumlahPrestasi
-        'C1_IPK'               => ['C1_IPK' => 1, 'C2_TotalSkorPrestasi' => 3,     'C3_JumlahPrestasi' => 5],
-        'C2_TotalSkorPrestasi' => ['C1_IPK' => 1/3, 'C2_TotalSkorPrestasi' => 1,     'C3_JumlahPrestasi' => 3],
-        'C3_JumlahPrestasi'    => ['C1_IPK' => 1/5, 'C2_TotalSkorPrestasi' => 1/3,   'C3_JumlahPrestasi' => 1],
-    ];
-
     /**
-     * Metode utama untuk menghitung bobot akhir dan rasio konsistensi.
-     * * @return array{'weights': array<string, float>, 'cr': float, 'isConsistent': bool} 
-     * Bobot kriteria, Rasio Konsistensi, dan Status Konsistensi.
-     * @throws \Exception Jika Rasio Konsistensi tidak memenuhi syarat (CR > 0.1)
+     * Membentuk matrix pairwise dari input user
+     * @param array $kriteriaIdMapByIndex Array yang berisi ID kriteria berdasarkan urutan index [0 => ID1, 1 => ID2, ...]
      */
-    public function calculateWeights(): array
+    public function buildMatrix(array $input, int $n, array $kriteriaIdMapByIndex): array
     {
-        $matrix = $this->comparisonMatrix;
-        $criteria = array_keys($matrix);
-        $n = count($criteria);
+        $matrix = array_fill(0, $n, array_fill(0, $n, 1));
 
-        // 1. Hitung Matriks Ternormalisasi
-        $normalizedMatrix = $this->normalizeMatrix($matrix);
+        // Buat peta balik: ID Kriteria => Index Matriks
+        $kriteriaIndexMap = array_flip($kriteriaIdMapByIndex);
 
-        // 2. Hitung Vektor Bobot (Eigenvector)
-        $weights = $this->calculateWeightsVector($normalizedMatrix);
+        // Asumsi $input adalah array ['cID1_ID2' => nilai, ...]
+        foreach ($input as $key => $value) {
+            if (!$value || $value <= 0)
+                continue;
 
-        // 3. Cek Konsistensi
-        $consistencyRatio = $this->calculateConsistencyRatio($weights, $matrix, $n);
+            // 1. Ambil ID Kriteria
+            list($k1Id, $k2Id) = explode('_', str_replace('c', '', $key));
+            $k1Id = (int) $k1Id;
+            $k2Id = (int) $k2Id;
 
-        // Kriteria: CR harus kurang dari 0.10 (10%) untuk dianggap konsisten
-        $isConsistent = $consistencyRatio <= 0.10;
+            // 2. Map ID Kriteria ke Index Matriks yang benar (0, 1, 2, ...)
+            // Gunakan $kriteriaIndexMap untuk mendapatkan index yang benar
+            $row = $kriteriaIndexMap[$k1Id] ?? null;
+            $col = $kriteriaIndexMap[$k2Id] ?? null;
 
-        if (!$isConsistent) {
-            // Jika CR > 0.10, Matriks tidak konsisten.
-            // PENTING: Lemparkan Exception untuk menghentikan proses perhitungan SAW 
-            // jika matriks sumber (AHP) tidak valid.
-            throw new \Exception("Rasio Konsistensi (CR) Matriks AHP terlalu tinggi: " . round($consistencyRatio, 4) . ". Matriks perbandingan tidak konsisten dan harus direvisi.");
-        } 
-        
-        // Pilihan: Jika konsisten, kita bisa memberikan log atau pesan konfirmasi.
-        // echo "Matriks perbandingan KONSISTEN. CR: " . round($consistencyRatio, 4) . " (Di bawah 0.10)";
-        
-        return [
-            'weights' => $weights,
-            'cr' => round($consistencyRatio, 4),
-            'isConsistent' => $isConsistent,
-        ];
-    }
-
-    /**
-     * Langkah 1: Normalisasi Matriks dengan membagi setiap elemen dengan jumlah kolomnya.
-     */
-    protected function normalizeMatrix(array $matrix): array
-    {
-        $criteria = array_keys($matrix);
-        $columnSums = [];
-        $normalizedMatrix = [];
-
-        // Hitung Jumlah Kolom (Sum per Column)
-        foreach ($criteria as $colKey) {
-            $sum = 0;
-            foreach ($criteria as $rowKey) {
-                $sum += $matrix[$rowKey][$colKey];
+            // Cek jika ID kriteria yang dikirim oleh form TIDAK ADA di kriteria yang valid (Kriteria Hilang)
+            if (is_null($row) || is_null($col)) {
+                continue;
             }
-            $columnSums[$colKey] = $sum;
+
+            // 3. Masukkan nilai ke Matriks
+            $matrix[$row][$col] = floatval($value);
+            $matrix[$col][$row] = 1 / floatval($value);
         }
 
-        // Normalisasi Matriks
-        foreach ($criteria as $rowKey) {
-            foreach ($criteria as $colKey) {
-                // Normalisasi = Nilai Matriks / Jumlah Kolom
-                $normalizedMatrix[$rowKey][$colKey] = $matrix[$rowKey][$colKey] / $columnSums[$colKey];
+        return $matrix;
+    }
+
+
+    /**
+     * Menghitung Eigen Vector, CR, dan menghasilkan semua matriks perantara.
+     */
+    public function calculateAhp(array $matrix, int $n): array
+    {
+        $results = [];
+
+        // 1. Hitung Jumlah Kolom (Sum of Columns)
+        $colSum = array_fill(0, $n, 0);
+        for ($col = 0; $col < $n; $col++) {
+            for ($row = 0; $row < $n; $row++) {
+                $colSum[$col] += $matrix[$row][$col];
             }
         }
+        $results['col_sum'] = $colSum;
 
-        return $normalizedMatrix;
-    }
 
-    /**
-     * Langkah 2: Menghitung Vektor Bobot dengan merata-ratakan (sum/n) baris yang ternormalisasi.
-     */
-    protected function calculateWeightsVector(array $normalizedMatrix): array
-    {
-        $criteria = array_keys($normalizedMatrix);
-        $n = count($criteria);
-        $weights = [];
-
-        foreach ($criteria as $rowKey) {
-            $sumRow = array_sum($normalizedMatrix[$rowKey]);
-            // Bobot = Jumlah Baris / Jumlah Kriteria (n)
-            $weights[$rowKey] = $sumRow / $n;
+        // 2. Normalisasi Matriks (Divided by Column Sum)
+        $normalizedMatrix = array_fill(0, $n, array_fill(0, $n, 0));
+        for ($row = 0; $row < $n; $row++) {
+            for ($col = 0; $col < $n; $col++) {
+                $normalizedMatrix[$row][$col] = $matrix[$row][$col] / ($colSum[$col] ?: 1);
+            }
         }
+        $results['normalized_matrix'] = $normalizedMatrix;
 
-        return $weights;
-    }
 
-    /**
-     * Langkah 3: Menghitung Rasio Konsistensi (Consistency Ratio - CR).
-     */
-    protected function calculateConsistencyRatio(array $weights, array $matrix, int $n): float
-    {
-        if ($n <= 2) {
-            return 0.0; // Matriks 1x1 atau 2x2 selalu konsisten
+        // 3. Hitung Eigen Vector / Vektor Prioritas (Average of Row in Normalized Matrix)
+        $eigenVector = array_fill(0, $n, 0);
+        for ($row = 0; $row < $n; $row++) {
+            $sumRow = 0;
+            for ($col = 0; $col < $n; $col++) {
+                $sumRow += $normalizedMatrix[$row][$col];
+            }
+            $eigenVector[$row] = $sumRow / $n;
         }
+        $results['weights'] = $eigenVector;
 
-        // 3a. Hitung Lambda Max (λmax)
+
+        // 4. Hitung Lambda Max dan Konsistensi
+        $weightedSum = array_fill(0, $n, 0);
+        for ($row = 0; $row < $n; $row++) {
+            for ($col = 0; $col < $n; $col++) {
+                $weightedSum[$row] += $matrix[$row][$col] * $eigenVector[$col];
+            }
+        }
+        $results['weighted_sum'] = $weightedSum;
+
+        // 5. Hitung Ratio Vektor
+        $ratioVector = array_fill(0, $n, 0);
         $lambdaMax = 0;
-        $criteria = array_keys($matrix);
-
-        foreach ($criteria as $colKey) {
-            $sumProduct = 0;
-            // Hitung (kolom matriks perbandingan * bobot)
-            foreach ($criteria as $rowKey) {
-                $sumProduct += $matrix[$rowKey][$colKey] * $weights[$rowKey];
-            }
-            // Tambahkan (sumProduct / bobot) ke Lambda Max
-            $lambdaMax += ($sumProduct / ($weights[$colKey] ?: 1e-9)); // Hindari pembagian nol
+        for ($i = 0; $i < $n; $i++) {
+            $ratioVector[$i] = $weightedSum[$i] / ($eigenVector[$i] ?: 1);
+            $lambdaMax += $ratioVector[$i];
         }
-
-        // Rata-rata λmax
         $lambdaMax /= $n;
+        $results['ratio_vector'] = $ratioVector;
 
-        // 3b. Hitung Consistency Index (CI)
-        // CI = (λmax - n) / (n - 1)
-        $consistencyIndex = ($lambdaMax - $n) / ($n - 1);
 
-        // 3c. Hitung Consistency Ratio (CR)
-        // CR = CI / RI (Random Index)
-        $randomIndex = self::RANDOM_INDEX[$n] ?? 99.0; // Default nilai besar jika n tidak terdaftar
+        // 6. Hitung CI dan CR
+        $ci = ($lambdaMax - $n) / ($n - 1 ?: 1); // Consistency Index
 
-        if ($randomIndex === 0.0) {
-            return 0.0;
-        }
+        $ri = [0, 0, 0.58, 0.90, 1.12, 1.24, 1.32, 1.41, 1.45];
+        $riValue = $ri[$n - 1] ?? 1.45;
 
-        $consistencyRatio = $consistencyIndex / $randomIndex;
+        $cr = ($riValue > 0) ? $ci / $riValue : 0; // Consistency Ratio
 
-        return $consistencyRatio;
+        $results['crData'] = [
+            'lambda_max' => $lambdaMax,
+            'ci' => $ci,
+            'ri' => $riValue, // Tambahkan RI
+            'cr' => $cr,
+        ];
+
+        return $results;
     }
 }

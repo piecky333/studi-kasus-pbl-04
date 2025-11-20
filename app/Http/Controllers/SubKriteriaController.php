@@ -3,35 +3,37 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule; // Ditambahkan untuk validasi unik jika diperlukan
 use App\Models\spkkeputusan;
 use App\Models\kriteria;
 use App\Models\subkriteria;
-use App\Models\penilaian; // Diperlukan untuk cascading delete
 
 /**
- * Mengelola semua operasi CRUD untuk Sub Kriteria.
- * Controller ini terikat pada parameter {idKeputusan} dan {idKriteria}.
+ * Mengelola semua operasi CRUD untuk Sub Kriteria, terikat pada Kriteria tertentu.
  */
-class SubKriteriaController extends Controller
+class SubkriteriaController extends Controller
 {
     /**
-     * Menampilkan daftar Sub Kriteria untuk Kriteria spesifik (View: pages.admin.spk.sub_kriteria_view).
+     * Menampilkan daftar Sub Kriteria.
      */
     public function index($idKeputusan, $idKriteria)
     {
+        // 1. Pastikan Keputusan ada
         $keputusan = spkkeputusan::findOrFail($idKeputusan);
-        $kriteria = kriteria::findOrFail($idKriteria);
-
-        // Ambil semua sub kriteria yang terkait
-        $subKriteriaData = subkriteria::where('id_kriteria', $idKriteria)
-                                      ->orderBy('nilai', 'desc') // Biasanya diurutkan berdasarkan nilai
-                                      ->get();
+        
+        // 2. Pastikan Kriteria ada dan milik Keputusan ini
+        $kriteria = kriteria::where('id_keputusan', $idKeputusan)
+                             ->where('id_kriteria', $idKriteria)
+                             ->firstOrFail();
+        
+        // 3. Ambil Sub Kriteria
+        $subKriteriaData = subkriteria::where('id_kriteria', $idKriteria)->get();
 
         return view('pages.admin.spk.sub_kriteria.index', [
             'keputusan' => $keputusan,
             'kriteria' => $kriteria,
             'subKriteriaData' => $subKriteriaData,
-            'pageTitle' => 'Manajemen Sub Kriteria'
+            'pageTitle' => 'Manajemen Sub Kriteria: ' . $kriteria->nama_kriteria
         ]);
     }
 
@@ -41,8 +43,8 @@ class SubKriteriaController extends Controller
     public function create($idKeputusan, $idKriteria)
     {
         $keputusan = spkkeputusan::findOrFail($idKeputusan);
-        $kriteria = kriteria::findOrFail($idKriteria);
-
+        $kriteria = kriteria::where('id_keputusan', $idKeputusan)->where('id_kriteria', $idKriteria)->firstOrFail();
+        
         return view('pages.admin.spk.sub_kriteria.create', [
             'keputusan' => $keputusan,
             'kriteria' => $kriteria,
@@ -55,32 +57,35 @@ class SubKriteriaController extends Controller
      */
     public function store(Request $request, $idKeputusan, $idKriteria)
     {
+        // Pastikan Kriteria ada, meskipun tidak digunakan secara langsung
+        $kriteria = kriteria::where('id_keputusan', $idKeputusan)->where('id_kriteria', $idKriteria)->firstOrFail();
+        
         $validated = $request->validate([
             'nama_subkriteria' => 'required|string|max:255',
-            'nilai' => 'required|numeric|min:0', // Pastikan nilai adalah numerik
+            'nilai_konversi' => 'required|numeric|min:0', 
         ]);
-
-        // Catatan: Kriteria harus sudah diverifikasi ada melalui findOrFail di index/create
 
         subkriteria::create([
             'id_kriteria' => $idKriteria,
             'nama_subkriteria' => $validated['nama_subkriteria'],
-            'nilai' => $validated['nilai'],
+            'nilai_konversi' => $validated['nilai_konversi'],
         ]);
 
-        return redirect()->route('admin.spk.manage.subkriteria', ['idKeputusan' => $idKeputusan, 'idKriteria' => $idKriteria])
+        return redirect()->route('admin.spk.kriteria.subkriteria.index', [$idKeputusan, $idKriteria])
                          ->with('success', 'Sub Kriteria "' . $validated['nama_subkriteria'] . '" berhasil ditambahkan.');
     }
-    
+
     /**
      * Menampilkan form edit Sub Kriteria.
      */
     public function edit($idKeputusan, $idKriteria, $idSubKriteria)
     {
         $keputusan = spkkeputusan::findOrFail($idKeputusan);
-        $kriteria = kriteria::findOrFail($idKriteria);
-        $subkriteria = subkriteria::where('id_kriteria', $idKriteria)->findOrFail($idSubKriteria);
-
+        $kriteria = kriteria::where('id_keputusan', $idKeputusan)->where('id_kriteria', $idKriteria)->firstOrFail();
+    
+        $subkriteria = subkriteria::where('id_kriteria', $idKriteria)
+                                  ->findOrFail($idSubKriteria);
+        
         return view('pages.admin.spk.sub_kriteria.edit', [
             'keputusan' => $keputusan,
             'kriteria' => $kriteria,
@@ -94,17 +99,20 @@ class SubKriteriaController extends Controller
      */
     public function update(Request $request, $idKeputusan, $idKriteria, $idSubKriteria)
     {
-        $subkriteria = subkriteria::where('id_kriteria', $idKriteria)->findOrFail($idSubKriteria);
+        $subkriteria = subkriteria::where('id_kriteria', $idKriteria)
+                                  ->findOrFail($idSubKriteria);
         
         $validated = $request->validate([
             'nama_subkriteria' => 'required|string|max:255',
-            'nilai' => 'required|numeric|min:0',
+            'nilai_konversi' => 'required|numeric|min:0',
         ]);
+        
         
         $subkriteria->update($validated);
 
-        return redirect()->route('admin.spk.manage.subkriteria', ['idKeputusan' => $idKeputusan, 'idKriteria' => $idKriteria])
-                         ->with('success', 'Sub Kriteria berhasil diperbarui.');
+        //kembali ke halaman index subkriteria
+        return redirect()->route('admin.spk.kriteria.subkriteria.index', [$idKeputusan, $idKriteria])
+                         ->with('success', 'Sub Kriteria "' . $subkriteria->nama_subkriteria . '" berhasil diperbarui.');
     }
 
     /**
@@ -112,15 +120,16 @@ class SubKriteriaController extends Controller
      */
     public function destroy($idKeputusan, $idKriteria, $idSubKriteria)
     {
-        $subkriteria = subkriteria::where('id_kriteria', $idKriteria)->findOrFail($idSubKriteria);
-
-        // Catatan: Jika Anda ingin menghapus semua Penilaian yang merujuk ke Nilai skala ini, 
-        // Anda harus menambahkan logika penghapusan Penilaian yang lebih kompleks di sini.
+        //sub kriteria memilik kriteria 
+        $subkriteria = subkriteria::where('id_kriteria', $idKriteria)
+                                  ->findOrFail($idSubKriteria);
 
         $nama = $subkriteria->nama_subkriteria;
+        
+        //menghapus subkriteria
         $subkriteria->delete();
 
-        return redirect()->route('admin.spk.manage.subkriteria', ['idKeputusan' => $idKeputusan, 'idKriteria' => $idKriteria])
+        return redirect()->route('admin.spk.kriteria.subkriteria.index', [$idKeputusan, $idKriteria])
                          ->with('success', 'Sub Kriteria "' . $nama . '" berhasil dihapus.');
     }
 }

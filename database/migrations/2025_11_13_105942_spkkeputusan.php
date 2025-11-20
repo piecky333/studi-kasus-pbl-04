@@ -7,27 +7,28 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Jalankan migrasi.
+     * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('spk_keputusan', function (Blueprint $table) {
-            // PK id_keputusan
-            $table->bigIncrements('id_keputusan');
-            
-            // Kolom utama
-            $table->string('nama_keputusan', 150);
-            $table->string('metode_yang_digunakan', 50); // SAW, AHP, dll.
+        // PENTING: Gunakan nama tabel yang SAMA PERSIS dengan yang di Model (spkkeputusan)
+        Schema::create('spkkeputusan', function (Blueprint $table) {
+            $table->id('id_keputusan'); // Ini adalah primary key utama
+            $table->string('nama_keputusan');
+            $table->string('metode_yang_digunakan')->default('SAW')->comment('Contoh: AHP, SAW, AHP-SAW');
+            $table->string('status')->default('Draft')->comment('Contoh: Draft, Selesai, Aktif');
             $table->timestamp('tanggal_dibuat')->useCurrent();
-            $table->enum('status', ['draft', 'active', 'finished', 'archived'])->default('draft');
+
+            //waktu created_at dan updated_at otomatis ditangani oleh Eloquent jika $timestamps = true
+            $table->timestamps(); 
         });
     }
 
     /**
-     * Batalkan migrasi.
+     * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('spk_keputusan');
+        Schema::dropIfExists('spkkeputusan');
     }
 };

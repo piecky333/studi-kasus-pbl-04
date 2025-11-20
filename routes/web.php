@@ -3,23 +3,10 @@
 require __DIR__ . '/auth.php';
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\GoogleAuthController;
 
-// Import Controller SPK yang baru
-use App\Http\Controllers\SpkManagementController;
-use App\Http\Controllers\SpkCalculationController;
-use App\Http\Controllers\KeputusanController;
-use App\Http\Controllers\KriteriaController;
-use App\Http\Controllers\AlternatifController;
-use App\Http\Controllers\PenilaianController;
-use App\Http\Controllers\SubKriteriaController;
-
-// ===========================
-// CONTROLLERS (GROUPED)
-// ... (Bagian import controllers lainnya tetap) ...
-// ===========================
-
+// =========================================================
+// PUBLIC CONTROLLERS
+// =========================================================
 use App\Http\Controllers\public\{
     HomeController as PublicHomeController,
     DivisiController as PublicDivisiController,
@@ -28,166 +15,222 @@ use App\Http\Controllers\public\{
     KomentarController as PublicKomentarController
 };
 
-use App\Http\Controllers\{
-    BeritaController,
-    JabatanController,
-    PengaduanController
+// =========================================================
+// ADMIN CONTROLLERS
+// =========================================================
+use App\Http\Controllers\Admin\{
+    DashboardController as AdminDashboardController,
+    BeritaController as AdminBeritaController,
+    DivisiController as AdminDivisiController,
+    PengaduanController as AdminPengaduanController,
+    PrestasiController as AdminPrestasiController,
+    SanksiController as AdminSanksiController,
+    PengurusController as AdminPengurusController
 };
 
+// =========================================================
+// USER CONTROLLERS
+// =========================================================
 use App\Http\Controllers\user\{
     DashboardController as UserDashboardController,
     PengaduanController as UserPengaduanController,
     BeritaController as UserBeritaController
 };
 
-use App\Http\Controllers\Admin\{
-    BeritaController as AdminBeritaController,
-    DivisiController as AdminDivisiController,
-    PengaduanController as AdminPengaduanController,
-    PrestasiController as AdminPrestasiController,
-    DashboardController as AdminDashboardController,
-    SanksiController as AdminSanksiController
-
-};
-
+// =========================================================
+// PENGURUS CONTROLLERS
+// =========================================================
 use App\Http\Controllers\pengurus\{
     DivisiController as PengurusDivisiController,
     PengurusDashboardController
 };
 
 // =========================================================
-// ROUTE PUBLIC (TETAP)
+// AUTENTIKASI & PROFIL
 // =========================================================
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\GoogleAuthController;
+
+// =========================================================
+// SPK CONTROLLERS
+// =========================================================
+use App\Http\Controllers\SpkManagementController;
+use App\Http\Controllers\SpkCalculationController;
+use App\Http\Controllers\KriteriaController;
+use App\Http\Controllers\KeputusanController;
+use App\Http\Controllers\AlternatifController;
+use App\Http\Controllers\PenilaianController;
+use App\Http\Controllers\SubKriteriaController;
+use App\Http\Controllers\PerbandinganKriteriaController; // Import Controller AHP
+
+// =========================================================
+// ROUTE — PUBLIC
+// =========================================================
+
 Route::get('/', [PublicHomeController::class, 'index'])->name('home');
+
 Route::get('/berita', [PublicBeritaController::class, 'index'])->name('berita.index');
 Route::get('/berita/{berita}', [PublicBeritaController::class, 'show'])->name('berita.show');
+
 Route::get('/divisi', [PublicDivisiController::class, 'index'])->name('divisi.index');
 Route::get('/divisi/{id}', [PublicDivisiController::class, 'show'])->name('divisi.show');
+
 Route::get('/prestasi', [PublicPrestasiController::class, 'index'])->name('prestasi.index');
 Route::get('/prestasi/{id}', [PublicPrestasiController::class, 'show'])->name('prestasi.show');
+
 Route::post('/berita/{id_berita}/komentar', [PublicKomentarController::class, 'store'])->name('komentar.store');
 
 
 // =========================================================
-// ROUTE ADMIN
+// ROUTE — ADMIN
 // =========================================================
+
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
-    // ---- BERITA, PENGURUS, DIVISI, PENGADUAN, PRESTASI, SANKSI (TETAP) ----
-    Route::get('/berita', [AdminBeritaController::class, 'index'])->name('berita.index');
-    Route::get('/berita/create', [AdminBeritaController::class, 'create'])->name('berita.create');
-    Route::post('/berita', [AdminBeritaController::class, 'store'])->name('berita.store');
-    Route::get('/berita/{id}/edit', [AdminBeritaController::class, 'edit'])->name('berita.edit');
-    Route::put('/berita/{id}', [AdminBeritaController::class, 'update'])->name('berita.update');
-    Route::delete('/berita/{id}', [AdminBeritaController::class, 'destroy'])->name('berita.destroy');
+    // CRUD berita
+    Route::resource('berita', AdminBeritaController::class)->except(['show']);
 
-    Route::resource('pengurus', \App\Http\Controllers\Admin\PengurusController::class);
-    Route::get('/divisi', [AdminDivisiController::class, 'index'])->name('divisi.index');
-    Route::get('/divisi/{id}', [AdminDivisiController::class, 'show'])->name('divisi.show');
-    Route::get('/pengaduan', [AdminPengaduanController::class, 'index'])->name('pengaduan.index');
-    Route::get('/pengaduan/{id}', [AdminPengaduanController::class, 'show'])->name('pengaduan.show');
-    Route::delete('/pengaduan/{id}', [AdminPengaduanController::class, 'destroy'])->name('pengaduan.destroy');
-    Route::put('/pengaduan/{id}/verifikasi', [AdminPengaduanController::class, 'verifikasi'])->name('pengaduan.verifikasi');
+    // CRUD Pengurus
+    Route::resource('pengurus', AdminPengurusController::class);
+
+    // CRUD Divisi
+    Route::resource('divisi', AdminDivisiController::class)->only(['index', 'show']);
+
+    // Pengaduan
+    Route::get('pengaduan', [AdminPengaduanController::class, 'index'])->name('pengaduan.index');
+    Route::get('pengaduan/{id}', [AdminPengaduanController::class, 'show'])->name('pengaduan.show');
+    Route::delete('pengaduan/{id}', [AdminPengaduanController::class, 'destroy'])->name('pengaduan.destroy');
+    Route::put('pengaduan/{id}/verifikasi', [AdminPengaduanController::class, 'verifikasi'])->name('pengaduan.verifikasi');
+
+    // Prestasi
     Route::resource('prestasi', AdminPrestasiController::class);
-    Route::get('/prestasi/cari-mahasiswa', [AdminPrestasiController::class, 'cariMahasiswa'])->name('prestasi.cariMahasiswa');
-    Route::get('/sanksi', [AdminSanksiController::class, 'index'])->name('sanksi.index');
-    Route::get('/sanksi/create', [AdminSanksiController::class, 'create'])->name('sanksi.create');
-    Route::post('/sanksi', [AdminSanksiController::class, 'store'])->name('sanksi.store');
-    Route::get('/sanksi/{id}/edit', [AdminSanksiController::class, 'edit'])->name('sanksi.edit');
-    Route::put('/sanksi/{id}', [AdminSanksiController::class, 'update'])->name('sanksi.update');
-    Route::delete('/sanksi/{id}', [AdminSanksiController::class, 'destroy'])->name('sanksi.destroy');
+    Route::get('prestasi/cari-mahasiswa', [AdminPrestasiController::class, 'cariMahasiswa'])->name('prestasi.cariMahasiswa');
 
+    // Sanksi
+    Route::resource('sanksi', AdminSanksiController::class);
 
-    // -------------------------------------------------------------------------
-    // RUTE SPK LEVEL 1 (MANAJEMEN KEPUTUSAN UMUM)
-    // -------------------------------------------------------------------------
-    Route::get('spk', [KeputusanController::class, 'index'])->name('spk.index');
-    Route::post('spk', [KeputusanController::class, 'store'])->name('spk.store');
-    Route::get('spk/create', [KeputusanController::class, 'create'])->name('spk.create');
-    // Tambahkan CRUD Keputusan Umum
-    Route::get('spk/{idKeputusan}/edit', [KeputusanController::class, 'edit'])->name('spk.edit');
-    Route::put('spk/{idKeputusan}', [KeputusanController::class, 'update'])->name('spk.update');
-    Route::delete('spk/{idKeputusan}', [KeputusanController::class, 'destroy'])->name('spk.destroy');
+    // =====================================================
+    // SPK MANAGEMENT
+    // =====================================================
 
+    Route::prefix('spk')->name('spk.')->group(function () {
 
-    // =========================================================================
-    // RUTE SPK LEVEL 2 (DETAIL: KRITERIA, ALTERNATIF, PENILAIAN, PERHITUNGAN)
-    // =========================================================================
-    Route::prefix('spk/{idKeputusan}')->name('spk.')->group(function () {
+        // LEVEL 1 — KEPUTUSAN (Menggunakan KeputusanController)
+        Route::controller(KeputusanController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{idKeputusan}/edit', 'edit')->name('edit');
+            Route::put('/{idKeputusan}', 'update')->name('update');
+            Route::delete('/{idKeputusan}', 'destroy')->name('destroy');
+        });
 
-        Route::prefix('manage')->name('manage.')->group(function () {
+        // LEVEL 2 — KRITERIA (Menggunakan KriteriaController)
+        Route::controller(KriteriaController::class)->prefix('{idKeputusan}/kriteria')->name('kriteria.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{idKriteria}/edit', 'edit')->name('edit');
+            Route::put('/{idKriteria}', 'update')->name('update');
+            Route::delete('/{idKriteria}', 'destroy')->name('destroy');
 
-            // --- 1. CRUD KRITERIA ---
-            // READ List
-            Route::get('kriteria', [KriteriaController::class, 'index'])->name('kriteria');
-            // CREATE
-            Route::get('kriteria/create', [KriteriaController::class, 'create'])->name('kriteria.create');
-            Route::post('kriteria', [KriteriaController::class, 'store'])->name('kriteria.store');
-            // UPDATE
-            Route::get('kriteria/{idKriteria}/edit', [KriteriaController::class, 'edit'])->name('kriteria.edit');
-            Route::put('kriteria/{idKriteria}', [KriteriaController::class, 'update'])->name('kriteria.update');
-            // DELETE
-            Route::delete('kriteria/{idKriteria}', [KriteriaController::class, 'destroy'])->name('kriteria.destroy');
+            // Route Subkriteria Index dipindahkan ke KriteriaController
+            Route::get('/{idKriteria}/subkriteria', 'subkriteriaIndex')->name('subkriteria.index');
+        });
 
-            // --- 1.1. CRUD SUB KRITERIA ---
-            Route::prefix('kriteria/{idKriteria}')->name('kriteria.')->group(function () {
-                Route::get('subkriteria', [SubKriteriaController::class, 'index'])->name('subkriteria');
-                Route::get('subkriteria/create', [SubKriteriaController::class, 'create'])->name('subkriteria.create');
-                Route::post('subkriteria', [SubKriteriaController::class, 'store'])->name('subkriteria.store');
-                Route::get('subkriteria/{idSubKriteria}/edit', [SubKriteriaController::class, 'edit'])->name('subkriteria.edit');
-                Route::put('subkriteria/{idSubKriteria}', [SubKriteriaController::class, 'update'])->name('subkriteria.update');
-                Route::delete('subkriteria/{idSubKriteria}', [SubKriteriaController::class, 'destroy'])->name('subkriteria.destroy');
+        // LEVEL 3 — ALTERNATIF (Menggunakan AlternatifController)
+        Route::controller(AlternatifController::class)->prefix('{idKeputusan}/alternatif')->name('alternatif.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{idAlternatif}/edit', 'edit')->name('edit');
+            Route::put('/{idAlternatif}', 'update')->name('update');
+            Route::delete('/{idAlternatif}', 'destroy')->name('destroy');
+        });
+
+        // LEVEL 4 — PENILAIAN (Menggunakan PenilaianController)
+        Route::controller(PenilaianController::class)->prefix('{idKeputusan}/penilaian')->name('penilaian.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::put('/', 'update')->name('update');
+        });
+
+        // LEVEL 5 — SUBKRITERIA
+        Route::controller(SubkriteriaController::class)
+            ->prefix('{idKeputusan}/kriteria/{idKriteria}/subkriteria')
+            // Ganti nama yang panjang dan duplikat, cukup gunakan:
+            ->name('kriteria.subkriteria.') // Nama akan menjadi: admin.spk.kriteria.subkriteria.
+            ->group(function () {
+                Route::get('/', 'index')->name('index'); // Nama lengkap: admin.spk.kriteria.subkriteria.index
+                Route::get('/create', 'create')->name('create');
+                Route::post('/', 'store')->name('store');
+                Route::get('/{idSubKriteria}/edit', 'edit')->name('edit');
+                Route::put('/{idSubKriteria}', 'update')->name('update');
+                Route::delete('/{idSubKriteria}', 'destroy')->name('destroy');
             });
 
-            // --- 2. CRUD ALTERNATIF ---
-            // READ List
-            Route::get('alternatif', [AlternatifController::class, 'index'])->name('alternatif');
-            // CREATE
-            Route::get('alternatif/create', [AlternatifController::class, 'create'])->name('alternatif.create');
-            Route::post('alternatif', [AlternatifController::class, 'store'])->name('alternatif.store');
-            // UPDATE
-            Route::get('alternatif/{idAlternatif}/edit', [AlternatifController::class, 'edit'])->name('alternatif.edit');
-            Route::put('alternatif/{idAlternatif}', [AlternatifController::class, 'update'])->name('alternatif.update');
-            // DELETE
-            Route::delete('alternatif/{idAlternatif}', [AlternatifController::class, 'destroy'])->name('alternatif.destroy');
+        // LEVEL 6 — HASIL (Menggunakan SpkManagementController)
+        Route::get('{idKeputusan}/hasil', [SpkManagementController::class, 'showHasilAkhir'])->name('hasil');
 
-
-            // --- 3. DATA PENILAIAN & HASIL (VIEW) ---
-            Route::get('penilaian', [PenilaianController::class, 'index'])->name('penilaian');
-            Route::get('penilaian/edit', [PenilaianController::class, 'editMatriks'])->name('penilaian.edit');
-            Route::put('penilaian', [PenilaianController::class, 'updateMatriks'])->name('penilaian.update');
-            Route::get('hasil', [SpkManagementController::class, 'showHasilAkhir'])->name('hasil');
+        // =====================================================
+        // PERBANDINGAN KRITERIA (AHP) - DITAMBAHKAN
+        // =====================================================
+        Route::controller(PerbandinganKriteriaController::class)->prefix('{idKeputusan}/perbandingan')->name('perbandingan.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/save', 'save')->name('simpan');
+            Route::post('/check', 'checkConsistency')->name('cek_konsistensi');
         });
 
-        // 2. PERHITUNGAN (Proses & Eksekusi)
-        Route::prefix('calculate')->name('calculate.')->group(function () {
+        // =====================================================
+        // PERHITUNGAN SPK AKHIR (SAW/MOORA/DLL) - DIKOREKSI/DIPINDAHKAN
+        // =====================================================
+        Route::get('{idKeputusan}/run-calculation', [SpkCalculationController::class, 'runCalculation'])->name('run.calculation');
+
+        // Route untuk tampilan proses perhitungan (jika ada)
+        Route::prefix('{idKeputusan}/calculate')->name('calculate.')->group(function () {
             Route::get('proses', [SpkCalculationController::class, 'showPerhitungan'])->name('proses');
-            Route::get('run', [SpkCalculationController::class, 'runCalculation'])->name('run');
         });
+
     });
-    // =========================================================================
 
 });
 
 
 // =========================================================
-// ROUTE PENGURUS, USER BIASA, LOGIN GOOGLE, UMUM (TETAP)
+// ROUTE — PENGURUS
 // =========================================================
-Route::prefix('pengurus')->name('pengurus.')->middleware(['auth', 'role:pengurus'])->group(function () {
-    Route::get('/dashboard', [PengurusDashboardController::class, 'index'])->name('dashboard');
-    Route::resource('divisi', PengurusDivisiController::class)->parameters(['divisi' => 'id_divisi']);
-    Route::resource('jabatan', \App\Http\Controllers\Pengurus\JabatanController::class);
-    Route::resource('pengurus', \App\Http\Controllers\Pengurus\PengurusController::class);
-    Route::resource('keuangan', \App\Http\Controllers\Pengurus\KeuanganController::class);
-});
+Route::prefix('pengurus')->name('pengurus.')
+    ->middleware(['auth', 'role:pengurus'])
+    ->group(function () {
 
-Route::prefix('user')->name('user.')->middleware(['auth', 'role:user'])->group(function () {
-    Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
-    Route::resource('berita', UserBeritaController::class);
-    Route::resource('pengaduan', UserPengaduanController::class);
-});
+        Route::get('/dashboard', [PengurusDashboardController::class, 'index'])->name('dashboard');
+
+        Route::resource('divisi', PengurusDivisiController::class)->parameters(['divisi' => 'id_divisi']);
+        Route::resource('jabatan', \App\Http\Controllers\Pengurus\JabatanController::class);
+        Route::resource('pengurus', \App\Http\Controllers\Pengurus\PengurusController::class);
+        Route::resource('keuangan', \App\Http\Controllers\Pengurus\KeuanganController::class);
+
+    });
+
+
+// =========================================================
+// ROUTE — USER
+// =========================================================
+Route::prefix('user')->name('user.')
+    ->middleware(['auth', 'role:user'])
+    ->group(function () {
+
+        Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
+        Route::resource('berita', UserBeritaController::class);
+        Route::resource('pengaduan', UserPengaduanController::class);
+
+    });
+
+
+// =========================================================
+// LOGIN GOOGLE + PROFIL
+// =========================================================
 
 Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirect'])->name('google.redirect');
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('google.callback');

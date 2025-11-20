@@ -4,17 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\spkkeputusan; 
-use App\Models\kriteria;
+use App\Models\kriteria; // Menggunakan nama model sesuai konvensi Anda
 use App\Models\alternatif;
 use App\Models\penilaian;
 use App\Models\hasilakhir;
 use App\Models\subkriteria; 
-use Illuminate\Support\Facades\DB; // Diperlukan untuk memastikan operasi delete bertingkat
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log; // Tambahkan ini untuk debugging
 
 /**
  * Controller ini bertanggung jawab hanya untuk mengelola CRUD dari entitas 
- * Keputusan SPK itu sendiri. Menggantikan fungsi CRUD Keputusan dari 
- * SpkManagementController yang lama.
+ * Keputusan SPK itu sendiri.
  */
 class KeputusanController extends Controller
 {
@@ -61,7 +61,7 @@ class KeputusanController extends Controller
             'status' => 'Draft',
         ]);
 
-        return redirect()->route('admin.spk.keputusan.index')
+        return redirect()->route('admin.spk.index')
                          ->with('success', 'Keputusan SPK "' . $keputusan->nama_keputusan . '" berhasil dibuat!');
     }
 
@@ -90,7 +90,7 @@ class KeputusanController extends Controller
 
         $keputusan->update($validated);
 
-        return redirect()->route('admin.spk.keputusan.index')
+        return redirect()->route('admin.spk.index')
                          ->with('success', 'Keputusan SPK "' . $keputusan->nama_keputusan . '" berhasil diperbarui.');
     }
 
@@ -105,14 +105,22 @@ class KeputusanController extends Controller
             $keputusan = spkkeputusan::findOrFail($idKeputusan);
             $nama = $keputusan->nama_keputusan;
 
-            // 1. Ambil ID terkait
-            $kriteriaIds = kriteria::where('id_keputusan', $idKeputusan)->pluck('id_kriteria');
-            $alternatifIds = alternatif::where('id_keputusan', $idKeputusan)->pluck('id_alternatif');
+            // 1. Ambil ID terkait (Pluck ID hanya jika ada data, untuk menghindari kesalahan query)
+            $kriteriaIds = kriteria::where('id_keputusan', $idKeputusan)->pluck('id_kriteria')->toArray();
+            $alternatifIds = alternatif::where('id_keputusan', $idKeputusan)->pluck('id_alternatif')->toArray();
 
-            // 2. Hapus data anak (Penilaian, SubKriteria, HasilAkhir)
-            penilaian::whereIn('id_kriteria', $kriteriaIds)->delete();
-            subkriteria::whereIn('id_kriteria', $kriteriaIds)->delete(); 
-            hasilakhir::whereIn('id_alternatif', $alternatifIds)->delete();
+            // 2. Hapus data anak paling dalam (hanya jika Kriteria/Alternatif ditemukan)
+            if (!empty($kriteriaIds)) {
+                // Hapus Penilaian yang terkait dengan Kriteria (semua kriteria dari keputusan ini)
+                penilaian::whereIn('id_kriteria', $kriteriaIds)->delete();
+                // Hapus Subkriteria yang terkait dengan Kriteria
+                subkriteria::whereIn('id_kriteria', $kriteriaIds)->delete();
+            }
+            
+            if (!empty($alternatifIds)) {
+                // Hapus HasilAkhir yang terkait dengan Alternatif
+                hasilakhir::whereIn('id_alternatif', $alternatifIds)->delete();
+            }
             
             // 3. Hapus data orang tua (Kriteria dan Alternatif)
             kriteria::where('id_keputusan', $idKeputusan)->delete();
@@ -123,14 +131,17 @@ class KeputusanController extends Controller
             
             DB::commit();
 
-            return redirect()->route('admin.spk.keputusan.index')
+            return redirect()->route('admin.spk.index')
                              ->with('success', 'Keputusan SPK "' . $nama . '" dan semua data terkait berhasil dihapus.');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage()); // Opsional: Logging error
-            return redirect()->route('admin.spk.keputusan.index')
-                             ->with('error', 'Gagal menghapus keputusan SPK: ' . $e->getMessage());
+            // Log error untuk debugging yang lebih mudah di environment developer
+            Log::error("Gagal menghapus keputusan SPK: " . $e->getMessage(), ['id_keputusan' => $idKeputusan]); 
+            
+            // Mengembalikan pesan error yang jelas
+            return redirect()->route('admin.spk.index')
+                             ->with('error', 'Gagal menghapus keputusan SPK: ' . $e->getMessage() . '. Cek log server untuk detail.');
         }
     }
 }

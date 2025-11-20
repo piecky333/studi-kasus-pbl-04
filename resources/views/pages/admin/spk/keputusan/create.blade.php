@@ -47,7 +47,6 @@
                         class="mt-1 block w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border @error('metode_yang_digunakan') border-red-500 @enderror">
                     <option value="">-- Pilih Metode --</option>
                     <option value="SAW" {{ old('metode_yang_digunakan') == 'SAW' ? 'selected' : '' }}>SAW (Simple Additive Weighting)</option>
-                    <option value="TOPSIS" {{ old('metode_yang_digunakan') == 'TOPSIS' ? 'selected' : '' }}>TOPSIS</option>
                     <option value="AHP" {{ old('metode_yang_digunakan') == 'AHP' ? 'selected' : '' }}>AHP (Analytic Hierarchy Process)</option>
                     <option value="AHP-SAW" {{ old('metode_yang_digunakan') == 'AHP-SAW' ? 'selected' : '' }}>AHP + SAW (Kombinasi)</option>
                 </select>
