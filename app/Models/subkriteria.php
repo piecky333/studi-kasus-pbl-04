@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo; // Tambahkan ini
 
 /**
  * Model untuk tabel subkriteria.
@@ -21,15 +22,24 @@ class Subkriteria extends Model
 
     protected $fillable = [
         'id_kriteria', // Foreign Key ke tabel Kriteria
-        'deskripsi',
-        'nilai_skala', 
+        'nama_subkriteria',
+        'nilai', 
+        'id_keputusan', // Tambahkan foreign key dari Migration
     ];
 
     /**
      * Relasi Many-to-One: Sub Kriteria dimiliki oleh satu Kriteria.
      */
-    public function kriteria()
+    public function kriteria(): BelongsTo // Tambahkan tipe hint BelongsTo
     {
         return $this->belongsTo(Kriteria::class, 'id_kriteria');
+    }
+    
+    /**
+     * Relasi Many-to-One: Sub Kriteria dimiliki oleh satu Keputusan.
+     */
+    public function keputusan(): BelongsTo // Tambahkan relasi ke Keputusan
+    {
+        return $this->belongsTo(spkkeputusan::class, 'id_keputusan');
     }
 }

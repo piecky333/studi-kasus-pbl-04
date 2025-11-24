@@ -119,7 +119,7 @@ class AhpService
         $results['crData'] = [
             'lambda_max' => $lambdaMax,
             'ci' => $ci,
-            'ri' => $riValue, // Tambahkan RI
+            'ri' => $riValue, 
             'cr' => $cr,
         ];
 

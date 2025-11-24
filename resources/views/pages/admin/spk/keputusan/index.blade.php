@@ -13,7 +13,6 @@
                         {{-- Card Header --}}
                         <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
                             <h2 class="text-2xl font-bold text-gray-800 flex items-center">
-                                <i class="fas fa-fw bi bi-calculator-fill text-indigo-600 mr-2"></i>
                                 {{ $pageTitle ?? 'Daftar Keputusan SPK' }}
                             </h2>
                         </div>
@@ -24,7 +23,7 @@
                             {{-- Tombol Tambah Keputusan Baru --}}
                             <div class="flex justify-end mb-6">
                                 <a href="{{ route('admin.spk.create') }}"
-                                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+                                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
                                     <i class="fas fa-plus mr-2"></i>
                                     Buat Keputusan Baru
                                 </a>
@@ -96,7 +95,8 @@
                                                     <div class="flex flex-wrap justify-center gap-1.5">
 
                                                         {{-- 1. Tombol Kelola Detail (Masuk ke Kriteria/Alternatif) --}}
-                                                        <a href="{{ route('admin.spk.kriteria.index', $keputusan->id_keputusan) }}"
+                                                        {{-- PERBAIKAN RUTE: Menggunakan rute Kriteria sebagai halaman detail pertama --}}
+                                                        <a href="{{ route('admin.spk.kriteria.index', ['idKeputusan' => $keputusan->id_keputusan]) }}"
                                                             class="px-3 py-1 text-xs font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition">
                                                             Kelola Data
                                                         </a>

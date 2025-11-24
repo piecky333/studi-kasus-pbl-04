@@ -12,7 +12,7 @@ class HasilAkhir extends Model
         'id_alternatif',
         'nilai_preferensi',
         'ranking',
-        'bobot_digunakan', // Optional, untuk menyimpan bobot Wj yang dipakai saat perhitungan
+        'bobot_digunakan', 
     ];
 
     public function alternatif()

@@ -147,13 +147,13 @@
 
                         <div class="flex justify-center space-x-4 mt-8">
                             {{-- Tombol Simpan --}}
-                            <button type="submit" formaction="{{ route('admin.spk.perbandingan.simpan', $idKeputusan) }}"
+                            <button type="submit" formaction="{{ route('admin.spk.kriteria.perbandingan.simpan', $idKeputusan) }}"
                                 class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 shadow-md inline-flex items-center">
                                 <i class="fas fa-save mr-2"></i> Simpan
                             </button>
 
                             {{-- Tombol Cek Konsistensi --}}
-                            <button type="submit" formaction="{{ route('admin.spk.perbandingan.cek_konsistensi', $idKeputusan) }}"
+                            <button type="submit" formaction="{{ route('admin.spk.kriteria.perbandingan.cek_konsistensi', $idKeputusan) }}"
                                 class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 shadow-md inline-flex items-center">
                                 <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -172,7 +172,7 @@
                         class="mt-10 bg-white rounded-lg p-6 border-t-4 @if($hasilAHP['crData']['cr'] <= 0.1) border-green-500 @else border-red-500 @endif">
                         <h3 class="text-xl font-bold text-gray-800 mb-4">Hasil Perhitungan AHP dan Konsistensi</h3>
 
-                        <h2>Ringkasan Perhitungan AHP</h2>
+                        <h2><b>Ringkasan Perhitungan AHP</b></h2>
                         <br>
                         {{-- Summary CR --}}
                         <div
@@ -189,7 +189,7 @@
                                     @endif
                                 </p>
                                 @if($hasilAHP['crData']['cr'] <= 0.1)
-                                    <a href="{{ route('admin.spk.run.calculation', $idKeputusan) }}"
+                                    <a href="{{ route('admin.spk.hasil.index', $idKeputusan) }}"
                                         class="inline-flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 shadow-lg text-sm">
                                         <i class="fas fa-play mr-2"></i> Lanjutkan ke Proses SAW
                                     </a>
@@ -221,11 +221,12 @@
                                     </div>
                                 @endforeach
                             </div>
+                            <br>
                             <p class="text-center text-xs text-gray-500 mt-2">Total Bobot: {{ number_format(array_sum($hasilAHP['weights'] ?? [0]), 4) }}</p>
                         </div>
                         <br>
 
-                        <h2>Matriks Perbandingan Berpasangan</h2>
+                        <h2><b>Matriks Perbandingan Berpasangan</b></h2>
                         <p class="text-sm text-gray-600 mb-3">Matriks ini dibuat dari input perbandingan Anda Input dari skala perbandingan.</p>
                         <div class="overflow-x-auto border rounded-lg mb-6">
                             <table class="min-w-full divide-y divide-gray-200">
@@ -273,7 +274,7 @@
                         </div>
                         <br>
 
-                        <h2> Matriks Normalisasi (Vektor Prioritas) </h2>
+                        <h2> <b>Matriks Normalisasi (Vektor Prioritas)</b> </h2>
                         <p class="text-sm text-gray-600 mb-3">Nilai di dalamnya didapatkan dari pembagian elemen matriks input dengan Total Kolom yang sesuai. Rata-rata dari nilai-nilai setiap baris inilah yang menghasilkan Bobot Prioritas.</p>
                         <div class="overflow-x-auto border rounded-lg mb-6">
                             <table class="min-w-full divide-y divide-gray-200">
@@ -314,7 +315,7 @@
                         </div>
                         <br>
 
-                        <h2>Perhitungan Lambda Maksimum dan Vektor Prioritas </h2>
+                        <h2><b>Perhitungan Lambda Maksimum dan Vektor Prioritas</b> </h2>
                         <p class="text-sm text-gray-600 mb-3">perhitungan nilai Lambda Maksimum, vektor Prioritas, dan Vektor Konsistensi sebagai dasar untuk menghitung Consistency Index (CI) dan Consistency Ratio (CR). </p>
 
                         <div class="overflow-x-auto border rounded-lg mb-6">
@@ -359,14 +360,15 @@
                         </div>
                         <br>
 
+                        <h2 class="text-gray-700 mb-2"><b>Perhitungan Akhir</b></h2>
                         <div class="p-4 bg-gray-50 rounded-lg shadow-inner">
-                            <h4 class="font-semibold text-gray-700 mb-2">Perhitungan Akhir CR</h4>
                             <ul class="space-y-1 text-sm text-gray-600">
-                                <li><b>Consistency Index (CI):</b> <br>lambda maximum - n / (n - 1) =
+                                <li><b>Consistency Index (CI):</b> <br>lambda maximum - n / (n - 1) 
+                                    <br>
                                     ({{ number_format($hasilAHP['crData']['lambda_max'], 4) }} - {{ $hasilAHP['n'] }}) /
                                     ({{ $hasilAHP['n'] }} - 1) = {{ number_format($hasilAHP['crData']['ci'], 4) }}</li>
                                 <br>
-                                <li><b>Consistency Ratio (CR):</b> <br>CI / RI = {{ number_format($hasilAHP['crData']['ci'], 4) }} /
+                                <li><b>Consistency Ratio (CR):</b> <br>CI / RI <br> {{ number_format($hasilAHP['crData']['ci'], 4) }} /
                                     {{ number_format($hasilAHP['crData']['ri'], 4) }} =
                                     {{ number_format($hasilAHP['crData']['cr'], 4) }}</li>
                                     <br>

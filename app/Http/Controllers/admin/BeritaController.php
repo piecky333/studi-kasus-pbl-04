@@ -31,7 +31,6 @@ class BeritaController extends Controller
      */
     public function store(Request $request)
     {
-        // Validasi Anda di sini sudah benar
         $request->validate([
             'judul_berita' => 'required|string|max:255',
             'isi_berita' => 'required',
@@ -44,13 +43,13 @@ class BeritaController extends Controller
             $pathGambar = $request->file('gambar_berita')->store('berita', 'public');
         }
 
-        //menyimpan data berita ke database
         Berita::create([
             'id_user' => auth()->id(),
             'judul_berita' => $request->judul_berita, 
             'isi_berita' => $request->isi_berita,     
             'gambar_berita' => $pathGambar,          
-            'kategori' => $request->kategori,    
+            'kategori' => $request->kategori,
+            'status' => 'verified', // Admin langsung verified
         ]);
 
         return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil ditambahkan.');
@@ -61,7 +60,6 @@ class BeritaController extends Controller
      */
     public function edit($id)
     {
-        // mengambil data berita berdasarkan ID
         $berita = Berita::findOrFail($id);
         return view('pages.admin.berita.edit', compact('berita'));
     }
@@ -80,23 +78,18 @@ class BeritaController extends Controller
             'gambar_berita' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
         ]);
 
-        // --- PERBAIKAN DI SINI ---
-        // Key array HARUS SAMA DENGAN NAMA KOLOM DATABASE
         $data = [
-            'judul_berita' => $request->judul_berita, // <-- DIUBAH
-            'isi_berita'   => $request->isi_berita,   // <-- DIUBAH
+            'judul_berita' => $request->judul_berita,
+            'isi_berita'   => $request->isi_berita,
             'kategori'     => $request->kategori,
+            // Admin bisa ubah status juga kalau mau, default biarkan tetap
         ];
 
         if ($request->hasFile('gambar_berita')) {
-            // Hapus gambar lama JIKA ada
-            // PERBAIKAN DI SINI
             if ($berita->gambar_berita) { 
-                Storage::disk('public')->delete($berita->gambar_berita); // <-- DIUBAH
+                Storage::disk('public')->delete($berita->gambar_berita);
             }
-            // Simpan gambar baru
-            // PERBAIKAN DI SINI
-            $data['gambar_berita'] = $request->file('gambar_berita')->store('berita', 'public'); // <-- DIUBAH
+            $data['gambar_berita'] = $request->file('gambar_berita')->store('berita', 'public');
         }
 
         $berita->update($data);
@@ -111,13 +104,36 @@ class BeritaController extends Controller
     {
         $berita = Berita::findOrFail($id);
 
-        // --- PERBAIKAN DI SINI ---
-        if ($berita->gambar_berita) { // <-- DIUBAH
-            Storage::disk('public')->delete($berita->gambar_berita); // <-- DIUBAH
+        if ($berita->gambar_berita) {
+            Storage::disk('public')->delete($berita->gambar_berita);
         }
         
         $berita->delete();
 
-        return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil dihapus.');
+        return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil dihapus');
+    }
+
+    /**
+     * Verifikasi berita pending
+     */
+    public function verifikasi($id)
+    {
+        $berita = Berita::findOrFail($id);
+        $berita->status = 'verified';
+        $berita->save();
+
+        return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil diverifikasi.');
+    }
+
+    /**
+     * Tolak berita pending
+     */
+    public function tolak($id)
+    {
+        $berita = Berita::findOrFail($id);
+        $berita->status = 'rejected';
+        $berita->save();
+
+        return redirect()->route('admin.berita.index')->with('success', 'Berita ditolak.');
     }
 }

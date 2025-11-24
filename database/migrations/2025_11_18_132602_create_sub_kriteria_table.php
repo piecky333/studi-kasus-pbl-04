@@ -12,18 +12,18 @@ return new class extends Migration {
     {
         Schema::create('subkriteria', function (Blueprint $table) {
             $table->id('id_subkriteria');
-
-            // HARUS merujuk ke 'id_keputusan' di tabel 'keputusan'
-            $table->unsignedBigInteger('id_keputusan');
-            $table->foreign('id_keputusan')->references('id_keputusan')->on('spkkeputusan')->onDelete('cascade');
-
-            // HARUS merujuk ke 'id_kriteria' di tabel 'kriteria'
+            
+            // Foreign Key ke Kriteria
             $table->unsignedBigInteger('id_kriteria');
             $table->foreign('id_kriteria')->references('id_kriteria')->on('kriteria')->onDelete('cascade');
 
-            $table->string('nama_subkriteria', 100);
-            $table->float('nilai')->default(1);
+            // Foreign Key ke Keputusan (Optional but good for integrity)
+            $table->unsignedBigInteger('id_keputusan');
+            $table->foreign('id_keputusan')->references('id_keputusan')->on('spkkeputusan')->onDelete('cascade');
 
+            $table->string('nama_subkriteria');
+            $table->decimal('nilai', 8, 4); 
+            
             $table->timestamps();
         });
     }

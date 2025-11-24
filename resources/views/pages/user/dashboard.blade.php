@@ -111,18 +111,18 @@
                         @if($pengaduanTerakhir->isEmpty())
                             <p class="text-gray-500">Anda belum membuat pengaduan.</p>
                         @else
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-50">
+                            <div class="overflow-x-auto">   
+                            <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-blue-100">
                                         <tr>
                                             <th scope="col"
-                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                class="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
                                                 Judul</th>
                                             <th scope="col"
-                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                class="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
                                                 Status</th>
                                             <th scope="col"
-                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                class="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
                                                 Tanggal Dibuat</th>
                                             <th scope="col" class="relative px-6 py-3"><span class="sr-only">Aksi</span>
                                             </th>
@@ -204,9 +204,9 @@
                                     <div class="flex items-center space-x-4">
                                         
                                         <div class="flex-shrink-0">
-                                            @if($item->gambar)
+                                            @if($item->gambar_berita)
                                                 <img class="h-16 w-16 rounded-lg object-cover shadow-sm" 
-                                                     src="{{ asset('storage/' . $item->gambar) }}" 
+                                                     src="{{ asset('storage/' . $item->gambar_berita) }}" 
                                                      alt="{{ $item->judul_berita }}"> 
                                             @else
                                                 <div class="h-16 w-16 rounded-lg bg-gray-200 flex items-center justify-center text-gray-400">

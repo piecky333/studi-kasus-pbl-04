@@ -48,6 +48,15 @@
     </a>
 </li>
 
+<!-- Kelola Berita -->
+<li class="nav-item {{ request()->is('pengurus/berita*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('pengurus.berita.index') }}">
+        <i class="bi bi-newspaper"></i>
+        <span>Kelola Berita</span>
+    </a>
+</li>
+
+
     <!-- Kelola Keuangan -->
 <li class="nav-item {{ request()->is('pengurus/keuangan*') ? 'active' : '' }}">
     <a class="nav-link" href="{{ route('pengurus.keuangan.index') }}">
