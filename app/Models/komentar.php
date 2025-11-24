@@ -12,7 +12,6 @@ class komentar extends Model
     protected $table = 'komentar';
     protected $primaryKey = 'id_komentar';
     
-    // PERBARUI FILLABLE
     protected $fillable = [
         'id_berita',
         'id_user',
