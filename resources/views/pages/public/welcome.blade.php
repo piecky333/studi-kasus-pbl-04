@@ -82,7 +82,7 @@
                     <h2 class="text-3xl sm:text-4xl font-extrabold text-blue-800 mb-4 border-b-4 border-blue-500 pb-2 inline-block">Tentang HIMA-TI</h2>
                     <p class="text-gray-700 mb-4 leading-relaxed">
                         Himpunan Mahasiswa Teknologi Informasi (HIMA-TI) merupakan organisasi kemahasiswaan yang berperan
-                        sebagai **wadah aspirasi, pengembangan, dan kolaborasi** antar mahasiswa di bidang teknologi informasi.
+                        sebagai <b>wadah aspirasi, pengembangan, dan kolaborasi</b> antar mahasiswa di bidang teknologi informasi.
                     </p>
                     <p class="text-gray-700 mb-6 leading-relaxed">
                         Kami berkomitmen menciptakan lingkungan akademik yang aktif, inovatif, dan berdampak positif bagi
@@ -155,18 +155,12 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 @forelse($kegiatanTerbaru as $kegiatan)
-                    {{-- 
-                        PERUBAHAN: 
-                        - Hapus 'wow fadeInUp'
-                        - Hapus 'data-wow-delay'
-                        - Tambah 'js-animate' dan 'data-delay' menggunakan $loop->index
-                        - Saya gunakan 150ms sebagai stagger (penundaan) per item
-                    --}}
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col hover:shadow-xl transition duration-300 js-animate" 
-                         data-animation="fadeInUp" data-delay="{{ $loop->index * 150 }}">
-                        <a href="{{ route('berita.show', $kegiatan->id_berita) }}" class="block overflow-hidden h-48">
+                    {{-- Card wrapper: flex flex-col --}}
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col wow fadeInUp">
+
+                        <a href="{{ route('berita.show', $kegiatan->id_berita) }}">
                             <img src="{{ asset('storage/'. $kegiatan->gambar_berita) }}" alt="{{ $kegiatan->judul_berita }}"
-                                class="w-full h-full object-cover transform hover:scale-105 transition duration-500">
+                                class="w-full h-48 object-cover">
                         </a>
                         <div class="p-6 text-left flex flex-col flex-grow">
                             <h3 class="font-bold text-lg text-gray-900 my-2 hover:text-blue-700 line-clamp-2 min-h-[3.5rem] transition duration-300">
@@ -210,16 +204,12 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 @forelse($prestasiTerbaru as $prestasi)
-                    {{-- 
-                        PERUBAHAN: 
-                        - Hapus 'wow fadeInUp' dan 'data-wow-delay'
-                        - Tambah 'js-animate' dan 'data-delay' (stagger 150ms)
-                    --}}
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col hover:shadow-xl transition duration-300 js-animate" 
-                         data-animation="fadeInUp" data-delay="{{ $loop->index * 150 }}">
-                        <a href="{{ route('prestasi.show', $prestasi->id_berita) }}" class="block overflow-hidden h-48">
+
+                    {{-- 1. Card wrapper: Tambahkan 'flex flex-col' --}}
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col wow fadeInUp">
+                        <a href="{{ route('prestasi.show', $prestasi->id_berita) }}">
                             <img src="{{ asset('storage/'. $prestasi->gambar_berita) }}" alt="{{ $prestasi->judul_berita }}"
-                                class="w-full h-full object-cover transform hover:scale-105 transition duration-500">
+                                class="w-full h-48 object-cover">
                         </a>
                         <div class="p-6 text-left flex flex-col flex-grow">
                             <h3 class="font-bold text-lg text-gray-900 my-2 hover:text-blue-700 line-clamp-2 min-h-[3.5rem] transition duration-300">
