@@ -3,7 +3,7 @@
 namespace App\Models\admin;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\admin\mahasiswa;
+use App\Models\mahasiswa;
 use App\Models\admin\pengurus;
 
 class prestasi extends Model
@@ -14,7 +14,7 @@ class prestasi extends Model
 
     public function mahasiswa()
     {
-        return $this->belongsTo(Mahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->belongsTo(mahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 
     public function pengurus()

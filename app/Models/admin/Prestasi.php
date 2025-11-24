@@ -1,28 +1,43 @@
 <?php
 
-namespace App\Models\admin;
+namespace App\Models\admin; 
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\admin\mahasiswa;
-use App\Models\admin\pengurus;
+use App\Models\Mahasiswa;
+use App\Models\admin\Admin; 
 
-class prestasi extends Model
+class Prestasi extends Model
 {
-    protected $table = 'Prestasi';
+    // Casing tabel disesuaikan
+    protected $table = 'prestasi'; 
     protected $primaryKey = 'id_prestasi';
-    protected $fillable = ['id_prestasi', 'tahun', 'tingkat', 'nama_kegiatan', 'jenis_prestasi', 'status_validasi'];
+    
+    protected $fillable = [
+        // Tambahkan Foreign Key dan Peringkat/Juara
+        'id_mahasiswa',     
+        'id_admin',         
+        'tingkat', 
+        'peringkat', // Kolom Juara/Peringkat
+        'tahun', 
+        'nama_kegiatan', 
+        'jenis_prestasi', 
+        'status_validasi',
+    ];
 
+    // Relasi ke Mahasiswa (belongsTo)
     public function mahasiswa()
     {
+        // Panggil Class Mahasiswa dari root namespace
         return $this->belongsTo(Mahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 
-    public function pengurus()
-    {
-        return $this->hasMany(pengurus::class, 'prestasi');
-    }
+    // Relasi ke Admin (belongsTo)
     public function admin()
     {
-        return $this->belongsTo(\App\Models\admin\Admin::class, 'id_admin', 'id_admin');
+        // Panggil Class Admin dari namespace yang sama
+        return $this->belongsTo(Admin::class, 'id_admin', 'id_admin');
     }
+
+    // Catatan: Relasi ke Pengurus Anda hilangkan karena membingungkan, 
+    // tapi jika diperlukan, pastikan Model Pengurus juga memiliki namespace yang benar.
 }
