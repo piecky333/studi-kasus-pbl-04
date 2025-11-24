@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\laporan\pengaduan;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Storage; // <-- TAMBAHKAN INI untuk mengelola file
+use Illuminate\Support\Facades\Storage;
 
 class PengaduanController extends Controller
 {
     /**
-     * Opsi 1: Menampilkan semua daftar pengaduan (index)
+     * Menampilkan daftar pengaduan
      */
     public function index()
     {
@@ -23,26 +23,23 @@ class PengaduanController extends Controller
     }
 
     /**
-     * Opsi 2: Menampilkan detail spesifik pengaduan (show)
+     * Menampilkan detail satu pengaduan
      */
     public function show($id)
     {
         $pengaduan = pengaduan::with(['mahasiswa', 'mahasiswa.user'])
                             ->findOrFail($id);
 
-        // Di halaman show, Anda mungkin ingin menampilkan gambar
-        // Anda bisa membuat variabel path gambar di sini
         $gambarUrl = null;
-        if ($pengaduan->gambar_bukti_path) {
-             // 'storage' adalah hasil dari `php artisan storage:link`
-            $gambarUrl = Storage::url($pengaduan->gambar_bukti_path);
+        if ($pengaduan->gambar_bukti) { // gunakan nama kolom baru
+            $gambarUrl = asset('storage/' . $pengaduan->gambar_bukti);
         }
 
         return view('pages.admin.pengaduan.show', compact('pengaduan', 'gambarUrl'));
     }
 
     /**
-     * Opsi 3 (Aksi Kunci): Mem-verifikasi (Update Status) pengaduan.
+     * VALIDASI STATUS (admin update status)
      */
     public function verifikasi(Request $request, $id)
     {
@@ -63,29 +60,52 @@ class PengaduanController extends Controller
     }
 
     /**
-     * Opsi 4: Menghapus pengaduan (destroy)
-     *
-     * =================================================================
-     * === DISESUAIKAN: Menambahkan logika hapus file dari storage ===
-     * =================================================================
+     * MENGHAPUS DATA + MENGHAPUS FILE BUKTI
      */
     public function destroy($id)
     {
         $pengaduan = pengaduan::findOrFail($id);
 
-        // 1. Cek jika ada path gambar yang tersimpan
-        // (Saya asumsikan nama kolomnya 'gambar_bukti_path' sesuai saran saya sebelumnya)
-        if ($pengaduan->gambar_bukti_path) {
-
-            // 2. Hapus file dari storage (public disk)
-            // Ini akan menghapus file dari folder 'storage/app/public/bukti_pengaduan'
-            Storage::disk('public')->delete($pengaduan->gambar_bukti_path);
+        // Hapus file dari storage jika ada
+        if ($pengaduan->gambar_bukti) {
+            Storage::disk('public')->delete($pengaduan->gambar_bukti);
         }
 
-        // 3. Hapus data pengaduan dari database
         $pengaduan->delete();
 
         return redirect()->route('admin.pengaduan.index')
-                         ->with('success', 'Pengaduan dan file bukti terkait telah berhasil dihapus.');
+                         ->with('success', 'Pengaduan dan file buktinya berhasil dihapus!');
+    }
+
+
+    /**
+     * =========================================
+     *  METHOD STORE (USER / MAHASISWA)
+     *  =========================================
+     *  Inilah yang MENYIMPAN FILE GAMBAR
+     */
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'judul'             => 'required|string|max:255',
+            'tanggal_pengaduan' => 'required|date',
+            'jenis_kasus'       => 'required|string|max:255',
+            'deskripsi'         => 'required|string',
+            'gambar_bukti'      => 'nullable|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        $validatedData['id_user'] = auth()->id();
+        $validatedData['status'] = 'Pending';
+
+        // PROSES UPLOAD FILE
+        if ($request->hasFile('gambar_bukti')) {
+            $validatedData['gambar_bukti'] =
+                $request->file('gambar_bukti')->store('pengaduan', 'public');
+        }
+
+        pengaduan::create($validatedData);
+
+        return redirect()->route('user.pengaduan.index')
+                         ->with('success', 'Pengaduan berhasil dikirim!');
     }
 }
