@@ -4,15 +4,14 @@ use Illuminate\Database\Eloquent\Model;
 class HasilAkhir extends Model
 {
     protected $table = 'hasil_akhir';
-    protected $primaryKey = 'id_hasil_akhir';
+    protected $primaryKey = 'id_hasil';
     public $timestamps = false; 
 
     protected $fillable = [
-        'id_keputusan',
         'id_alternatif',
-        'nilai_preferensi',
-        'ranking',
-        'bobot_digunakan', 
+        'skor_akhir',
+        'rangking',
+        // 'bobot_digunakan', // Uncomment if needed in migration
     ];
 
     public function alternatif()

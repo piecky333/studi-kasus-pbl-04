@@ -3,158 +3,216 @@
 @section('title', 'Detail Pengaduan')
 
 @section('content')
-<!-- Page Heading -->
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Detail Pengaduan</h1>
-    <a href="{{ route('admin.pengaduan.index') }}" 
-       class="btn btn-sm btn-secondary shadow-sm">
-        <i class="fas fa-arrow-left fa-sm text-white-50"></i> Kembali ke Daftar
-    </a>
-</div>
-
-{{-- Alert/Pesan Sukses --}}
-@if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
-        <button type="button" class="close" data-dismiss="alert">
-            <span>&times;</span>
-        </button>
-    </div>
-@endif
-
-{{-- Error Validasi --}}
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <ul class="mb-0">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
-<div class="row">
-
-    <!-- Kolom Kiri -->
-    <div class="col-lg-7">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                <h6 class="m-0 font-weight-bold text-primary">{{ $pengaduan->judul }}</h6>
-
-                {{-- Badge Status --}}
-                @if ($pengaduan->status == 'Terkirim')
-                    <span class="badge badge-primary">{{ $pengaduan->status }}</span>
-                @elseif ($pengaduan->status == 'Diproses')
-                    <span class="badge badge-warning">{{ $pengaduan->status }}</span>
-                @elseif ($pengaduan->status == 'Selesai')
-                    <span class="badge badge-success">{{ $pengaduan->status }}</span>
-                @elseif ($pengaduan->status == 'Ditolak')
-                    <span class="badge badge-danger">{{ $pengaduan->status }}</span>
-                @endif
-            </div>
-
-            <div class="card-body">
-
-                <h6 class="font-weight-bold">Jenis Kasus:</h6>
-                <p>{{ $pengaduan->jenis_kasus }}</p>
-
-                <hr>
-
-                <h6 class="font-weight-bold">Deskripsi Lengkap:</h6>
-                <p>{!! nl2br(e($pengaduan->deskripsi)) !!}</p>
-
-                <hr>
-
-                {{-- TAMPILAN GAMBAR BUKTI --}}
-                <h6 class="font-weight-bold">Bukti Foto / Lampiran:</h6>
-
-                @if ($pengaduan->gambar_bukti)
-                    <div class="mb-3">
-                        <img src="{{ asset('storage/' . $pengaduan->gambar_bukti) }}"
-                             alt="Bukti Pengaduan"
-                             class="img-fluid rounded shadow">
-                    </div>
-                @else
-                    <p class="text-muted">Tidak ada gambar bukti yang diunggah.</p>
-                @endif
-
-                <hr>
-
-                <small class="text-muted">
-                    Tanggal Pengaduan: {{ $pengaduan->created_at->format('d M Y, H:i') }}
-                </small>
-            </div>
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Page Header -->
+    <div class="md:flex md:items-center md:justify-between mb-8">
+        <div class="flex-1 min-w-0">
+            <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                Detail Pengaduan
+            </h2>
+            <p class="mt-1 text-sm text-gray-500">
+                Lihat detail dan update status pengaduan.
+            </p>
         </div>
-
-        <!-- Informasi Pelapor -->
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Informasi Pelapor</h6>
-            </div>
-            <div class="card-body">
-
-                @if ($pengaduan->mahasiswa)
-                    <div class="row mb-2">
-                        <div class="col-md-4 font-weight-bold">Nama Lengkap</div>
-                        <div class="col-md-8">: {{ $pengaduan->mahasiswa->nama }}</div>
-                    </div>
-
-                    <div class="row mb-2">
-                        <div class="col-md-4 font-weight-bold">NIM</div>
-                        <div class="col-md-8">: {{ $pengaduan->mahasiswa->nim ?? '-' }}</div>
-                    </div>
-
-                    <div class="row mb-2">
-                        <div class="col-md-4 font-weight-bold">Email</div>
-                        <div class="col-md-8">: {{ $pengaduan->mahasiswa->user->email ?? '-' }}</div>
-                    </div>
-                @else
-                    <div class="alert alert-warning mb-0">
-                        Data pelapor tidak ditemukan.
-                    </div>
-                @endif
-
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Kolom Kanan -->
-    <div class="col-lg-5">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Aksi Verifikasi</h6>
-            </div>
-            <div class="card-body">
-
-                <form action="{{ route('admin.pengaduan.verifikasi', $pengaduan->id_pengaduan) }}" 
-                      method="POST">
-                    @csrf
-                    @method('PUT')
-
-                    <div class="form-group">
-                        <label for="status">Status Pengaduan</label>
-                        <select name="status" id="status" 
-                                class="form-control @error('status') is-invalid @enderror" required>
-                            <option value="Diproses" {{ $pengaduan->status == 'Diproses' ? 'selected' : '' }}>Diproses</option>
-                            <option value="Selesai" {{ $pengaduan->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
-                            <option value="Ditolak" {{ $pengaduan->status == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
-                        </select>
-
-                        @error('status')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <button type="submit" class="btn btn-primary btn-block">
-                        <i class="fas fa-check"></i> Update Status
-                    </button>
-
-                </form>
-
-            </div>
+        <div class="mt-4 flex md:mt-0 md:ml-4">
+            <a href="{{ route('admin.pengaduan.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Kembali
+            </a>
         </div>
     </div>
 
+    {{-- Alert/Pesan Sukses --}}
+    @if (session('success'))
+        <div class="rounded-md bg-green-50 p-4 mb-6 border-l-4 border-green-400">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-check-circle text-green-400"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-medium text-green-800">
+                        {{ session('success') }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- Error Validasi --}}
+    @if ($errors->any())
+        <div class="rounded-md bg-red-50 p-4 mb-6 border-l-4 border-red-400">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-circle text-red-400"></i>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-red-800">Terdapat kesalahan pada inputan Anda:</h3>
+                    <ul class="mt-2 list-disc list-inside text-sm text-red-700">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Kolom Kiri: Detail Pengaduan -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-white shadow overflow-hidden sm:rounded-lg border border-gray-200">
+                <div class="px-4 py-5 sm:px-6 flex justify-between items-center bg-gray-50 border-b border-gray-200">
+                    <div>
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">
+                            {{ $pengaduan->judul }}
+                        </h3>
+                        <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                            Diajukan pada {{ $pengaduan->created_at->format('d M Y, H:i') }}
+                        </p>
+                    </div>
+                    <div>
+                        @if ($pengaduan->status == 'Terkirim')
+                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                Terkirim
+                            </span>
+                        @elseif ($pengaduan->status == 'Diproses')
+                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                Diproses
+                            </span>
+                        @elseif ($pengaduan->status == 'Selesai')
+                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Selesai
+                            </span>
+                        @elseif ($pengaduan->status == 'Ditolak')
+                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                Ditolak
+                            </span>
+                        @endif
+                    </div>
+                </div>
+                <div class="px-4 py-5 sm:p-6">
+                    <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                        <div class="sm:col-span-2">
+                            <dt class="text-sm font-medium text-gray-500">
+                                Jenis Kasus
+                            </dt>
+                            <dd class="mt-1 text-sm text-gray-900">
+                                {{ $pengaduan->jenis_kasus }}
+                            </dd>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <dt class="text-sm font-medium text-gray-500">
+                                Deskripsi Lengkap
+                            </dt>
+                            <dd class="mt-1 text-sm text-gray-900 bg-gray-50 p-4 rounded-md border border-gray-100">
+                                {!! nl2br(e($pengaduan->deskripsi)) !!}
+                            </dd>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <dt class="text-sm font-medium text-gray-500 mb-2">
+                                Bukti Foto / Lampiran
+                            </dt>
+                            <dd class="mt-1 text-sm text-gray-900">
+                                @if ($pengaduan->gambar_bukti)
+                                    <div class="border border-gray-200 rounded-lg overflow-hidden shadow-sm max-w-lg">
+                                        <img src="{{ asset('storage/' . $pengaduan->gambar_bukti) }}" alt="Bukti Pengaduan" class="w-full h-auto object-cover">
+                                    </div>
+                                    <div class="mt-2">
+                                        <a href="{{ asset('storage/' . $pengaduan->gambar_bukti) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900 text-sm font-medium">
+                                            <i class="fas fa-external-link-alt mr-1"></i> Lihat Ukuran Penuh
+                                        </a>
+                                    </div>
+                                @else
+                                    <div class="flex items-center justify-center h-32 bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg">
+                                        <span class="text-gray-500 italic">Tidak ada bukti lampiran</span>
+                                    </div>
+                                @endif
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kolom Kanan: Info Pelapor & Aksi -->
+        <div class="space-y-6">
+            
+            <!-- Informasi Pelapor -->
+            <div class="bg-white shadow overflow-hidden sm:rounded-lg border border-gray-200">
+                <div class="px-4 py-4 sm:px-6 bg-gray-50 border-b border-gray-200">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">
+                        Informasi Pelapor
+                    </h3>
+                </div>
+                <div class="px-4 py-5 sm:p-6">
+                    @if ($pengaduan->mahasiswa)
+                        <div class="flex items-center mb-4">
+                            <div class="flex-shrink-0 h-12 w-12">
+                                <img class="h-12 w-12 rounded-full object-cover border border-gray-200" 
+                                     src="https://ui-avatars.com/api/?name={{ urlencode($pengaduan->mahasiswa->nama) }}&background=random" 
+                                     alt="">
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold text-gray-900">{{ $pengaduan->mahasiswa->nama }}</h4>
+                                <p class="text-sm text-gray-500">{{ $pengaduan->mahasiswa->nim ?? 'NIM Tidak Ada' }}</p>
+                            </div>
+                        </div>
+                        <div class="border-t border-gray-100 pt-4">
+                            <dl class="space-y-3">
+                                <div>
+                                    <dt class="text-xs font-medium text-gray-500 uppercase tracking-wider">Email</dt>
+                                    <dd class="mt-1 text-sm text-gray-900">{{ $pengaduan->mahasiswa->user->email ?? '-' }}</dd>
+                                </div>
+                                {{-- Tambahkan info lain jika ada, misal Prodi/Jurusan --}}
+                            </dl>
+                        </div>
+                    @else
+                        <div class="rounded-md bg-yellow-50 p-4">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-yellow-800">Data pelapor tidak ditemukan</h3>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Aksi Verifikasi -->
+            <div class="bg-white shadow overflow-hidden sm:rounded-lg border border-gray-200">
+                <div class="px-4 py-4 sm:px-3 bg-indigo-50 border-b border-indigo-100">
+                    <h3 class="text-lg leading-6 font-medium text-indigo-900">
+                        Aksi Verifikasi
+                    </h3>
+                </div>
+                <div class="px-4 py-5 sm:p-6">
+                    <form action="{{ route('admin.pengaduan.verifikasi', $pengaduan->id_pengaduan) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+
+                        <div class="mb-4">
+                            <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Update Status</label>
+                            <select name="status" id="status" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                <option value="Diproses" {{ $pengaduan->status == 'Diproses' ? 'selected' : '' }}>Diproses</option>
+                                <option value="Selesai" {{ $pengaduan->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                                <option value="Ditolak" {{ $pengaduan->status == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
+                            </select>
+                            @error('status')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+                            <i class="fas fa-save mr-2"></i> Simpan Perubahan
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
 @endsection
