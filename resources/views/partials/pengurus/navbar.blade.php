@@ -62,7 +62,7 @@
                             <p class="text-xs text-gray-500 truncate">{{ Auth::user()->email ?? '' }}</p>
                         </div>
 
-                        <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150" role="menuitem" tabindex="-1" id="user-menu-item-0">
+                        <a href="{{ route('pengurus.profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-150" role="menuitem" tabindex="-1" id="user-menu-item-0">
                             <i class="fas fa-user mr-2 text-gray-400"></i> Profil Saya
                         </a>
                         

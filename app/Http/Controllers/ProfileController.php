@@ -15,10 +15,20 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
-    public function edit(Request $request): View
+    public function edit(Request $request)
     {
+        $user = $request->user();
+
+        if ($user->hasRole('admin')) {
+            return Redirect::route('admin.profile.edit');
+        }
+
+        if ($user->hasRole('pengurus')) {
+            return Redirect::route('pengurus.profile.edit');
+        }
+
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user' => $user,
         ]);
     }
 

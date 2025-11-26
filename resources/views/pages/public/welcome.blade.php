@@ -119,7 +119,7 @@
 
         <!-- Foto Divisi -->
         <div class="mb-4">
-            <img src="{{ asset('storage/uploads/divisi/' . $div->foto_divisi) }}"
+            <img src="{{ asset('storage/' . $div->foto_divisi) }}"
      alt="{{ $div->nama_divisi }}"
      class="w-28 h-28 object-cover group-hover:scale-110 group-hover:rotate-2 transition">
 

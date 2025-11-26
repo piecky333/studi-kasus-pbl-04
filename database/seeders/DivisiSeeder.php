@@ -39,28 +39,31 @@ class DivisiSeeder extends Seeder
             ],
         ];
 
-        // Ensure directory exists in public/storage/divisi
-        // Note: Assumes php artisan storage:link has been run, or we write directly to public if needed.
-        // Using public_path('storage/divisi') writes to the symlink destination or creates the folder if no symlink.
-        $path = public_path('storage/divisi');
+        // Ensure directory exists in storage/app/public/divisi
+        $storagePath = storage_path('app/public/divisi');
         
-        if (!File::exists($path)) {
-            File::makeDirectory($path, 0755, true);
+        if (!File::exists($storagePath)) {
+            File::makeDirectory($storagePath, 0755, true);
         }
 
         foreach ($divisiData as $index => $data) {
-            // Download dummy image
+            // Download dummy image using Http client
             $imageUrl = 'https://ui-avatars.com/api/?name=' . urlencode($data['nama_divisi']) . '&background=random&size=500&color=fff';
             $imageName = 'divisi-' . ($index + 1) . '.png';
-            $imageContent = @file_get_contents($imageUrl);
-
-            if ($imageContent) {
-                File::put($path . '/' . $imageName, $imageContent);
-                // Store path relative to public/storage (which is usually mapped to storage/app/public)
-                // If we use the 'public' disk, it would be 'divisi/' . $imageName
-                $data['foto_divisi'] = 'divisi/' . $imageName; 
-            } else {
+            
+            try {
+                $response = \Illuminate\Support\Facades\Http::get($imageUrl);
+                
+                if ($response->successful()) {
+                    File::put($storagePath . '/' . $imageName, $response->body());
+                    $data['foto_divisi'] = 'divisi/' . $imageName; 
+                } else {
+                    $data['foto_divisi'] = null;
+                    $this->command->warn("Gagal mendownload gambar untuk " . $data['nama_divisi']);
+                }
+            } catch (\Exception $e) {
                 $data['foto_divisi'] = null;
+                $this->command->error("Error saat mendownload gambar: " . $e->getMessage());
             }
 
             divisi::create($data);
