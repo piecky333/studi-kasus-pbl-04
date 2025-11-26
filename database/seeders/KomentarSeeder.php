@@ -3,10 +3,10 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\komentar; // Pastikan import model komentar Anda
-use App\Models\berita;   // Kita butuh model berita
-use App\Models\User;     // Kita butuh model user
-use Illuminate\Support\Facades\DB; // Untuk truncate
+use App\Models\komentar; 
+use App\Models\berita;  
+use App\Models\User;     
+use Illuminate\Support\Facades\DB; 
 
 class KomentarSeeder extends Seeder
 {
@@ -21,7 +21,6 @@ class KomentarSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         // 2. Ambil data acak untuk relasi
-        // Pastikan Anda sudah menjalankan BeritaSeeder dan UserSeeder
         $berita = berita::first(); 
         $user1 = User::first();
         $user2 = User::skip(1)->first(); // Ambil user kedua
@@ -38,7 +37,7 @@ class KomentarSeeder extends Seeder
             'id_user' => $user1->id_user,
             'nama_komentator' => $user1->nama,
             'isi' => 'Ini adalah komentar INDUK pertama. Keren sekali prestasinya!',
-            'parent_id' => null, // PENTING: null berarti ini induk
+            'parent_id' => null, 
             'created_at' => now()->subDays(2),
         ]);
 
@@ -48,7 +47,7 @@ class KomentarSeeder extends Seeder
             'id_user' => $user2->id_user,
             'nama_komentator' => $user2->nama,
             'isi' => 'Setuju! Ini balasan untuk komentar pertama.',
-            'parent_id' => $komentarInduk1->id_komentar, // <-- KUNCI: Menunjuk ke ID Induk
+            'parent_id' => $komentarInduk1->id_komentar, 
             'created_at' => now()->subDays(1),
         ]);
 
@@ -58,7 +57,7 @@ class KomentarSeeder extends Seeder
             'id_user' => $user1->id_user,
             'nama_komentator' => $user1->nama,
             'isi' => 'Saya balas komentar saya sendiri.',
-            'parent_id' => $komentarInduk1->id_komentar, // <-- KUNCI: Menunjuk ke ID Induk
+            'parent_id' => $komentarInduk1->id_komentar,
             'created_at' => now(),
         ]);
 
@@ -68,7 +67,7 @@ class KomentarSeeder extends Seeder
             'id_user' => $user2->id_user,
             'nama_komentator' => $user2->nama,
             'isi' => 'Ini adalah komentar INDUK kedua. Semoga sukses selalu!',
-            'parent_id' => null, // PENTING: null berarti ini induk
+            'parent_id' => null, 
             'created_at' => now()->subHours(5),
         ]);
         

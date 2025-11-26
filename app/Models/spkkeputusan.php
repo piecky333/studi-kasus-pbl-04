@@ -29,12 +29,12 @@ class spkkeputusan extends Model
     
     public function kriteria()
     {
-        return $this->hasMany(kriteria::class, 'id_keputusan', 'id');
+        return $this->hasMany(kriteria::class, 'id_keputusan', 'id_keputusan');
     }
     
     public function alternatif()
     {
-        return $this->hasMany(alternatif::class, 'id_keputusan', 'id');
+        return $this->hasMany(alternatif::class, 'id_keputusan', 'id_keputusan');
     }
 
 }

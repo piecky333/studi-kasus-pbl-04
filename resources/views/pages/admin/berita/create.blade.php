@@ -1,89 +1,157 @@
 @extends('layouts.admin')
 
+@section('title', 'Tambah Berita Baru')
+
 @section('content')
-
-    <!-- Page Heading -->
-    <h1 class="h3 mb-4 text-gray-800">Tambah Berita Baru</h1>
-
-    <div class="card shadow mb-4">
-        <!-- Card Header -->
-        <div class="card-header py-3 bg-primary">
-            <h6 class="m-0 font-weight-bold text-white">Formulir Berita</h6>
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Page Header -->
+    <div class="md:flex md:items-center md:justify-between mb-8">
+        <div class="flex-1 min-w-0">
+            <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                Tambah Berita Baru
+            </h2>
+            <p class="mt-1 text-sm text-gray-500">
+                Buat berita atau pengumuman baru untuk ditampilkan.
+            </p>
         </div>
+        <div class="mt-4 flex md:mt-0 md:ml-4">
+            <a href="{{ route('admin.berita.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Kembali
+            </a>
+        </div>
+    </div>
 
-        <!-- Card Body -->
-        <div class="card-body">
-
+    <!-- Form Card -->
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg border border-gray-200 max-w-3xl mx-auto">
+        <div class="px-4 py-4 sm:px-6 bg-gray-50 border-b border-gray-200">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">
+                Formulir Berita
+            </h3>
+            <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                Isi detail berita dengan lengkap.
+            </p>
+        </div>
+        <div class="px-4 py-5 sm:p-6">
+            
             @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul class="mb-0">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+                <div class="rounded-md bg-red-50 p-4 mb-6 border-l-4 border-red-400">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-circle text-red-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-red-800">
+                                Terdapat beberapa kesalahan pada pengisian formulir:
+                            </h3>
+                            <div class="mt-2 text-sm text-red-700">
+                                <ul class="list-disc pl-5 space-y-1">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             @endif
 
             <form action="{{ route('admin.berita.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
-                <div class="form-group">
-                    <label for="judul_berita">Judul Berita</label>
-                    <input type="text" id="judul_berita" name="judul_berita"
-                        class="form-control @error('judul_berita') is-invalid @enderror" value="{{ old('judul_berita') }}"
-                        required>
-                    @error('judul_berita')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+                <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                    
+                    {{-- Judul Berita --}}
+                    <div class="sm:col-span-6">
+                        <label for="judul_berita" class="block text-sm font-medium text-gray-700">
+                            Judul Berita <span class="text-red-500">*</span>
+                        </label>
+                        <div class="mt-1">
+                            <input type="text" name="judul_berita" id="judul_berita" value="{{ old('judul_berita') }}" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('judul_berita') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2" placeholder="Masukkan judul berita..." required>
+                        </div>
+                        @error('judul_berita')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Kategori Berita --}}
+                    <div class="sm:col-span-3">
+                        <label for="kategori" class="block text-sm font-medium text-gray-700">
+                            Kategori Berita <span class="text-red-500">*</span>
+                        </label>
+                        <div class="mt-1">
+                            <select id="kategori" name="kategori" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('kategori') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2" required>
+                                <option value="">-- Pilih Kategori --</option>
+                                <option value="kegiatan" {{ old('kategori') == 'kegiatan' ? 'selected' : '' }}>Kegiatan HIMA-TI</option>
+                                <option value="prestasi" {{ old('kategori') == 'prestasi' ? 'selected' : '' }}>Prestasi Mahasiswa</option>
+                            </select>
+                        </div>
+                        @error('kategori')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Gambar Berita --}}
+                    <div class="sm:col-span-6">
+                        <label class="block text-sm font-medium text-gray-700">
+                            Gambar (Opsional)
+                        </label>
+
+                        <label class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 
+                                    border-dashed rounded-md hover:border-indigo-500 transition-colors 
+                                    duration-200 cursor-pointer">
+
+                            <div class="space-y-1 text-center">
+                                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" 
+                                    viewBox="0 0 48 48" aria-hidden="true">
+                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+
+                                <div class="text-sm text-gray-600">
+                                    <span class="font-medium text-indigo-600">Upload file</span> atau drag and drop
+                                </div>
+
+                                <p class="text-xs text-gray-500">
+                                    PNG, JPG, GIF up to 2MB
+                                </p>
+                            </div>
+
+                            <input name="gambar_berita" type="file" class="sr-only">
+                        </label>
+
+                        @error('gambar_berita')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+
+                    {{-- Isi Berita --}}
+                    <div class="sm:col-span-6">
+                        <label for="isi_berita" class="block text-sm font-medium text-gray-700">
+                            Isi Berita
+                        </label>
+                        <div class="mt-1">
+                            <textarea id="isi_berita" name="isi_berita" rows="8" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('isi_berita') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2" placeholder="Tuliskan isi berita di sini...">{{ old('isi_berita',  $berita->isi_berita ) }}</textarea>
+                        </div>
+                        @error('isi_berita')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                 </div>
 
-                <!-- Isi Berita -->
-                <div class="form-group">
-                    <label for="isi_berita">Isi Berita</label>
-                    <textarea id="isi_berita" name="isi_berita"
-                        class="form-control @error('isi_berita') is-invalid @enderror"
-                        rows="5">{{ old('isi_berita') }}</textarea>
-                    @error('isi_berita')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <!-- Gambar Berita -->
-                <div class="form-group">
-                    <label for="gambar_berita">Gambar (Opsional)</label>
-                    <input type="file" id="gambar_berita" name="gambar_berita"
-                        class="form-control-file @error('gambar_berita') is-invalid @enderror">
-                    @error('gambar_berita')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                {{-- kategori --}}
-                <div class="form-group">
-                    <label for="kategori">Kategori Berita</label>
-                    <select name="kategori" id="kategori" class="form-control @error('kategori') is-invalid @enderror"
-                        required>
-                        <option value="">Pilih Kategori...</option>
-                        <option value="kegiatan" {{ old('kategori') == 'kegiatan' ? 'selected' : '' }}>Kegiatan HIMA-TI
-                        </option>
-                        <option value="prestasi" {{ old('kategori') == 'prestasi' ? 'selected' : '' }}>Prestasi Mahasiswa
-                        </option>
-                    </select>
-                    @error('kategori')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <!-- Tombol -->
-                <div class="mt-4">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save mr-1"></i> Simpan
-                    </button>
-                    <a href="{{ route('admin.berita.index') }}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left mr-1"></i> Kembali
-                    </a>
+                <div class="pt-5">
+                    <div class="flex justify-end">
+                        <a href="{{ route('admin.berita.index') }}" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Batal
+                        </a>
+                        <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Simpan
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
+</div>
 @endsection

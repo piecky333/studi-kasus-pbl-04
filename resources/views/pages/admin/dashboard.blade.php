@@ -2,183 +2,187 @@
 
 @section('content')
 
-    {{-- Alert untuk menampilkan pesan sukses setelah update profile --}}
-    @if (session('status') === 'profile-updated')
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Sukses!</strong> Profil Anda berhasil diperbarui.
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        {{-- Alert Status --}}
+        @if (session('status') === 'profile-updated')
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded shadow-sm" role="alert">
+                <p class="font-bold">Sukses!</p>
+                <p>Profil Anda berhasil diperbarui.</p>
+            </div>
+        @endif
+
+        <!-- Page Header -->
+        <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Dashboard Admin</h1>
+                <p class="mt-1 text-sm text-gray-500">Ringkasan statistik dan aktivitas terbaru sistem.</p>
+            </div>
+             <!-- <div class="mt-4 sm:mt-0">
+                <span class="inline-flex rounded-md shadow-sm">
+                    <button type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <i class="fas fa-download mr-2 text-gray-400"></i> Generate Report
+                    </button>
+                </span>
+            </div>  -->
         </div>
-    @endif
 
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Dashboard Admin</h1>
-    </div>
-
-    <!-- Content Row (STATISTIK CARDS) -->
-    <div class="row">
-
-        <!-- Data User -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Total User </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalUser ?? 0 }}</div>
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+            
+            <!-- Card: Total User -->
+            <div class="bg-white overflow-hidden shadow rounded-lg border-l-4 border-blue-500 hover:shadow-md transition-shadow duration-300">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-blue-100 rounded-md p-3">
+                            <i class="bi bi-person-fill text-blue-600 text-2xl"></i>
                         </div>
-                        <div class="col-auto">
-                            <i class="bi bi-person-fill fa-2x text-gray-300"></i>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Total User</dt>
+                                <dd class="text-2xl font-bold text-gray-900">{{ $totalUser ?? 0 }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Total Pengurus -->
+            <div class="bg-white overflow-hidden shadow rounded-lg border-l-4 border-green-500 hover:shadow-md transition-shadow duration-300">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-green-100 rounded-md p-3">
+                            <i class="bi bi-people-fill text-green-600 text-2xl"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Total Pengurus</dt>
+                                <dd class="text-2xl font-bold text-gray-900">{{ $totalPengurus ?? 0 }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Total Berita -->
+            <div class="bg-white overflow-hidden shadow rounded-lg border-l-4 border-cyan-500 hover:shadow-md transition-shadow duration-300">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-cyan-100 rounded-md p-3">
+                            <i class="bi bi-newspaper text-cyan-600 text-2xl"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Total Berita</dt>
+                                <dd class="text-2xl font-bold text-gray-900">{{ $totalBerita ?? 0 }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Total Laporan -->
+            <div class="bg-white overflow-hidden shadow rounded-lg border-l-4 border-yellow-500 hover:shadow-md transition-shadow duration-300">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-yellow-100 rounded-md p-3">
+                            <i class="bi bi-envelope-fill text-yellow-600 text-2xl"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Total Pengaduan</dt>
+                                <dd class="text-2xl font-bold text-gray-900">{{ $totalLaporan ?? 0 }}</dd>
+                            </dl>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Jumlah Anggota (Pengurus) -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Total Pengurus</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalPengurus ?? 0 }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-people-fill fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Line Chart -->
+            <div class="bg-white shadow rounded-lg lg:col-span-2">
+                <div class="px-5 py-4 border-b border-gray-200 bg-gray-50 rounded-t-lg">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">
+                        Tren Pengaduan (Tahun Ini)
+                    </h3>
                 </div>
-            </div>
-        </div>
-
-        <!-- Berita -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Total Berita
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalBerita ?? 0 }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-newspaper fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Laporan (Pengaduan) -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Total Laporan (Pengaduan)</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalLaporan ?? 0 }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-envelope-fill fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- AKHIR DARI CONTENT ROW (STATISTIK CARDS) -->
-
-
-    <!-- Content Row Baru untuk KEDUA Chart -->
-    <div class="row">
-
-        <!-- Area Chart (LINE CHART ANDA) -->
-        {{-- DIUBAH: lebarnya jadi 8 kolom --}}
-        <div class="col-xl-8 col-lg-7">
-            <div class="card shadow mb-4">
-                <!-- Card Header -->
-                <div
-                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Laporan Pengaduan per Bulan (Tahun Ini)</h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="chart-area">
+                <div class="p-5">
+                    <div class="relative h-80 w-full">
                         <canvas id="laporanChart"></canvas>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Pie Chart (BARU) -->
-        {{-- TAMBAHAN: Pie chart 4 kolom --}}
-        <div class="col-xl-4 col-lg-5">
-            <div class="card shadow mb-4">
-                <!-- Card Header -->
-                <div
-                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Status Laporan</h6>
+            <!-- Pie Chart -->
+            <div class="bg-white shadow rounded-lg">
+                <div class="px-5 py-4 border-b border-gray-200 bg-gray-50 rounded-t-lg">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">
+                        Status Laporan
+                    </h3>
                 </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    {{-- Wadah untuk Pie chart --}}
-                    <div class="chart-pie pt-4 pb-2">
+                <div class="p-5">
+                    <div class="relative h-64 w-full flex justify-center">
                         <canvas id="statusChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <p class="text-sm text-gray-500">Distribusi status pengaduan yang masuk.</p>
                     </div>
                 </div>
             </div>
         </div>
-        
+
     </div>
-    <!-- Akhir Content Row Baru untuk Chart -->
 
-
-    <!-- SCRIPT UNTUK CHART.JS (Blok B) -->
-    <!-- 1. Memuat library Chart.js dari CDN (Cukup satu kali) -->
+    <!-- Chart.js Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- 2. Script untuk menggambar KEDUA chart -->
     <script>
-        // SCRIPT UNTUK LINE CHART (dari kode Anda)
+        // --- Line Chart Configuration ---
         if (typeof @json($chartLabels) !== 'undefined' && typeof @json($chartData) !== 'undefined') {
-            
-            // Ambil data 'labels' dan 'data' yang kita kirim dari Controller
-            const chartLabels = @json($chartLabels);
-            const chartData = @json($chartData);
-
-            // Cari elemen <canvas> yang kita buat tadi
             const ctx = document.getElementById('laporanChart');
-
             if (ctx) {
-                // Buat chart baru
                 new Chart(ctx.getContext('2d'), {
-                    type: 'line', // Tipe chart: 'line' (garis), 'bar' (batang), 'pie', dll.
+                    type: 'line',
                     data: {
-                        labels: chartLabels, // Label sumbu X (Jan, Feb, Mar, ...)
+                        labels: @json($chartLabels),
                         datasets: [{
                             label: 'Jumlah Pengaduan',
-                            data: chartData, // Data sumbu Y (angka laporannya)
-                            fill: false,
-                            borderColor: '#4e73df', // Warna garis (Biru Primary SB Admin)
-                            tension: 0.1
+                            data: @json($chartData),
+                            fill: true,
+                            backgroundColor: 'rgba(79, 70, 229, 0.1)', // Indigo-500 with opacity
+                            borderColor: '#4f46e5', // Indigo-600
+                            borderWidth: 2,
+                            tension: 0.3,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: '#4f46e5',
+                            pointRadius: 4
                         }]
                     },
                     options: {
-                        maintainAspectRatio: false, // Agar chart bisa responsif
+                        maintainAspectRatio: false,
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#1f2937',
+                                titleColor: '#f3f4f6',
+                                bodyColor: '#f3f4f6',
+                                padding: 10,
+                                cornerRadius: 4,
+                                displayColors: false
+                            }
+                        },
                         scales: {
                             y: {
-                                beginAtZero: true, // Mulai sumbu Y dari 0
-                                ticks: {
-                                    // Memastikan angka di sumbu Y adalah bilangan bulat
-                                    precision: 0 
-                                }
+                                beginAtZero: true,
+                                grid: { color: '#f3f4f6' },
+                                ticks: { precision: 0, color: '#6b7280' }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#6b7280' }
                             }
                         }
                     }
@@ -186,22 +190,25 @@
             }
         }
 
-        // SCRIPT UNTUK PIE CHART (Baru ditambahkan)
+        // --- Pie Chart Configuration ---
         if (typeof @json($pieLabels) !== 'undefined' && typeof @json($pieData) !== 'undefined') {
-            
-            const pieLabels = @json($pieLabels);
-            const pieData = @json($pieData);
-            const ctxPie = document.getElementById('statusChart'); // ID canvas baru
-
+            const ctxPie = document.getElementById('statusChart');
             if (ctxPie) {
                 new Chart(ctxPie.getContext('2d'), {
-                    type: 'doughnut', // Tipe chart: doughnut atau pie
+                    type: 'doughnut',
                     data: {
-                        labels: pieLabels, // Label (Pending, Selesai, dll)
+                        labels: @json($pieLabels),
                         datasets: [{
-                            data: pieData, // Angka datanya
-                            // Warna-warna ini adalah standar SB Admin
-                            backgroundColor: ['#f6c23e', '#1cc88a', '#36b9cc', '#4e73df', '#e74a3b'],
+                            data: @json($pieData),
+                            backgroundColor: [
+                                '#fbbf24', // Amber-400 (Pending/Terkirim)
+                                '#3b82f6', // Blue-500 (Diproses)
+                                '#10b981', // Emerald-500 (Selesai)
+                                '#ef4444', // Red-500 (Ditolak)
+                                '#6366f1'  // Indigo-500 (Other)
+                            ],
+                            borderWidth: 0,
+                            hoverOffset: 4
                         }]
                     },
                     options: {
@@ -209,14 +216,19 @@
                         responsive: true,
                         plugins: {
                             legend: {
-                                position: 'bottom', // Menampilkan legenda di bawah chart
+                                position: 'bottom',
+                                labels: {
+                                    usePointStyle: true,
+                                    padding: 20,
+                                    color: '#4b5563'
+                                }
                             }
-                        }
+                        },
+                        cutout: '70%', // Thinner doughnut
                     }
                 });
             }
         }
     </script>
-    <!-- AKHIR DARI SCRIPT CHART.JS -->
 
 @endsection

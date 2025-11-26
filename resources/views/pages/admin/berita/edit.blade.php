@@ -1,114 +1,175 @@
 @extends('layouts.admin')
 
+@section('title', 'Edit Berita')
+
 @section('content')
-
-    <!-- Page Heading -->
-    <h1 class="h3 mb-4 text-gray-800">Edit Berita</h1>
-
-    <div class="card shadow mb-4">
-        <!-- Card Header -->
-        <div class="card-header py-3 bg-primary">
-            <h6 class="m-0 font-weight-bold text-white">Formulir Edit Berita</h6>
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Page Header -->
+    <div class="md:flex md:items-center md:justify-between mb-8">
+        <div class="flex-1 min-w-0">
+            <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                Edit Berita
+            </h2>
+            <p class="mt-1 text-sm text-gray-500">
+                Perbarui informasi berita atau pengumuman.
+            </p>
         </div>
+        <div class="mt-4 flex md:mt-0 md:ml-4">
+            <a href="{{ route('admin.berita.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Kembali
+            </a>
+        </div>
+    </div>
 
-        <!-- Card Body -->
-        <div class="card-body">
-
-            <!-- Tampilkan Error Validasi  -->
+    <!-- Form Card -->
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg border border-gray-200 max-w-3xl mx-auto">
+        <div class="px-4 py-4 sm:px-6 bg-gray-50 border-b border-gray-200">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">
+                Formulir Edit Berita
+            </h3>
+            <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                Perbarui detail berita di bawah ini.
+            </p>
+        </div>
+        <div class="px-4 py-5 sm:p-6">
+            
             @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul class="mb-0">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+                <div class="rounded-md bg-red-50 p-4 mb-6 border-l-4 border-red-400">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-circle text-red-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-red-800">
+                                Terdapat beberapa kesalahan pada pengisian formulir:
+                            </h3>
+                            <div class="mt-2 text-sm text-red-700">
+                                <ul class="list-disc pl-5 space-y-1">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             @endif
 
-            {{-- 
-              PERBAIKAN 1: Nama route diubah dari 'pages.admin.berita.update' menjadi 'admin.berita.update'
-              PERBAIKAN 2: Parameter ID diubah dari $berita->id menjadi $berita->id_berita
-            --}}
             <form action="{{ route('admin.berita.update', $berita->id_berita) }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                @method('PUT') {{-- Method untuk update --}}
+                @method('PUT')
 
-                <!-- Judul Berita -->
-                <div class="form-group">
-                    <label for="judul_berita">Judul Berita</label>
-                    {{-- PERBAIKAN 3: name="judul" diubah menjadi "judul_berita" agar sesuai dengan database --}}
-                    <input type="text" id="judul_berita" name="judul_berita" class="form-control @error('judul_berita') is-invalid @enderror"
-                        value="{{ old('judul_berita', $berita->judul_berita) }}" required>
-                    @error('judul_berita')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <!-- Isi Berita -->
-                <div class="form-group">
-                    <label for="isi_berita">Isi Berita</label>
-                    {{-- PERBAIKAN 4: name="isi" diubah menjadi "isi_berita" --}}
-                    <textarea id="isi_berita" name="isi_berita" class="form-control @error('isi_berita') is-invalid @enderror"
-                        rows="5">{{ old('isi_berita', $berita->isi_berita) }}</textarea>
-                    @error('isi_berita')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <!-- Kategori -->
-                <div class="form-group">
-                    <label for="kategori">Kategori Berita</label>
-                    <select name="kategori" id="kategori" class="form-control @error('kategori') is-invalid @enderror" required>
-                        <option value="">Pilih Kategori...</option>
-                        <option value="kegiatan" {{ old('kategori', $berita->kategori) == 'kegiatan' ? 'selected' : '' }}>
-                            Kegiatan HIMA-TI
-                        </option>
-                        <option value="prestasi" {{ old('kategori', $berita->kategori) == 'prestasi' ? 'selected' : '' }}>
-                            Prestasi Mahasiswa
-                        </option>
-                    </select>
-                    @error('kategori')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <!-- Gambar Berita -->
-                <div class="form-group">
-                    {{-- Nama input "gambar" ini tidak ada di migrasi Anda, saya asumsikan ini benar --}}
-                    {{-- Berdasarkan migrasi, nama kolomnya adalah "gambar_berita" --}}
-                    <label for="gambar_berita">Ganti Gambar (Opsional)</label>
-                    <input type="file" id="gambar_berita" name="gambar_berita"
-                        class="form-control-file @error('gambar_berita') is-invalid @enderror">
-                    @error('gambar_berita')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="form-group">
-                    <label>Gambar Saat Ini:</label>
-                    @if($berita->gambar_berita)
-                        <div>
-                            {{-- Saya asumsikan Anda punya 'storage:link' --}}
-                            <img src="{{ asset('storage/' . $berita->gambar_berita) }}" alt="Gambar Berita" class="img-thumbnail"
-                                style="max-width: 300px; max-height: 200px;">
+                <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                    
+                    {{-- Judul Berita --}}
+                    <div class="sm:col-span-6">
+                        <label for="judul_berita" class="block text-sm font-medium text-gray-700">
+                            Judul Berita <span class="text-red-500">*</span>
+                        </label>
+                        <div class="mt-1">
+                            <input type="text" name="judul_berita" id="judul_berita" value="{{ old('judul_berita', $berita->judul_berita) }}" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('judul_berita') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2" required>
                         </div>
-                        <small class="text-muted">Biarkan kosong jika tidak ingin mengubah gambar.</small>
-                    @else
-                        <div class="text-muted">Tidak ada gambar terpasang.</div>
-                    @endif
+                        @error('judul_berita')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Kategori Berita --}}
+                    <div class="sm:col-span-3">
+                        <label for="kategori" class="block text-sm font-medium text-gray-700">
+                            Kategori Berita <span class="text-red-500">*</span>
+                        </label>
+                        <div class="mt-1">
+                            <select id="kategori" name="kategori" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('kategori') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2" required>
+                                <option value="">-- Pilih Kategori --</option>
+                                <option value="kegiatan" {{ old('kategori', $berita->kategori) == 'kegiatan' ? 'selected' : '' }}>Kegiatan HIMA-TI</option>
+                                <option value="prestasi" {{ old('kategori', $berita->kategori) == 'prestasi' ? 'selected' : '' }}>Prestasi Mahasiswa</option>
+                            </select>
+                        </div>
+                        @error('kategori')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Gambar Berita --}}
+                    <div class="sm:col-span-6">
+                        <label class="block text-sm font-medium text-gray-700">
+                            Gambar Saat Ini
+                        </label>
+                        <div class="mt-2 flex items-center">
+                            @if($berita->gambar_berita)
+                                <div class="relative">
+                                    <img src="{{ asset('storage/' . $berita->gambar_berita) }}" alt="Gambar Berita" class="h-32 w-auto object-cover rounded-md border border-gray-300 shadow-sm">
+                                </div>
+                            @else
+                                <div class="h-32 w-32 bg-gray-100 border border-gray-300 rounded-md flex items-center justify-center text-gray-400">
+                                    <span class="text-xs">Tidak ada gambar</span>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="sm:col-span-6">
+                        <label class="block text-sm font-medium text-gray-700">
+                            Ganti Gambar (Opsional)
+                        </label>
+                        
+                        <label class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 
+                                    border-dashed rounded-md hover:border-indigo-500 cursor-pointer transition-colors duration-200">
+
+                            <div class="space-y-1 text-center">
+                                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
+                                    viewBox="0 0 48 48" aria-hidden="true">
+                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+
+                                <div class="text-sm text-gray-600">
+                                    <span class="font-medium text-indigo-600">Upload file baru</span> atau drag and drop
+                                </div>
+
+                                <p class="text-xs text-gray-500">
+                                    PNG, JPG, GIF up to 2MB
+                                </p>
+                            </div>
+
+                            <!-- INPUT ADA DI DALAM LABEL -->
+                            <input name="gambar_berita" type="file" class="sr-only">
+                        </label>
+
+                        @error('gambar_berita')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+
+                    {{-- Isi Berita --}}
+                    <div class="sm:col-span-6">
+                        <label for="isi_berita" class="block text-sm font-medium text-gray-700">
+                            Isi Berita
+                        </label>
+                        <div class="mt-1">
+                            <textarea id="isi_berita" name="isi_berita" rows="8" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('isi_berita') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2">{{ old('isi_berita', $berita->isi_berita ) }}</textarea>
+                        </div>
+                        @error('isi_berita')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                 </div>
 
-
-                <!-- Tombol -->
-                <div class="mt-4">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save mr-1"></i> Update
-                    </button>
-                    <a href="{{ route('admin.berita.index') }}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left mr-1"></i> Kembali
-                    </a>
+                <div class="pt-5">
+                    <div class="flex justify-end">
+                        <a href="{{ route('admin.berita.index') }}" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Batal
+                        </a>
+                        <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Simpan Perubahan
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
+</div>
 @endsection

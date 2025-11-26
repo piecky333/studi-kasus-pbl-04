@@ -27,7 +27,7 @@
                 <!-- End of Topbar -->
 
                 <!-- Content -->
-                <div class="container-fluid">
+                <div class="container-fluid z-10">
                     @yield('content')
                 </div>
             </div>

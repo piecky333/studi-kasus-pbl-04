@@ -123,14 +123,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::prefix('spk')->name('spk.')->group(function () {
 
         // LEVEL 1: DAFTAR KEPUTUSAN (CRUD UTAMA)
-        Route::resource('/', KeputusanController::class)->except(['show'])->names([
-            'index' => 'index',
-            'create' => 'create',
-            'store' => 'store',
-            'edit' => 'edit',
-            'update' => 'update',
-            'destroy' => 'destroy',
-        ]);
+        Route::get('/', [KeputusanController::class, 'index'])->name('index');
+        Route::get('/create', [KeputusanController::class, 'create'])->name('create');
+        Route::post('/', [KeputusanController::class, 'store'])->name('store');
+        Route::get('/{idKeputusan}/edit', [KeputusanController::class, 'edit'])->name('edit');
+        Route::put('/{idKeputusan}', [KeputusanController::class, 'update'])->name('update');
+        Route::delete('/{idKeputusan}', [KeputusanController::class, 'destroy'])->name('destroy');
 
         // LEVEL 2: DETAIL KEPUTUSAN (Navigasi Tab)
         Route::prefix('{idKeputusan}')->group(function () {
