@@ -7,12 +7,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
-
-// ===============================================
-// == TAMBAHAN WAJIB: Untuk 'Storage' (Foto) ==
-// ===============================================
-use Illuminate\Support\Facades\Storage; 
 
 class ProfileController extends Controller
 {
@@ -31,32 +27,34 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        // Ambil data user
         $user = $request->user();
 
-        // Mengisi data user (name, email, no_telpon) dari validasi
-        // $request->validated() SUDAH diatur oleh ProfileUpdateRequest.php
+        // ================================
+        // SIMPAN NAMA, EMAIL, NO TELP
+        // ================================
         $user->fill($request->validated());
 
+        // Reset verifikasi email jika email berubah
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
         }
 
-        // ==========================================================
-        // == TAMBAHAN: LOGIKA SIMPAN FOTO PROFIL ==
-        // ==========================================================
+        // ================================
+        // SIMPAN FOTO PROFIL
+        // ================================
         if ($request->hasFile('photo')) {
+
             // Hapus foto lama jika ada
-            if ($user->profile_photo_path) {
+            if ($user->profile_photo_path && Storage::disk('public')->exists($user->profile_photo_path)) {
                 Storage::disk('public')->delete($user->profile_photo_path);
             }
-            // Simpan foto baru ke 'storage/app/public/profile-photos'
+
+            // Simpan foto baru
             $path = $request->file('photo')->store('profile-photos', 'public');
             $user->profile_photo_path = $path;
         }
-        // ===============================================
-        
-        // Simpan semua perubahan (termasuk foto)
+
+        // Simpan perubahan user
         $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
@@ -73,15 +71,14 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
-        Auth::logout();   
+        Auth::logout();
 
-        // ==========================================================
-        // == TAMBAHAN: LOGIKA HAPUS FOTO SAAT HAPUS AKUN ==
-        // ==========================================================
-        if ($user->profile_photo_path) {
+        // ================================
+        // HAPUS FOTO PROFIL SAAT HAPUS AKUN
+        // ================================
+        if ($user->profile_photo_path && Storage::disk('public')->exists($user->profile_photo_path)) {
             Storage::disk('public')->delete($user->profile_photo_path);
         }
-        // ===============================================
 
         $user->delete();
 
