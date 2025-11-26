@@ -16,14 +16,14 @@
         </div>
         <div class="mt-4 flex md:mt-0 md:ml-4">
             <a href="{{ route('admin.sanksi.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                <i class="fas fa-arrow-left mr-2"></i> Kembali
+                Kembali
             </a>
         </div>
     </div>
 
     <!-- Form Card -->
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg border border-gray-200 max-w-3xl mx-auto">
-        <div class="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
+    <div class="bg-white shadow-[10px_10px_15px_-3px_rgba(0,0,0,0.1)] overflow-hidden sm:rounded-lg border border-gray-200 max-w-3xl mx-auto">
+        <div class="px-4 py-4 sm:px-6 bg-gray-50 border-b border-gray-200">
             <h3 class="text-lg leading-6 font-medium text-gray-900">
                 Formulir Sanksi Mahasiswa
             </h3>
@@ -63,7 +63,7 @@
                             Mahasiswa <span class="text-red-500">*</span>
                         </label>
                         <div class="mt-1">
-                            <select id="id_mahasiswa" name="id_mahasiswa" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('id_mahasiswa') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror" required>
+                            <select id="id_mahasiswa" name="id_mahasiswa" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('id_mahasiswa') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2" required>
                                 <option value="">-- Pilih Mahasiswa --</option>
                                 @foreach($mahasiswa as $mhs)
                                     <option value="{{ $mhs->id_mahasiswa }}" {{ old('id_mahasiswa') == $mhs->id_mahasiswa ? 'selected' : '' }}>
@@ -83,7 +83,7 @@
                             Jenis Sanksi <span class="text-red-500">*</span>
                         </label>
                         <div class="mt-1">
-                            <select id="jenis_sanksi" name="jenis_sanksi" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('jenis_sanksi') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror" required>
+                            <select id="jenis_sanksi" name="jenis_sanksi" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('jenis_sanksi') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2" required>
                                 <option value="">-- Pilih Jenis Sanksi --</option>
                                 <option value="Ringan" {{ old('jenis_sanksi') == 'Ringan' ? 'selected' : '' }}>Ringan</option>
                                 <option value="Sedang" {{ old('jenis_sanksi') == 'Sedang' ? 'selected' : '' }}>Sedang</option>
@@ -101,7 +101,7 @@
                             Tanggal Sanksi
                         </label>
                         <div class="mt-1">
-                            <input type="date" name="tanggal_sanksi" id="tanggal_sanksi" value="{{ old('tanggal_sanksi') }}" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('tanggal_sanksi') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror">
+                            <input type="date" name="tanggal_sanksi" id="tanggal_sanksi" value="{{ old('tanggal_sanksi') }}" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('tanggal_sanksi') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2">
                         </div>
                         @error('tanggal_sanksi')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -114,7 +114,7 @@
                             Keterangan / Detail Pelanggaran
                         </label>
                         <div class="mt-1">
-                            <textarea id="keterangan" name="keterangan" rows="4" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('keterangan') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror">{{ old('keterangan') }}</textarea>
+                            <textarea id="keterangan" name="keterangan" rows="4" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('keterangan') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2 " placeholder="Masukkan keterangan / detail pelanggaran">{{ old('keterangan') }}</textarea>
                         </div>
                         <p class="mt-2 text-sm text-gray-500">Jelaskan secara singkat mengenai pelanggaran yang dilakukan.</p>
                         @error('keterangan')
@@ -126,11 +126,8 @@
 
                 <div class="pt-5">
                     <div class="flex justify-end">
-                        <a href="{{ route('admin.sanksi.index') }}" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            Batal
-                        </a>
                         <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            <i class="fas fa-save mr-2"></i> Simpan Data
+                            Simpan Data
                         </button>
                     </div>
                 </div>

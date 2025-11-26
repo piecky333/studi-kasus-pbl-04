@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Sanksi;
-use App\Models\Admin\Mahasiswa;
+use App\Models\admin\Datamahasiswa;
 use Illuminate\Http\Request;
 
 class SanksiController extends Controller
@@ -17,7 +17,7 @@ class SanksiController extends Controller
 
     public function create()
     {
-        $mahasiswa = Mahasiswa::all();
+        $mahasiswa = Datamahasiswa::all();
         return view('pages.admin.sanksi.create', compact('mahasiswa'));
     }
 
@@ -37,7 +37,7 @@ class SanksiController extends Controller
     public function edit($id)
     {
         $sanksi = Sanksi::findOrFail($id);
-        $mahasiswa = Mahasiswa::all();
+        $mahasiswa = Datamahasiswa::all();
         return view('pages.admin.sanksi.edit', compact('sanksi', 'mahasiswa'));
     }
 

@@ -41,7 +41,7 @@
     <div class="bg-white shadow-[4px_4px_10px_rgba(0,0,0,0.1)] rounded-lg overflow-hidden border border-gray-200">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
+                <thead class="bg-[#0d2149] text-white text-sm uppercase tracking-wider">
                     <tr>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             No
@@ -88,23 +88,24 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
-                                <a href="{{ route('admin.berita.edit', $berita->id_berita) }}" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-3 py-1 rounded-md transition-colors duration-200">
-                                    <i class="fas fa-edit"></i> Edit
+                                {{-- Edit --}}
+                                <a href="{{ route('admin.berita.edit', $berita->id_berita) }}" class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-lg transition-colors duration-200 bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" title="Edit">
+                                    <i class="fas fa-pencil-alt text-sm mr-2"></i> Edit
                                 </a>
 
                                 @if($berita->status == 'pending')
                                     <form action="{{ route('admin.berita.verifikasi', $berita->id_berita) }}" method="POST" class="d-inline inline-block">
                                         @csrf
                                         @method('PUT')
-                                        <button type="submit" class="text-green-600 hover:text-green-900 bg-green-50 hover:bg-green-100 px-3 py-1 rounded-md transition-colors duration-200" title="Verifikasi">
-                                            <i class="fas fa-check"></i> Verif
+                                        <button type="submit" class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-lg transition-colors duration-200 bg-green-100 text-green-600 hover:bg-green-600 hover:text-white" title="Verifikasi">
+                                            <i class="fas fa-check text-sm mr-2"></i> Verif
                                         </button>
                                     </form>
                                     <form action="{{ route('admin.berita.tolak', $berita->id_berita) }}" method="POST" class="d-inline inline-block">
                                         @csrf
                                         @method('PUT')
-                                        <button type="submit" class="text-yellow-600 hover:text-yellow-900 bg-yellow-50 hover:bg-yellow-100 px-3 py-1 rounded-md transition-colors duration-200" title="Tolak">
-                                            <i class="fas fa-times"></i> Tolak
+                                        <button type="submit" class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-lg transition-colors duration-200 bg-gray-100 text-gray-600 hover:bg-gray-600 hover:text-white" title="Tolak">
+                                            <i class="fas fa-times text-sm mr-2"></i> Tolak
                                         </button>
                                     </form>
                                 @endif
@@ -112,8 +113,8 @@
                                 <form action="{{ route('admin.berita.destroy', $berita->id_berita) }}" method="POST" class="d-inline inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus berita ini?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1 rounded-md transition-colors duration-200" title="Hapus">
-                                        <i class="fas fa-trash"></i> Hapus
+                                    <button type="submit" class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-lg transition-colors duration-200 bg-red-100 text-red-600 hover:bg-red-600 hover:text-white" title="Hapus">
+                                        <i class="fas fa-trash text-sm mr-2"></i> Hapus
                                     </button>
                                 </form>
                             </td>

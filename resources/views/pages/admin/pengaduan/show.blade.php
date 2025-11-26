@@ -60,8 +60,8 @@
         
         <!-- Kolom Kiri: Detail Pengaduan -->
         <div class="lg:col-span-2 space-y-6">
-            <div class="bg-white shadow overflow-hidden sm:rounded-lg border border-gray-200">
-                <div class="px-4 py-5 sm:px-6 flex justify-between items-center bg-gray-50 border-b border-gray-200">
+            <div class="bg-white shadow-[10px_10px_15px_-3px_rgba(0,0,0,0.1)] overflow-hidden sm:rounded-lg border border-gray-200">
+                <div class="px-4 py-4 sm:px-6 flex justify-between items-center bg-gray-50 border-b border-gray-200">
                     <div>
                         <h3 class="text-lg leading-6 font-medium text-gray-900">
                             {{ $pengaduan->judul }}
@@ -90,7 +90,7 @@
                         @endif
                     </div>
                 </div>
-                <div class="px-4 py-5 sm:p-6">
+                <div class="px-4 py-4 sm:p-6">
                     <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                         <div class="sm:col-span-2">
                             <dt class="text-sm font-medium text-gray-500">
@@ -138,7 +138,7 @@
         <div class="space-y-6">
             
             <!-- Informasi Pelapor -->
-            <div class="bg-white shadow overflow-hidden sm:rounded-lg border border-gray-200">
+            <div class="bg-white shadow-[10px_10px_15px_-3px_rgba(0,0,0,0.1)] overflow-hidden sm:rounded-lg border border-gray-200">
                 <div class="px-4 py-4 sm:px-6 bg-gray-50 border-b border-gray-200">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         Informasi Pelapor
@@ -182,7 +182,7 @@
             </div>
 
             <!-- Aksi Verifikasi -->
-            <div class="bg-white shadow overflow-hidden sm:rounded-lg border border-gray-200">
+            <div class="bg-white shadow-[10px_10px_15px_-3px_rgba(0,0,0,0.1)] overflow-hidden sm:rounded-lg border border-gray-200">
                 <div class="px-4 py-4 sm:px-3 bg-indigo-50 border-b border-indigo-100">
                     <h3 class="text-lg leading-6 font-medium text-indigo-900">
                         Aksi Verifikasi
@@ -206,7 +206,7 @@
                         </div>
 
                         <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
-                            <i class="fas fa-save mr-2"></i> Simpan Perubahan
+                            Simpan
                         </button>
                     </form>
                 </div>

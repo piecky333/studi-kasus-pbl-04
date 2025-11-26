@@ -3,11 +3,14 @@
 namespace App\Models\admin;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\mahasiswa;
+use App\Models\admin\Datamahasiswa;
 use App\Models\admin\pengurus;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class prestasi extends Model
 {
+    use HasFactory;
     protected $table = 'Prestasi';
     protected $primaryKey = 'id_prestasi';
     protected $fillable = [
@@ -22,7 +25,7 @@ class prestasi extends Model
 
     public function mahasiswa()
     {
-        return $this->belongsTo(mahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->belongsTo(Datamahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 
     public function pengurus()

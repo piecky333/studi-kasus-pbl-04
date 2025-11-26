@@ -43,7 +43,7 @@
             <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                 <div class="shadow-[4px_4px_10px_rgba(0,0,0,0.1)] overflow-hidden border-b border-gray-200 sm:rounded-lg">
                     <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
+                        <thead class="bg-[#0d2149] text-white text-sm uppercase tracking-wider">
                             <tr>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     No
@@ -106,17 +106,19 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                                         <div class="flex justify-center space-x-2">
-                                            <a href="{{ route('admin.sanksi.edit', $item->id_sanksi) }}" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-3 py-1 rounded-md transition duration-150 ease-in-out">
-                                                <i class="fas fa-edit"></i> Edit
+                                            {{-- Edit --}}
+                                            <a href="{{ route('admin.sanksi.edit', $item->id_sanksi) }}" class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" title="Edit">
+                                                <i class="fas fa-pencil-alt text-sm mr-2"></i> Edit
                                             </a>
                                             
-                                            <form action="{{ route('admin.sanksi.destroy', $item->id_sanksi) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus sanksi untuk {{ $item->mahasiswa->nama ?? 'mahasiswa ini' }}?');">
+                                            {{-- Delete --}}
+                                            <form action="{{ route('admin.sanksi.destroy', $item->id_sanksi) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')" class="inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1 rounded-md transition duration-150 ease-in-out">
-                                                    <i class="fas fa-trash"></i> Hapus
+                                                <button type="submit" class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 bg-red-100 text-red-600 hover:bg-red-600 hover:text-white" title="Hapus">
+                                                    <i class="fas fa-trash text-sm mr-2"></i> Hapus
                                                 </button>
-                                            </form>
+                                    </form>
                                         </div>
                                     </td>
                                 </tr>

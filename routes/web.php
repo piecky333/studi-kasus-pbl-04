@@ -25,7 +25,8 @@ use App\Http\Controllers\Admin\{
     PengaduanController as AdminPengaduanController,
     PrestasiController as AdminPrestasiController,
     SanksiController as AdminSanksiController,
-    PengurusController as AdminPengurusController
+    PengurusController as AdminPengurusController,
+    DataMahasiswaController as AdminDataMahasiswaController
 };
 
 // =========================================================
@@ -109,11 +110,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::put('pengaduan/{id}/verifikasi', [AdminPengaduanController::class, 'verifikasi'])->name('pengaduan.verifikasi');
 
     // Prestasi
-    Route::resource('prestasi', AdminPrestasiController::class);
     Route::get('prestasi/cari-mahasiswa', [AdminPrestasiController::class, 'cariMahasiswa'])->name('prestasi.cariMahasiswa');
+    Route::resource('prestasi', AdminPrestasiController::class);
 
     // Sanksi
     Route::resource('sanksi', AdminSanksiController::class);
+
+    // Data Mahasiswa
+    Route::resource('datamahasiswa', AdminDataMahasiswaController::class);
 
 
     // =====================================================

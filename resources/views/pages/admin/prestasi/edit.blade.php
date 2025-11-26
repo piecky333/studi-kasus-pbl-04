@@ -16,14 +16,14 @@
         </div>
         <div class="mt-4 flex md:mt-0 md:ml-4">
             <a href="{{ route('admin.prestasi.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                <i class="fas fa-arrow-left mr-2"></i> Kembali
+                Kembali
             </a>
         </div>
     </div>
 
     <!-- Form Card -->
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg border border-gray-200 max-w-3xl mx-auto">
-        <div class="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
+    <div class="bg-white shadow-[10px_10px_15px_-3px_rgba(0,0,0,0.1)] overflow-hidden sm:rounded-lg border border-gray-200 max-w-3xl mx-auto">
+        <div class="px-4 py-4 sm:px-6 bg-gray-50 border-b border-gray-200">
             <h3 class="text-lg leading-6 font-medium text-gray-900">
                 Formulir Edit Prestasi
             </h3>
@@ -45,7 +45,7 @@
                             NIM Mahasiswa
                         </label>
                         <div class="mt-1">
-                            <input type="text" id="nim" name="nim" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="Cari NIM Mahasiswa..." value="{{ $prestasi->mahasiswa->nim ?? '' }}" autocomplete="off">
+                            <input type="text" id="nim" name="nim" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md px-2 py-3" placeholder="Cari NIM Mahasiswa..." value="{{ $prestasi->mahasiswa->nim ?? '' }}" autocomplete="off">
                         </div>
                         <ul id="nimList" class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm hidden">
                             <!-- AJAX Results -->
@@ -58,7 +58,7 @@
                             Nama Mahasiswa
                         </label>
                         <div class="mt-1">
-                            <input type="text" id="nama" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-gray-50" value="{{ $prestasi->mahasiswa->nama ?? '' }}" readonly>
+                            <input type="text" id="nama" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-white px-2 py-3" value="{{ $prestasi->mahasiswa->nama ?? '' }}" readonly>
                         </div>
                     </div>
 
@@ -68,7 +68,7 @@
                             Nama Kegiatan <span class="text-red-500">*</span>
                         </label>
                         <div class="mt-1">
-                            <input type="text" name="nama_kegiatan" id="nama_kegiatan" value="{{ old('nama_kegiatan', $prestasi->nama_kegiatan) }}" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('nama_kegiatan') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror" required>
+                            <input type="text" name="nama_kegiatan" id="nama_kegiatan" value="{{ old('nama_kegiatan', $prestasi->nama_kegiatan) }}" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('nama_kegiatan') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-2 py-3" required>
                         </div>
                         @error('nama_kegiatan')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -81,7 +81,7 @@
                             Tingkat Prestasi <span class="text-red-500">*</span>
                         </label>
                         <div class="mt-1">
-                            <select name="tingkat_prestasi" id="tingkat_prestasi" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('tingkat_prestasi') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror" required>
+                            <select name="tingkat_prestasi" id="tingkat_prestasi" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('tingkat_prestasi') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-2 py-3" required>
                                 <option value="">-- Pilih Tingkat --</option>
                                 <option value="Universitas" {{ old('tingkat_prestasi', $prestasi->tingkat_prestasi) == 'Universitas' ? 'selected' : '' }}>Universitas</option>
                                 <option value="Provinsi" {{ old('tingkat_prestasi', $prestasi->tingkat_prestasi) == 'Provinsi' ? 'selected' : '' }}>Provinsi</option>
@@ -100,7 +100,7 @@
                             Tahun <span class="text-red-500">*</span>
                         </label>
                         <div class="mt-1">
-                            <input type="number" name="tahun" id="tahun" value="{{ old('tahun', $prestasi->tahun) }}" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('tahun') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror" required>
+                            <input type="number" name="tahun" id="tahun" value="{{ old('tahun', $prestasi->tahun) }}" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('tahun') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-2 py-3" required>
                         </div>
                         @error('tahun')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -112,8 +112,8 @@
                         <label for="status_validasi" class="block text-sm font-medium text-gray-700">
                             Status Validasi <span class="text-red-500">*</span>
                         </label>
-                        <div class="mt-1">
-                            <select name="status_validasi" id="status_validasi" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('status_validasi') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror" required>
+                        <div class="mt-1 relative">
+                            <select name="status_validasi" id="status_validasi" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('status_validasi') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-2 py-3" required>
                                 <option value="menunggu" {{ old('status_validasi', $prestasi->status_validasi) == 'menunggu' ? 'selected' : '' }}>Menunggu</option>
                                 <option value="disetujui" {{ old('status_validasi', $prestasi->status_validasi) == 'disetujui' ? 'selected' : '' }}>Disetujui</option>
                                 <option value="ditolak" {{ old('status_validasi', $prestasi->status_validasi) == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
@@ -128,11 +128,8 @@
 
                 <div class="pt-5">
                     <div class="flex justify-end">
-                        <a href="{{ route('admin.prestasi.index') }}" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            Batal
-                        </a>
                         <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            <i class="fas fa-save mr-2"></i> Simpan Perubahan
+                            Simpan
                         </button>
                     </div>
                 </div>

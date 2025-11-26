@@ -19,6 +19,6 @@ class sanksi extends Model
 
     public function mahasiswa()
     {
-        return $this->belongsTo(mahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->belongsTo(Datamahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 }
