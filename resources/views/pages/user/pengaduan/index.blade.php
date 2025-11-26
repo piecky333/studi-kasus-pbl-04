@@ -19,7 +19,7 @@
 
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
                         <div>
-                            <h3 class="text-lg leading-6 font-semibold text-Black-1000">
+                            <h3 class="text-lg leading-6 font-semibold text-Black-900">
                                 Semua Pengaduan Anda
                             </h3>
                             <p class="mt-1 max-w-2xl text-sm text-gray-500">
