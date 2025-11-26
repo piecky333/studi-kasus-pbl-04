@@ -252,10 +252,14 @@ Route::prefix('user')->name('user.')
 Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirect'])->name('google.redirect');
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('google.callback');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth'])->group(function () {
+
+    // PROFIL USER (gunakan PUT, bukan PATCH)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // KOMENTAR
     Route::put('/komentar/{komentar}', [PublicKomentarController::class, 'update'])->name('komentar.update');
     Route::delete('/komentar/{komentar}', [PublicKomentarController::class, 'destroy'])->name('komentar.destroy');
 });
