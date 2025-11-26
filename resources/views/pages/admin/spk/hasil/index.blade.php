@@ -75,18 +75,18 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @foreach ($rankingResults as $result)
-                        <tr class="{{ $result->ranking == 1 ? 'bg-yellow-50 font-semibold' : '' }}">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-center {{ $result->ranking <= 3 ? 'text-indigo-600 text-lg font-extrabold' : 'text-gray-900' }}">
-                                {{ $result->ranking }}
+                        <tr class="{{ $result->rangking == 1 ? 'bg-yellow-50 font-semibold' : '' }}">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-center {{ $result->rangking <= 3 ? 'text-indigo-600 text-lg font-extrabold' : 'text-gray-900' }}">
+                                {{ $result->rangking }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
                                 {{ $result->alternatif->nama_alternatif ?? 'Alternatif Dihapus' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-center font-mono text-lg text-indigo-700">
-                                {{ number_format($result->nilai_preferensi, 4) }}
+                                {{ number_format($result->skor_akhir, 4) }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
-                                @if ($result->ranking == 1)
+                                @if ($result->rangking == 1)
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-400 text-gray-800">
                                         TERBAIK
                                     </span>
@@ -102,7 +102,6 @@
             </table>
         </div>
     @endif
-    
     {{-- ========================================================== --}}
     {{-- BAGIAN 3: DETAIL PROSES (Matriks Xij dan Rij) --}}
     {{-- Hanya tampilkan jika $calculationData tersedia --}}

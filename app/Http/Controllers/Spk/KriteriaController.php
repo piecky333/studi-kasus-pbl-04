@@ -109,7 +109,7 @@ class KriteriaController extends KeputusanDetailController
      * @param int $idKriteria
      * @return \Illuminate\View\View
      */
-    public function edit($idKriteria)
+    public function edit($idKeputusan, $idKriteria)
     {
         // Cari kriteria berdasarkan ID Kriteria dan pastikan terikat dengan ID Keputusan saat ini
         $kriteria = kriteria::where('id_keputusan', $this->idKeputusan)
@@ -129,7 +129,7 @@ class KriteriaController extends KeputusanDetailController
      * @param int $idKriteria
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, $idKriteria)
+    public function update(Request $request, $idKeputusan, $idKriteria)
     {
         // 1. Ambil Kriteria yang akan diupdate
         $kriteria = kriteria::where('id_keputusan', $this->idKeputusan)
@@ -163,7 +163,7 @@ class KriteriaController extends KeputusanDetailController
      * @param int $idKriteria
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy($idKriteria)
+    public function destroy($idKeputusan, $idKriteria)
     {
         // 1. Ambil Kriteria yang akan dihapus
         $kriteria = kriteria::where('id_keputusan', $this->idKeputusan)

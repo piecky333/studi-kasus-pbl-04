@@ -10,7 +10,15 @@ class prestasi extends Model
 {
     protected $table = 'Prestasi';
     protected $primaryKey = 'id_prestasi';
-    protected $fillable = ['id_prestasi', 'tahun', 'tingkat', 'nama_kegiatan', 'jenis_prestasi', 'status_validasi'];
+    protected $fillable = [
+        'id_mahasiswa',
+        'id_admin',
+        'nama_kegiatan',
+        'tingkat_prestasi',
+        'tahun',
+        'status_validasi',
+        'deskripsi'
+    ];
 
     public function mahasiswa()
     {

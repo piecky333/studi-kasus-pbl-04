@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\admin\Prestasi;
-use App\Models\admin\Mahasiswa; // Pastikan namespace ini benar
+use App\Models\Mahasiswa;
 use Illuminate\Support\Facades\Auth;
 
 class PrestasiController extends Controller
@@ -36,20 +36,24 @@ class PrestasiController extends Controller
      */
     public function store(Request $request)
     {
+        // Jika id_mahasiswa kosong tapi nim ada, cari id_mahasiswa berdasarkan nim
+        if (empty($request->id_mahasiswa) && !empty($request->nim)) {
+            $mahasiswa = Mahasiswa::where('nim', $request->nim)->first();
+            if ($mahasiswa) {
+                $request->merge(['id_mahasiswa' => $mahasiswa->id_mahasiswa]);
+            }
+        }
+
         $request->validate([
-            // 'nim' tidak perlu lagi, kita pakai 'id_mahasiswa'
-            'id_mahasiswa' => 'required|integer|exists:mahasiswa,id_mahasiswa', // Pastikan nama kolom 'id_mahasiswa' benar
+            'id_mahasiswa' => 'required|integer|exists:mahasiswa,id_mahasiswa',
             'judul_prestasi' => 'required|string|max:255',
             'tingkat'      => 'required|string|max:255',
             'tanggal'      => 'required|date',
             'deskripsi'    => 'nullable|string',
         ]);
 
-        // Tidak perlu cari mahasiswa lagi, kita sudah punya ID-nya
-        // $mahasiswa = Mahasiswa::where('nim', $request->nim)->first(); // <- INI DIHAPUS
-
         Prestasi::create([
-            'id_mahasiswa'   => $request->id_mahasiswa, // Langsung pakai dari request
+            'id_mahasiswa'   => $request->id_mahasiswa,
             'id_admin'       => Auth::user()->id_admin ?? null,
             'nama_kegiatan'  => $request->judul_prestasi,
             'tingkat_prestasi' => $request->tingkat,
@@ -90,15 +94,27 @@ class PrestasiController extends Controller
             'tingkat_prestasi' => 'required|string|max:255',
             'tahun'            => 'required|digits:4|integer',
             'status_validasi'  => 'required|in:menunggu,disetujui,ditolak',
+            'nim'              => 'nullable|exists:mahasiswa,nim', // Validasi NIM jika ada
         ]);
 
         $prestasi = Prestasi::findOrFail($id);
-        $prestasi->update([
+        
+        $dataToUpdate = [
             'nama_kegiatan'    => $request->nama_kegiatan,
             'tingkat_prestasi' => $request->tingkat_prestasi,
             'tahun'            => $request->tahun,
             'status_validasi'  => $request->status_validasi,
-        ]);
+        ];
+
+        // Jika NIM berubah, update id_mahasiswa
+        if ($request->filled('nim')) {
+            $mahasiswa = Mahasiswa::where('nim', $request->nim)->first();
+            if ($mahasiswa) {
+                $dataToUpdate['id_mahasiswa'] = $mahasiswa->id_mahasiswa;
+            }
+        }
+
+        $prestasi->update($dataToUpdate);
 
         return redirect()->route('admin.prestasi.index')->with('success', 'Data prestasi berhasil diperbarui.');
     }

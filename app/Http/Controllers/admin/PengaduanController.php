@@ -30,6 +30,13 @@ class PengaduanController extends Controller
         $pengaduan = pengaduan::with(['mahasiswa', 'mahasiswa.user'])
                             ->findOrFail($id);
 
+        // LOGIKA BARU: Otomatis ubah status ke 'Diproses' jika masih 'Terkirim'
+        // Ini akan menghilangkan notifikasi (karena notifikasi hanya menghitung 'Terkirim')
+        if ($pengaduan->status === 'Terkirim') {
+            $pengaduan->status = 'Diproses';
+            $pengaduan->save();
+        }
+
         $gambarUrl = null;
         if ($pengaduan->gambar_bukti) { // gunakan nama kolom baru
             $gambarUrl = asset('storage/' . $pengaduan->gambar_bukti);

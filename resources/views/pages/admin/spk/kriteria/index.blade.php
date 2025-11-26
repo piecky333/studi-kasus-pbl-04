@@ -71,7 +71,7 @@
                             <div class="flex justify-center space-x-1">
                                 <a href="{{ route('admin.spk.kriteria.subkriteria.index', [$idKeputusan, $kriteria->id_kriteria]) }}"
                                     class="text-xs text-blue-600 hover:text-blue-900 border border-blue-600 hover:border-blue-900 px-2 py-1 rounded transition duration-150">
-                                    Atur Sub
+                                    Atur  Sub
                                 </a>
                                 <a href="{{ route('admin.spk.kriteria.edit', [$idKeputusan, $kriteria->id_kriteria]) }}"
                                     class="text-xs text-indigo-600 hover:text-indigo-900 border border-indigo-600 hover:border-indigo-900 px-2 py-1 rounded transition duration-150">

@@ -12,11 +12,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // PENTING: Panggil UserSeeder DULU
+        //memanggil semua seeder
         $this->call([
             UserSeeder::class,
             BeritaSeeder::class,
             KomentarSeeder::class,
+            SpkPrestasiSeeder::class,
+            PengaduanSeeder::class,
         ]);
     }
 }

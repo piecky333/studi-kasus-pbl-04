@@ -159,13 +159,12 @@ class SawService
         foreach ($results['ranking_results'] as $result) {
             \App\Models\HasilAkhir::updateOrCreate(
                 [
-                    'id_keputusan' => $idKeputusan,
+                    // 'id_keputusan' => $idKeputusan, // Hapus ini karena tidak ada di tabel hasil_akhir
                     'id_alternatif' => $result['id_alternatif'],
                 ],
                 [
-                    'nilai_preferensi' => $result['final_score'],
-                    'ranking' => $result['rank'],
-                    // Anda mungkin juga menyimpan bobot yang digunakan saat perhitungan
+                    'skor_akhir' => $result['final_score'], // Sesuaikan dengan kolom DB
+                    'rangking' => $result['rank'],          // Sesuaikan dengan kolom DB
                     // 'bobot_digunakan' => json_encode($results['weights']),
                 ]
             );

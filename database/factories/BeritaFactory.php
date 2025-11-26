@@ -49,6 +49,7 @@ class BeritaFactory extends Factory
             'judul_berita' => $this->faker->sentence(6),
             'isi_berita' => $isi, 
             'kategori' => $this->faker->randomElement(['kegiatan', 'prestasi']),
+            'status' => $this->faker->randomElement(['pending', 'verified', 'rejected']),
             'gambar_berita' => $gambarPath,
             'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'updated_at' => now(),
