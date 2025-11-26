@@ -11,7 +11,7 @@ class DivisiController extends Controller
     public function index()
     {
         // Ambil semua data divisi, mungkin diurutkan berdasarkan nama
-        $semuaDivisi = divisi::orderBy('nama_divisi')->get(); 
+        $semuaDivisi = divisi::orderBy('nama_divisi')->get(4); 
 
         return view('public.divisi.index', compact('semuaDivisi')); 
         // Anda perlu membuat view 'public.divisi.index'

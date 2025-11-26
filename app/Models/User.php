@@ -94,4 +94,14 @@ class User extends Authenticatable
     {
         return $this->belongsTo(User::class, 'id_user', 'id_user');
     }
+    public function getProfilePhotoUrlAttribute()
+{
+    if ($this->profile_photo_path) {
+        return asset('storage/' . $this->profile_photo_path);
+    }
+
+    // fallback avatar kalo tidak ada foto
+    return 'https://ui-avatars.com/api/?name=' . urlencode($this->nama) . '&color=7F9CF5&background=EBF4FF';
+}
+
 }

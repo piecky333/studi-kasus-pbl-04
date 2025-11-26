@@ -21,7 +21,8 @@ class ProfileUpdateRequest extends FormRequest
     {
         return [
             // Ini sudah ada di kodingan standarmu
-            'name' => ['required', 'string', 'max:255'],
+            'nama' => ['required', 'string', 'max:255'],
+
             
             // ==========================================================
             // == INI PERBAIKANNYA (Rule::unique...): ==
@@ -32,7 +33,8 @@ class ProfileUpdateRequest extends FormRequest
                 'lowercase', 
                 'email', 
                 'max:255', 
-                Rule::unique(User::class)->ignore($this->user()->id) // <-- INI YANG BIKIN BERES
+                Rule::unique(User::class, 'email')->ignore($this->user()->id_user, 'id_user')
+ // <-- INI YANG BIKIN BERES
             ],
             // ==========================================================
 
