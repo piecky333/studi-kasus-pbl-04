@@ -15,7 +15,7 @@
     <div id="wrapper">
 
         {{-- Sidebar Pengurus --}}
-        @include('partials.pengurus.sidebar')
+       @include('partials.pengurus.sidebar')
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">

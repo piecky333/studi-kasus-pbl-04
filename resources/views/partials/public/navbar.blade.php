@@ -33,7 +33,7 @@
                     {{-- Link Profil (Divisi) --}}
                     @php
                         $profilHref = request()->routeIs('home') ? '#divisi' : route('home') . '#divisi';
-                        // Ganti 'profil.*' jika nama route Anda berbeda (misal: 'divisi.*')
+                        // Ganti 'profil.' jika nama route Anda berbeda (misal: 'divisi.')
                         $profilActive = request()->routeIs('profil.*'); 
                     @endphp
                     <x-nav-link :href="$profilHref" :active="$profilActive">
