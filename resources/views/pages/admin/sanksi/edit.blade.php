@@ -78,22 +78,53 @@
                         @enderror
                     </div>
 
-                    <!-- Jenis Sanksi -->
-                    <div class="sm:col-span-3">
-                        <label for="jenis_sanksi" class="block text-sm font-medium text-gray-700">
-                            Jenis Sanksi <span class="text-red-500">*</span>
-                        </label>
-                        <div class="mt-1">
-                            <select id="jenis_sanksi" name="jenis_sanksi" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('jenis_sanksi') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-2 py-3" required>
-                                <option value="">-- Pilih Jenis Sanksi --</option>
-                                <option value="Ringan" {{ old('jenis_sanksi', $sanksi->jenis_sanksi) == 'Ringan' ? 'selected' : '' }}>Ringan</option>
-                                <option value="Sedang" {{ old('jenis_sanksi', $sanksi->jenis_sanksi) == 'Sedang' ? 'selected' : '' }}>Sedang</option>
-                                <option value="Berat" {{ old('jenis_sanksi', $sanksi->jenis_sanksi) == 'Berat' ? 'selected' : '' }}>Berat</option>
-                            </select>
+                    <!-- Jenis Sanksi & Hukuman (Dependent Dropdown) -->
+                    <div class="sm:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4" x-data="{
+                        jenisSanksi: '{{ old('jenis_sanksi', $sanksi->jenis_sanksi) }}',
+                        jenisHukuman: '{{ old('jenis_hukuman', $sanksi->jenis_hukuman) }}',
+                        hukumanOptions: {
+                            'Ringan': ['Teguran Lisan', 'Teguran Tertulis', 'Surat Peringatan 1 (SP1)'],
+                            'Sedang': ['Surat Peringatan 2 (SP2)', 'Skorsing 1 Semester', 'Pembatalan Nilai Mata Kuliah'],
+                            'Berat': ['Surat Peringatan 3 (SP3)', 'Drop Out (DO)', 'Pemberhentian Sementara', 'Pemberhentian Tetap']
+                        }
+                    }">
+                        <!-- Jenis Sanksi -->
+                        <div>
+                            <label for="jenis_sanksi" class="block text-sm font-medium text-gray-700">
+                                Jenis Sanksi <span class="text-red-500">*</span>
+                            </label>
+                            <div class="mt-1">
+                                <select id="jenis_sanksi" name="jenis_sanksi" x-model="jenisSanksi" @change="jenisHukuman = ''" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('jenis_sanksi') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-2 py-3" required>
+                                    <option value="">-- Pilih Jenis Sanksi --</option>
+                                    <option value="Ringan">Ringan</option>
+                                    <option value="Sedang">Sedang</option>
+                                    <option value="Berat">Berat</option>
+                                </select>
+                            </div>
+                            @error('jenis_sanksi')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
-                        @error('jenis_sanksi')
-                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+
+                        <!-- Jenis Hukuman -->
+                        <div>
+                            <label for="jenis_hukuman" class="block text-sm font-medium text-gray-700">
+                                Jenis Hukuman <span class="text-red-500">*</span>
+                            </label>
+                            <div class="mt-1">
+                                <select id="jenis_hukuman" name="jenis_hukuman" x-model="jenisHukuman" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('jenis_hukuman') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-2 py-3" required :disabled="!jenisSanksi">
+                                    <option value="">-- Pilih Hukuman --</option>
+                                    <template x-if="jenisSanksi && hukumanOptions[jenisSanksi]">
+                                        <template x-for="option in hukumanOptions[jenisSanksi]" :key="option">
+                                            <option :value="option" x-text="option" :selected="option === jenisHukuman"></option>
+                                        </template>
+                                    </template>
+                                </select>
+                            </div>
+                            @error('jenis_hukuman')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
 
                     <!-- Tanggal Sanksi -->

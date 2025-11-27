@@ -1,4 +1,18 @@
-<ul class="navbar-nav sidebar sidebar-dark accordion" id="Navigasi">
+<style>
+    @media (max-width: 767.98px) {
+        #accordionSidebar {
+            display: none !important;
+        }
+    }
+    @media (min-width: 768px) {
+        #accordionSidebar {
+            display: flex !important;
+            flex-direction: column !important;
+            width: 14rem !important;
+        }
+    }
+</style>
+<ul class="navbar-nav bg-[#0d2149] sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
         <div class="sidebar-brand-icon rotate-n-15">

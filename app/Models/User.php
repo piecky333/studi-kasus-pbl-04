@@ -96,11 +96,21 @@ class User extends Authenticatable
     }
     public function getProfilePhotoUrlAttribute()
     {
+        // 1. Prioritaskan foto yang diupload user
         if ($this->profile_photo_path) {
             return asset('storage/' . $this->profile_photo_path);
         }
 
-        // fallback avatar kalo tidak ada foto
+        // 2. Jika tidak ada, cek avatar dari Google
+        if ($this->avatar) {
+            // Cek apakah avatar adalah URL lengkap (dari Google) atau path lokal
+            if (str_starts_with($this->avatar, 'http')) {
+                return $this->avatar;
+            }
+            return asset('storage/' . $this->avatar);
+        }
+
+        // 3. Fallback ke UI Avatars
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->nama) . '&color=7F9CF5&background=EBF4FF';
     }
 
