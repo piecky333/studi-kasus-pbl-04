@@ -24,12 +24,23 @@ class SanksiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_mahasiswa' => 'required|exists:mahasiswa,id_mahasiswa',
-            'jenis_sanksi' => 'required|string|max:255',
+            'id_mahasiswa'   => 'required|array',
+            'id_mahasiswa.*' => 'exists:mahasiswa,id_mahasiswa',
+            'jenis_sanksi'   => 'required|string|max:255',
+            'jenis_hukuman'  => 'required|string|max:255',
             'tanggal_sanksi' => 'nullable|date',
+            'keterangan'     => 'nullable|string',
         ]);
 
-        Sanksi::create($request->only(['id_mahasiswa', 'jenis_sanksi', 'tanggal_sanksi']));
+        foreach ($request->id_mahasiswa as $id_mahasiswa) {
+            Sanksi::create([
+                'id_mahasiswa'   => $id_mahasiswa,
+                'jenis_sanksi'   => $request->jenis_sanksi,
+                'jenis_hukuman'  => $request->jenis_hukuman,
+                'tanggal_sanksi' => $request->tanggal_sanksi,
+                'keterangan'     => $request->keterangan,
+            ]);
+        }
 
         return redirect()->route('admin.sanksi.index')->with('success', 'Data sanksi berhasil ditambahkan.');
     }
@@ -46,11 +57,13 @@ class SanksiController extends Controller
         $request->validate([
             'id_mahasiswa' => 'required|exists:mahasiswa,id_mahasiswa',
             'jenis_sanksi' => 'required|string|max:255',
+            'jenis_hukuman' => 'required|string|max:255',
             'tanggal_sanksi' => 'nullable|date',
+            'keterangan'     => 'nullable|string',
         ]);
 
         $sanksi = Sanksi::findOrFail($id);
-        $sanksi->update($request->only(['id_mahasiswa', 'jenis_sanksi', 'tanggal_sanksi']));
+        $sanksi->update($request->only(['id_mahasiswa', 'jenis_sanksi', 'jenis_hukuman', 'tanggal_sanksi', 'keterangan']));
 
         return redirect()->route('admin.sanksi.index')->with('success', 'Data sanksi berhasil diperbarui.');
     }

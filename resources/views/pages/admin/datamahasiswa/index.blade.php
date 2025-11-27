@@ -6,15 +6,21 @@
 <div class="container-fluid px-4 mt-6">
     
     {{-- Header Section --}}
-    <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-        <div>
-            <h3 class="text-2xl font-bold text-gray-800">Data Mahasiswa</h3>
-            <p class="text-sm text-gray-500 mt-1">Kelola data mahasiswa universitas dengan mudah.</p>
+    <!-- Page Header -->
+    <div class="md:flex md:items-center md:justify-between mb-8">
+        <div class="flex-1 min-w-0">
+            <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                Data Mahasiswa
+            </h2>
+            <p class="mt-1 text-sm text-gray-500">
+                Kelola data mahasiswa universitas dengan mudah.
+            </p>
         </div>
-        
-        <a href="{{ route('admin.datamahasiswa.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors duration-200">
-            <i class="fas fa-plus mr-2"></i> Tambah Mahasiswa
-        </a>
+        <div class="mt-4 flex md:mt-0 md:ml-4">
+            <a href="{{ route('admin.datamahasiswa.create') }}" class="inline-flex items-center px-3 py-2 lg:px-4 lg:py-2 border border-transparent rounded-md shadow-sm text-xs lg:text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <i class="fas fa-plus mr-2"></i> Tambah Mahasiswa
+            </a>
+        </div>
     </div>
 
     {{-- Alert Success --}}
@@ -25,87 +31,85 @@
         </div>
     @endif
 
-    {{-- Main Card --}}
-    <div class="bg-white rounded-xl shadow-[10px_10px_15px_-3px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden">
-        
-        {{-- Table Container --}}
+    <!-- Data Table -->
+    <div class="bg-white shadow-[4px_4px_10px_rgba(0,0,0,0.1)] rounded-lg overflow-hidden border border-gray-200">
         <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-[#0d2149] text-white text-sm uppercase tracking-wider">
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-[#0d2149] text-white text-xs lg:text-sm uppercase tracking-wider">
+                    <tr>
+                        <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
                             No
                         </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
                             NIM
                         </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
                             Nama Mahasiswa
                         </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
                             Semester
                         </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
                             Email
                         </th>
-                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-center font-medium uppercase tracking-wider">
                             Aksi
                         </th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     @forelse ($mahasiswa as $index => $mhs)
-                        <tr class="hover:bg-gray-50 transition-colors duration-150">
+                        <tr class="hover:bg-gray-50 transition-colors duration-150 text-xs lg:text-sm">
                             {{-- No --}}
-                            <td class="px-6 py-4 text-left text-gray-500 font-medium">
+                            <td class="px-3 py-2 lg:px-4 lg:py-3 text-left text-gray-500 font-medium">
                                 {{ $loop->iteration + ($mahasiswa->currentPage() - 1) * $mahasiswa->perPage() }}
                             </td>
                             
                             {{-- NIM --}}
-                            <td class="px-6 py-4">
-                                <span class="inline-block px-2 py-1  text-md font-bold rounded-md ">
+                            <td class="px-3 py-2 lg:px-4 lg:py-3">
+                                <span class="inline-block px-2 py-1 font-bold rounded-md ">
                                     {{ $mhs->nim }}
                                 </span>
                             </td>
                             
                             {{-- Nama --}}
-                            <td class="px-6 py-4">
+                            <td class="px-3 py-2 lg:px-4 lg:py-3">
                                 <div class="flex items-center">
                                     <span class="font-medium text-gray-800">{{ $mhs->nama }}</span>
                                 </div>
                             </td>
                             
                             {{-- Semester --}}
-                            <td class="px-6 py-4 text-center">
-                                <span class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-gray-100 text-gray-600 text-xs font-bold border border-gray-200">
+                            <td class="px-3 py-2 lg:px-4 lg:py-3 text-center">
+                                <span class="inline-flex items-center justify-center h-5 w-5 lg:h-6 lg:w-6 rounded-full bg-gray-100 text-gray-600 text-[10px] lg:text-xs font-bold border border-gray-200">
                                     {{ $mhs->semester }}
                                 </span>
                             </td>
                             
                             {{-- Email --}}
-                            <td class="px-6 py-4 text-gray-600 text-sm">
+                            <td class="px-3 py-2 lg:px-4 lg:py-3 text-gray-600">
                                 {{ $mhs->email }}
                             </td>
                             
                             {{-- Aksi --}}
-                            <td class="px-6 py-4 text-center">
-                                <div class="flex justify-center space-x-2">
+                            <td class="px-3 py-2 lg:px-4 lg:py-3 text-center">
+                                <div class="flex justify-center space-x-1 lg:space-x-2">
                                     {{-- View --}}
-                                    <a href="{{ route('admin.datamahasiswa.show', $mhs->id_mahasiswa) }}" class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white" title="Detail">
-                                        <i class="fas fa-eye text-sm mr-2"></i> Detail
+                                    <a href="{{ route('admin.datamahasiswa.show', $mhs->id_mahasiswa) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white" title="Detail">
+                                        <i class="fas fa-eye mr-1 lg:mr-2"></i> Detail
                                     </a>
                                     
                                     {{-- Edit --}}
-                                    <a href="{{ route('admin.datamahasiswa.edit', $mhs->id_mahasiswa) }}" class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" title="Edit">
-                                        <i class="fas fa-pencil-alt text-sm mr-2"></i> Edit
+                                    <a href="{{ route('admin.datamahasiswa.edit', $mhs->id_mahasiswa) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" title="Edit">
+                                        <i class="fas fa-pencil-alt mr-1 lg:mr-2"></i> Edit
                                     </a>
 
                                     {{-- Delete --}}
                                     <form action="{{ route('admin.datamahasiswa.destroy', $mhs->id_mahasiswa) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')" class="inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 bg-red-100 text-red-600 hover:bg-red-600 hover:text-white" title="Hapus">
-                                            <i class="fas fa-trash text-sm mr-2"></i> Hapus
+                                        <button type="submit" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-red-100 text-red-600 hover:bg-red-600 hover:text-white" title="Hapus">
+                                            <i class="fas fa-trash mr-1 lg:mr-2"></i> Hapus
                                         </button>
                                     </form>
                                 </div>

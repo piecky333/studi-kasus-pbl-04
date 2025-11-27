@@ -27,19 +27,9 @@
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-indigo-100 bg-brand hover:text-white focus:outline-none transition ease-in-out duration-150">
                             
-                            {{-- === AVATAR & FALLBACK INISIAL === --}}
-                            @if (Auth::user()->avatar)
                                 <img class="h-8 w-8 rounded-full object-cover me-2" 
-                                     src="{{ Str::startsWith(Auth::user()->avatar, 'http') ? Auth::user()->avatar : asset('storage/' . Auth::user()->avatar) }}" 
+                                     src="{{ Auth::user()->profile_photo_url }}" 
                                      alt="Avatar">
-                            @else
-                                <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-indigo-500 me-2">
-                                    <span class="text-sm font-medium leading-none text-white">
-                                        {{-- Mengambil 1 huruf pertama dari nama --}}
-                                        {{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}
-                                    </span>
-                                </span>
-                            @endif
                             {{-- ================================== --}}
 
                             <div>{{ Auth::user()->nama }}</div>

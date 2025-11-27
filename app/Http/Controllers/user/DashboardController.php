@@ -29,8 +29,12 @@ class DashboardController extends Controller
 
         $pengaduanTerakhir = $user->pengaduan()->latest()->take(5)->get();
 
-        // Ambil 5 berita global terakhir
-        $beritaTerbaru = Berita::latest()->take(4)->get();
+        // Ambil 4 berita global terakhir yang valid (kegiatan & verified)
+        $beritaTerbaru = Berita::where('kategori', 'kegiatan')
+            ->where('status', 'verified')
+            ->latest()
+            ->take(4)
+            ->get();
 
         // Mengirim data ke view dashboard user
         return view('pages.user.dashboard', compact(

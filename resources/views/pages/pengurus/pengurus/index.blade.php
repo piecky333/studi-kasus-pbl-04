@@ -12,7 +12,7 @@
             </h1>
             <p class="mt-1 text-sm text-gray-500">Manajemen data pengurus organisasi.</p>
         </div>
-        <a href="{{ route('pengurus.pengurus.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150 shadow-md">
+        <a href="{{ route('pengurus.pengurus.create') }}" class="inline-flex items-center px-3 py-2 lg:px-4 lg:py-2 bg-blue-600 border border-transparent rounded-lg font-semibold text-xs lg:text-sm text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150 shadow-md">
             <i class="fas fa-plus mr-2"></i> Tambah Pengurus
         </a>
     </div>
@@ -36,22 +36,22 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-[#0d2149]">
                     <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                        <th scope="col" class="px-3 py-2 lg:px-6 lg:py-3 text-left text-xs lg:text-sm font-medium text-white uppercase tracking-wider">
                             No
                         </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                        <th scope="col" class="px-3 py-2 lg:px-6 lg:py-3 text-left text-xs lg:text-sm font-medium text-white uppercase tracking-wider">
                             Nama
                         </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                        <th scope="col" class="px-3 py-2 lg:px-6 lg:py-3 text-left text-xs lg:text-sm font-medium text-white uppercase tracking-wider">
                             Divisi
                         </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                        <th scope="col" class="px-3 py-2 lg:px-6 lg:py-3 text-left text-xs lg:text-sm font-medium text-white uppercase tracking-wider">
                             Posisi Jabatan
                         </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                        <th scope="col" class="px-3 py-2 lg:px-6 lg:py-3 text-left text-xs lg:text-sm font-medium text-white uppercase tracking-wider">
                             Role
                         </th>
-                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider w-48">
+                        <th scope="col" class="px-3 py-2 lg:px-6 lg:py-3 text-center text-xs lg:text-sm font-medium text-white uppercase tracking-wider w-48">
                             Aksi
                         </th>
                     </tr>
@@ -59,38 +59,38 @@
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($pengurus as $p)
                         <tr class="hover:bg-gray-50 transition-colors duration-200">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <td class="px-3 py-2 lg:px-6 lg:py-4 whitespace-nowrap text-xs lg:text-sm text-gray-500">
                                 {{ $loop->iteration }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            <td class="px-3 py-2 lg:px-6 lg:py-4 whitespace-nowrap text-xs lg:text-sm font-medium text-gray-900">
                                 {{ $p->user->nama ?? '-' }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                            <td class="px-3 py-2 lg:px-6 lg:py-4 whitespace-nowrap">
+                                <span class="px-2 py-1 inline-flex text-[10px] lg:text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                                     {{ $p->divisi->nama_divisi ?? '-' }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <td class="px-3 py-2 lg:px-6 lg:py-4 whitespace-nowrap text-xs lg:text-sm text-gray-500">
                                 {{ $p->posisi_jabatan }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                            <td class="px-3 py-2 lg:px-6 lg:py-4 whitespace-nowrap">
+                                <span class="px-2 py-1 inline-flex text-[10px] lg:text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
                                     {{ $p->user->role ?? '-' }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                <div class="flex justify-center space-x-2">
+                            <td class="px-3 py-2 lg:px-6 lg:py-4 whitespace-nowrap text-center text-xs lg:text-sm font-medium">
+                                <div class="flex justify-center space-x-1 lg:space-x-2">
                                     {{-- Edit --}}
-                                    <a href="{{ route('pengurus.pengurus.edit', $p->id_pengurus) }}" class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" title="Edit">
-                                        <i class="fas fa-pencil-alt text-sm mr-2"></i> Edit
+                                    <a href="{{ route('pengurus.pengurus.edit', $p->id_pengurus) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-lg transition-colors duration-200 bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" title="Edit">
+                                        <i class="fas fa-pencil-alt text-xs lg:text-sm mr-1 lg:mr-2"></i> Edit
                                     </a>
                                     
                                     {{-- Delete --}}
                                     <form action="{{ route('pengurus.pengurus.destroy', $p->id_pengurus) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')" class="inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 bg-red-100 text-red-600 hover:bg-red-600 hover:text-white" title="Hapus">
-                                            <i class="fas fa-trash text-sm mr-2"></i> Hapus
+                                        <button type="submit" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-lg transition-colors duration-200 bg-red-100 text-red-600 hover:bg-red-600 hover:text-white" title="Hapus">
+                                            <i class="fas fa-trash text-xs lg:text-sm mr-1 lg:mr-2"></i> Hapus
                                         </button>
                                     </form>
                                 </div>

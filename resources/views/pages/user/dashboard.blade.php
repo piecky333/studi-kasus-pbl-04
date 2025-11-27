@@ -226,7 +226,7 @@
                                             </p>
                                             
                                             <span class="text-xs text-gray-400 block mt-2">
-                                                {{ $item->created_at->diffForHumans() }}
+                                                {{ \Carbon\Carbon::parse($item->created_at)->locale('id')->diffForHumans() }}
                                             </span>
                                         </div>
 

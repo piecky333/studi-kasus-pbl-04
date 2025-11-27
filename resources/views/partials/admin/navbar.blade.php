@@ -1,14 +1,13 @@
-<nav class="bg-white border-b border-gray-200 shadow-sm z-50 w-full" x-data="{ profileOpen: false, notificationOpen: false, showBadge: true }">
+<nav class="bg-white border-b border-gray-200 shadow-sm z-50 w-full" x-data="{ profileOpen: false, notificationOpen: false, showBadge: true, mobileMenuOpen: false }">
     <div class="px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             
             <!-- Left Side: Title / Breadcrumbs -->
             <div class="flex items-center">
-                {{-- Toggle Sidebar Button (Mobile) - Optional if you implement sidebar toggle --}}
-                {{-- <button type="button" class="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden">
-                    <span class="sr-only">Open sidebar</span>
-                    <i class="fas fa-bars text-xl"></i>
-                </button> --}}
+                {{-- Toggle Sidebar Button (Mobile) --}}
+                <button @click="mobileMenuOpen = !mobileMenuOpen" class="btn btn-link d-md-none rounded-circle mr-3">
+                    <i class="fa fa-bars"></i>
+                </button>
 
                 <div class="flex-shrink-0 flex items-center">
                     <h1 class="text-xl font-bold text-gray-800 tracking-tight">
@@ -94,7 +93,7 @@
                                     {{ Auth::user()->nama ?? 'Administrator' }}
                                 </span>
                                 <img class="h-8 w-8 rounded-full object-cover border border-gray-200" 
-                                     src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->nama ?? 'A') }}&background=4f46e5&color=fff" 
+                                     src="{{ Auth::user()->profile_photo_url }}" 
                                      alt="">
                             </div>
                         </button>
@@ -117,16 +116,59 @@
                             <p class="text-xs text-gray-500 truncate">{{ Auth::user()->email ?? '' }}</p>
                         </div>
 
-                        <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" tabindex="-1" id="user-menu-item-0">
+                        <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:no-underline" style="text-decoration: none !important;" role="menuitem" tabindex="-1" id="user-menu-item-0">
                             <i class="bi bi-person mr-2 text-gray-400"></i> Profile
                         </a>
                         
-                        <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50" role="menuitem" tabindex="-1" id="user-menu-item-2">
-                            <i class="bi bi-box-arrow-right mr-2 text-red-400"></i> Sign out
+                        <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:no-underline" style="text-decoration: none !important;" role="menuitem" tabindex="-1" id="user-menu-item-2">
+                            <i class="bi bi-box-arrow-right mr-2 text-red-400"></i> Keluar
                         </a>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu (Vertical) -->
+    <div x-show="mobileMenuOpen" 
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0 -translate-y-2"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 -translate-y-2"
+         class="md:hidden bg-white border-b border-gray-200 shadow-lg"
+         style="display: none;">
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                <i class="bi bi-grid mr-2"></i> Dashboard
+            </a>
+            <a href="{{ route('admin.datamahasiswa.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                <i class="bi bi-person-fill mr-2"></i> Data Mahasiswa
+            </a>
+            <a href="{{ route('admin.pengaduan.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                <i class="bi bi-chat-dots-fill mr-2"></i> Pengaduan
+            </a>
+            <a href="{{ route('admin.sanksi.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                <i class="bi bi-exclamation-triangle-fill mr-2"></i> Sanksi
+            </a>
+            <a href="{{ route('admin.prestasi.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                <i class="bi bi-trophy-fill mr-2"></i> Prestasi
+            </a>
+            <a href="{{ route('admin.berita.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                <i class="bi bi-newspaper mr-2"></i> Berita
+            </a>
+            <div class="border-t border-gray-200 my-2"></div>
+            <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                Manajemen Data
+            </div>
+            <a href="{{ route('admin.spk.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                <i class="bi bi-list-task mr-2"></i> Daftar Keputusan (SPK)
+            </a>
+            <div class="border-t border-gray-200 my-2"></div>
+            <a href="{{ url('/') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                <i class="bi bi-house-door mr-2"></i> Kembali ke Website
+            </a>
         </div>
     </div>
 </nav>

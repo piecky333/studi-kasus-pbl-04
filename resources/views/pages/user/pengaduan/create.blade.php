@@ -170,7 +170,7 @@
             const systemPrompt = "Anda adalah asisten penulis yang membantu mahasiswa. Ubah teks berikut menjadi keluhan yang formal, jelas, sopan, dan rapi untuk laporan pengaduan di lingkungan kampus. Jaga agar inti masalahnya tetap sama. Balas HANYA dengan teks yang sudah diperbaiki, tanpa kata pembuka atau penutup tambahan seperti 'Tentu, ini hasilnya:'";
             
             const userQuery = text;
-            const apiKey = "AIzaSyDuhI4LEr13dyJ3Ef-1KzpPk819Ii_lkRI"; // API Key akan di-inject oleh environment
+            const apiKey = "AIzaSyDG7XD2DQoViAX2a3e-jgGtT4-OJJ2OSiM"; // API Key akan di-inject oleh environment
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
 
             const payload = {

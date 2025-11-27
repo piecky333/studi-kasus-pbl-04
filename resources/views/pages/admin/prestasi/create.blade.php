@@ -50,6 +50,29 @@
                                 <span>Cari</span>
                             </button>
                         </div>
+                        
+                        {{-- Hasil Pencarian (Card) --}}
+                        <div id="studentCard" class="mt-4 hidden bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0">
+                                    <span class="inline-flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100">
+                                        <i class="fas fa-user text-indigo-600 text-xl"></i>
+                                    </span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900" id="cardName">Nama Mahasiswa</p>
+                                    <p class="text-sm text-gray-500" id="cardNim">NIM: -</p>
+                                    <p class="text-sm text-gray-500" id="cardEmail">Email: -</p>
+                                    <p class="text-sm text-gray-500" id="cardSemester">Semester: -</p>
+                                </div>
+                                <div>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        Ditemukan
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
                         <p id="hasilMahasiswa" class="mt-2 text-sm text-gray-500"></p>
                         @error('id_mahasiswa')
                             <p class="mt-2 text-sm text-red-600">Mahasiswa dengan NIM tersebut tidak ditemukan atau belum dipilih.</p>
@@ -138,32 +161,51 @@ document.getElementById('btnCari').addEventListener('click', function() {
     const nim = document.getElementById('nim').value.trim();
     const hasil = document.getElementById('hasilMahasiswa');
     const idInput = document.getElementById('id_mahasiswa');
+    const studentCard = document.getElementById('studentCard');
+    
+    // Elements in card
+    const cardName = document.getElementById('cardName');
+    const cardNim = document.getElementById('cardNim');
+    const cardEmail = document.getElementById('cardEmail');
+    const cardSemester = document.getElementById('cardSemester');
 
     if (!nim) {
         hasil.textContent = 'Masukkan NIM terlebih dahulu.';
         hasil.className = 'mt-2 text-sm text-red-600';
+        studentCard.classList.add('hidden');
         return;
     }
 
     hasil.textContent = 'Mencari data mahasiswa...';
     hasil.className = 'mt-2 text-sm text-gray-500';
+    studentCard.classList.add('hidden');
 
     fetch(`/admin/prestasi/cari-mahasiswa?nim=${nim}`)
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                hasil.innerHTML = `<strong>${data.mahasiswa.nama}</strong> (${data.mahasiswa.nim}) ditemukan `;
-                hasil.className = 'mt-2 text-sm text-green-600';
+                // Populate card
+                cardName.textContent = data.mahasiswa.nama;
+                cardNim.textContent = `NIM: ${data.mahasiswa.nim}`;
+                cardEmail.textContent = `Email: ${data.mahasiswa.email}`;
+                cardSemester.textContent = `Semester: ${data.mahasiswa.semester}`;
+                
+                // Show card and hide text message
+                studentCard.classList.remove('hidden');
+                hasil.textContent = ''; 
+                
                 idInput.value = data.mahasiswa.id_mahasiswa;
             } else {
-                hasil.textContent = 'Mahasiswa tidak ditemukan ';
+                hasil.textContent = 'Mahasiswa tidak ditemukan.';
                 hasil.className = 'mt-2 text-sm text-red-600';
+                studentCard.classList.add('hidden');
                 idInput.value = '';
             }
         })
         .catch(() => {
             hasil.textContent = 'Terjadi kesalahan saat mencari data.';
             hasil.className = 'mt-2 text-sm text-red-600';
+            studentCard.classList.add('hidden');
         });
 });
 </script>

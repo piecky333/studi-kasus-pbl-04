@@ -14,7 +14,9 @@ class sanksi extends Model
     protected $fillable = [
         'id_mahasiswa',
         'tanggal_sanksi',
-        'jenis_sanksi'
+        'jenis_sanksi',
+        'jenis_hukuman',
+        'keterangan'
     ];
 
     public function mahasiswa()
