@@ -1,39 +1,130 @@
 @extends('layouts.pengurus')
+
 @section('title', 'Tambah Pengurus')
 
 @section('content')
-<div class="container py-4">
-    <h4 class="fw-bold mb-3 text-primary">Tambah Pengurus</h4>
-
-    <form action="{{ route('pengurus.pengurus.store') }}" method="POST">
-        @csrf
-        <div class="mb-3">
-            <label class="form-label fw-semibold">Divisi</label>
-            <select name="id_divisi" class="form-select" required>
-                <option value="">-- Pilih Divisi --</option>
-                @foreach($divisi as $d)
-                    <option value="{{ $d->id_divisi }}">{{ $d->nama_divisi }}</option>
-                @endforeach
-            </select>
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Page Header -->
+    <div class="md:flex md:items-center md:justify-between mb-8">
+        <div class="flex-1 min-w-0">
+            <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                Tambah Pengurus Baru
+            </h2>
+            <p class="mt-1 text-sm text-gray-500">
+                Tetapkan pengurus baru ke dalam divisi.
+            </p>
         </div>
-
-        <div class="mb-3">
-            <label class="form-label fw-semibold">User</label>
-            <select name="id_user" class="form-select" required>
-                <option value="">-- Pilih User --</option>
-                @foreach($users as $u)
-                    <option value="{{ $u->id_user }}">{{ $u->nama }}</option>
-                @endforeach
-            </select>
+        <div class="mt-4 flex md:mt-0 md:ml-4">
+            <a href="{{ route('pengurus.pengurus.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Kembali
+            </a>
         </div>
+    </div>
 
-        <div class="mb-3">
-            <label class="form-label fw-semibold">Posisi Jabatan</label>
-            <input type="text" name="posisi_jabatan" class="form-control" placeholder="Contoh: Ketua Divisi" required>
+    <!-- Form Card -->
+    <div class="bg-white shadow-[10px_10px_15px_-3px_rgba(0,0,0,0.1)] overflow-hidden sm:rounded-lg border border-gray-200 max-w-3xl mx-auto">
+        <div class="px-4 py-4 sm:px-6 bg-gray-50 border-b border-gray-200">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">
+                Formulir Tambah Pengurus
+            </h3>
+            <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                Isi detail pengurus dengan lengkap.
+            </p>
         </div>
+        <div class="px-4 py-5 sm:p-6">
+            
+            @if ($errors->any())
+                <div class="rounded-md bg-red-50 p-4 mb-6 border-l-4 border-red-400">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-circle text-red-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-red-800">
+                                Terdapat beberapa kesalahan pada pengisian formulir:
+                            </h3>
+                            <div class="mt-2 text-sm text-red-700">
+                                <ul class="list-disc pl-5 space-y-1">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
 
-        <button type="submit" class="btn btn-success">Simpan</button>
-        <a href="{{ route('pengurus.pengurus.index') }}" class="btn btn-secondary">Kembali</a>
-    </form>
+            <form action="{{ route('pengurus.pengurus.store') }}" method="POST">
+                @csrf
+
+                <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                    
+                    {{-- Pilih Divisi --}}
+                    <div class="sm:col-span-6">
+                        <label for="id_divisi" class="block text-sm font-medium text-gray-700">
+                            Divisi <span class="text-red-500">*</span>
+                        </label>
+                        <div class="mt-1">
+                            <select name="id_divisi" id="id_divisi" required class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('id_divisi') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2">
+                                <option value="">-- Pilih Divisi --</option>
+                                @foreach($divisi as $d)
+                                    <option value="{{ $d->id_divisi }}" {{ old('id_divisi') == $d->id_divisi ? 'selected' : '' }}>
+                                        {{ $d->nama_divisi }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @error('id_divisi')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Pilih User --}}
+                    <div class="sm:col-span-6">
+                        <label for="id_user" class="block text-sm font-medium text-gray-700">
+                            User (Pengurus) <span class="text-red-500">*</span>
+                        </label>
+                        <div class="mt-1">
+                            <select name="id_user" id="id_user" required class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('id_user') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2">
+                                <option value="">-- Pilih User --</option>
+                                @foreach($users as $u)
+                                    <option value="{{ $u->id_user }}" {{ old('id_user') == $u->id_user ? 'selected' : '' }}>
+                                        {{ $u->nama }} ({{ $u->email }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            <p class="mt-1 text-xs text-gray-500">Hanya menampilkan user dengan role "pengurus".</p>
+                        </div>
+                        @error('id_user')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Posisi Jabatan --}}
+                    <div class="sm:col-span-6">
+                        <label for="posisi_jabatan" class="block text-sm font-medium text-gray-700">
+                            Posisi Jabatan <span class="text-red-500">*</span>
+                        </label>
+                        <div class="mt-1">
+                            <input type="text" name="posisi_jabatan" id="posisi_jabatan" value="{{ old('posisi_jabatan') }}" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('posisi_jabatan') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2" required placeholder="Contoh: Ketua Divisi">
+                        </div>
+                        @error('posisi_jabatan')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                </div>
+
+                <div class="pt-5">
+                    <div class="flex justify-end">
+                        <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Simpan
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 @endsection

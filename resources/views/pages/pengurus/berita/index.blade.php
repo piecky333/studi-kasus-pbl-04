@@ -1,72 +1,126 @@
 @extends('layouts.pengurus')
 
+@section('title', 'Daftar Berita')
+
 @section('content')
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Daftar Berita Saya</h1>
-    <a href="{{ route('pengurus.berita.create') }}" class="btn btn-primary shadow-sm">
-        <i class="fas fa-plus fa-sm text-white-50"></i> Tambah Berita Baru
-    </a>
-</div>
-
-@if(session('success'))
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-    {{ session('success') }}
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
-</div>
-@endif
-
-<div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Daftar Berita</h6>
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6 space-y-4 md:space-y-0">
+        <h1 class="text-2xl font-bold text-gray-800">
+            Daftar Berita
+        </h1>
+        <a href="{{ route('pengurus.berita.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150 shadow-md">
+            <i class="fas fa-plus mr-2"></i> Tambah Berita Baru
+        </a>
     </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover" width="100%" cellspacing="0">
-                <thead class="thead-light">
+
+    <!-- Alert Messages -->
+    @if(session('success'))
+    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 shadow-sm rounded-r" role="alert">
+        <div class="flex">
+            <div class="py-1"><svg class="fill-current h-6 w-6 text-green-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"/></svg></div>
+            <div>
+                <p class="font-bold">Berhasil!</p>
+                <p class="text-sm">{{ session('success') }}</p>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- Table Section -->
+    <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg border border-gray-200">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-[#0d2149]">
                     <tr>
-                        <th>No</th>
-                        <th>Judul</th>
-                        <th>Kategori</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-16">
+                            No
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                            Judul Berita
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                            Kategori
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
+                            Status
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider w-48">
+                            Aksi
+                        </th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($beritas as $berita)
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $berita->judul_berita }}</td>
-                        <td>{{ ucfirst($berita->kategori) }}</td>
-                        <td>
+                    <tr class="hover:bg-gray-50 transition-colors duration-200">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ $loop->iteration }}
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm font-medium text-gray-900 line-clamp-2">{{ $berita->judul_berita }}</div>
+                            <div class="text-xs text-gray-500 mt-1">
+                                <i class="far fa-calendar-alt mr-1"></i> {{ $berita->created_at->format('d M Y') }}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                {{ ucfirst($berita->kategori) }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
                             @if($berita->status == 'pending')
-                                <span class="badge badge-warning">Pending</span>
+                                <span class="px-2 py-1 inline-flex items-center text-xs leading-5 font-semibold rounded-2xl bg-yellow-100 text-yellow-800">
+                                    <i class="fas fa-clock mr-1"></i> Pending
+                                </span>
                             @elseif($berita->status == 'approved')
-                                <span class="badge badge-success">Verified</span>
+                                <span class="px-2 py-1 inline-flex items-center text-xs leading-5 font-semibold rounded-2xl bg-green-100 text-green-800">
+                                    <i class="fas fa-check-circle mr-1"></i> Verified
+                                </span>
                             @elseif($berita->status == 'rejected')
-                                <span class="badge badge-danger">Rejected</span>
+                                <span class="px-2 py-1 inline-flex items-center text-xs leading-5 font-semibold rounded-2xl bg-red-100 text-red-800">
+                                    <i class="fas fa-times-circle mr-1"></i> Rejected
+                                </span>
                             @endif
                         </td>
-                        <td>
-                            <a href="{{ route('pengurus.berita.edit', $berita->id_berita) }}" class="btn btn-info btn-sm"><i class="fas fa-edit"></i></a>
-
-                            <form action="{{ route('pengurus.berita.destroy', $berita->id_berita) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Hapus berita ini?')">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
+                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                            <div class="flex justify-center space-x-2">
+                                {{-- Edit --}}
+                                <a href="{{ route('pengurus.berita.edit', $berita->id_berita) }}" class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" title="Edit">
+                                    <i class="fas fa-pencil-alt text-sm mr-2"></i> Edit
+                                </a>
+                                
+                                {{-- Delete --}}
+                                <form action="{{ route('pengurus.berita.destroy', $berita->id_berita) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 bg-red-100 text-red-600 hover:bg-red-600 hover:text-white" title="Hapus">
+                                        <i class="fas fa-trash text-sm mr-2"></i> Hapus
+                                    </button>
+                                    </form>
+                            </div>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="text-center">Belum ada berita.</td>
+                        <td colspan="5" class="px-6 py-10 text-center text-gray-500">
+                            <div class="flex flex-col items-center justify-center">
+                                <i class="far fa-newspaper text-4xl text-gray-300 mb-3"></i>
+                                <p class="text-lg font-medium">Belum ada berita yang dibuat.</p>
+                                <p class="text-sm">Silakan buat berita baru untuk memulai.</p>
+                            </div>
+                        </td>
                     </tr>
                     @endforelse
                 </tbody>
             </table>
+        </div>
+        
+        <!-- Pagination -->
+        @if($beritas->hasPages())
+        <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
             {{ $beritas->links() }}
         </div>
+        @endif
     </div>
 </div>
 @endsection

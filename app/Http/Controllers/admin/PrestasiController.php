@@ -58,7 +58,7 @@ class PrestasiController extends Controller
             'nama_kegiatan'  => $request->judul_prestasi,
             'tingkat_prestasi' => $request->tingkat,
             'tahun'          => date('Y', strtotime($request->tanggal)),
-            'status_validasi' => 'menunggu',
+            'status_validasi' => 'disetujui',
             'deskripsi'      => $request->deskripsi,
         ]);
 

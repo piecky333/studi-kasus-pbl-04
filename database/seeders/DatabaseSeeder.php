@@ -19,6 +19,12 @@ class DatabaseSeeder extends Seeder
             KomentarSeeder::class,
             SpkPrestasiSeeder::class,
             PengaduanSeeder::class,
+            DivisiSeeder::class,
+            JabatanSeeder::class,
+            DataMahasiswaSeeder::class,
+            PrestasiSeeder::class,
+            SanksiSeeder::class,
+            PengurusSeeder::class,
         ]);
     }
 }

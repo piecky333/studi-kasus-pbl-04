@@ -22,7 +22,7 @@
     </div>
 
     <!-- Form Card -->
-    <div class="bg-white shadow overflow-hidden sm:rounded-lg border border-gray-200 max-w-3xl mx-auto">
+    <div class="bg-white shadow-[10px_10px_15px_-3px_rgba(0,0,0,0.1)] overflow-hidden sm:rounded-lg border border-gray-200 max-w-3xl mx-auto">
         <div class="px-4 py-4 sm:px-6 bg-gray-50 border-b border-gray-200">
             <h3 class="text-lg leading-6 font-medium text-gray-900">
                 Formulir Edit Berita
@@ -160,11 +160,8 @@
 
                 <div class="pt-5">
                     <div class="flex justify-end">
-                        <a href="{{ route('admin.berita.index') }}" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            Batal
-                        </a>
                         <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            Simpan Perubahan
+                            Simpan 
                         </button>
                     </div>
                 </div>

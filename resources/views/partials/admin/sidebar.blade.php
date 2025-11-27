@@ -22,6 +22,12 @@
     </div>
 
     <li class="nav-item ">
+        <a class="nav-link" href="{{ route('admin.datamahasiswa.index') }}">
+            <i class="fas fa-fw bi bi-person-fill"></i>
+            <span>Data Mahasiswa</span></a>
+    </li>
+
+    <li class="nav-item ">
         <a class="nav-link" href="{{ route('admin.pengaduan.index') }}">
             <i class="fas fa-fw bi bi-chat-dots-fill"></i>
             <span>Pengaduan</span></a>

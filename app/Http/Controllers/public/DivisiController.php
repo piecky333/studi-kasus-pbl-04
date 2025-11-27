@@ -11,9 +11,9 @@ class DivisiController extends Controller
     public function index()
     {
         // Ambil semua data divisi, mungkin diurutkan berdasarkan nama
-        $semuaDivisi = divisi::orderBy('nama_divisi')->get(4); 
+        $semuaDivisi = divisi::orderBy('nama_divisi')->get(); 
 
-        return view('public.divisi.index', compact('semuaDivisi')); 
+        return view('pages.public.divisi.index', compact('semuaDivisi')); 
         // Anda perlu membuat view 'public.divisi.index'
     }
 
@@ -28,7 +28,7 @@ class DivisiController extends Controller
         // $divisi = Divisi::where('slug', $slugOrId)->firstOrFail(); 
         $divisi = divisi::findOrFail($slugOrId); // Contoh jika menggunakan ID
 
-        return view('public.divisi.show', compact('divisi'));
+        return view('pages.public.divisi.show', compact('divisi'));
         // Anda perlu membuat view 'public.divisi.show'
     }
 }

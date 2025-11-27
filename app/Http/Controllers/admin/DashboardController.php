@@ -18,17 +18,19 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        // 1. MENGAMBIL DATA STAT CARD (Logika dari tim Anda)
-        $totalUser = User::where('role', 'user')->count();
+        // 1. MENGAMBIL DATA STAT CARD
+        $totalUser = User::where('role', 'user')->count(); // Mahasiswa
         $totalPengurus = User::where('role', 'pengurus')->count();
-        
-        // DIUBAH: Menggunakan model tim Anda (huruf kecil)
         $totalBerita = berita::count();
-        // DIUBAH: Menggunakan model tim Anda (huruf kecil)
         $totalPengaduan = pengaduan::count(); 
 
+        // Fetch News requiring attention
+        $beritaPending = berita::where('status', 'pending')->latest()->get();
+
+        // Fetch Recent Pengaduan
+        $recentPengaduan = pengaduan::latest()->take(5)->get();
+
         // 2A. MENGAMBIL DATA UNTUK LINE CHART (Laporan per Bulan)
-        // DIUBAH: Menggunakan model tim Anda (huruf kecil)
         $laporanPerBulan = pengaduan::select(
             DB::raw('MONTH(created_at) as bulan'),
             DB::raw('COUNT(*) as jumlah')
@@ -39,7 +41,6 @@ class DashboardController extends Controller
         ->get();
 
         // 2B. MENGAMBIL DATA UNTUK PIE CHART (Status Laporan)
-        // (Kode baru dari panduan)
         $statusLaporan = pengaduan::select('status', DB::raw('COUNT(*) as jumlah'))
             ->groupBy('status')
             ->get();
@@ -55,7 +56,6 @@ class DashboardController extends Controller
         }
 
         // 3B. FORMAT DATA UNTUK PIE CHART
-        // (Kode baru dari panduan)
         $pieLabels = [];
         $pieData = [];
         
@@ -64,17 +64,18 @@ class DashboardController extends Controller
             $pieData[] = $status->jumlah;
         }
 
-        // 4. KIRIM SEMUA DATA KE VIEW (Menggunakan path view tim Anda)
+        // 4. KIRIM SEMUA DATA KE VIEW
         return view('pages.admin.dashboard', [
-            'totalUser' => $totalUser,
+            'totalUser' => $totalUser, // Representing Mahasiswa
             'totalPengurus' => $totalPengurus,
             'totalBerita' => $totalBerita,
-            // DIUBAH: Mengirimkan var $totalPengaduan sebagai $totalLaporan (sesuai view tim Anda)
             'totalLaporan' => $totalPengaduan, 
-            'chartLabels' => $labels, // Data label untuk LINE chart
-            'chartData' => $data,   // Data angka untuk LINE chart
-            'pieLabels' => $pieLabels, // Data label untuk PIE chart
-            'pieData' => $pieData,   // Data angka untuk PIE chart
+            'beritaPending' => $beritaPending,
+            'recentPengaduan' => $recentPengaduan,
+            'chartLabels' => $labels, 
+            'chartData' => $data,   
+            'pieLabels' => $pieLabels, 
+            'pieData' => $pieData,   
         ]);
     }
 }
