@@ -57,15 +57,6 @@
 </li>
 
 
-    <!-- Kelola Keuangan -->
-<li class="nav-item {{ request()->is('pengurus/keuangan*') ? 'active' : '' }}">
-    <a class="nav-link" href="{{ route('pengurus.keuangan.index') }}">
-        <i class="bi bi-cash-stack"></i>
-        <span>Kelola Keuangan</span>
-    </a>
-</li>
-
-
     <hr class="sidebar-divider">
 
     <!-- Kembali ke Website -->

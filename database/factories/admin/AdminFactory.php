@@ -23,7 +23,7 @@ class AdminFactory extends Factory
         return [
             'id_user' => User::factory()->admin(), // Buat user dengan role admin
             'nama_admin' => fake()->name(),
-            'jabatan' => fake()->jobTitle(),
+            'jabatan_admin' => fake()->jobTitle(),
         ];
     }
 }

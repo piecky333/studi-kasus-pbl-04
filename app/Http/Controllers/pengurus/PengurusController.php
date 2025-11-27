@@ -19,7 +19,7 @@ class PengurusController extends Controller
     public function create()
     {
         $divisi = divisi::all();
-        $users = User::all();
+        $users = User::where('role', 'pengurus')->get();
         return view('pages.pengurus.pengurus.create', compact('divisi', 'users'));
     }
 
@@ -40,7 +40,7 @@ class PengurusController extends Controller
     {
         $pengurus = pengurus::findOrFail($id);
         $divisi = divisi::all();
-        $users = User::all();
+        $users = User::where('role', 'pengurus')->get();
         return view('pages.pengurus.pengurus.edit', compact('pengurus', 'divisi', 'users'));
     }
 

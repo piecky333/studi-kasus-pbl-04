@@ -32,9 +32,14 @@ class BeritaFactory extends Factory
             $gambarPath = null; 
         }
 
-        // Ambil ID user acak 
-        $userId = \App\Models\User::inRandomOrder()->first()
-        ->id_user ?? \App\Models\User::factory()->create()->id_user;
+        // Ambil ID user dengan role admin atau pengurus
+        $user = \App\Models\User::whereIn('role', ['admin', 'pengurus'])->inRandomOrder()->first();
+
+        if (!$user) {
+            $user = \App\Models\User::factory()->create(['role' => 'admin']);
+        }
+
+        $userId = $user->id_user;
 
         //tambahkan ini untuk isi berita dengan beberapa paragraf
         $paragraphs = $this->faker->paragraphs(5); 

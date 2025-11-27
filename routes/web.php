@@ -25,7 +25,9 @@ use App\Http\Controllers\Admin\{
     PengaduanController as AdminPengaduanController,
     PrestasiController as AdminPrestasiController,
     SanksiController as AdminSanksiController,
-    PengurusController as AdminPengurusController
+    PengurusController as AdminPengurusController,
+    DataMahasiswaController as AdminDataMahasiswaController,
+    ProfileController as AdminProfileController
 };
 
 // =========================================================
@@ -42,7 +44,8 @@ use App\Http\Controllers\user\{
 // =========================================================
 use App\Http\Controllers\pengurus\{
     DivisiController as PengurusDivisiController,
-    PengurusDashboardController
+    PengurusDashboardController,
+    ProfileController as PengurusProfileController
 };
 
 // =========================================================
@@ -85,6 +88,10 @@ Route::post('/berita/{id_berita}/komentar', [PublicKomentarController::class, 's
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    
+    // Profile Admin
+    Route::get('/profile', [AdminProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [AdminProfileController::class, 'update'])->name('profile.update');
 
     // Berita
     Route::get('/berita', [AdminBeritaController::class, 'index'])->name('berita.index');
@@ -109,11 +116,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::put('pengaduan/{id}/verifikasi', [AdminPengaduanController::class, 'verifikasi'])->name('pengaduan.verifikasi');
 
     // Prestasi
-    Route::resource('prestasi', AdminPrestasiController::class);
     Route::get('prestasi/cari-mahasiswa', [AdminPrestasiController::class, 'cariMahasiswa'])->name('prestasi.cariMahasiswa');
+    Route::resource('prestasi', AdminPrestasiController::class);
 
     // Sanksi
     Route::resource('sanksi', AdminSanksiController::class);
+
+    // Data Mahasiswa
+    Route::resource('datamahasiswa', AdminDataMahasiswaController::class);
 
 
     // =====================================================
@@ -225,6 +235,10 @@ Route::prefix('pengurus')->name('pengurus.')
     ->middleware(['auth', 'role:pengurus'])
     ->group(function () {
         Route::get('/dashboard', [PengurusDashboardController::class, 'index'])->name('dashboard');
+        
+        // Profile Pengurus
+        Route::get('/profile', [PengurusProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [PengurusProfileController::class, 'update'])->name('profile.update');
         Route::resource('divisi', PengurusDivisiController::class)->parameters(['divisi' => 'id_divisi']);
         Route::resource('jabatan', \App\Http\Controllers\Pengurus\JabatanController::class);
         Route::resource('pengurus', \App\Http\Controllers\Pengurus\PengurusController::class);
