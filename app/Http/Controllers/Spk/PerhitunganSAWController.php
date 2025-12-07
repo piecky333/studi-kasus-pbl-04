@@ -7,36 +7,64 @@ use App\Services\SawService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Spk\KeputusanDetailController; // PENTING: Import Base Controller SPK
 
+use App\Models\alternatif;
+use App\Models\penilaian;
+
 /**
- * Controller ini bertanggung jawab untuk logika bisnis Hasil Akhir (Tab Hasil).
- * Termasuk menampilkan hasil ranking dan memicu perhitungan ulang SAW.
- * Mewarisi KeputusanDetailController untuk akses Keputusan induk ($this->keputusan).
+ * Class PerhitunganSAWController
+ * 
+ * Controller ini bertanggung jawab untuk menangani logika bisnis terkait metode Simple Additive Weighting (SAW).
+ * 
+ * Tugas utama:
+ * 1. Menampilkan hasil akhir perangkingan.
+ * 2. Menampilkan detail proses perhitungan (Matriks Keputusan, Normalisasi, dll) untuk transparansi.
+ * 3. Memicu proses perhitungan ulang jika ada perubahan data.
+ * 
+ * @package App\Http\Controllers\Spk
  */
 class PerhitunganSAWController extends KeputusanDetailController
 {
     protected SawService $sawService;
 
     /**
-     * Constructor menginjeksikan SAW Service dan memuat data Keputusan induk.
+     * Constructor.
+     * 
      * @param Request $request
-     * @param SawService $sawService
+     * @param SawService $sawService Service yang menangani logika matematis SAW.
      */
     public function __construct(Request $request, SawService $sawService)
     {
-        // Panggil constructor parent untuk memuat Keputusan dan $this->idKeputusan
+        // Memastikan konteks Keputusan dimuat dengan benar via parent constructor.
         parent::__construct($request);
         $this->sawService = $sawService;
     }
 
     /**
-     * Menampilkan halaman Hasil Akhir (Tab Hasil) dan detail proses perhitungan.
-     * @return \Illuminate\View\View
+     * Menampilkan halaman Hasil Akhir (Tab Hasil).
+     * 
+     * Method ini juga melakukan pengecekan integritas data sebelum menampilkan hasil.
+     * Jika data Alternatif atau Penilaian kosong, user akan diarahkan kembali untuk melengkapinya.
+     * 
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
     public function index()
     {
-        // 1. Ambil hasil ranking yang sudah tersimpan dari database (Tampilan Final)
-        // KOREKSI: Gunakan whereHas untuk memfilter HasilAkhir melalui relasi 'alternatif' 
-        // yang terikat dengan $this->idKeputusan.
+        // CEK DATA: Jika tidak ada alternatif atau penilaian, redirect ke halaman alternatif
+        $hasAlternatif = alternatif::where('id_keputusan', $this->idKeputusan)->exists();
+        
+        // Cek apakah ada penilaian yang terkait dengan alternatif di keputusan ini
+        $hasPenilaian = penilaian::whereHas('alternatif', function ($query) {
+            $query->where('id_keputusan', $this->idKeputusan);
+        })->exists();
+
+        if (!$hasAlternatif || !$hasPenilaian) {
+            return redirect()->route('admin.spk.alternatif.index', $this->idKeputusan)
+                ->with('error', 'Harap tambahkan Alternatif dan Penilaian terlebih dahulu sebelum melihat Hasil Akhir.');
+        }
+
+        // 1. Ambil hasil ranking yang sudah tersimpan dari database (Tampilan Final).
+        // Menggunakan Eager Loading 'alternatif' untuk efisiensi query.
+        // Filter berdasarkan 'whereHas' memastikan hanya hasil milik keputusan ini yang diambil.
         $rankingResults = HasilAkhir::whereHas('alternatif', function ($query) {
             $query->where('id_keputusan', $this->idKeputusan);
         })
@@ -49,8 +77,8 @@ class PerhitunganSAWController extends KeputusanDetailController
         $isReady = true; // Flag untuk mengontrol apakah tombol 'Hitung' boleh ditekan
         
         try {
-            // Memuat data proses (Matriks, Normalisasi, dll)
-            // Method ini akan melempar Exception jika data Kriteria/Alternatif tidak lengkap.
+            // Memuat data proses (Matriks X, Matriks R, Bobot W) untuk ditampilkan di UI.
+            // Service akan melempar Exception jika data tidak konsisten (misal: bobot AHP belum dihitung).
             $calculationData = $this->sawService->calculateProcessData($this->idKeputusan);
         } catch (\Exception $e) {
             // Jika ada exception (data tidak lengkap/tidak konsisten AHP)
@@ -69,8 +97,12 @@ class PerhitunganSAWController extends KeputusanDetailController
     }
 
     /**
-     * Memicu proses perhitungan SAW dan menyimpan hasilnya ke tabel HasilAkhir.
-     * Dipanggil melalui POST route: admin.spk.hasil.run.
+     * Memicu proses perhitungan SAW dan menyimpan hasilnya ke database.
+     * 
+     * Method ini menggunakan Post-Redirect-Get (PRG) pattern.
+     * Setelah perhitungan selesai, user akan di-redirect kembali ke halaman index
+     * untuk melihat hasilnya.
+     * 
      * @return \Illuminate\Http\RedirectResponse
      */
     public function runCalculation()
@@ -80,7 +112,8 @@ class PerhitunganSAWController extends KeputusanDetailController
         // seperti yang disarankan di langkah sebelumnya.
 
         try {
-            // Panggil Service untuk menjalankan proses hitung dan simpan
+            // Delegasikan logika perhitungan yang kompleks ke Service.
+            // Ini menjaga Controller tetap ramping (Thin Controller).
             $this->sawService->executeAndSaveResult($this->idKeputusan);
             
             // Perbarui status keputusan (Status: Draft -> Selesai/Aktif)

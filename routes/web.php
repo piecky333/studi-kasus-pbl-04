@@ -194,6 +194,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
             // TAB 2: ALTERNATIF & PENILAIAN
             Route::prefix('alternatif')->name('alternatif.')->group(function () {
 
+                // Penilaian Alternatif ($Xij$)
+                Route::controller(PenilaianController::class)->prefix('nilai')->name('penilaian.')->group(function () {
+                    Route::get('/', 'index')->name('index'); // Menampilkan matriks penilaian semua alternatif
+                    Route::put('/', 'update')->name('update'); // Menyimpan semua nilai penilaian
+                });
+
                 // KOREKSI: MENGGANTI Route::resource DENGAN RUTE EKSPLISIT UNTUK MENGHINDARI KONFLIK
                 Route::controller(AlternatifController::class)->group(function () {
                     // Index (GET /alternatif) - PINTU MASUK TAB & LIST
@@ -203,14 +209,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
                     Route::post('/', 'store')->name('store');
                     Route::get('/{idAlternatif}/edit', 'edit')->name('edit');
                     Route::put('/{idAlternatif}', 'update')->name('update');
+                    Route::delete('/bulk-destroy', 'bulkDestroy')->name('bulkDestroy'); // Route baru untuk bulk delete
                     Route::delete('/{idAlternatif}', 'destroy')->name('destroy');
                 });
 
-                // Penilaian Alternatif ($Xij$)
-                Route::controller(PenilaianController::class)->prefix('nilai')->name('penilaian.')->group(function () {
-                    Route::get('/', 'index')->name('index'); // Menampilkan matriks penilaian semua alternatif
-                    Route::put('/', 'update')->name('update'); // Menyimpan semua nilai penilaian
-                });
+
             });
 
             // TAB 3: HASIL & PERHITUNGAN

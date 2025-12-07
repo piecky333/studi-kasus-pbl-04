@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Storage;
 class BeritaController extends Controller
 {
     /**
-     * Menampilkan daftar berita milik pengurus login
+     * Tampilkan daftar berita milik pengurus.
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -22,7 +24,9 @@ class BeritaController extends Controller
     }
 
     /**
-     * Form tambah berita
+     * Tampilkan form tambah berita.
+     *
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -30,7 +34,11 @@ class BeritaController extends Controller
     }
 
     /**
-     * Simpan berita baru
+     * Simpan berita baru.
+     * Set status default ke 'pending'.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -60,7 +68,10 @@ class BeritaController extends Controller
     }
 
     /**
-     * Form edit berita
+     * Tampilkan form edit berita.
+     *
+     * @param int $id
+     * @return \Illuminate\View\View
      */
     public function edit($id)
     {
@@ -71,7 +82,12 @@ class BeritaController extends Controller
     }
 
     /**
-     * Update berita
+     * Perbarui data berita.
+     * Ganti gambar jika ada upload baru.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $id)
     {
@@ -107,7 +123,11 @@ class BeritaController extends Controller
     }
 
     /**
-     * Hapus berita
+     * Hapus berita.
+     * Hapus file gambar terkait.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {

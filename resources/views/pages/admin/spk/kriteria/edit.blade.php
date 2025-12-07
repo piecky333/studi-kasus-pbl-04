@@ -12,7 +12,7 @@
                 </p>
             </header>
 
-            {{-- Menampilkan pesan error validasi dari Laravel --}}
+            {{-- Menampilkan pesan error jika validasi input gagal --}}
             @if ($errors->any())
                 <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 text-sm">
                     <strong class="font-bold">Oops! Ada masalah dengan input Anda:</strong>
@@ -24,20 +24,20 @@
                 </div>
             @endif
 
-            {{-- Form dengan method PUT untuk update --}}
+            {{-- Form untuk memperbarui data kriteria --}}
             <form action="{{ route('admin.spk.kriteria.update', ['idKeputusan' => $keputusan->id_keputusan, 'idKriteria' => $kriteria->id_kriteria]) }}" method="POST">
                 @csrf
                 @method('PUT')
                 
                 <div class="space-y-6">
                     
-                    {{-- Input: Kode Kriteria --}}
+                    {{-- Input Teks: Mengubah kode kriteria --}}
                     <div>
                         <label for="kode_kriteria" class="block text-sm font-medium text-gray-700 mb-1">
                             Kode Kriteria
                         </label>
                         <input type="text" name="kode_kriteria" id="kode_kriteria" 
-                               {{-- Menggunakan old() atau nilai dari database --}}
+                               {{-- Mengambil nilai lama jika ada error, atau nilai dari database --}}
                                value="{{ old('kode_kriteria', $kriteria->kode_kriteria) }}"
                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm 
                                @error('kode_kriteria') border-red-500 @enderror"
@@ -47,7 +47,7 @@
                         @enderror
                     </div>
 
-                    {{-- Input: Nama Kriteria --}}
+                    {{-- Input Teks: Mengubah nama kriteria --}}
                     <div>
                         <label for="nama_kriteria" class="block text-sm font-medium text-gray-700 mb-1">
                             Nama Kriteria
@@ -62,7 +62,7 @@
                         @enderror
                     </div>
 
-                    {{-- Select: Jenis Kriteria (Benefit/Cost) --}}
+                    {{-- Pilihan Dropdown: Mengubah jenis kriteria --}}
                     <div>
                         <label for="jenis_kriteria" class="block text-sm font-medium text-gray-700 mb-1">
                             Jenis Kriteria (Type)
@@ -78,13 +78,13 @@
                         @enderror
                     </div>
 
-                    {{-- Input: Bobot Kriteria --}}
+                    {{-- Input Angka: Bobot Kriteria (Dapat diedit jika perlu penyesuaian manual) --}}
                     <div>
                         <label for="bobot_kriteria" class="block text-sm font-medium text-gray-700 mb-1">
                             Bobot Kriteria (Wj)
                         </label>
                         <input type="number" name="bobot_kriteria" id="bobot_kriteria" 
-                               {{-- Menggunakan number_format untuk menampilkan 4 desimal secara default --}}
+                               {{-- Memformat nilai bobot menjadi 4 digit desimal --}}
                                value="{{ old('bobot_kriteria', number_format($kriteria->bobot_kriteria, 4, '.', '')) }}"
                                step="0.0001" min="0" max="1"
                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm
@@ -100,7 +100,7 @@
                     
                 </div>
 
-                {{-- Tombol Aksi --}}
+                {{-- Bagian Tombol: Simpan perubahan atau Batal --}}
                 <div class="mt-8 flex justify-end space-x-3">
                     <a href="{{ route('admin.spk.kriteria.index', $keputusan->id_keputusan) }}" 
                        class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition duration-150 shadow-sm">

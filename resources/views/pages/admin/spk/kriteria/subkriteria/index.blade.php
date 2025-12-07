@@ -4,7 +4,7 @@
 
     <div class="max-w-7xl mx-auto py-8 sm:px-6 lg:px-8">
         <div class="bg-white rounded-lg shadow-lg p-6">
-            {{-- ALERT STATUS --}}
+            {{-- Menampilkan notifikasi sukses atau error setelah aksi --}}
             @if (session('success'))
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6 text-sm" role="alert">
                     {{ session('success') }}
@@ -16,7 +16,7 @@
                 </div>
             @endif
 
-            {{-- Header Halaman (Mirip header Daftar Kriteria) --}}
+            {{-- Header Halaman: Menampilkan informasi kriteria induk --}}
             <header class="flex justify-between items-center mb-6 border-b pb-4">
                 <div>
                     <h1 class="text-3xl font-extrabold text-gray-900 leading-tight tracking-tight">{{ $pageTitle }}</h1>
@@ -27,9 +27,9 @@
                     </p>
                 </div>
 
-                {{-- Tombol Aksi Tambah --}}
+                {{-- Bagian Tombol Aksi --}}
                 <div class="flex space-x-3">
-                    {{-- Tombol Tambah Sub Kriteria --}}
+                    {{-- Tombol untuk menambah sub kriteria baru --}}
 <a href="{{ route('admin.spk.kriteria.subkriteria.create', ['idKeputusan' => $keputusan->id_keputusan, 'idKriteria' => $kriteria->id_kriteria]) }}"
                         class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition duration-150 shadow-md flex items-center">
                         <i class="fas fa-plus mr-1"></i> Tambah Sub Kriteria
@@ -37,7 +37,7 @@
                 </div>
             </header>
 
-            {{-- Tabel Sub Kriteria --}}
+            {{-- Tabel Daftar Sub Kriteria --}}
             <div class="bg-white  overflow-hidden sm:rounded-lg border border-gray-200">
                 <div class="p-0">
                     <div class="min-w-full overflow-x-auto">
@@ -71,7 +71,7 @@
                                                                 </td>
                                                                 <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-3">
 
-                                                                    {{-- Tombol Edit --}}
+                                                                    {{-- Tombol Edit Sub Kriteria --}}
                                                                     <a href="{{ route(
                                         'admin.spk.kriteria.subkriteria.edit',
                                         [
@@ -85,7 +85,7 @@
                                                                         <i class="fas fa-edit"></i> Edit
                                                                     </a>
 
-                                                                    {{-- Tombol Delete --}}                                                                                                                                
+                                                                    {{-- Tombol Hapus Sub Kriteria --}}                                                                                                                                
                                                                     <form action="{{ 
                                                                                                                 route('admin.spk.kriteria.subkriteria.destroy', [
                                             'idKeputusan' => $keputusan->id_keputusan,
@@ -119,7 +119,7 @@
                 </div>
             </div>
 
-            {{-- Tombol Kembali (Ditempatkan di bawah tabel, rata kanan) --}}
+            {{-- Tombol Kembali ke daftar kriteria --}}
             <div class="mt-6 flex justify-end">
                 <a href="{{ route('admin.spk.kriteria.index', $keputusan->id_keputusan) }}"
                     class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg text-sm transition duration-150 shadow-md">

@@ -70,7 +70,7 @@
             <div class="bg-white rounded-xl shadow-[10px_10px_15px_-3px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
                     <h6 class="font-bold text-gray-800">Riwayat Prestasi</h6>
-                    <span class="bg-green-100 text-green-800 text-xs font-bold px-2.5 py-0.5 rounded-full">{{ $mahasiswa->prestasi->count() }} Data</span>
+                    <span class="bg-green-100 text-green-800 text-xs font-bold px-2.5 py-0.5 rounded-full">{{ $mahasiswa->prestasi->count() }} Prestasi</span>
                 </div>
                 
                 <div class="overflow-x-auto">
@@ -116,7 +116,7 @@
             <div class="bg-white rounded-xl shadow-[10px_10px_15px_-3px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
                     <h6 class="font-bold text-gray-800">Riwayat Sanksi</h6>
-                    <span class="bg-red-100 text-red-800 text-xs font-bold px-2.5 py-0.5 rounded-full">{{ $mahasiswa->sanksi->count() }} Data</span>
+                    <span class="bg-red-100 text-red-800 text-xs font-bold px-2.5 py-0.5 rounded-full">{{ $mahasiswa->sanksi->count() }} Sanksi</span>
                 </div>
                 
                 <div class="overflow-x-auto">

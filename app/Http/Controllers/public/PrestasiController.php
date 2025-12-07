@@ -8,11 +8,16 @@ use App\Models\berita;
 
 class PrestasiController extends Controller
 {
+    /**
+     * Tampilkan daftar prestasi.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
-        // Ambil semua prestasi, urutkan dari yang terbaru, bagi per halaman
+        // Ambil semua prestasi terbaru (paginasi 9).
         $semuaPrestasi = berita::where('kategori', 'prestasi')
-            ->latest() // Urutkan dari yang terbaru
+            ->latest()
             ->paginate(9);
 
         return view('pages.public.prestasi.index', compact('semuaPrestasi'));
@@ -20,9 +25,11 @@ class PrestasiController extends Controller
     }
 
     /**
-     * Menampilkan halaman detail satu Prestasi.
+     * Tampilkan detail prestasi.
+     *
+     * @param int $id
+     * @return \Illuminate\View\View
      */
-    // Di dalam file PrestasiController.php, method show($id)
     public function show($id)
     {
         $berita = berita::where('kategori', 'prestasi')
@@ -32,15 +39,14 @@ class PrestasiController extends Controller
             ->where('id_berita', '!=', $id)
             ->latest()->take(3)->get();
 
-        // UBAH INI: Ambil HANYA komentar induk (parent_id = null)
+        // Ambil komentar induk dan balasan.
         $komentar_induk = $berita->komentar()
             ->whereNull('parent_id')
-            // Memuat balasan, DAN 'parent' dari balasan itu
             ->with(['replies.parent'])
             ->latest()
             ->get();
 
-        // Kirim 'komentar_induk' BUKAN '$berita->komentar'
+        // Kirim data ke view.
         return view('pages.public.prestasi.show', compact(
             'berita',
             'beritaTerkait',
