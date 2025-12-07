@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\Auth;
 
 class PengurusDashboardController extends Controller
 {
+    /**
+     * Tampilkan dashboard pengurus.
+     * Hitung statistik dan tampilkan berita terbaru.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $totalDivisi   = Divisi::count();

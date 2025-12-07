@@ -48,7 +48,7 @@
                                         class="w-1/4 px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r">
                                         Alternatif / Kriteria
                                     </th>
-                                    {{-- Header Kriteria --}}
+                                    {{-- Header Kolom Kriteria --}}
                                     @foreach($kriteriaList as $kriteria)
                                         <th scope="col"
                                             class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
@@ -58,7 +58,7 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                {{-- Data Alternatif dan Input Penilaian --}}
+                                {{-- Baris Data Alternatif dan Input Penilaian --}}
                                 @foreach($alternatifData as $alternatif)
                                     <tr class="hover:bg-gray-50">
                                         <td
@@ -68,14 +68,14 @@
                                         @foreach($kriteriaList as $kriteria)
                                             <td class="px-4 py-2 text-center">
                                                 @php
-                                                    // Mendapatkan nilai tersimpan, default ke 0
+                                                    // Mengambil nilai penilaian yang tersimpan, default 0 jika belum ada
                                                     $nilai = $penilaianMatrix[$alternatif->id_alternatif][$kriteria->id_kriteria] ?? 0;
                                                     $inputName = "nilai_penilaian[{$alternatif->id_alternatif}][{$kriteria->id_kriteria}]";
                                                     $isSubkriteria = isset($subKriteriaMap[$kriteria->id_kriteria]);
                                                 @endphp
 
                                                 @if($isSubkriteria)
-                                                    {{-- Jika menggunakan Sub Kriteria (Dropdown) --}}
+                                                    {{-- Input Dropdown: Jika kriteria memiliki sub-kriteria --}}
                                                     <select name="{{ $inputName }}"
                                                         class="block w-full py-2 px-1 text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
                                                         <option value="" disabled>Pilih Nilai</option>
@@ -86,7 +86,7 @@
                                                         @endforeach
                                                     </select>
                                                 @else
-                                                    {{-- Jika Input Langsung (Teks/Angka) --}}
+                                                    {{-- Input Text/Number: Jika kriteria tidak memiliki sub-kriteria (input manual) --}}
                                                     <input type="number" name="{{ $inputName }}"
                                                         value="{{ number_format($nilai, 4, '.', '') }}" step="any" min="0"
                                                         class="block w-full py-1 px-1 text-sm text-center border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
@@ -103,22 +103,30 @@
                     <div class="flex justify-end mt-4">
                         <button type="submit"
                             class="inline-flex items-center px-6 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">
-                            <i class="fas fa-save mr-2"></i> Simpan Matriks Penilaian
+                            Simpan
                         </button>
                     </div>
                 </form>
 
-                {{-- Panduan Penilaian --}}
-                <div class="mt-8">
-                    <h3 class="text-lg font-semibold text-gray-700 mb-3">Panduan Penilaian per Kriteria</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        @foreach($kriteriaList as $kriteria)
-                            <div
-                                class="p-4 border rounded-lg shadow-sm {{ $kriteria->subKriteria->count() > 0 ? 'bg-indigo-50 border-indigo-300' : 'bg-gray-50 border-gray-300' }}">
-                                <p class="font-bold text-base">{{ $kriteria->kode_kriteria }} - {{ $kriteria->nama_kriteria }}</p>
-                                <p class="text-xs italic text-gray-600 mt-1">Jenis: {{ $kriteria->jenis_kriteria }}</p>
+                {{-- Bagian Informasi Panduan Penilaian --}}
+            <div class="mt-8">
+                <h3 class="text-lg font-semibold text-gray-700 mb-3">Panduan Penilaian per Kriteria</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    @foreach($kriteriaList as $kriteria)
+                        <div
+                            class="p-4 border rounded-lg shadow-sm {{ $kriteria->subKriteria->count() > 0 ? 'bg-indigo-50 border-indigo-300' : 'bg-gray-50 border-gray-300' }} min-h-56 flex flex-col justify-between">
+                            <div>
+                                <div class="flex flex-col mb-1">
+                                    <p class="font-bold text-base truncate">
+                                        {{ $kriteria->kode_kriteria }} - {{ $kriteria->nama_kriteria }}
+                                    </p>
+                                    <p class="text-xs italic text-gray-600 mt-1">
+                                        <span class="font-semibold">Jenis:</span> {{ $kriteria->jenis_kriteria }}
+                                    </p>
+                                </div>
 
                                 @if ($kriteria->subKriteria->count() > 0)
+                                    {{-- Keterangan Mode Input: Menggunakan Pilihan Sub Kriteria --}}
                                     <p class="mt-2 text-sm font-medium text-indigo-700">Mode: Pilihan Sub Kriteria</p>
                                     <ul class="list-disc list-inside mt-1 text-xs text-gray-700">
                                         @foreach($kriteria->subKriteria as $sub)
@@ -131,9 +139,10 @@
                                         atau rating).</p>
                                 @endif
                             </div>
-                        @endforeach
-                    </div>
+                        </div>
+                    @endforeach
                 </div>
+            </div>
 
             @endif
         </div>

@@ -10,9 +10,15 @@ use Illuminate\Validation\ValidationException;
 
 /**
  * Class SubKriteriaController
- * * Bertanggung jawab mengelola Sub Kriteria. Controller ini memastikan setiap operasi
- * (CRUD) dilakukan dalam konteks Kriteria ($this->idKriteria) dan Keputusan ($this->idKeputusan)
- * yang benar, meningkatkan keamanan melalui scoping data.
+ * 
+ * Controller ini bertanggung jawab untuk mengelola operasi CRUD Sub Kriteria.
+ * 
+ * Keamanan dan Integritas Data:
+ * Controller ini menerapkan "Scoped Access" yang ketat. Setiap operasi (Edit/Delete)
+ * memverifikasi bahwa Sub Kriteria yang diakses benar-benar milik Kriteria yang sedang aktif,
+ * dan Kriteria tersebut milik Keputusan yang sedang aktif.
+ * 
+ * @package App\Http\Controllers\Spk
  */
 class SubKriteriaController extends KeputusanDetailController
 {
@@ -22,16 +28,25 @@ class SubKriteriaController extends KeputusanDetailController
     protected $kriteria;
 
     /**
-     * Inisialisasi.
-     * Note: Kita tidak lagi memuat idKriteria di sini karena akan di-inject per method.
+     * Constructor.
+     * 
+     * @param Request $request
      */
     public function __construct(Request $request)
     {
-        parent::__construct($request); // Memuat $this->idKeputusan dari parent
+        // Memuat $this->idKeputusan dari parent controller (KeputusanDetailController)
+        parent::__construct($request);
     }
 
     /**
-     * Helper untuk memuat dan memvalidasi Kriteria.
+     * Helper Method: Memuat dan Memvalidasi Kriteria.
+     * 
+     * Method ini memastikan bahwa ID Kriteria yang diterima dari URL valid
+     * dan benar-benar milik Keputusan saat ini ($this->idKeputusan).
+     * Jika tidak valid, akan melempar ModelNotFoundException (404).
+     * 
+     * @param int|string $idKriteria
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     private function loadKriteria($idKriteria)
     {
@@ -46,7 +61,11 @@ class SubKriteriaController extends KeputusanDetailController
     // ----------------------------------------------------------------------------------
 
     /**
-     * Menampilkan daftar Sub Kriteria.
+     * Menampilkan daftar Sub Kriteria untuk Kriteria tertentu.
+     * 
+     * @param mixed $idKeputusan
+     * @param mixed $idKriteria
+     * @return \Illuminate\View\View
      */
     public function index($idKeputusan, $idKriteria)
     {
@@ -67,7 +86,11 @@ class SubKriteriaController extends KeputusanDetailController
     }
 
     /**
-     * Menampilkan form untuk membuat subkriteria baru.
+     * Menampilkan form untuk membuat Sub Kriteria baru.
+     * 
+     * @param mixed $idKeputusan
+     * @param mixed $idKriteria
+     * @return \Illuminate\View\View
      */
     public function create($idKeputusan, $idKriteria)
     {
@@ -83,7 +106,12 @@ class SubKriteriaController extends KeputusanDetailController
     }
 
     /**
-     * Menyimpan subkriteria baru.
+     * Menyimpan Sub Kriteria baru ke database.
+     * 
+     * @param Request $request
+     * @param mixed $idKeputusan
+     * @param mixed $idKriteria
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request, $idKeputusan, $idKriteria)
     {
@@ -109,10 +137,13 @@ class SubKriteriaController extends KeputusanDetailController
     }
 
     /**
-     * Menampilkan form untuk mengedit subkriteria.
-     * Menggunakan Manual Lookup untuk validasi otorisasi dan keamanan.
-     *
-     * @param int|string $subkriteriumId Parameter ID Sub Kriteria dari URL.
+     * Menampilkan form edit untuk Sub Kriteria.
+     * 
+     * @param mixed $idKeputusan
+     * @param mixed $idKriteria
+     * @param int|string $subkriteriumId ID Sub Kriteria yang akan diedit
+     * @return \Illuminate\View\View
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function edit($idKeputusan, $idKriteria, int|string $subkriteriumId)
     {
@@ -132,10 +163,14 @@ class SubKriteriaController extends KeputusanDetailController
     }
 
     /**
-     * Memperbarui subkriteria yang ada.
-     *
+     * Memperbarui data Sub Kriteria.
+     * 
      * @param Request $request
+     * @param mixed $idKeputusan
+     * @param mixed $idKriteria
      * @param int|string $subkriteriumId
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function update(Request $request, $idKeputusan, $idKriteria, int|string $subkriteriumId)
     {
@@ -162,10 +197,13 @@ class SubKriteriaController extends KeputusanDetailController
     }
 
     /**
-     * Menghapus subkriteria.
-     * Menggunakan Manual Lookup untuk validasi otorisasi dan keamanan.
-     *
-     * @param int|string $subkriteriumId Parameter ID Sub Kriteria dari URL.
+     * Menghapus Sub Kriteria.
+     * 
+     * @param mixed $idKeputusan
+     * @param mixed $idKriteria
+     * @param int|string $subkriteriumId
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function destroy($idKeputusan, $idKriteria, int|string $subkriteriumId)
     {

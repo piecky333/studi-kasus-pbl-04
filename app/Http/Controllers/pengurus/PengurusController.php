@@ -10,12 +10,22 @@ use Illuminate\Http\Request;
 
 class PengurusController extends Controller
 {
+    /**
+     * Tampilkan daftar pengurus.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $pengurus = pengurus::with(['divisi', 'user'])->latest()->get();
         return view('pages.pengurus.pengurus.index', compact('pengurus'));
     }
 
+    /**
+     * Tampilkan form tambah pengurus.
+     *
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         $divisi = divisi::all();
@@ -23,6 +33,12 @@ class PengurusController extends Controller
         return view('pages.pengurus.pengurus.create', compact('divisi', 'users'));
     }
 
+    /**
+     * Simpan data pengurus baru.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -36,6 +52,12 @@ class PengurusController extends Controller
         return redirect()->route('pengurus.pengurus.index')->with('success', 'Pengurus berhasil ditambahkan!');
     }
 
+    /**
+     * Tampilkan form edit pengurus.
+     *
+     * @param int $id
+     * @return \Illuminate\View\View
+     */
     public function edit($id)
     {
         $pengurus = pengurus::findOrFail($id);
@@ -44,6 +66,13 @@ class PengurusController extends Controller
         return view('pages.pengurus.pengurus.edit', compact('pengurus', 'divisi', 'users'));
     }
 
+    /**
+     * Perbarui data pengurus.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -58,6 +87,12 @@ class PengurusController extends Controller
         return redirect()->route('pengurus.pengurus.index')->with('success', 'Data pengurus berhasil diperbarui!');
     }
 
+    /**
+     * Hapus data pengurus.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy($id)
     {
         $pengurus = pengurus::findOrFail($id);

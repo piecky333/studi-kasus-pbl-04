@@ -28,7 +28,7 @@
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 
-                {{-- Kolom Kiri: Form Input --}}
+                {{-- Kolom Kiri: Form Input Nilai per Kriteria --}}
                 <div class="space-y-6">
                     <h3 class="text-lg font-bold text-gray-800 border-b pb-2">Input Nilai Berdasarkan Kriteria</h3>
                     
@@ -46,7 +46,7 @@
                             </label>
 
                             @if($isSubkriteria)
-                                {{-- Jika Sub Kriteria (Dropdown) --}}
+                                {{-- Input Dropdown: Jika kriteria memiliki sub-kriteria --}}
                                 <select name="{{ $inputName }}" 
                                         class="mt-1 block w-full py-2 px-3 text-base border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" required>
                                     <option value="" disabled selected>-- Pilih Nilai Sub Kriteria --</option>
@@ -57,7 +57,7 @@
                                     @endforeach
                                 </select>
                             @else
-                                {{-- Jika Input Langsung (Angka) --}}
+                                {{-- Input Angka: Jika kriteria input manual --}}
                                 <input type="number" name="{{ $inputName }}" 
                                        value="{{ old($inputName, number_format($nilaiSaatIni, 4, '.', '')) }}"
                                        step="any" min="0" 
@@ -73,7 +73,7 @@
                     @endforelse
                 </div>
 
-                {{-- Kolom Kanan: Panduan Penilaian --}}
+                {{-- Kolom Kanan: Informasi Panduan Nilai Sub Kriteria --}}
                 <div class="space-y-6">
                     <h3 class="text-lg font-bold text-gray-800 border-b pb-2">Panduan Nilai Sub Kriteria</h3>
                     
@@ -95,7 +95,7 @@
                 </div>
             </div>
 
-            {{-- Tombol Aksi --}}
+            {{-- Bagian Tombol: Simpan atau Batal --}}
             <div class="mt-8 flex justify-end space-x-3">
                 <a href="{{ route('admin.spk.alternatif.penilaian.index', $keputusan->id_keputusan) }}" 
                    class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition duration-150 shadow-sm">

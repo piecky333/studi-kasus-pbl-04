@@ -23,7 +23,6 @@ class Kriteria extends Model
         'kode_kriteria',
         'jenis_kriteria', // Menyimpan 'Benefit' atau 'Cost' (Type)
         'bobot_kriteria', // Menyimpan bobot hasil AHP/manual (Bobot)
-        'cara_penilaian', // Kolom tambahan untuk 'Cara Penilaian' (mis: Input Langsung, Pilihan Sub Kriteria)
     ];
 
     /**

@@ -14,8 +14,11 @@ class KomentarController extends Controller
 {
     use AuthorizesRequests, ValidatesRequests;
     /**
-     * Menyimpan komentar baru (induk) ATAU balasan (nested).
-     * Method ini dipanggil oleh: Route::post('/berita/{id_berita}/komentar', ...)
+     * Simpan komentar baru atau balasan.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id_berita
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request, $id_berita)
     {
@@ -29,27 +32,21 @@ class KomentarController extends Controller
             'parent_id' => 'nullable|exists:komentar,id_komentar',
         ]);
 
-        // Cari berita yang dikomentari (jika tidak ada, akan 404)
+        // Cari berita terkait.
         $berita = berita::findOrFail($id_berita);
 
-        // Siapkan data untuk disimpan
+        // Siapkan data komentar.
         $data = [
             'id_berita' => $berita->id_berita,
             'isi'       => $request->isi,
-            
-            // Simpan 'parent_id' dari form. 
-            // Jika ini komentar induk baru, $request->parent_id akan null.
-            // Jika ini balasan, $request->parent_id akan berisi ID induk.
             'parent_id' => $request->parent_id, 
         ];
 
-        // Cek apakah user login atau tamu
+        // Cek status login.
         if (Auth::check()) {
-            // User sedang login
             $data['id_user'] = Auth::id();
             $data['nama_komentator'] = Auth::user()->nama;
         } else {
-            // User adalah tamu
             $data['id_user'] = null; 
             $data['nama_komentator'] = $request->nama_komentator;
         }
@@ -63,12 +60,15 @@ class KomentarController extends Controller
 
 
     /**
-     * Memperbarui komentar yang sudah ada.
-     * Method ini dipanggil oleh: Route::put('/komentar/{komentar}', ...)
+     * Perbarui komentar.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\komentar $komentar
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, komentar $komentar)
     {
-        // 1. OTORISASI (Cek KomentarPolicy@update)
+        // 1. Otorisasi.
         $this->authorize('update', $komentar);
 
         // 2. Validasi
@@ -76,7 +76,7 @@ class KomentarController extends Controller
             'isi' => 'required|string|max:1000',
         ]);
 
-        // 3. Logika Update
+        // 3. Update data.
         $komentar->update([
             'isi' => $request->isi,
         ]);
@@ -86,15 +86,17 @@ class KomentarController extends Controller
 
 
     /**
-     * Menghapus komentar.
-     * Method ini dipanggil oleh: Route::delete('/komentar/{komentar}', ...)
+     * Hapus komentar.
+     *
+     * @param \App\Models\komentar $komentar
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(komentar $komentar)
     {
-        // 1. OTORISASI (Cek KomentarPolicy@destroy)
+        // 1. Otorisasi.
         $this->authorize('destroy', $komentar);
 
-        // 2. Logika Hapus
+        // 2. Hapus data.
         $komentar->delete();
 
         return back()->with('success', 'Komentar berhasil dihapus.');

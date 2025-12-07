@@ -8,27 +8,28 @@ use App\Models\Admin\divisi;
 
 class DivisiController extends Controller
 {
+    /**
+     * Tampilkan daftar semua divisi.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
-        // Ambil semua data divisi, mungkin diurutkan berdasarkan nama
         $semuaDivisi = divisi::orderBy('nama_divisi')->get(); 
 
-        return view('pages.public.divisi.index', compact('semuaDivisi')); 
-        // Anda perlu membuat view 'public.divisi.index'
+        return view('pages.public.divisi.index', compact('semuaDivisi'));
     }
 
     /**
-     * Menampilkan halaman detail satu Divisi.
-     * $slugOrId bisa berupa ID atau slug (nama unik ramah URL)
+     * Tampilkan detail divisi.
+     *
+     * @param string|int $slugOrId
+     * @return \Illuminate\View\View
      */
     public function show($slugOrId) 
     {
-        // Cari divisi berdasarkan ID atau slug
-        // Contoh jika menggunakan slug:
-        // $divisi = Divisi::where('slug', $slugOrId)->firstOrFail(); 
-        $divisi = divisi::findOrFail($slugOrId); // Contoh jika menggunakan ID
+        $divisi = divisi::findOrFail($slugOrId);
 
         return view('pages.public.divisi.show', compact('divisi'));
-        // Anda perlu membuat view 'public.divisi.show'
     }
 }

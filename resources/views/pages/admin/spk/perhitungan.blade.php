@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container-fluid">
-    {{-- ... (Konten Card dan Header) ... --}}
+    {{-- Bagian Header dan Card Konten --}}
     <h3>Matriks Ternormalisasi dan Terbobot</h3>
     
     <div class="table-responsive">

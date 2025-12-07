@@ -10,14 +10,24 @@ use App\Models\kriteria;
 use App\Models\penilaian;
 
 /**
- * Controller ini mengelola Matriks Penilaian (Xij) untuk semua Alternatif dan Kriteria.
- * Mewarisi KeputusanDetailController untuk memastikan konteks Keputusan sudah dimuat.
+ * Class PenilaianController
+ * 
+ * Controller ini bertanggung jawab untuk mengelola Matriks Penilaian (Decision Matrix).
+ * Matriks ini berisi nilai dari setiap Alternatif terhadap setiap Kriteria.
+ * 
+ * Fungsi utama:
+ * 1. Menampilkan matriks penilaian (Xij) dalam bentuk tabel grid.
+ * 2. Menangani input nilai, baik berupa angka langsung maupun pilihan Sub Kriteria.
+ * 3. Menyimpan perubahan nilai secara massal (Bulk Update).
+ * 
+ * @package App\Http\Controllers\Spk
  */
 class PenilaianController extends KeputusanDetailController
 {
     /**
-     * Constructor untuk memuat Keputusan induk.
-     * Logika findOrFail dijalankan di parent.
+     * Constructor.
+     * 
+     * @param Request $request
      */
     public function __construct(Request $request)
     {
@@ -25,7 +35,14 @@ class PenilaianController extends KeputusanDetailController
     }
     
     /**
-     * Menampilkan Matriks Penilaian (Xij) dalam format tabel.
+     * Menampilkan halaman Matriks Penilaian (Tab Penilaian).
+     * 
+     * Mempersiapkan data yang kompleks untuk view:
+     * - Daftar Kriteria (Kolom)
+     * - Daftar Alternatif (Baris)
+     * - Peta Nilai (Sel)
+     * - Peta Sub Kriteria (Opsi Dropdown)
+     * 
      * @return \Illuminate\View\View
      */
     public function index()
@@ -43,19 +60,20 @@ class PenilaianController extends KeputusanDetailController
                                     ->with('penilaian')
                                     ->get();
 
-        // 3. Konversi Sub Kriteria ke map untuk display di view (misal: menampilkan nama sub kriteria)
+        // 3. Membangun Map Sub Kriteria (untuk Dropdown di UI).
+        // Struktur: [id_kriteria => [nilai_konversi => nama_subkriteria]]
+        // Ini memudahkan view untuk merender <select> tanpa logic yang rumit.
         $subKriteriaMap = [];
         foreach ($kriteriaList as $kriteria) {
-            // Hanya proses jika kriteria menggunakan subkriteria (cara_penilaian yang diatur)
             if ($kriteria->subKriteria->count() > 0) {
-                // Buat map [nilai_konversi => nama_subkriteria]
-                // Catatan: Pastikan kolom 'nilai_konversi' ada di model subkriteria Anda.
                 $subKriteriaMap[$kriteria->id_kriteria] = $kriteria->subKriteria
                     ->pluck('nama_subkriteria', 'nilai');
             }
         }
         
-        // 4. Konversi Penilaian ke map [id_alternatif][id_kriteria] = nilai (Matriks Xij)
+        // 4. Membangun Matriks Penilaian (Xij).
+        // Struktur: [id_alternatif][id_kriteria] = nilai
+        // Memungkinkan akses O(1) di view saat merender sel tabel.
         $penilaianMatrix = [];
         foreach ($alternatifData as $alternatif) {
             foreach ($alternatif->penilaian as $penilaian) {
@@ -75,7 +93,11 @@ class PenilaianController extends KeputusanDetailController
     }
 
     /**
-     * Menyimpan pembaruan Matriks Penilaian secara massal.
+     * Menyimpan perubahan nilai penilaian secara massal.
+     * 
+     * Method ini menangani input array multidimensi dari form tabel.
+     * Menggunakan `updateOrCreate` untuk menangani insert (jika belum ada) atau update (jika sudah ada).
+     * 
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */

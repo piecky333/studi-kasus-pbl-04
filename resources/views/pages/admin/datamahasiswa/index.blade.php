@@ -23,6 +23,52 @@
         </div>
     </div>
 
+    {{-- Filter Section --}}
+    <div class="mb-6 bg-white p-5 rounded-lg shadow-sm border border-gray-200">
+        <div class="flex items-center mb-4">
+            <i class="fas fa-filter text-indigo-600 mr-2"></i>
+            <h3 class="text-lg font-medium text-gray-900">Filter & Pencarian Data</h3>
+        </div>
+        <form action="{{ route('admin.datamahasiswa.index') }}" method="GET">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                
+                {{-- Filter Semester --}}
+                <div class="md:col-span-4">
+                    <label for="semester" class="block text-sm font-medium text-gray-700 mb-1">Filter Semester</label>
+                    <div class="relative">
+                        <select name="semester" id="semester" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm" onchange="this.form.submit()">
+                            <option value="">Semua Semester</option>
+                            @for ($i = 1; $i <= 14; $i++)
+                                <option value="{{ $i }}" {{ request('semester') == $i ? 'selected' : '' }}>Semester {{ $i }}</option>
+                            @endfor
+                        </select>
+                    </div>
+                </div>
+
+                {{-- Filter NIM --}}
+                <div class="md:col-span-5">
+                    <label for="nim" class="block text-sm font-medium text-gray-700 mb-1">Cari NIM</label>
+                    <div class="relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                        <input type="text" name="nim" id="nim" value="{{ request('nim') }}" placeholder="Masukkan NIM..." class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2">
+                    </div>
+                </div>
+
+                {{-- Buttons --}}
+                <div class="md:col-span-3 flex space-x-2">
+                    <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Cari
+                    </button>
+                    <a href="{{ route('admin.datamahasiswa.index') }}" class="w-full inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Reset
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
     {{-- Alert Success --}}
     @if(session('success'))
         <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded-r-lg shadow-sm flex items-center" role="alert">
@@ -133,7 +179,7 @@
         {{-- Pagination --}}
         @if(isset($mahasiswa) && $mahasiswa->hasPages())
             <div class="px-6 py-4 border-t border-gray-100 bg-gray-50">
-                {{ $mahasiswa->links() }}
+                {{ $mahasiswa->withQueryString()->links() }}
             </div>
         @endif
     </div>

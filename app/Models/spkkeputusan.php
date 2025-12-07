@@ -17,7 +17,6 @@ class spkkeputusan extends Model
 
     protected $fillable = [
         'nama_keputusan', 
-        'metode_yang_digunakan', 
         'tanggal_dibuat', // Jika ini diisi dari controller, masukkan.
         'status',         // Jika ini diisi dari controller, masukkan.
     ];

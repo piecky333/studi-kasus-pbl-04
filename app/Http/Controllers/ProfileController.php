@@ -13,7 +13,7 @@ use Illuminate\View\View;
 class ProfileController extends Controller
 {
     /**
-     * Display the user's profile form.
+     * Tampilkan form edit profil.
      */
     public function edit(Request $request)
     {
@@ -33,45 +33,41 @@ class ProfileController extends Controller
     }
 
     /**
-     * Update the user's profile information.
+     * Perbarui informasi profil.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $user = $request->user();
 
-        // ================================
-        // SIMPAN NAMA, EMAIL, NO TELP
-        // ================================
+        // Simpan data profil.
         $user->fill($request->validated());
 
-        // Reset verifikasi email jika email berubah
+        // Reset verifikasi email jika berubah.
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
         }
 
-        // ================================
-        // SIMPAN FOTO PROFIL
-        // ================================
+        // Update foto profil jika ada.
         if ($request->hasFile('photo')) {
 
-            // Hapus foto lama jika ada
+            // Hapus foto lama.
             if ($user->profile_photo_path && Storage::disk('public')->exists($user->profile_photo_path)) {
                 Storage::disk('public')->delete($user->profile_photo_path);
             }
 
-            // Simpan foto baru
+            // Simpan foto baru.
             $path = $request->file('photo')->store('profile-photos', 'public');
             $user->profile_photo_path = $path;
         }
 
-        // Simpan perubahan user
+        // Simpan perubahan.
         $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
     /**
-     * Delete the user's account.
+     * Hapus akun pengguna.
      */
     public function destroy(Request $request): RedirectResponse
     {
@@ -83,9 +79,7 @@ class ProfileController extends Controller
 
         Auth::logout();
 
-        // ================================
-        // HAPUS FOTO PROFIL SAAT HAPUS AKUN
-        // ================================
+        // Hapus foto profil.
         if ($user->profile_photo_path && Storage::disk('public')->exists($user->profile_photo_path)) {
             Storage::disk('public')->delete($user->profile_photo_path);
         }

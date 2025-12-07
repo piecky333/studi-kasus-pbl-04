@@ -7,8 +7,20 @@ use App\Models\spkkeputusan;
 use Illuminate\Http\Request;
 
 /**
- * Abstract Base Controller untuk semua halaman detail Keputusan SPK.
- * Controller ini memastikan model Keputusan sudah dimuat sebelum method child dijalankan.
+ * Class KeputusanDetailController
+ * 
+ * Abstract Base Controller yang ditujukan untuk semua controller yang menangani
+ * detail dari sebuah Keputusan SPK (Level 2).
+ * 
+ * Tanggung Jawab Utama:
+ * 1. Memastikan parameter {idKeputusan} ada di URL.
+ * 2. Memuat model Keputusan SPK yang sesuai dari database.
+ * 3. Menyediakan properti $this->keputusan dan $this->idKeputusan untuk kelas turunannya.
+ * 
+ * Dengan mewarisi controller ini, kita tidak perlu mengulang logika pencarian Keputusan
+ * di setiap controller anak (DRY Principle).
+ * 
+ * @package App\Http\Controllers\Spk
  */
 abstract class KeputusanDetailController extends Controller
 {
@@ -23,8 +35,14 @@ abstract class KeputusanDetailController extends Controller
     protected $idKeputusan;
 
     /**
-     * Constructor akan mencari objek Keputusan berdasarkan ID di URL.
-     * * @param int $idKeputusan
+     * Constructor.
+     * 
+     * Secara otomatis dijalankan saat controller diinstansiasi.
+     * Mengambil ID dari route parameter dan mencoba memuat model Keputusan.
+     * Jika tidak ditemukan, akan otomatis melempar 404 (findOrFail).
+     * 
+     * @param Request $request
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function __construct(Request $request)
     {

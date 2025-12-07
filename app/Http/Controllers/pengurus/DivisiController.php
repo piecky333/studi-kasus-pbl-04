@@ -9,20 +9,34 @@ use Illuminate\Support\Facades\Storage;
 
 class DivisiController extends Controller
 {
-    // 📋 Tampilkan semua divisi
+    /**
+     * Tampilkan daftar semua divisi.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $divisi = Divisi::orderBy('created_at', 'desc')->get();
         return view('pages.pengurus.divisi.index', compact('divisi'));
     }
 
-    // ➕ Form tambah divisi
+    /**
+     * Tampilkan form tambah divisi.
+     *
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         return view('pages.pengurus.divisi.create');
     }
 
-    // 💾 Simpan data baru
+    /**
+     * Simpan data divisi baru.
+     * Upload foto jika ada.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -52,14 +66,26 @@ class DivisiController extends Controller
             ->with('success', 'Divisi berhasil ditambahkan!');
     }
 
-    // ✏️ Form edit
+    /**
+     * Tampilkan form edit divisi.
+     *
+     * @param int $id
+     * @return \Illuminate\View\View
+     */
     public function edit($id)
     {
         $divisi = Divisi::findOrFail($id);
         return view('pages.pengurus.divisi.edit', compact('divisi'));
     }
 
-    // 🔄 Update data
+    /**
+     * Perbarui data divisi.
+     * Ganti foto jika ada upload baru.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, $id)
     {
         $divisi = Divisi::findOrFail($id);
@@ -97,7 +123,13 @@ class DivisiController extends Controller
             ->with('success', 'Divisi berhasil diperbarui!');
     }
 
-    // 🗑️ Hapus data
+    /**
+     * Hapus data divisi.
+     * Hapus file foto terkait dari storage.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy($id)
     {
         $divisi = Divisi::findOrFail($id);

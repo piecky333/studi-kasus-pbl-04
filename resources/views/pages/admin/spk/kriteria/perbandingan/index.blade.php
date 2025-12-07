@@ -7,7 +7,7 @@
             <div class="bg-white shadow-xl overflow-hidden rounded-lg p-6">
                 
                 {{-- ========================================================== --}}
-                {{-- BREADCRUMB NAVIGASI --}}
+                {{-- Navigasi Breadcrumb untuk menunjukkan lokasi halaman saat ini --}}
                 {{-- ... (kode Breadcrumb tetap sama) ... --}}
                 <nav class="text-sm font-medium text-gray-500 mb-2" aria-label="Breadcrumb">
                     <ol class="list-none p-0 inline-flex">
@@ -28,7 +28,7 @@
                 </nav>
                 {{-- ========================================================== --}}
                 
-                {{-- ALERT STATUS (SUCCESS/ERROR) --}}
+                {{-- Menampilkan notifikasi sukses atau error setelah aksi --}}
                 @if (session('success'))
                     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 text-sm" role="alert">
                         {{ session('success') }}
@@ -44,12 +44,12 @@
                     <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">Perbandingan Data Antar Kriteria (AHP)</h2>
                     <p class="text-gray-600 mb-6">Silakan bandingkan setiap pasangan kriteria menggunakan skala Saaty (1-9).</p>
 
-                    {{-- Form untuk Simpan dan Cek Konsistensi --}}
+                    {{-- Form utama untuk menyimpan nilai perbandingan dan melakukan cek konsistensi --}}
                     <form id="ahp-form" method="POST">
                         @csrf
                         <input type="hidden" name="id_keputusan" value="{{ $idKeputusan ?? '' }}">
 
-                        {{-- Perbandingan Input --}}
+                        {{-- Bagian Input Matriks Perbandingan Berpasangan --}}
                         <div class="overflow-x-auto border rounded-lg p-4 bg-gray-50">
                             <h4 class="font-semibold text-gray-700 mb-3">Input Perbandingan Pasangan</h4>
                             <table class="min-w-full divide-y divide-gray-200">
@@ -64,14 +64,14 @@
                                 <tbody class="bg-white divide-y divide-gray-200">
                                     @foreach ($pasangan as $p)
                                         <tr>
-                                            {{-- Kriteria Kiri (Kriteria A) --}}
+                                            {{-- Kolom Kriteria A (Sisi Kiri) --}}
                                             <td class="px-3 py-4 whitespace-nowrap align-top text-sm font-medium text-gray-900">
                                                 ({{ $p['kriteria1']->kode_kriteria }}) {{ $p['kriteria1']->nama_kriteria }}
                                                 <input type="hidden" name="pasangan[{{ $p['kriteria1']->id_kriteria }}_{{ $p['kriteria2']->id_kriteria }}][kriteria1_id]" value="{{ $p['kriteria1']->id_kriteria }}">
                                                 <input type="hidden" name="pasangan[{{ $p['kriteria1']->id_kriteria }}_{{ $p['kriteria2']->id_kriteria }}][kriteria2_id]" value="{{ $p['kriteria2']->id_kriteria }}">
                                             </td>
 
-                                            {{-- Skala Perbandingan (Menggunakan Radio Button Tunggal) --}}
+                                            {{-- Input Skala Saaty (1-9) menggunakan Radio Button --}}
                                             <td class="px-3 py-4 align-top text-center text-sm text-gray-500">
                                                 @php
                                                     $keyPasangan = "{$p['kriteria1']->id_kriteria}_{$p['kriteria2']->id_kriteria}";
@@ -82,7 +82,7 @@
                                                 @endphp
 
                                                 <div class="flex justify-center items-center space-x-0.5">
-                                                    {{-- Bagian Kriteria A Lebih Penting (Kiri, Hijau) --}}
+                                                    {{-- Opsi Skala: Kriteria A lebih penting dari B (Nilai 2-9) --}}
                                                     <div class="inline-flex">
                                                         @for ($i = 9; $i >= 2; $i--)
                                                             @php
@@ -101,18 +101,18 @@
                                                         @endfor
                                                     </div>
 
-                                                    {{-- Skala 1 (Sama Penting/Equal) --}}
+                                                    {{-- Opsi Skala: Kriteria A dan B sama pentingnya (Nilai 1) --}}
                                                     <label class="relative group" title="Skala 1: A dan B Sama Penting">
                                                         <input type="radio" name="{{ $inputName }}" value="1" class="hidden peer"
                                                             {{ $nilaiTersimpan == 1 ? 'checked' : '' }} required>
                                                         <span
-                                                            class="px-2 py-1 text-xs font-semibold border border-gray-400 text-gray-700 bg-gray-100 hover:bg-gray-200 transition duration-150 ease-in-out cursor-pointer 
-                                                            peer-checked:bg-gray-700 peer-checked:text-white peer-checked:border-gray-700">
+                                                            class="px-2 py-1 text-xs font-semibold border border-blue-400 text-blue-700 bg-blue-50 hover:bg-blue-200 transition duration-150 ease-in-out cursor-pointer 
+                                                            peer-checked:bg-blue-700 peer-checked:text-white peer-checked:border-blue-700">
                                                             1
                                                         </span>
                                                     </label>
 
-                                                    {{-- Bagian Kriteria B Lebih Penting (Kanan, Merah) --}}
+                                                    {{-- Opsi Skala: Kriteria B lebih penting dari A (Nilai 1/2 - 1/9) --}}
                                                     <div class="inline-flex">
                                                         @for ($i = 2; $i <= 9; $i++)
                                                             @php
@@ -134,7 +134,7 @@
                                                 </div>
                                             </td>
 
-                                            {{-- Kriteria Kanan (Kriteria B) --}}
+                                            {{-- Kolom Kriteria B (Sisi Kanan) --}}
                                             <td
                                                 class="px-3 py-4 whitespace-nowrap align-top text-sm font-medium text-gray-900 text-right">
                                                 ({{ $p['kriteria2']->kode_kriteria }}) {{ $p['kriteria2']->nama_kriteria }}
@@ -146,13 +146,13 @@
                         </div>
 
                         <div class="flex justify-center space-x-4 mt-8">
-                            {{-- Tombol Simpan --}}
+                            {{-- Tombol Simpan: Menyimpan nilai perbandingan ke database --}}
                             <button type="submit" formaction="{{ route('admin.spk.kriteria.perbandingan.simpan', $idKeputusan) }}"
                                 class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 shadow-md inline-flex items-center">
                                 <i class="fas fa-save mr-2"></i> Simpan
                             </button>
 
-                            {{-- Tombol Cek Konsistensi --}}
+                            {{-- Tombol Cek Konsistensi: Menghitung rasio konsistensi (CR) --}}
                             <button type="submit" formaction="{{ route('admin.spk.kriteria.perbandingan.cek_konsistensi', $idKeputusan) }}"
                                 class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 shadow-md inline-flex items-center">
                                 <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -166,7 +166,7 @@
                     </form>
                 </div>
 
-                {{-- HASIL PERHITUNGAN AHP --}}
+                {{-- Bagian Hasil Perhitungan AHP (Ditampilkan jika data tersedia) --}}
                 @if(isset($hasilAHP))
                     <div
                         class="mt-10 bg-white rounded-lg p-6 border-t-4 @if($hasilAHP['crData']['cr'] <= 0.1) border-green-500 @else border-red-500 @endif">
@@ -174,7 +174,7 @@
 
                         <h2><b>Ringkasan Perhitungan AHP</b></h2>
                         <br>
-                        {{-- Summary CR --}}
+                        {{-- Ringkasan Nilai Consistency Ratio (CR) --}}
                         <div
                             class="mb-6 p-4 rounded-lg @if($hasilAHP['crData']['cr'] <= 0.1) bg-green-50 border border-green-300 @else bg-red-50 border border-red-300 @endif">
                             <div class="flex justify-between items-center">
@@ -190,14 +190,14 @@
                                 </p>
                                 @if($hasilAHP['crData']['cr'] <= 0.1)
                                     <a href="{{ route('admin.spk.hasil.index', $idKeputusan) }}"
-                                        class="inline-flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 shadow-lg text-sm">
+                                        class="inline-flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 shadow-sm text-sm">
                                         <i class="fas fa-play mr-2"></i> Lanjutkan ke Proses SAW
                                     </a>
                                 @endif
                             </div>
                             
 
-                            {{-- Penyederhanaan Nilai Indeks CR --}}
+                            {{-- Detail Nilai Indeks Konsistensi (CI) dan Random Index (RI) --}}
                             <div class="mt-2 text-sm space-y-1">
                                 <p><strong>CI (Consistency Index):</strong> <span class="font-mono">{{ number_format($hasilAHP['crData']['ci'], 4) }}</span></p>
                                 <p><strong>RI (Random Index, n={{ $hasilAHP['n'] }}):</strong> <span class="font-mono">{{ number_format($hasilAHP['crData']['ri'], 4) }}</span></p>
@@ -210,7 +210,7 @@
                             @endif
                         </div>
 
-                        {{-- Hasil Bobot Kriteria --}}
+                        {{-- Hasil Akhir Bobot Prioritas Kriteria (Eigen Vector) --}}
                         <div class="p-4 bg-gray-50 rounded-lg shadow-inner mb-6">
                             <h4 class="font-semibold text-gray-700 mb-3">Prioritas Bobot Akhir Kriteria (Eigen Vector)</h4>
                             <div class="flex flex-wrap gap-4 justify-center">
@@ -243,7 +243,7 @@
                                 <tbody class="bg-white divide-y divide-gray-200">
                                     @foreach ($hasilAHP['matrix'] as $row_index => $row)
                                         <tr>
-                                            {{-- BARIS KRITERIA (MENGATASI KETERANGAN HILANG) --}}
+                                            {{-- Baris Header Kriteria (Menangani kasus jika kriteria terhapus) --}}
                                             <td class="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900 bg-gray-50 border-r">
                                                 @if (isset($kriteriaList[$row_index]))
                                                     {{ $kriteriaList[$row_index]->kode_kriteria }}
@@ -252,7 +252,7 @@
                                                     <span class="text-red-600 font-bold">Kriteria HILANG (#{{ $row_index + 1 }})</span>
                                                 @endif
                                             </td>
-                                            {{-- ISI MATRIKS --}}
+                                            {{-- Sel Nilai Matriks Perbandingan --}}
                                             @foreach ($row as $col_index => $value)
                                                 <td
                                                     class="px-3 py-2 whitespace-nowrap text-sm text-center font-mono @if($row_index == $col_index) bg-gray-200 font-bold @endif">
@@ -261,7 +261,7 @@
                                             @endforeach
                                         </tr>
                                     @endforeach
-                                    {{-- Baris Total Kolom --}}
+                                    {{-- Baris Total Penjumlahan Kolom --}}
                                     <tr>
                                         <td class="px-3 py-2 text-xs font-bold text-gray-600 bg-gray-100 border-r">Total Kolom</td>
                                         @foreach($hasilAHP['col_sum'] as $sum)
@@ -338,7 +338,7 @@
                                             <td class="px-3 py-2 whitespace-nowrap text-sm text-center font-mono">{{ number_format($hasilAHP['ratio_vector'][$i], 4) }}</td>
                                         </tr>
                                     @endforeach
-                                    {{-- Total Baris --}}
+                                    {{-- Baris Total Vektor Rasio Konsistensi --}}
                                     <tr>
                                         <td colspan="3"
                                             class="px-3 py-2 text-xs font-bold text-right text-gray-700 bg-gray-100 border-r">Total
@@ -346,7 +346,7 @@
                                         <td class="px-3 py-2 text-xs font-bold text-gray-700 bg-gray-100 text-center">
                                             {{ number_format(array_sum($hasilAHP['ratio_vector']), 4) }}</td>
                                     </tr>
-                                    {{-- Lambda Max --}}
+                                    {{-- Nilai Lambda Maksimum (Eigenvalue Terbesar) --}}
                                     <tr>
                                         <td colspan="3"
                                             class="px-3 py-2 text-xs font-bold text-right text-gray-700 bg-gray-100 border-r">

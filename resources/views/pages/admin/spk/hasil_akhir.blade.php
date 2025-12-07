@@ -10,14 +10,14 @@
 
 <div class="bg-white shadow-xl overflow-hidden sm:rounded-b-lg p-6">
     
-    {{-- Pesan Sukses (Misalnya setelah RUN CALCULATION) --}}
+    {{-- Menampilkan pesan sukses jika proses perhitungan berhasil dijalankan --}}
     @if (session('success'))
         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded mb-4 text-sm" role="alert">
             {{ session('success') }}
         </div>
     @endif
 
-    {{-- Tabel Hasil Akhir --}}
+    {{-- Tabel yang menampilkan hasil akhir perankingan alternatif berdasarkan skor tertinggi --}}
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200 border border-gray-200">
             <thead class="bg-red-600 text-white">

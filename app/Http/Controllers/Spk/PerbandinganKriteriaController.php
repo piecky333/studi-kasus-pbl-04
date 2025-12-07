@@ -11,8 +11,17 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\spkkeputusan; // Diperlukan untuk passing data Keputusan ke view
 
 /**
- * Controller ini mengelola perbandingan kriteria (AHP) dan perhitungan bobot.
- * Mewarisi KeputusanDetailController untuk memastikan konteks Keputusan sudah dimuat.
+ * Class PerbandinganKriteriaController
+ * 
+ * Controller ini bertanggung jawab untuk mengelola proses Analytical Hierarchy Process (AHP)
+ * untuk menentukan bobot kriteria.
+ * 
+ * Fitur utama:
+ * 1. Menampilkan matriks perbandingan berpasangan.
+ * 2. Menyimpan nilai perbandingan ke database.
+ * 3. Menghitung Konsistensi Ratio (CR) dan Bobot Prioritas (Eigen Vector).
+ * 
+ * @package App\Http\Controllers\Spk
  */
 class PerbandinganKriteriaController extends KeputusanDetailController
 {
@@ -37,8 +46,12 @@ class PerbandinganKriteriaController extends KeputusanDetailController
     // ==========================================================
 
     /**
-     * Mengambil Kriteria dengan memastikan indeksnya 0, 1, 2, ...
-     * Menggunakan properti kelas $this->idKeputusan.
+     * Mengambil koleksi Kriteria yang terurut dan di-index ulang.
+     * 
+     * Penting: Index array harus numerik berurutan (0, 1, 2...) agar sesuai dengan
+     * logika iterasi matriks ($i, $j) dalam algoritma AHP.
+     * 
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     protected function getKriteriaCollection()
     {
@@ -49,10 +62,14 @@ class PerbandinganKriteriaController extends KeputusanDetailController
     }
 
     /**
-     * Mengambil dan memformat data pasangan perbandingan yang tersimpan dari DB.
-     * Nilai dikonversi ke format UI (-9 hingga 9).
-     * Menggunakan properti kelas $this->idKeputusan.
-     * @return array
+     * Mengambil data pasangan perbandingan dari database dan memformatnya untuk UI.
+     * 
+     * Konsep:
+     * - Data di DB disimpan dalam bentuk pecahan desimal (misal: 0.3333 atau 3.0000).
+     * - Data di UI (Slider/Input) menggunakan skala Saaty (-9 s.d 9).
+     * - Method ini mengkonversi nilai DB -> nilai UI.
+     * 
+     * @return array Array berisi pasangan kriteria dan nilai perbandingannya.
      */
     protected function getPasanganData()
     {
@@ -81,7 +98,15 @@ class PerbandinganKriteriaController extends KeputusanDetailController
                 $nilaiPecahan = $mapNilaiDB["{$k1Id}_{$k2Id}"] ?? null;
                 
                 if (is_null($nilaiPecahan)) {
-                     $nilaiPecahan = $mapNilaiDB["{$k2Id}_{$k1Id}"] ?? 1;
+                     // Jika tidak ada data K1 -> K2, coba cek kebalikannya K2 -> K1.
+                     $nilaiTerbalik = $mapNilaiDB["{$k2Id}_{$k1Id}"] ?? null;
+                     if ($nilaiTerbalik) {
+                         // Sifat Resiprokal AHP: Jika A > B = 3, maka B > A = 1/3.
+                         $nilaiPecahan = 1 / $nilaiTerbalik;
+                     } else {
+                         // Default: Jika belum ada data, asumsikan sama penting (nilai 1).
+                         $nilaiPecahan = 1;
+                     }
                 }
 
                 $nilaiUI = 1;
@@ -105,7 +130,14 @@ class PerbandinganKriteriaController extends KeputusanDetailController
     }
 
     /**
-     * Mengambil data pasangan, memprioritaskan nilai dari Request (old input) atau dari DB.
+     * Mengambil data pasangan dengan strategi prioritas sumber data.
+     * 
+     * Digunakan untuk menangani kondisi "Old Input" saat validasi gagal atau setelah perhitungan.
+     * Prioritas:
+     * 1. Input dari Request (jika user baru saja submit form).
+     * 2. Data tersimpan di Database (jika baru buka halaman).
+     * 3. Default (1).
+     * 
      * @param Request $request
      * @return array
      */
@@ -144,7 +176,9 @@ class PerbandinganKriteriaController extends KeputusanDetailController
     // ==========================================================
 
     /**
-     * Menampilkan halaman perbandingan AHP (Tab Kriteria, Sub-halaman AHP).
+     * Menampilkan halaman utama Perbandingan Kriteria (AHP).
+     * 
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -173,7 +207,13 @@ class PerbandinganKriteriaController extends KeputusanDetailController
     }
 
     /**
-     * Menyimpan matriks perbandingan ke database.
+     * Menyimpan nilai perbandingan kriteria ke database.
+     * 
+     * Method ini menangani konversi dari skala UI (-9 s.d 9) menjadi nilai desimal
+     * yang sesuai untuk matriks AHP (1/x atau x).
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function save(Request $request)
     {
@@ -210,6 +250,14 @@ class PerbandinganKriteriaController extends KeputusanDetailController
                 $nilaiDisimpan = 1 / abs($nilaiPerbandingan);
             }
 
+            // Hapus pasangan kebalikannya (K2_K1) jika ada.
+            // Kita hanya perlu menyimpan satu sisi perbandingan untuk menghemat space dan menghindari inkonsistensi.
+            // Sisi lainnya bisa didapat dengan rumus 1/x saat pengambilan data.
+            PerbandinganKriteria::where('id_keputusan', $idKeputusan)
+                ->where('id_kriteria_1', $idKriteria2DB)
+                ->where('id_kriteria_2', $idKriteria1DB)
+                ->delete();
+
             // SIMPAN/UPDATE ke DB
             PerbandinganKriteria::updateOrCreate(
                 [
@@ -229,7 +277,16 @@ class PerbandinganKriteriaController extends KeputusanDetailController
     }
 
     /**
-     * Memicu perhitungan Konsistensi AHP.
+     * Menjalankan perhitungan Konsistensi AHP dan memperbarui bobot kriteria.
+     * 
+     * Alur Proses:
+     * 1. Validasi input matriks.
+     * 2. Hitung Eigen Vector dan Consistency Ratio (CR) menggunakan AhpService.
+     * 3. Jika Konsisten (CR <= 0.1): Simpan bobot baru ke tabel Kriteria.
+     * 4. Jika Tidak Konsisten: Tampilkan pesan error dan minta user input ulang.
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function checkConsistency(Request $request)
     {
