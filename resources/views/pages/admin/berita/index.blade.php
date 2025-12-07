@@ -7,7 +7,7 @@
     <!-- Page Header -->
     <div class="md:flex md:items-center md:justify-between mb-8">
         <div class="flex-1 min-w-0">
-            <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+            <h2 class="text-2xl font-bold text-gray-900 sm:text-3xl">
                 Manajemen Berita
             </h2>
             <p class="mt-1 text-sm text-gray-500">
@@ -34,17 +34,17 @@
                 <div class="md:col-span-3">
                     <label for="penulis" class="block text-sm font-medium text-gray-700 mb-1">Cari Penulis</label>
                     <div class="relative rounded-md shadow-sm">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <div class="absolute inset-y-0 left-0 right-0 pl-3 flex items-center pointer-events-none text-sm">
                             <i class="fas fa-search text-gray-400"></i>
                         </div>
-                        <input type="text" name="penulis" id="penulis" value="{{ request('penulis') }}" placeholder="Masukkan Nama Penulis..." class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border border-gray-300 rounded-md py-2 text-gray-900">
+                        <input type="text" name="penulis" id="penulis" value="{{ request('penulis') }}" placeholder="Masukkan Nama Penulis..." class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border border-gray-300 rounded-md py-2 text-gray-900 pr-2">
                     </div>
                 </div>
 
                 {{-- Filter Status --}}
                 <div class="md:col-span-2">
                     <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Filter Status</label>
-                    <select name="status" id="status" class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm text-gray-900 px-2" onchange="this.form.submit()">
+                    <select name="status" id="status" class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:text-gray-900 sm:text-sm rounded-md shadow-sm {{ request('status') ? 'text-gray-900' : 'text-gray-400' }} px-2" onchange="this.form.submit()">
                         <option value="">Semua Status</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                         <option value="verified" {{ request('status') == 'verified' ? 'selected' : '' }}>Verified</option>
@@ -55,7 +55,7 @@
                 {{-- Filter Kategori --}}
                 <div class="md:col-span-3">
                     <label for="kategori" class="block text-sm font-medium text-gray-700 mb-1">Filter Kategori</label>
-                    <select name="kategori" id="kategori" class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm text-gray-900" onchange="this.form.submit()">
+                    <select name="kategori" id="kategori" class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:text-gray-900 sm:text-sm rounded-md shadow-sm {{ request('kategori') ? 'text-gray-900' : 'text-gray-400' }}" onchange="this.form.submit()">
                         <option value="">Semua Kategori</option>
                         <option value="kegiatan" {{ request('kategori') == 'kegiatan' ? 'selected' : '' }}>Kegiatan</option>
                         <option value="prestasi" {{ request('kategori') == 'prestasi' ? 'selected' : '' }}>Prestasi</option>
@@ -66,11 +66,11 @@
                 <div class="md:col-span-4 grid grid-cols-2 gap-2">
                     <div>
                         <label for="start_date" class="block text-sm font-medium text-gray-700 mb-1">Dari Tanggal</label>
-                        <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md py-2 text-gray-900 px-2 shadow-sm">
+                        <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}" class="focus:ring-indigo-500 focus:border-indigo-500 focus:text-gray-900 block w-full sm:text-sm border border-gray-300 rounded-md py-2 {{ request('start_date') ? 'text-gray-900' : 'text-gray-400' }} px-2 shadow-sm">
                     </div>
                     <div>
                         <label for="end_date" class="block text-sm font-medium text-gray-700 mb-1">Sampai Tanggal</label>
-                        <input type="date" name="end_date" id="end_date" value="{{ request('end_date') }}" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md py-2 text-gray-900 px-2 shadow-sm">
+                        <input type="date" name="end_date" id="end_date" value="{{ request('end_date') }}" class="focus:ring-indigo-500 focus:border-indigo-500 focus:text-gray-900 block w-full sm:text-sm border border-gray-300 rounded-md py-2 {{ request('end_date') ? 'text-gray-900' : 'text-gray-400' }} px-2 shadow-sm">
                     </div>
                 </div>
 
@@ -104,8 +104,7 @@
     @endif
 
     <!-- Data Table -->
-    <div class="bg-white shadow-[4px_4px_10px_rgba(0,0,0,0.1)] rounded-lg overflow-hidden border border-gray-200">
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto bg-white shadow-[4px_4px_10px_rgba(0,0,0,0.1)] rounded-lg overflow-hidden border border-gray-200">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-[#0d2149] text-white text-xs lg:text-sm uppercase tracking-wider">
                     <tr>
@@ -222,10 +221,9 @@
         
         <!-- Pagination (if applicable) -->
         @if(method_exists($beritas, 'links'))
-            <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+            <div class="px-4 py-3 border-t border-gray-200 sm:px-6 mb-3">
                 {{ $beritas->withQueryString()->links() }}
             </div>
         @endif
-    </div>
 </div>
 @endsection

@@ -126,13 +126,13 @@
                                 <tr class="hover:bg-gray-50">
                                     <td class="px-6 py-4">{{ $pengaduan->user->nama ?? 'Anonim' }}</td>
                                     <td class="px-6 py-4">
-                                        @if($pengaduan->status == 'pending')
-                                            <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded border border-yellow-400">Pending</span>
-                                        @elseif($pengaduan->status == 'proses')
-                                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded border border-blue-400">Proses</span>
-                                        @elseif($pengaduan->status == 'selesai')
+                                        @if($pengaduan->status == 'Terkirim')
+                                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded border border-blue-400">Terkirim</span>
+                                        @elseif($pengaduan->status == 'Diproses')
+                                            <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded border border-yellow-400">Diproses</span>
+                                        @elseif($pengaduan->status == 'Selesai')
                                             <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded border border-green-400">Selesai</span>
-                                        @else
+                                        @elseif($pengaduan->status == 'Ditolak')
                                             <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded border border-red-400">Ditolak</span>
                                         @endif
                                     </td>

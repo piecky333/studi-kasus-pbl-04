@@ -18,10 +18,23 @@ class PengaduanController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Auth::user()->pengaduan()->latest();
+        $query = Auth::user()->pengaduan();
 
+        // Filter Status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Search
         if ($request->filled('search')) {
             $query->where('judul', 'like', '%' . $request->search . '%');
+        }
+
+        // Sort
+        if ($request->filled('sort') && $request->sort == 'oldest') {
+            $query->oldest();
+        } else {
+            $query->latest();
         }
 
         $pengaduan = $query->paginate(10);
