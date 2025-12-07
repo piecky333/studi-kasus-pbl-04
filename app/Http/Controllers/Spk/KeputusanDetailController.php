@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
  * 2. Memuat model Keputusan SPK yang sesuai dari database.
  * 3. Menyediakan properti $this->keputusan dan $this->idKeputusan untuk kelas turunannya.
  * 
- * Dengan mewarisi controller ini, kita tidak perlu mengulang logika pencarian Keputusan
+ * Dengan mewarisi controller ini, tidak perlu mengulang logika pencarian Keputusan
  * di setiap controller anak (DRY Principle).
  * 
  * @package App\Http\Controllers\Spk

@@ -7,7 +7,7 @@
     <!-- Page Header -->
     <div class="md:flex md:items-center md:justify-between mb-8">
         <div class="flex-1 min-w-0">
-            <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+            <h2 class="text-2xl font-bold text-gray-900 sm:text-3xl">
                 Data Prestasi Mahasiswa
             </h2>
             <p class="mt-1 text-sm text-gray-500">
@@ -195,7 +195,7 @@
     </div>
 
     <!-- Pagination -->
-    <div class="mt-4">
+    <div class="mt-4 mb-3">
         {{ $prestasi->withQueryString()->links() }}
     </div>
 </div>

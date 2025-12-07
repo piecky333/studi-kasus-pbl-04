@@ -72,7 +72,7 @@ class PengaduanController extends Controller
      */
     public function show($id)
     {
-        $pengaduan = pengaduan::with(['mahasiswa', 'mahasiswa.user'])
+        $pengaduan = pengaduan::with(['user', 'mahasiswa'])
                             ->findOrFail($id);
 
         // LOGIKA OTOMATISASI STATUS:

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Spk;
 
 use Illuminate\Http\Request;
-// PENTING: Gunakan Base Controller yang sudah kita definisikan
 use App\Http\Controllers\Spk\KeputusanDetailController; 
 use App\Models\spkkeputusan; 
 use App\Models\kriteria;

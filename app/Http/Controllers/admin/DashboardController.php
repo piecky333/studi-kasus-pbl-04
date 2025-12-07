@@ -5,11 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-// DIUBAH: Menggunakan path tim Anda (huruf kecil)
 use App\Models\berita; 
-// DIUBAH: Menggunakan path tim Anda (subfolder & huruf kecil)
 use App\Models\laporan\pengaduan; 
-use Illuminate\Support\Facades\DB; // Pastikan ini di-import
+use Illuminate\Support\Facades\DB; 
 
 /**
  * Class DashboardController
@@ -46,8 +44,8 @@ class DashboardController extends Controller
         // Ini membantu admin untuk segera memverifikasi berita baru.
         $beritaPending = berita::where('status', 'pending')->latest()->get();
 
-        // Mengambil 5 Pengaduan Terbaru untuk ditampilkan di widget "Aktivitas Terbaru".
-        $recentPengaduan = pengaduan::latest()->take(5)->get();
+        // Mengambil 5 Pengaduan Terbaru dengan status 'Diproses' untuk ditampilkan di widget "Aktivitas Terbaru".
+        $recentPengaduan = pengaduan::where('status', 'Diproses')->latest()->take(5)->get();
 
         // 2A. PERSIAPAN DATA LINE CHART: Tren Laporan per Bulan
         // Mengelompokkan data pengaduan berdasarkan bulan pembuatan untuk tahun berjalan.

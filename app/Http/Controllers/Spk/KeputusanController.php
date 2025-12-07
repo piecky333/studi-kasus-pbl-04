@@ -155,9 +155,8 @@ class KeputusanController extends Controller
             $alternatifIds = alternatif::where('id_keputusan', $idKeputusan)->pluck('id_alternatif')->toArray();
 
             // 2. Hapus data anak paling dalam (Deepest Child) terlebih dahulu.
-            // Ini penting untuk menghindari constraint violation jika foreign key tidak di-set ON DELETE CASCADE.
+            // Ini untuk menghindari constraint violation jika foreign key tidak di-set ON DELETE CASCADE.
             if (!empty($kriteriaIds)) {
-                // Hapus Perbandingan Kriteria (jika Anda memiliki modelnya)
                 // Hapus Penilaian yang terkait dengan Kriteria
                 penilaian::whereIn('id_kriteria', $kriteriaIds)->delete();
                 // Hapus Subkriteria yang terkait dengan Kriteria

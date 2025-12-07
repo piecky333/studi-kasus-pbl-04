@@ -123,6 +123,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::resource('sanksi', AdminSanksiController::class);
 
     // Data Mahasiswa
+    Route::post('datamahasiswa/import', [AdminDataMahasiswaController::class, 'import'])->name('datamahasiswa.import');
     Route::resource('datamahasiswa', AdminDataMahasiswaController::class);
 
 

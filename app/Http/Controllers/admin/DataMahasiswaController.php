@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\admin\Datamahasiswa;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\MahasiswaImport;
 
 /**
  * Class DataMahasiswaController
@@ -51,8 +53,17 @@ class DataMahasiswaController extends Controller
             $query->where('nim', 'like', $request->nim . '%');
         }
 
-        // Urutkan berdasarkan nama (A-Z)
-        $mahasiswa = $query->orderBy('nama', 'asc')->paginate(10);
+        // Sorting
+        if ($request->sort == 'latest') {
+            $query->orderBy('created_at', 'desc');
+        } elseif ($request->sort == 'oldest') {
+            $query->orderBy('created_at', 'asc');
+        } else {
+            // Default sort by name A-Z
+            $query->orderBy('nama', 'asc');
+        }
+
+        $mahasiswa = $query->paginate(10);
         
         return view('pages.admin.datamahasiswa.index', compact('mahasiswa'));
     }
@@ -174,5 +185,27 @@ class DataMahasiswaController extends Controller
         $mahasiswa->delete();
 
         return redirect()->route('admin.datamahasiswa.index')->with('success', 'Data mahasiswa berhasil dihapus.');
+    }
+
+    /**
+     * Import data mahasiswa dari file Excel.
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:2048',
+        ]);
+
+        try {
+            $import = new MahasiswaImport();
+            $import->import($request->file('file')->getRealPath());
+            
+            return redirect()->route('admin.datamahasiswa.index')->with('success', 'Data mahasiswa berhasil diimport!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal mengimport data: ' . $e->getMessage());
+        }
     }
 }
