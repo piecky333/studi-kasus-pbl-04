@@ -34,18 +34,18 @@
                 <div class="md:col-span-3">
                     <label for="penulis" class="block text-sm font-medium text-gray-700 mb-1">Cari Penulis</label>
                     <div class="relative rounded-md shadow-sm">
-                        <div class="absolute inset-y-0 left-0 right-0 pl-3 flex items-center pointer-events-none text-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-sm">
                             <i class="fas fa-search text-gray-400"></i>
                         </div>
-                        <input type="text" name="penulis" id="penulis" value="{{ request('penulis') }}" placeholder="Masukkan Nama Penulis..." class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border border-gray-300 rounded-md py-2 text-gray-900 pr-2">
+                        <input type="text" name="penulis" id="penulis" value="{{ request('penulis') }}" placeholder="Penulis..." class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border border-gray-300 rounded-md py-2 text-gray-900">
                     </div>
                 </div>
 
                 {{-- Filter Status --}}
                 <div class="md:col-span-2">
-                    <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Filter Status</label>
-                    <select name="status" id="status" class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:text-gray-900 sm:text-sm rounded-md shadow-sm {{ request('status') ? 'text-gray-900' : 'text-gray-400' }} px-2" onchange="this.form.submit()">
-                        <option value="">Semua Status</option>
+                    <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <select name="status" id="status" class="block w-full pl-2 pr-8 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm {{ request('status') ? 'text-gray-900' : 'text-gray-400' }}" onchange="this.form.submit()">
+                        <option value="">Semua</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                         <option value="verified" {{ request('status') == 'verified' ? 'selected' : '' }}>Verified</option>
                         <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
@@ -53,33 +53,33 @@
                 </div>
 
                 {{-- Filter Kategori --}}
-                <div class="md:col-span-3">
-                    <label for="kategori" class="block text-sm font-medium text-gray-700 mb-1">Filter Kategori</label>
-                    <select name="kategori" id="kategori" class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:text-gray-900 sm:text-sm rounded-md shadow-sm {{ request('kategori') ? 'text-gray-900' : 'text-gray-400' }}" onchange="this.form.submit()">
-                        <option value="">Semua Kategori</option>
+                <div class="md:col-span-2">
+                    <label for="kategori" class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
+                    <select name="kategori" id="kategori" class="block w-full pl-2 pr-8 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm {{ request('kategori') ? 'text-gray-900' : 'text-gray-400' }}" onchange="this.form.submit()">
+                        <option value="">Semua</option>
                         <option value="kegiatan" {{ request('kategori') == 'kegiatan' ? 'selected' : '' }}>Kegiatan</option>
                         <option value="prestasi" {{ request('kategori') == 'prestasi' ? 'selected' : '' }}>Prestasi</option>
                     </select>
                 </div>
 
                 {{-- Filter Tanggal --}}
-                <div class="md:col-span-4 grid grid-cols-2 gap-2">
+                <div class="md:col-span-3 grid grid-cols-2 gap-2">
                     <div>
-                        <label for="start_date" class="block text-sm font-medium text-gray-700 mb-1">Dari Tanggal</label>
-                        <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}" class="focus:ring-indigo-500 focus:border-indigo-500 focus:text-gray-900 block w-full sm:text-sm border border-gray-300 rounded-md py-2 {{ request('start_date') ? 'text-gray-900' : 'text-gray-400' }} px-2 shadow-sm">
+                        <label for="start_date" class="block text-sm font-medium text-gray-700 mb-1">Mulai Dari</label>
+                        <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md py-2 {{ request('start_date') ? 'text-gray-900' : 'text-gray-400' }} px-2 shadow-sm">
                     </div>
                     <div>
-                        <label for="end_date" class="block text-sm font-medium text-gray-700 mb-1">Sampai Tanggal</label>
-                        <input type="date" name="end_date" id="end_date" value="{{ request('end_date') }}" class="focus:ring-indigo-500 focus:border-indigo-500 focus:text-gray-900 block w-full sm:text-sm border border-gray-300 rounded-md py-2 {{ request('end_date') ? 'text-gray-900' : 'text-gray-400' }} px-2 shadow-sm">
+                        <label for="end_date" class="block text-sm font-medium text-gray-700 mb-1">Sampai Dengan</label>
+                        <input type="date" name="end_date" id="end_date" value="{{ request('end_date') }}" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md py-2 {{ request('end_date') ? 'text-gray-900' : 'text-gray-400' }} px-2 shadow-sm">
                     </div>
                 </div>
 
                 {{-- Buttons --}}
                 <div class="md:col-span-2 flex space-x-2">
-                    <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <button type="submit" class="w-full inline-flex justify-center items-center px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Cari
                     </button>
-                    <a href="{{ route('admin.berita.index') }}" class="w-full inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <a href="{{ route('admin.berita.index') }}" class="w-full inline-flex justify-center items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Reset
                     </a>
                 </div>
@@ -206,7 +206,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-10 text-center text-gray-500">
+                            <td colspan="7" class="px-6 py-10 text-center text-gray-500">
                                 <div class="flex flex-col items-center justify-center">
                                     <i class="bi bi-newspaper text-4xl mb-3 text-gray-300"></i>
                                     <p class="text-lg font-medium">Belum ada berita.</p>

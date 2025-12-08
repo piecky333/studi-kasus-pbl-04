@@ -17,6 +17,7 @@ class prestasi extends Model
         'id_mahasiswa',
         'id_admin',
         'nama_kegiatan',
+        'jenis_prestasi',
         'tingkat_prestasi',
         'tahun',
         'status_validasi',

@@ -38,49 +38,106 @@
 
                 <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
                     
-                    {{-- Cari Mahasiswa (NIM) --}}
+                    {{-- Cari Mahasiswa (Multi-Select) --}}
                     <div class="sm:col-span-6">
-                        <label for="nim" class="block text-sm font-medium text-gray-700">
-                            Cari Mahasiswa (NIM) <span class="text-red-500">*</span>
+                        <label for="id_mahasiswa" class="block text-sm font-medium text-gray-700">
+                            Pilih Mahasiswa <span class="text-red-500">*</span>
                         </label>
-                        <div class="mt-1 flex rounded-md shadow-sm">
-                            <input type="text" name="nim" id="nim" value="{{ old('nim') }}" class="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-l-md sm:text-sm border-gray-300 px-3" placeholder="Masukkan NIM mahasiswa..." required>
-                            <button type="button" id="btnCari" class="-ml-px relative inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md text-gray-700 bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
-                                <i class="fas fa-search"></i>
-                                <span>Cari</span>
-                            </button>
-                        </div>
+                        <p class="text-xs text-gray-500 mb-2">Anda dapat memilih lebih dari satu mahasiswa (Untuk prestasi tim/kelompok).</p>
                         
-                        {{-- Hasil Pencarian (Card) --}}
-                        <div id="studentCard" class="mt-4 hidden bg-white border border-gray-200 rounded-lg shadow-sm p-4">
-                            <div class="flex items-start space-x-4">
-                                <div class="flex-shrink-0">
-                                    <span class="inline-flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100">
-                                        <i class="fas fa-user text-indigo-600 text-xl"></i>
-                                    </span>
+                        <div class="mt-1">
+                            <div x-data="{
+                                search: '',
+                                open: false,
+                                selected: [],
+                                options: [
+                                    @foreach($mahasiswa as $mhs)
+                                        { 
+                                            id: '{{ $mhs->id_mahasiswa }}', 
+                                            nama: '{{ addslashes($mhs->nama) }}', 
+                                            nim: '{{ $mhs->nim ?? '' }}',
+                                            label: '{{ addslashes($mhs->nama) }} ({{ $mhs->nim ?? 'NIM Tidak Ada' }})' 
+                                        },
+                                    @endforeach
+                                ],
+                                get filteredOptions() {
+                                    if (this.search === '') {
+                                        return this.options.filter(i => !this.selected.some(s => s.id === i.id));
+                                    }
+                                    const lowerSearch = this.search.toLowerCase();
+                                    return this.options.filter(i => {
+                                        const nimMatch = i.nim && i.nim.toLowerCase().includes(lowerSearch);
+                                        const nameMatch = i.nama.toLowerCase().split(' ').some(word => word.startsWith(lowerSearch));
+                                        
+                                        return (nimMatch || nameMatch) && !this.selected.some(s => s.id === i.id);
+                                    });
+                                },
+                                add(option) {
+                                    this.selected.push(option);
+                                    this.search = '';
+                                    this.open = false;
+                                },
+                                remove(id) {
+                                    this.selected = this.selected.filter(item => item.id !== id);
+                                },
+                                init() {
+                                }
+                            }" class="relative">
+                                
+                                <!-- Search & Select Input -->
+                                <div class="relative">
+                                    <input 
+                                        type="text" 
+                                        x-model="search" 
+                                        @focus="open = true" 
+                                        @click.away="open = false" 
+                                        placeholder="Ketik nama atau NIM mahasiswa..." 
+                                        class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md px-3 py-2"
+                                    >
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
                                 </div>
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-gray-900" id="cardName">Nama Mahasiswa</p>
-                                    <p class="text-sm text-gray-500" id="cardNim">NIM: -</p>
-                                    <p class="text-sm text-gray-500" id="cardEmail">Email: -</p>
-                                    <p class="text-sm text-gray-500" id="cardSemester">Semester: -</p>
+    
+                                <!-- Dropdown List -->
+                                <div x-show="open && filteredOptions.length > 0" class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm" style="display: none;">
+                                    <ul>
+                                        <template x-for="option in filteredOptions" :key="option.id">
+                                            <li @click="add(option)" class="text-gray-900 cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-indigo-600 hover:text-white">
+                                                <span x-text="option.label" class="font-normal block truncate"></span>
+                                            </li>
+                                        </template>
+                                    </ul>
                                 </div>
-                                <div>
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                        Ditemukan
-                                    </span>
+                                
+                                <div x-show="open && filteredOptions.length === 0" class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md py-2 px-3 text-sm text-gray-500" style="display: none;">
+                                    Tidak ada data yang cocok.
+                                </div>
+    
+                                {{-- Selected Chips --}}
+                                <div class="mt-2 flex flex-wrap gap-2">
+                                    <template x-for="item in selected" :key="item.id">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 border border-indigo-200">
+                                            <span x-text="item.label"></span>
+                                            <button type="button" @click="remove(item.id)" class="flex-shrink-0 ml-1.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-indigo-400 hover:bg-indigo-200 hover:text-indigo-500 focus:outline-none focus:bg-indigo-500 focus:text-white">
+                                                <span class="sr-only">Remove</span>
+                                                <svg class="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+                                                    <path stroke-linecap="round" stroke-width="1.5" d="M1 1l6 6m0-6L1 7" />
+                                                </svg>
+                                            </button>
+                                            {{-- Hidden Input for Form Submission --}}
+                                            <input type="hidden" name="id_mahasiswa[]" :value="item.id">
+                                        </span>
+                                    </template>
                                 </div>
                             </div>
                         </div>
-
-                        <p id="hasilMahasiswa" class="mt-2 text-sm text-gray-500"></p>
                         @error('id_mahasiswa')
-                            <p class="mt-2 text-sm text-red-600">Mahasiswa dengan NIM tersebut tidak ditemukan atau belum dipilih.</p>
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
-
-                    {{-- Hidden ID Mahasiswa --}}
-                    <input type="hidden" name="id_mahasiswa" id="id_mahasiswa" value="{{ old('id_mahasiswa') }}">
 
                     {{-- Judul Prestasi --}}
                     <div class="sm:col-span-6">
@@ -94,7 +151,22 @@
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
-
+                    {{-- Jenis Prestasi --}}
+                    <div class="sm:col-span-3">
+                        <label for="jenis_prestasi" class="block text-sm font-medium text-gray-700">
+                            Jenis Prestasi <span class="text-red-500">*</span>
+                        </label>
+                        <div class="mt-1">
+                            <select id="jenis_prestasi" name="jenis_prestasi" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('jenis_prestasi') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2" required>
+                                <option value="">-- Pilih Jenis --</option>
+                                <option value="Akademik" {{ old('jenis_prestasi') == 'Akademik' ? 'selected' : '' }}>Akademik</option>
+                                <option value="Non-Akademik" {{ old('jenis_prestasi') == 'Non-Akademik' ? 'selected' : '' }}>Non-Akademik</option>
+                            </select>
+                        </div>
+                        @error('jenis_prestasi')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
                     {{-- Tingkat Prestasi --}}
                     <div class="sm:col-span-3">
                         <label for="tingkat" class="block text-sm font-medium text-gray-700">
