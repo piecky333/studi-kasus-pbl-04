@@ -89,7 +89,17 @@ class PrestasiController extends Controller
             'tingkat'      => 'required|string|max:255',
             'tanggal'      => 'required|date',
             'deskripsi'    => 'nullable|string',
+            'bukti_file'   => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:2048', // Max 2MB
         ]);
+
+        $buktiPath = null;
+        if ($request->hasFile('bukti_file')) {
+            $file = $request->file('bukti_file');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            // Simpan ke storage/app/public/prestasi
+            $path = $file->storeAs('prestasi', $filename, 'public');
+            $buktiPath = 'prestasi/' . $filename;
+        }
 
         Prestasi::create([
             'id_mahasiswa'   => $request->id_mahasiswa,
@@ -99,6 +109,7 @@ class PrestasiController extends Controller
             'tahun'          => date('Y', strtotime($request->tanggal)),
             'status_validasi' => 'disetujui',
             'deskripsi'      => $request->deskripsi,
+            'bukti_path'     => $buktiPath,
         ]);
 
         return redirect()->route('admin.prestasi.index')->with('success', 'Data prestasi berhasil ditambahkan.');

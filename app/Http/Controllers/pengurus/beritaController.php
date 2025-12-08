@@ -14,11 +14,35 @@ class BeritaController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $beritas = Berita::where('id_user', auth()->user()->id_user)
-                         ->latest()
-                         ->paginate(10);
+        $query = Berita::where('id_user', auth()->user()->id_user)->latest();
+
+        // Filter search (Judul) - Optional since Admin uses Penulis search, but let's give them Title search capability if wanted, or stick to just filters to match "Layout".
+        // Admin layout has "Cari Penulis". We will replace that with "Cari Judul" in view.
+        if ($request->filled('search')) {
+            $query->where('judul_berita', 'like', '%' . $request->search . '%');
+        }
+
+        // Filter Kategori
+        if ($request->filled('kategori')) {
+            $query->where('kategori', $request->kategori);
+        }
+
+        // Filter Status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter Tanggal
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        $beritas = $query->paginate(10);
 
         return view('pages.pengurus.berita.index', compact('beritas'));
     }

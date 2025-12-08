@@ -1,16 +1,21 @@
+@extends('layouts.admin')
+
+@section('content')
+        @if (session('success'))
+        <div class="bg-green-50 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded shadow-sm mt-6" role="alert">
                 <p class="font-bold">Berhasil</p>
                 <p>{{ session('success') }}</p>
             </div>
         @endif
         @if (session('error'))
-            <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded shadow-sm" role="alert">
+            <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded shadow-sm mt-6" role="alert">
                 <p class="font-bold">Error</p>
                 <p>{{ session('error') }}</p>
             </div>
         @endif
 
         {{-- Header Halaman: Tata letak fleksibel (kolom di mobile, baris di desktop) --}}
-        <header class="flex flex-col md:flex-row justify-between items-center mb-6 border-b pb-4 gap-4">
+        <header class="flex flex-col md:flex-row justify-between items-center mb-6 border-b pb-4 gap-4 mt-8">
             <div>
                 <h3 class="text-xl font-bold text-gray-800">Daftar Kriteria</h3>
                 <p class="text-sm text-gray-600">
