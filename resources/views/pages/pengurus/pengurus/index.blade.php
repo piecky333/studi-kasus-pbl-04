@@ -12,9 +12,33 @@
             </h1>
             <p class="mt-1 text-sm text-gray-500">Manajemen data pengurus organisasi.</p>
         </div>
-        <a href="{{ route('pengurus.pengurus.create') }}" class="inline-flex items-center px-3 py-2 lg:px-4 lg:py-2 bg-blue-600 border border-transparent rounded-lg font-semibold text-xs lg:text-sm text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150 shadow-md">
-            <i class="fas fa-plus mr-2"></i> Tambah Pengurus
-        </a>
+        <div class="flex space-x-2">
+            <a href="{{ route('pengurus.pengurus.create') }}" class="inline-flex items-center px-3 py-2 lg:px-4 lg:py-2 bg-blue-600 border border-transparent rounded-lg font-semibold text-xs lg:text-sm text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150 shadow-md">
+                <i class="fas fa-plus mr-2"></i> Tambah Pengurus
+            </a>
+        </div>
+    </div>
+
+    <!-- Search Section -->
+    <div class="mb-6 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+        <form action="{{ route('pengurus.pengurus.index') }}" method="GET" class="flex flex-col md:flex-row gap-4">
+            <div class="relative w-full md:w-1/2">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-search text-gray-400"></i>
+                </div>
+                <input type="text" name="search" value="{{ request('search') }}" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Cari nama, divisi, atau jabatan...">
+            </div>
+            <div class="flex gap-2">
+                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                    Cari
+                </button>
+                @if(request('search'))
+                <a href="{{ route('pengurus.pengurus.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                    Reset
+                </a>
+                @endif
+            </div>
+        </form>
     </div>
 
     <!-- Alert Messages -->
@@ -48,9 +72,7 @@
                         <th scope="col" class="px-3 py-2 lg:px-6 lg:py-3 text-left text-xs lg:text-sm font-medium text-white uppercase tracking-wider">
                             Posisi Jabatan
                         </th>
-                        <th scope="col" class="px-3 py-2 lg:px-6 lg:py-3 text-left text-xs lg:text-sm font-medium text-white uppercase tracking-wider">
-                            Role
-                        </th>
+
                         <th scope="col" class="px-3 py-2 lg:px-6 lg:py-3 text-center text-xs lg:text-sm font-medium text-white uppercase tracking-wider w-48">
                             Aksi
                         </th>
@@ -73,11 +95,7 @@
                             <td class="px-3 py-2 lg:px-6 lg:py-4 whitespace-nowrap text-xs lg:text-sm text-gray-500">
                                 {{ $p->posisi_jabatan }}
                             </td>
-                            <td class="px-3 py-2 lg:px-6 lg:py-4 whitespace-nowrap">
-                                <span class="px-2 py-1 inline-flex text-[10px] lg:text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                    {{ $p->user->role ?? '-' }}
-                                </span>
-                            </td>
+
                             <td class="px-3 py-2 lg:px-6 lg:py-4 whitespace-nowrap text-center text-xs lg:text-sm font-medium">
                                 <div class="flex justify-center space-x-1 lg:space-x-2">
                                     {{-- Edit --}}
@@ -110,6 +128,11 @@
                 </tbody>
             </table>
         </div>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="mt-4">
+        {{ $pengurus->links() }}
     </div>
 </div>
 @endsection

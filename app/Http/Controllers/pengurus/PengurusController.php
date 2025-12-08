@@ -15,9 +15,24 @@ class PengurusController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $pengurus = pengurus::with(['divisi', 'user'])->latest()->get();
+        $query = pengurus::with(['divisi', 'user']);
+
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('posisi_jabatan', 'like', "%{$search}%")
+                  ->orWhereHas('user', function($q) use ($search) {
+                      $q->where('nama', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('divisi', function($q) use ($search) {
+                      $q->where('nama_divisi', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        $pengurus = $query->latest()->paginate(10)->withQueryString();
         return view('pages.pengurus.pengurus.index', compact('pengurus'));
     }
 

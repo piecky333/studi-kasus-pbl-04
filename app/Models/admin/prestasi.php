@@ -20,7 +20,8 @@ class prestasi extends Model
         'tingkat_prestasi',
         'tahun',
         'status_validasi',
-        'deskripsi'
+        'deskripsi',
+        'bukti_path'
     ];
 
     public function mahasiswa()

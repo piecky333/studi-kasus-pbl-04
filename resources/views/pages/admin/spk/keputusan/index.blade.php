@@ -3,7 +3,7 @@
 @section('content')
     <div class="max-w-full md:max-w-5xl xl:max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        <div class="bg-white shadow-lg rounded-xl overflow-hidden">
+        <div class="bg-white shadow-sm rounded-xl overflow-hidden">
             
             <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex flex-col md:flex-row justify-between items-center gap-4">
                 <h2 class="text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-2">
