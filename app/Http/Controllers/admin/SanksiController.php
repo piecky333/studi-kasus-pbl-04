@@ -7,20 +7,87 @@ use App\Models\Admin\Sanksi;
 use App\Models\admin\Datamahasiswa;
 use Illuminate\Http\Request;
 
+/**
+ * Class SanksiController
+ * 
+ * Controller ini bertanggung jawab untuk mengelola data Sanksi Mahasiswa.
+ * Fitur mencakup CRUD lengkap dengan kemampuan menambahkan sanksi ke banyak mahasiswa sekaligus (Bulk Create).
+ * 
+ * @package App\Http\Controllers\Admin
+ */
 class SanksiController extends Controller
 {
-    public function index()
+    /**
+     * Menampilkan daftar sanksi mahasiswa.
+     * 
+     * Menggunakan Eager Loading 'mahasiswa' untuk efisiensi query.
+     * 
+     * @return \Illuminate\View\View
+     */
+    public function index(Request $request)
     {
-        $sanksi = Sanksi::with('mahasiswa')->latest()->paginate(10);
+        $query = Sanksi::select('sanksi.*')
+            ->join('mahasiswa', 'sanksi.id_mahasiswa', '=', 'mahasiswa.id_mahasiswa')
+            ->with('mahasiswa');
+
+        // Filter Semester
+        if ($request->filled('semester')) {
+            $query->where('mahasiswa.semester', $request->semester);
+        }
+
+        // Filter NIM (Starts With)
+        if ($request->filled('nim')) {
+            $query->where('mahasiswa.nim', 'like', $request->nim . '%');
+        }
+
+        // Sorting
+        if ($request->filled('sort')) {
+            switch ($request->sort) {
+                case 'za':
+                    $query->orderBy('mahasiswa.nama', 'desc');
+                    break;
+                case 'newest':
+                    $query->orderBy('sanksi.created_at', 'desc');
+                    break;
+                case 'oldest':
+                    $query->orderBy('sanksi.created_at', 'asc');
+                    break;
+                case 'az':
+                default:
+                    $query->orderBy('mahasiswa.nama', 'asc');
+                    break;
+            }
+        } else {
+            // Default sorting
+            $query->orderBy('mahasiswa.nama', 'asc');
+        }
+
+        $sanksi = $query->paginate(10);
+            
         return view('pages.admin.sanksi.index', compact('sanksi'));
     }
 
+    /**
+     * Menampilkan form untuk menambahkan sanksi baru.
+     * 
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
-        $mahasiswa = Datamahasiswa::all();
+        $mahasiswa = Datamahasiswa::orderBy('nama', 'asc')->get();
         return view('pages.admin.sanksi.create', compact('mahasiswa'));
     }
 
+    /**
+     * Menyimpan data sanksi baru ke database.
+     * 
+     * Fitur Bulk Create:
+     * Menerima array 'id_mahasiswa' dari form, memungkinkan admin memberikan
+     * sanksi yang sama kepada beberapa mahasiswa sekaligus dalam satu kali submit.
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -32,6 +99,7 @@ class SanksiController extends Controller
             'keterangan'     => 'nullable|string',
         ]);
 
+        // Iterasi setiap ID Mahasiswa yang dipilih untuk membuat record sanksi terpisah.
         foreach ($request->id_mahasiswa as $id_mahasiswa) {
             Sanksi::create([
                 'id_mahasiswa'   => $id_mahasiswa,
@@ -45,6 +113,13 @@ class SanksiController extends Controller
         return redirect()->route('admin.sanksi.index')->with('success', 'Data sanksi berhasil ditambahkan.');
     }
 
+    /**
+     * Menampilkan form edit data sanksi.
+     * 
+     * @param string $id
+     * @return \Illuminate\View\View
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
     public function edit($id)
     {
         $sanksi = Sanksi::findOrFail($id);
@@ -52,6 +127,14 @@ class SanksiController extends Controller
         return view('pages.admin.sanksi.edit', compact('sanksi', 'mahasiswa'));
     }
 
+    /**
+     * Memperbarui data sanksi yang sudah ada.
+     * 
+     * @param Request $request
+     * @param string $id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -68,6 +151,13 @@ class SanksiController extends Controller
         return redirect()->route('admin.sanksi.index')->with('success', 'Data sanksi berhasil diperbarui.');
     }
 
+    /**
+     * Menghapus data sanksi secara permanen.
+     * 
+     * @param string $id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
     public function destroy($id)
     {
         $sanksi = Sanksi::findOrFail($id);

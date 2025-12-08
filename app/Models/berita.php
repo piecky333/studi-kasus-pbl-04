@@ -18,6 +18,8 @@ class berita extends Model
         'gambar_berita',
         'kategori',
         'status',
+        'id_verifikator',
+        'id_penolak',
     ];
 
     public function user()
@@ -28,5 +30,15 @@ class berita extends Model
     public function komentar()
     {
         return $this->hasMany(komentar::class, 'id_berita', 'id_berita');
+    }
+
+    public function verifikator()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'id_verifikator', 'id_user');
+    }
+
+    public function penolak()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'id_penolak', 'id_user');
     }
 }

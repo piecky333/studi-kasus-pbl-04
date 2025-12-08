@@ -10,19 +10,47 @@ use Illuminate\Support\Facades\Storage;
 class BeritaController extends Controller
 {
     /**
-     * Menampilkan daftar berita milik pengurus login
+     * Tampilkan daftar berita milik pengurus.
+     *
+     * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $beritas = Berita::where('id_user', auth()->user()->id_user)
-                         ->latest()
-                         ->paginate(10);
+        $query = Berita::where('id_user', auth()->user()->id_user)->latest();
+
+        // Filter search (Judul) - Optional since Admin uses Penulis search, but let's give them Title search capability if wanted, or stick to just filters to match "Layout".
+        // Admin layout has "Cari Penulis". We will replace that with "Cari Judul" in view.
+        if ($request->filled('search')) {
+            $query->where('judul_berita', 'like', '%' . $request->search . '%');
+        }
+
+        // Filter Kategori
+        if ($request->filled('kategori')) {
+            $query->where('kategori', $request->kategori);
+        }
+
+        // Filter Status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter Tanggal
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        $beritas = $query->paginate(10);
 
         return view('pages.pengurus.berita.index', compact('beritas'));
     }
 
     /**
-     * Form tambah berita
+     * Tampilkan form tambah berita.
+     *
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -30,7 +58,11 @@ class BeritaController extends Controller
     }
 
     /**
-     * Simpan berita baru
+     * Simpan berita baru.
+     * Set status default ke 'pending'.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -60,7 +92,10 @@ class BeritaController extends Controller
     }
 
     /**
-     * Form edit berita
+     * Tampilkan form edit berita.
+     *
+     * @param int $id
+     * @return \Illuminate\View\View
      */
     public function edit($id)
     {
@@ -71,7 +106,12 @@ class BeritaController extends Controller
     }
 
     /**
-     * Update berita
+     * Perbarui data berita.
+     * Ganti gambar jika ada upload baru.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $id)
     {
@@ -107,7 +147,11 @@ class BeritaController extends Controller
     }
 
     /**
-     * Hapus berita
+     * Hapus berita.
+     * Hapus file gambar terkait.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {

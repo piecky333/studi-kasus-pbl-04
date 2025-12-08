@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Spk;
 
 use Illuminate\Http\Request;
-// PENTING: Gunakan Base Controller yang sudah kita definisikan
 use App\Http\Controllers\Spk\KeputusanDetailController; 
 use App\Models\spkkeputusan; 
 use App\Models\kriteria;
@@ -12,14 +11,25 @@ use App\Models\subkriteria;
 use App\Models\alternatif;
 
 /**
- * Controller ini mengelola CRUD untuk entitas Kriteria di bawah sebuah Keputusan SPK.
- * Mewarisi KeputusanDetailController memastikan model Keputusan induk sudah dimuat.
+ * Class KriteriaController
+ * 
+ * Controller ini bertanggung jawab untuk mengelola operasi CRUD untuk entitas Kriteria.
+ * Setiap Kriteria terikat pada satu Keputusan SPK.
+ * 
+ * Controller ini mewarisi KeputusanDetailController untuk memastikan validasi
+ * dan akses ke data Keputusan induk ($this->keputusan).
+ * 
+ * @package App\Http\Controllers\Spk
  */
 class KriteriaController extends KeputusanDetailController
 {
     /**
-     * Karena Controller ini extend KeputusanDetailController, kita perlu menambahkan 
-     * constructor untuk memanggil parent dan menghindari konflik.
+     * Constructor.
+     * 
+     * Memanggil constructor parent untuk memuat data Keputusan.
+     * Ini penting agar $this->idKeputusan tersedia untuk query database selanjutnya.
+     * 
+     * @param Request $request
      */
     public function __construct(Request $request)
     {
@@ -28,7 +38,11 @@ class KriteriaController extends KeputusanDetailController
     }
     
     /**
-     * Menampilkan daftar Kriteria dan Sub Kriteria untuk Keputusan saat ini (Tab Kriteria).
+     * Menampilkan daftar Kriteria untuk Keputusan saat ini.
+     * 
+     * Mengambil data kriteria beserta relasi sub-kriteria (eager loading)
+     * untuk meminimalkan query database (N+1 problem) di view.
+     * 
      * @return \Illuminate\View\View
      */
     public function index()
@@ -47,7 +61,8 @@ class KriteriaController extends KeputusanDetailController
     }
 
     /**
-     * Menampilkan form untuk menambah Kriteria baru.
+     * Menampilkan form untuk menambahkan Kriteria baru.
+     * 
      * @return \Illuminate\View\View
      */
     public function create()
@@ -61,21 +76,41 @@ class KriteriaController extends KeputusanDetailController
     }
 
     /**
-     * Menyimpan Kriteria baru ke database dan menginisiasi penilaian untuk alternatif yang sudah ada.
+     * Menyimpan Kriteria baru ke database.
+     * 
+     * Selain menyimpan data kriteria, method ini juga secara otomatis
+     * menginisiasi record Penilaian (dengan nilai 0) untuk semua Alternatif yang sudah ada.
+     * Hal ini menjaga konsistensi matriks penilaian.
+     * 
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
-        // 1. Validasi Input. Aturan unique disesuaikan dengan ID Keputusan saat ini.
+        // 1. Validasi Input.
+        // Rule::unique digunakan dengan klausa 'where' untuk memastikan Kode Kriteria
+        // hanya unik DALAM SATU KEPUTUSAN, bukan di seluruh tabel.
         $validated = $request->validate([
-            'kode_kriteria' => 'required|string|max:10|unique:kriteria,kode_kriteria,NULL,id_kriteria,id_keputusan,'.$this->idKeputusan, 
+            'kode_kriteria' => [
+                'required',
+                'string',
+                'max:10',
+                \Illuminate\Validation\Rule::unique('kriteria')->where(function ($query) {
+                    return $query->where('id_keputusan', $this->idKeputusan);
+                }),
+            ],
             'nama_kriteria' => 'required|string|max:255',
             'jenis_kriteria' => 'required|in:Benefit,Cost',
-            // NOTE: Bobot kriteria seharusnya diatur melalui AHP, bukan input manual. 
-            // Jika AHP digunakan, nilai ini harusnya nol/default. Saya biarkan validasi Anda.
             'bobot_kriteria' => 'required|numeric|between:0,1', 
-            'cara_penilaian' => 'nullable|string', 
+        ], [
+            'kode_kriteria.unique' => 'Kode kriteria sudah digunakan dalam keputusan ini.',
+            'kode_kriteria.required' => 'Kode kriteria wajib diisi.',
+            'kode_kriteria.max' => 'Kode kriteria maksimal 10 karakter.',
+            'nama_kriteria.required' => 'Nama kriteria wajib diisi.',
+            'jenis_kriteria.required' => 'Jenis kriteria wajib dipilih.',
+            'bobot_kriteria.required' => 'Bobot kriteria wajib diisi.',
+            'bobot_kriteria.numeric' => 'Bobot kriteria harus berupa angka.',
+            'bobot_kriteria.between' => 'Bobot kriteria harus antara 0 dan 1.',
         ]);
 
         // 2. Buat Kriteria baru
@@ -85,10 +120,11 @@ class KriteriaController extends KeputusanDetailController
             'nama_kriteria' => $validated['nama_kriteria'],
             'jenis_kriteria' => $validated['jenis_kriteria'],
             'bobot_kriteria' => $validated['bobot_kriteria'],
-            'cara_penilaian' => $validated['cara_penilaian'] ?? 'Input Langsung', 
         ]);
         
-        // 3. Inisiasi Penilaian: Tambahkan entri Penilaian untuk semua alternatif yang sudah ada.
+        // 3. Inisiasi Penilaian Otomatis:
+        // Saat kriteria baru ditambahkan, semua alternatif yang sudah ada harus memiliki
+        // entry penilaian untuk kriteria ini (default 0).
         $alternatifList = alternatif::where('id_keputusan', $this->idKeputusan)->get();
         
         foreach ($alternatifList as $alternatif) {
@@ -105,9 +141,12 @@ class KriteriaController extends KeputusanDetailController
     }
     
     /**
-     * Menampilkan form edit Kriteria.
-     * @param int $idKriteria
+     * Menampilkan form edit untuk Kriteria tertentu.
+     * 
+     * @param mixed $idKeputusan Parameter route (diabaikan, pakai $this->idKeputusan)
+     * @param int $idKriteria ID Kriteria yang akan diedit
      * @return \Illuminate\View\View
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function edit($idKeputusan, $idKriteria)
     {
@@ -124,10 +163,13 @@ class KriteriaController extends KeputusanDetailController
     }
 
     /**
-     * Memperbarui Kriteria yang sudah ada.
+     * Memperbarui data Kriteria yang sudah ada.
+     * 
      * @param Request $request
+     * @param mixed $idKeputusan
      * @param int $idKriteria
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function update(Request $request, $idKeputusan, $idKriteria)
     {
@@ -136,21 +178,33 @@ class KriteriaController extends KeputusanDetailController
                             ->where('id_kriteria', $idKriteria)
                             ->firstOrFail();
         
-        // 2. Validasi Input (menggunakan ID Kriteria yang dikecualikan)
+        // 2. Validasi Input.
+        // Menggunakan ignore() pada Rule::unique agar kode kriteria saat ini tidak dianggap duplikat.
         $validated = $request->validate([
-            'kode_kriteria' => 'required|string|max:10|unique:kriteria,kode_kriteria,'.$idKriteria.',id_kriteria,id_keputusan,'.$this->idKeputusan,
+            'kode_kriteria' => [
+                'required',
+                'string',
+                'max:10',
+                \Illuminate\Validation\Rule::unique('kriteria')->ignore($idKriteria, 'id_kriteria')->where(function ($query) {
+                    return $query->where('id_keputusan', $this->idKeputusan);
+                }),
+            ],
             'nama_kriteria' => 'required|string|max:255',
             'jenis_kriteria' => 'required|in:Benefit,Cost',
             'bobot_kriteria' => 'required|numeric|between:0,1',
-            'cara_penilaian' => 'nullable|string', 
+        ], [
+            'kode_kriteria.unique' => 'Kode kriteria sudah digunakan dalam keputusan ini.',
+            'kode_kriteria.required' => 'Kode kriteria wajib diisi.',
+            'kode_kriteria.max' => 'Kode kriteria maksimal 10 karakter.',
+            'nama_kriteria.required' => 'Nama kriteria wajib diisi.',
+            'jenis_kriteria.required' => 'Jenis kriteria wajib dipilih.',
+            'bobot_kriteria.required' => 'Bobot kriteria wajib diisi.',
+            'bobot_kriteria.numeric' => 'Bobot kriteria harus berupa angka.',
+            'bobot_kriteria.between' => 'Bobot kriteria harus antara 0 dan 1.',
         ]);
         
         // 3. Update data
         $dataToUpdate = $validated;
-        if (!isset($dataToUpdate['cara_penilaian'])) {
-             // Jika cara_penilaian tidak dikirim, gunakan nilai yang sudah ada
-             $dataToUpdate['cara_penilaian'] = $kriteria->cara_penilaian ?? 'Input Langsung'; 
-        }
         
         $kriteria->update($dataToUpdate);
 
@@ -159,7 +213,14 @@ class KriteriaController extends KeputusanDetailController
     }
 
     /**
-     * Menghapus Kriteria dan data terkait (penilaian, subkriteria).
+     * Menghapus Kriteria beserta data turunannya.
+     * 
+     * Data yang dihapus:
+     * 1. Penilaian yang terkait dengan kriteria ini.
+     * 2. Sub Kriteria yang terkait dengan kriteria ini.
+     * 3. Kriteria itu sendiri.
+     * 
+     * @param mixed $idKeputusan
      * @param int $idKriteria
      * @return \Illuminate\Http\RedirectResponse
      */

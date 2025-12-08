@@ -26,7 +26,7 @@
             
             <div class="space-y-6">
                 
-                {{-- Input: ID Mahasiswa (Opsional/Jika dari tabel lain) --}}
+                {{-- Input Teks: ID Mahasiswa atau NIM (Opsional, jika terintegrasi) --}}
                 <div>
                     <label for="id_mahasiswa" class="block text-sm font-medium text-gray-700 mb-1">ID Mahasiswa (NIM/ID)</label>
                     <input type="text" name="id_mahasiswa" id="id_mahasiswa" 
@@ -39,7 +39,7 @@
                     @enderror
                 </div>
                 
-                {{-- Input: Nama Alternatif --}}
+                {{-- Input Teks: Mengubah nama alternatif --}}
                 <div>
                     <label for="nama_alternatif" class="block text-sm font-medium text-gray-700 mb-1">Nama Alternatif (Mahasiswa)</label>
                     <input type="text" name="nama_alternatif" id="nama_alternatif" 
@@ -52,7 +52,7 @@
                     @enderror
                 </div>
 
-                {{-- Input: Keterangan --}}
+                {{-- Input Area: Mengubah keterangan tambahan --}}
                 <div>
                     <label for="keterangan" class="block text-sm font-medium text-gray-700 mb-1">Keterangan Tambahan</label>
                     <textarea name="keterangan" id="keterangan" rows="3"
@@ -66,7 +66,7 @@
                 
             </div>
 
-            {{-- Tombol Aksi --}}
+            {{-- Bagian Tombol: Simpan perubahan atau Batal --}}
             <div class="mt-8 flex justify-end space-x-3">
                 <a href="{{ route('admin.spk.alternatif.index', $keputusan->id_keputusan) }}" 
                    class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition duration-150 shadow-sm">
@@ -74,7 +74,7 @@
                 </a>
                 <button type="submit"
                         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">
-                    <i class="fas fa-edit mr-2"></i> Perbarui Alternatif
+                    Simpan
                 </button>
             </div>
         </form>

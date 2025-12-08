@@ -10,7 +10,7 @@
                         class="font-medium text-indigo-600">{{ $keputusan->nama_keputusan ?? 'Tidak Ditemukan' }}</span></p>
             </header>
 
-            {{-- Menampilkan pesan error validasi dari Laravel --}}
+            {{-- Menampilkan pesan error jika validasi input gagal --}}
             @if ($errors->any())
                 <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 text-sm">
                     <strong class="font-bold">Oops! Ada masalah dengan input Anda:</strong>
@@ -25,22 +25,22 @@
             <form action="{{ route('admin.spk.kriteria.store', $keputusan->id_keputusan) }}" method="POST">
                 @csrf
 
-                {{-- Form Group --}}
+                {{-- Grup Input Form --}}
                 <div class="space-y-6">
 
-                    {{-- Input: Kode Kriteria (C1, C2, dst.) --}}
+                    {{-- Input Teks: Kode Kriteria (misal: C1, C2) --}}
                     <div>
                         <label for="kode_kriteria" class="block text-sm font-medium text-gray-700 mb-1">
                             Kode Kriteria
                         </label>
-                        <input type="text" name="kode_kriteria" id="kode_kriteria" value="{{ old('kode_kriteria') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm 
+                        <input type="text" name="kode_kriteria" oninput="this.value = this.value.toUpperCase()" id="kode_kriteria" value="{{ old('kode_kriteria') }}" class="mt-1 block w-full uppercase border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm 
                                    @error('kode_kriteria') border-red-500 @enderror" placeholder="Contoh: C1, C2" required>
                         @error('kode_kriteria')
                             <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    {{-- Input: Nama Kriteria --}}
+                    {{-- Input Teks: Nama lengkap kriteria --}}
                     <div>
                         <label for="nama_kriteria" class="block text-sm font-medium text-gray-700 mb-1">
                             Nama Kriteria
@@ -53,7 +53,7 @@
                         @enderror
                     </div>
 
-                    {{-- Select: Jenis Kriteria (Benefit/Cost) --}}
+                    {{-- Pilihan Dropdown: Menentukan jenis kriteria (Benefit atau Cost) --}}
                     <div>
                         <label for="jenis_kriteria" class="block text-sm font-medium text-gray-700 mb-1">
                             Jenis Kriteria (Type)
@@ -71,12 +71,12 @@
                         @enderror
                     </div>
 
-                    {{-- Input: Bobot Kriteria (Default/Manual) --}}
+                    {{-- Input Angka: Bobot Kriteria (Readonly, dihitung via AHP) --}}
                     <div>
                         <label for="bobot_kriteria" class="block text-sm font-medium text-gray-700 mb-1">
                             Bobot Kriteria (Wj)
                         </label>
-                        {{-- Di set READONLY dan default 0 saat CREATE. Bobot dihitung di halaman AHP. --}}
+                        {{-- Field ini diset readonly karena bobot akan dihasilkan dari proses AHP --}}
                         <input type="number" name="bobot_kriteria" id="bobot_kriteria"
                             value="{{ old('bobot_kriteria', 0.0000) }}" step="0.0001" min="0" max="1" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm
             @error('bobot_kriteria') border-red-500 @enderror bg-gray-100 cursor-not-allowed"
@@ -92,7 +92,7 @@
 
                 </div>
 
-                {{-- Tombol Aksi --}}
+                {{-- Bagian Tombol: Simpan atau Batal --}}
                 <div class="mt-8 flex justify-end space-x-3">
                     <a href="{{ route('admin.spk.kriteria.index', $keputusan->id_keputusan) }}"
                         class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition duration-150 shadow-sm">
@@ -100,7 +100,7 @@
                     </a>
                     <button type="submit"
                         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">
-                        Simpan Kriteria
+                        Simpan
                     </button>
                 </div>
             </form>

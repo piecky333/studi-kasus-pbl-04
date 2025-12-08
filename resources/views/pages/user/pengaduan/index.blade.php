@@ -35,18 +35,41 @@
                         </div>
                     </div>
 
-                    <div class="mb-4">
+                    <div class="mb-6 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
                         <form action="{{ route('user.pengaduan.index') }}" method="GET">
-                            <div class="relative">
-                                <input type="text" name="search" placeholder="Cari berdasarkan judul pengaduan..."
-                                    class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm pl-10"
-                                    value="{{ request('search') }}">
-                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                    <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                                    </svg>
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                                {{-- Search --}}
+                                <div class="md:col-span-6">
+                                    <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Cari</label>
+                                    <div class="relative">
+                                        <input type="text" name="search" id="search" placeholder="Cari berdasarkan judul..."
+                                            class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm pl-10 text-sm"
+                                            value="{{ request('search') }}">
+                                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                            <i class="bi bi-search text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Filter Status --}}
+                                <div class="md:col-span-3">
+                                    <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                    <select name="status" id="status" class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-sm" onchange="this.form.submit()">
+                                        <option value="">Semua Status</option>
+                                        <option value="Terkirim" {{ request('status') == 'Terkirim' ? 'selected' : '' }}>Terkirim</option>
+                                        <option value="Diproses" {{ request('status') == 'Diproses' ? 'selected' : '' }}>Diproses</option>
+                                        <option value="Selesai" {{ request('status') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                                        <option value="Ditolak" {{ request('status') == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
+                                    </select>
+                                </div>
+
+                                {{-- Sort --}}
+                                <div class="md:col-span-3">
+                                    <label for="sort" class="block text-sm font-medium text-gray-700 mb-1">Urutkan</label>
+                                    <select name="sort" id="sort" class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-sm" onchange="this.form.submit()">
+                                        <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Terbaru</option>
+                                        <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Terlama</option>
+                                    </select>
                                 </div>
                             </div>
                         </form>
@@ -127,7 +150,14 @@
                                 @empty
                                     <tr>
                                         <td colspan="5" class="px-6 py-10 text-center text-gray-500">
-                                            Tidak ada pengaduan yang anda buat
+                                            <div class="flex flex-col items-center justify-center">
+                                                <i class="bi bi-inbox text-4xl mb-3 text-gray-300"></i>
+                                                <p class="text-lg font-medium text-gray-900">Belum ada pengaduan</p>
+                                                <p class="text-sm text-gray-500 mb-4">Anda belum pernah membuat pengaduan apapun.</p>
+                                                <a href="{{ route('user.pengaduan.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                                    <i class="bi bi-plus-lg mr-2"></i> Buat Pengaduan
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforelse
@@ -136,7 +166,7 @@
                     </div>
 
                     <div class="mt-4">
-                        {{ $pengaduan->links() }}
+                        {{ $pengaduan->withQueryString()->links() }}
                     </div>
 
                 </div>

@@ -9,7 +9,9 @@ use App\Models\Berita;
 class BeritaController extends Controller
 {
     /**
-     * Menampilkan halaman DAFTAR SEMUA berita/kegiatan yang sudah diverifikasi.
+     * Tampilkan daftar berita kegiatan yang terverifikasi.
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -22,24 +24,27 @@ class BeritaController extends Controller
     }
 
     /**
-     * Menampilkan halaman DETAIL SATU berita yang sudah diverifikasi.
+     * Tampilkan detail berita kegiatan.
+     *
+     * @param int $id
+     * @return \Illuminate\View\View
      */
     public function show($id)
     {
-        // Ambil berita satuan
+        // Ambil berita verified.
         $berita = Berita::where('kategori', 'kegiatan')
-            ->where('status', 'verified') // filter verified
+            ->where('status', 'verified')
             ->findOrFail($id);
 
-        // Ambil berita terkait (3 berita terbaru, selain yang ini)
+        // Ambil 3 berita terkait terbaru.
         $beritaTerkait = Berita::where('kategori', 'kegiatan')
-            ->where('status', 'verified') // filter verified
+            ->where('status', 'verified')
             ->where('id_berita', '!=', $id)
             ->latest()
             ->take(3)
             ->get();
 
-        // Ambil komentar induk beserta balasannya
+        // Ambil komentar induk dan balasan.
         $komentar_induk = $berita->komentar()
             ->whereNull('parent_id')
             ->with(['replies.parent'])

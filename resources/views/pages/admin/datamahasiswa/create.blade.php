@@ -74,7 +74,7 @@
                 {{-- Tombol Simpan --}}
                 <div class="flex justify-end pt-6 border-t border-gray-100">
                     <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-colors duration-200 flex items-center">
-                        Simpan Data
+                        Simpan 
                     </button>
                 </div>
             </form>

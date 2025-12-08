@@ -145,25 +145,36 @@
                     </h3>
                 </div>
                 <div class="px-4 py-5 sm:p-6">
-                    @if ($pengaduan->mahasiswa)
+                    @if ($pengaduan->user)
                         <div class="flex items-center mb-4">
                             <div class="flex-shrink-0 h-12 w-12">
                                 <img class="h-12 w-12 rounded-full object-cover border border-gray-200" 
-                                     src="https://ui-avatars.com/api/?name={{ urlencode($pengaduan->mahasiswa->nama) }}&background=random" 
+                                     src="https://ui-avatars.com/api/?name={{ urlencode($pengaduan->user->nama) }}&background=random" 
                                      alt="">
                             </div>
                             <div class="ml-4">
-                                <h4 class="text-lg font-bold text-gray-900">{{ $pengaduan->mahasiswa->nama }}</h4>
-                                <p class="text-sm text-gray-500">{{ $pengaduan->mahasiswa->nim ?? 'NIM Tidak Ada' }}</p>
+                                <h4 class="text-lg font-bold text-gray-900">{{ $pengaduan->user->nama }}</h4>
+                                <p class="text-sm text-gray-500">
+                                    @if($pengaduan->mahasiswa)
+                                        {{ $pengaduan->mahasiswa->nim }}
+                                    @else
+                                        User (Bukan Mahasiswa)
+                                    @endif
+                                </p>
                             </div>
                         </div>
                         <div class="border-t border-gray-100 pt-4">
                             <dl class="space-y-3">
                                 <div>
                                     <dt class="text-xs font-medium text-gray-500 uppercase tracking-wider">Email</dt>
-                                    <dd class="mt-1 text-sm text-gray-900">{{ $pengaduan->mahasiswa->user->email ?? '-' }}</dd>
+                                    <dd class="mt-1 text-sm text-gray-900">{{ $pengaduan->user->email }}</dd>
                                 </div>
-                                {{-- Tambahkan info lain jika ada, misal Prodi/Jurusan --}}
+                                @if($pengaduan->mahasiswa)
+                                    <div>
+                                        <dt class="text-xs font-medium text-gray-500 uppercase tracking-wider">Semester</dt>
+                                        <dd class="mt-1 text-sm text-gray-900">{{ $pengaduan->mahasiswa->semester ?? '-' }}</dd>
+                                    </div>
+                                @endif
                             </dl>
                         </div>
                     @else
@@ -173,7 +184,7 @@
                                     <i class="fas fa-exclamation-triangle text-yellow-400"></i>
                                 </div>
                                 <div class="ml-3">
-                                    <h3 class="text-sm font-medium text-yellow-800">Data pelapor tidak ditemukan</h3>
+                                    <h3 class="text-sm font-medium text-yellow-800">Data pelapor tidak ditemukan (User terhapus)</h3>
                                 </div>
                             </div>
                         </div>

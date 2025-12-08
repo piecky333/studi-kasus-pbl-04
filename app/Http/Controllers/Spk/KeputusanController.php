@@ -14,9 +14,15 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Controller ini bertanggung jawab hanya untuk mengelola CRUD dari entitas 
- * Keputusan SPK itu sendiri (Level 1).
- * Note: Controller ini TIDAK extend KeputusanDetailController karena ini adalah halaman Index utama.
+ * Class KeputusanController
+ * 
+ * Controller ini bertanggung jawab untuk mengelola CRUD (Create, Read, Update, Delete)
+ * dari entitas Keputusan SPK (Level 1 / Root).
+ * 
+ * Note: Controller ini TIDAK mewarisi KeputusanDetailController karena ini adalah 
+ * halaman Index utama yang menampilkan daftar semua keputusan, bukan detail dari satu keputusan.
+ * 
+ * @package App\Http\Controllers\Spk
  */
 class KeputusanController extends Controller
 {
@@ -25,7 +31,10 @@ class KeputusanController extends Controller
     // =================================================================
     
     /**
-     * Menampilkan daftar semua Keputusan SPK yang tersedia (index).
+     * Menampilkan daftar semua Keputusan SPK yang tersedia.
+     * 
+     * Menggunakan pagination (10 item per halaman) untuk efisiensi tampilan data.
+     * 
      * @return \Illuminate\View\View
      */
     public function index()
@@ -43,6 +52,7 @@ class KeputusanController extends Controller
     
     /**
      * Menampilkan form untuk membuat Keputusan SPK baru.
+     * 
      * @return \Illuminate\View\View
      */
     public function create()
@@ -54,6 +64,9 @@ class KeputusanController extends Controller
 
     /**
      * Menyimpan Keputusan SPK baru ke database.
+     * 
+     * Status awal keputusan yang baru dibuat akan diset otomatis menjadi 'Draft'.
+     * 
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -62,14 +75,11 @@ class KeputusanController extends Controller
         // 1. Validasi input yang masuk
         $validated = $request->validate([
             'nama_keputusan' => 'required|string|max:255',
-            'metode_yang_digunakan' => 'required|string|max:50',
-            // Note: Tambahkan validasi untuk memastikan metode valid (misal: 'in:AHP,SAW,TOPSIS')
         ]);
 
         // 2. Buat record baru di database
         $keputusan = spkkeputusan::create([
             'nama_keputusan' => $validated['nama_keputusan'],
-            'metode_yang_digunakan' => $validated['metode_yang_digunakan'],
             'tanggal_dibuat' => now(),
             'status' => 'Draft', // Status awal selalu Draft
         ]);
@@ -80,9 +90,11 @@ class KeputusanController extends Controller
     }
 
     /**
-     * Menampilkan form edit Keputusan.
-     * @param int $idKeputusan
+     * Menampilkan form edit untuk Keputusan tertentu.
+     * 
+     * @param int $idKeputusan ID Keputusan yang akan diedit
      * @return \Illuminate\View\View
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function edit($idKeputusan)
     {
@@ -94,17 +106,18 @@ class KeputusanController extends Controller
     }
 
     /**
-     * Memperbarui Keputusan yang sudah ada.
+     * Memperbarui data Keputusan yang sudah ada.
+     * 
      * @param Request $request
      * @param int $idKeputusan
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function update(Request $request, $idKeputusan)
     {
         $keputusan = spkkeputusan::findOrFail($idKeputusan);
         $validated = $request->validate([
             'nama_keputusan' => 'required|string|max:255',
-            'metode_yang_digunakan' => 'required|string|max:50',
         ]);
 
         $keputusan->update($validated);
@@ -115,7 +128,17 @@ class KeputusanController extends Controller
     }
 
     /**
-     * Menghapus Keputusan SPK dan semua data terkait (Penghapusan Bertingkat).
+     * Menghapus Keputusan SPK beserta seluruh data turunannya (Cascading Delete).
+     * 
+     * Menggunakan Database Transaction untuk memastikan integritas data.
+     * Data yang dihapus meliputi:
+     * 1. Penilaian (terkait Kriteria & Alternatif)
+     * 2. Subkriteria
+     * 3. Hasil Akhir
+     * 4. Kriteria
+     * 5. Alternatif
+     * 6. Keputusan itu sendiri
+     * 
      * @param int $idKeputusan
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -131,10 +154,9 @@ class KeputusanController extends Controller
             $kriteriaIds = kriteria::where('id_keputusan', $idKeputusan)->pluck('id_kriteria')->toArray();
             $alternatifIds = alternatif::where('id_keputusan', $idKeputusan)->pluck('id_alternatif')->toArray();
 
-            // 2. Hapus data anak paling dalam (hanya jika Kriteria/Alternatif ditemukan)
-            // Ini penting untuk model yang memiliki foreign key ke Kriteria atau Alternatif
+            // 2. Hapus data anak paling dalam (Deepest Child) terlebih dahulu.
+            // Ini untuk menghindari constraint violation jika foreign key tidak di-set ON DELETE CASCADE.
             if (!empty($kriteriaIds)) {
-                // Hapus Perbandingan Kriteria (jika Anda memiliki modelnya)
                 // Hapus Penilaian yang terkait dengan Kriteria
                 penilaian::whereIn('id_kriteria', $kriteriaIds)->delete();
                 // Hapus Subkriteria yang terkait dengan Kriteria
@@ -148,7 +170,7 @@ class KeputusanController extends Controller
                 hasilakhir::whereIn('id_alternatif', $alternatifIds)->delete();
             }
             
-            // 3. Hapus data orang tua (Kriteria dan Alternatif)
+            // 3. Hapus data entitas utama (Kriteria dan Alternatif) setelah data anaknya bersih.
             kriteria::where('id_keputusan', $idKeputusan)->delete();
             alternatif::where('id_keputusan', $idKeputusan)->delete();
 

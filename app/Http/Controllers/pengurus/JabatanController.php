@@ -9,21 +9,34 @@ use Illuminate\Http\Request;
 
 class JabatanController extends Controller
 {
-    // ✅ 1. Tampilkan semua jabatan
+    /**
+     * Tampilkan daftar semua jabatan.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $jabatan = Jabatan::with('divisi')->latest()->get();
         return view('pages.pengurus.jabatan.index', compact('jabatan'));
     }
 
-    // ✅ 2. Form tambah jabatan
+    /**
+     * Tampilkan form tambah jabatan.
+     *
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         $divisi = Divisi::all();
         return view('pages.pengurus.jabatan.create', compact('divisi'));
     }
 
-    // ✅ 3. Simpan data baru
+    /**
+     * Simpan data jabatan baru.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -37,7 +50,12 @@ class JabatanController extends Controller
                          ->with('success', 'Jabatan baru berhasil ditambahkan!');
     }
 
-    // ✅ 4. Form edit jabatan
+    /**
+     * Tampilkan form edit jabatan.
+     *
+     * @param int $id
+     * @return \Illuminate\View\View
+     */
     public function edit($id)
     {
         $jabatan = Jabatan::findOrFail($id);
@@ -45,7 +63,13 @@ class JabatanController extends Controller
         return view('pages.pengurus.jabatan.edit', compact('jabatan', 'divisi'));
     }
 
-    // ✅ 5. Update jabatan
+    /**
+     * Perbarui data jabatan.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -60,7 +84,12 @@ class JabatanController extends Controller
                          ->with('success', 'Jabatan berhasil diperbarui!');
     }
 
-    // ✅ 6. Hapus jabatan
+    /**
+     * Hapus data jabatan.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy($id)
     {
         $jabatan = Jabatan::findOrFail($id);

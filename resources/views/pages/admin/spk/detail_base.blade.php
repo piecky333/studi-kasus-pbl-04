@@ -9,7 +9,7 @@
 
     <div class="bg-white shadow-xl overflow-hidden rounded-lg p-6">
         
-        {{-- BREADCRUMB --}}
+        {{-- Navigasi Breadcrumb untuk menunjukkan lokasi halaman saat ini --}}
         <nav class="text-sm font-medium text-gray-500 mb-4" aria-label="Breadcrumb">
             <ol class="list-none p-0 inline-flex">
                 <li class="flex items-center">
@@ -23,24 +23,24 @@
         </nav>
         
         {{-- ========================================================== --}}
-        {{-- NAVIGASI TAB UTAMA --}}
+        {{-- Navigasi Tab Utama untuk berpindah antar langkah SPK (Kriteria, Alternatif, Hasil) --}}
         {{-- ========================================================== --}}
         <div class="border-b border-gray-200 mb-6">
             <nav class="-mb-px flex space-x-8" aria-label="Tabs">
                 
-                {{-- TAB 1: KRITERIA & BOBOT (AHP) --}}
+                {{-- Tab 1: Menampilkan halaman pengelolaan Kriteria dan Perhitungan Bobot AHP --}}
                 <a href="{{ route('admin.spk.kriteria.index', $keputusanId) }}" 
                     class="{{ ($currentTab ?? 'kriteria') == 'kriteria' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition duration-150">
                     1. Kriteria & Bobot (AHP)
                 </a>
 
-                {{-- TAB 2: ALTERNATIF & PENILAIAN ($Xij$) --}}
+                {{-- Tab 2: Menampilkan halaman pengelolaan Alternatif dan Matriks Penilaian --}}
                 <a href="{{ route('admin.spk.alternatif.index', $keputusanId) }}" 
                     class="{{ ($currentTab ?? '') == 'alternatif' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition duration-150">
                     2. Alternatif & Penilaian
                 </a>
                 
-                {{-- TAB 3: HASIL & PERINGKAT (SAW) --}}
+                {{-- Tab 3: Menampilkan halaman Hasil Akhir Perankingan menggunakan metode SAW --}}
                 <a href="{{ route('admin.spk.hasil.index', $keputusanId) }}" 
                     class="{{ ($currentTab ?? '') == 'hasil' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition duration-150">
                     3. Hasil Akhir (SAW)
@@ -49,7 +49,7 @@
         </div>
         
         {{-- ========================================================== --}}
-        {{-- KONTEN TAB DARI SUB-VIEW --}}
+        {{-- Area Konten Dinamis: Menampilkan isi dari masing-masing tab (Kriteria, Alternatif, atau Hasil) --}}
         {{-- ========================================================== --}}
         @yield('detail_content')
 

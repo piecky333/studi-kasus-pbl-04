@@ -13,7 +13,10 @@ use Illuminate\View\View;
 class ProfileController extends Controller
 {
     /**
-     * Display the user's profile form.
+     * Tampilkan form edit profil.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\View\View
      */
     public function edit(Request $request): View
     {
@@ -23,7 +26,12 @@ class ProfileController extends Controller
     }
 
     /**
-     * Update the user's profile information.
+     * Perbarui informasi profil.
+     * Reset verifikasi email jika email berubah.
+     * Update foto profil jika ada upload baru.
+     *
+     * @param \App\Http\Requests\ProfileUpdateRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {

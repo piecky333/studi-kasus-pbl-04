@@ -8,19 +8,53 @@ use App\Models\admin\Prestasi;
 use App\Models\Mahasiswa;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * Class PrestasiController
+ * 
+ * Controller ini bertanggung jawab untuk mengelola data Prestasi Mahasiswa.
+ * Fitur mencakup CRUD lengkap dan pencarian data mahasiswa via AJAX untuk
+ * memudahkan pengisian form.
+ * 
+ * @package App\Http\Controllers\Admin
+ */
 class PrestasiController extends Controller
 {
     /**
-     * Tampilkan daftar prestasi mahasiswa.
+     * Menampilkan daftar prestasi mahasiswa.
+     * 
+     * Menggunakan Eager Loading 'mahasiswa' untuk efisiensi query.
+     * 
+     * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $prestasi = Prestasi::with(['mahasiswa'])->latest()->get();
+        $query = Prestasi::with(['mahasiswa']);
+
+        // Filter NIM (Starts With)
+        if ($request->filled('nim')) {
+            $query->whereHas('mahasiswa', function ($q) use ($request) {
+                $q->where('nim', 'like', $request->nim . '%');
+            });
+        }
+
+        // Filter Tahun
+        if ($request->filled('tahun')) {
+            $query->where('tahun', $request->tahun);
+        }
+
+        // Filter Tingkat
+        if ($request->filled('tingkat')) {
+            $query->where('tingkat_prestasi', $request->tingkat);
+        }
+
+        $prestasi = $query->latest()->paginate(10);
         return view('pages.admin.prestasi.index', compact('prestasi'));
     }
 
     /**
-     * Form tambah prestasi.
+     * Menampilkan form untuk menambahkan prestasi baru.
+     * 
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -28,15 +62,20 @@ class PrestasiController extends Controller
     }
 
     /**
-     * Simpan data prestasi baru.
-     *
-     * === PERUBAHAN DI SINI ===
-     * Kita tidak lagi memvalidasi 'nim'.
-     * Kita memvalidasi 'id_mahasiswa' yang didapat dari AJAX.
+     * Menyimpan data prestasi baru ke database.
+     * 
+     * Fitur Cerdas:
+     * Mendukung pencarian ID Mahasiswa berdasarkan NIM jika ID tidak dikirim langsung.
+     * Ini berguna jika input form menggunakan autocomplete NIM.
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
-        // Jika id_mahasiswa kosong tapi nim ada, cari id_mahasiswa berdasarkan nim
+        // Logika Fallback:
+        // Jika form mengirimkan NIM tetapi tidak mengirimkan ID Mahasiswa (misal JS error),
+        // sistem akan mencoba mencari ID Mahasiswa secara manual berdasarkan NIM tersebut.
         if (empty($request->id_mahasiswa) && !empty($request->nim)) {
             $mahasiswa = Mahasiswa::where('nim', $request->nim)->first();
             if ($mahasiswa) {
@@ -50,7 +89,17 @@ class PrestasiController extends Controller
             'tingkat'      => 'required|string|max:255',
             'tanggal'      => 'required|date',
             'deskripsi'    => 'nullable|string',
+            'bukti_file'   => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:2048', // Max 2MB
         ]);
+
+        $buktiPath = null;
+        if ($request->hasFile('bukti_file')) {
+            $file = $request->file('bukti_file');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            // Simpan ke storage/app/public/prestasi
+            $path = $file->storeAs('prestasi', $filename, 'public');
+            $buktiPath = 'prestasi/' . $filename;
+        }
 
         Prestasi::create([
             'id_mahasiswa'   => $request->id_mahasiswa,
@@ -60,6 +109,7 @@ class PrestasiController extends Controller
             'tahun'          => date('Y', strtotime($request->tanggal)),
             'status_validasi' => 'disetujui',
             'deskripsi'      => $request->deskripsi,
+            'bukti_path'     => $buktiPath,
         ]);
 
         return redirect()->route('admin.prestasi.index')->with('success', 'Data prestasi berhasil ditambahkan.');
@@ -67,7 +117,11 @@ class PrestasiController extends Controller
 
 
     /**
-     * Detail satu data prestasi.
+     * Menampilkan detail lengkap satu data prestasi.
+     * 
+     * @param string $id ID Prestasi
+     * @return \Illuminate\View\View
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function show(string $id)
     {
@@ -76,7 +130,11 @@ class PrestasiController extends Controller
     }
 
     /**
-     * Form edit prestasi.
+     * Menampilkan form edit data prestasi.
+     * 
+     * @param string $id
+     * @return \Illuminate\View\View
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function edit(string $id)
     {
@@ -85,7 +143,14 @@ class PrestasiController extends Controller
     }
 
     /**
-     * Update data prestasi.
+     * Memperbarui data prestasi yang sudah ada.
+     * 
+     * Mendukung pembaruan relasi mahasiswa jika NIM diubah.
+     * 
+     * @param Request $request
+     * @param string $id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function update(Request $request, string $id)
     {
@@ -106,7 +171,9 @@ class PrestasiController extends Controller
             'status_validasi'  => $request->status_validasi,
         ];
 
-        // Jika NIM berubah, update id_mahasiswa
+        // Logika Update Relasi:
+        // Jika field NIM diisi/diubah, kita perlu mencari ulang ID Mahasiswa terkait
+        // dan mengupdate foreign key 'id_mahasiswa' di tabel prestasi.
         if ($request->filled('nim')) {
             $mahasiswa = Mahasiswa::where('nim', $request->nim)->first();
             if ($mahasiswa) {
@@ -120,7 +187,11 @@ class PrestasiController extends Controller
     }
 
     /**
-     * Hapus data prestasi.
+     * Menghapus data prestasi secara permanen.
+     * 
+     * @param string $id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function destroy(string $id)
     {
@@ -131,14 +202,13 @@ class PrestasiController extends Controller
     }
 
     /**
-     * AJAX: cari mahasiswa berdasarkan NIM.
-     *
-     * === PERUBAHAN DI SINI (ASUMSI) ===
-     * Saya asumsikan primary key Anda adalah 'id_mahasiswa'.
-     * Jika primary key Anda hanya 'id', ganti 'id_mahasiswa' => $mahasiswa->id_mahasiswa
-     * menjadi 'id_mahasiswa' => $mahasiswa->id
-     *
-     * Dan pastikan kolom di tabel mahasiswa juga 'id_mahasiswa'
+     * Endpoint AJAX: Mencari data mahasiswa berdasarkan NIM.
+     * 
+     * Digunakan oleh frontend (JavaScript) untuk fitur autofill/autocomplete.
+     * Mengembalikan response JSON berisi data mahasiswa jika ditemukan.
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function cariMahasiswa(Request $request)
     {

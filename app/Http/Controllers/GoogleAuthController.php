@@ -10,11 +10,18 @@ use Exception;
 
 class GoogleAuthController extends Controller
 {
+    /**
+     * Redirect ke halaman login Google.
+     */
     public function redirect()
     {
         return Socialite::driver('google')->redirect();
     }
 
+    /**
+     * Proses callback dari Google.
+     * Login atau registrasi user baru.
+     */
     public function callback()
     {
         try {
@@ -22,17 +29,15 @@ class GoogleAuthController extends Controller
 
             $user = User::updateOrCreate(
                 [
-                    'google_id' => $googleUser->getId() // Kunci pencarian
+                    'google_id' => $googleUser->getId()
                 ],
                 [
-                    // Data untuk di-update atau dibuat:
                     'nama' => $googleUser->getName(),         
                     'email' => $googleUser->getEmail(),       
                     'username' => Str::before($googleUser->getEmail(), '@'), 
                     'avatar' => $googleUser->getAvatar(),    
                     'role' => 'user',                     
                     'password' => null                    
-                    
                 ]
             );
 

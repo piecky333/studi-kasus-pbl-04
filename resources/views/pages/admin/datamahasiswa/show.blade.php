@@ -3,7 +3,7 @@
 @section('title', 'Detail Mahasiswa')
 
 @section('content')
-<div class="container-fluid px-4 mt-6">
+<div class="container-fluid px-4 mt-6 mb-10">
     {{-- Header --}}
     <div class="flex justify-between items-center mb-6">
         <div>
@@ -44,7 +44,7 @@
             <div class="bg-white rounded-xl shadow-[10px_10px_15px_-3px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden mt-6 p-6">
                 <h6 class="font-bold text-gray-800 mb-4 border-b border-gray-100 pb-2">Informasi Akademik</h6>
                 
-                <div class="space-y-3">
+                <div class="space-y-4">
                     <div>
                         <p class="text-xs text-gray-500 uppercase tracking-wide font-semibold">Email</p>
                         <p class="text-gray-800 font-medium">{{ $mahasiswa->email }}</p>
@@ -67,10 +67,10 @@
         <div class="lg:col-span-2 space-y-6">
             
             {{-- Prestasi --}}
-            <div class="bg-white rounded-xl shadow-[10px_10px_15px_-3px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden">
-                <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+            <div class="bg-white rounded-xl shadow-[10px_10px_15px_-3px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden p-6">
+                <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
                     <h6 class="font-bold text-gray-800">Riwayat Prestasi</h6>
-                    <span class="bg-green-100 text-green-800 text-xs font-bold px-2.5 py-0.5 rounded-full">{{ $mahasiswa->prestasi->count() }} Data</span>
+                    <span class="bg-green-100 text-green-800 text-xs font-bold px-2.5 py-0.5 rounded-full">{{ $mahasiswa->prestasi->count() }} Prestasi</span>
                 </div>
                 
                 <div class="overflow-x-auto">
@@ -113,10 +113,10 @@
             </div>
 
             {{-- Sanksi --}}
-            <div class="bg-white rounded-xl shadow-[10px_10px_15px_-3px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden">
-                <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+            <div class="bg-white rounded-xl shadow-[10px_10px_15px_-3px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden p-6">
+                <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
                     <h6 class="font-bold text-gray-800">Riwayat Sanksi</h6>
-                    <span class="bg-red-100 text-red-800 text-xs font-bold px-2.5 py-0.5 rounded-full">{{ $mahasiswa->sanksi->count() }} Data</span>
+                    <span class="bg-red-100 text-red-800 text-xs font-bold px-2.5 py-0.5 rounded-full">{{ $mahasiswa->sanksi->count() }} Sanksi</span>
                 </div>
                 
                 <div class="overflow-x-auto">

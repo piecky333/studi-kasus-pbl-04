@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\admin;
+namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class sanksi extends Model
+class Sanksi extends Model
 {
     use HasFactory;
 

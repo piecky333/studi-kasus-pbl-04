@@ -10,33 +10,35 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
+    /**
+     * Tampilkan dashboard user.
+     * Hitung statistik pengaduan dan tampilkan berita terbaru.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
-        // Mengambil data user yang sedang login
+        // Ambil user login.
         $user = Auth::user();
 
-        // --- Sudut Pandang (Efisien) ---
-        // Kita bisa ambil relasi sekali saja, lalu hitung
-        $semuaPengaduanUser = $user->pengaduan()->get(); // Ambil Collection
+        // Ambil semua pengaduan user.
+        $semuaPengaduanUser = $user->pengaduan()->get();
 
-        // Menghitung total pengaduan dan berdasarkan status dari Collection
+        // Hitung total dan status pengaduan.
         $totalPengaduan = $semuaPengaduanUser->count();
-
-        // === KOREKSI CASE SENSITIVITY ===
         $pengaduanDiproses = $semuaPengaduanUser->where('status', 'Diproses')->count();
         $pengaduanSelesai = $semuaPengaduanUser->where('status', 'Selesai')->count();
-        // ================================
 
         $pengaduanTerakhir = $user->pengaduan()->latest()->take(5)->get();
 
-        // Ambil 4 berita global terakhir yang valid (kegiatan & verified)
+        // Ambil 4 berita kegiatan terbaru (verified).
         $beritaTerbaru = Berita::where('kategori', 'kegiatan')
             ->where('status', 'verified')
             ->latest()
             ->take(4)
             ->get();
 
-        // Mengirim data ke view dashboard user
+        // Kirim data ke view.
         return view('pages.user.dashboard', compact(
             'totalPengaduan',
             'pengaduanDiproses',
