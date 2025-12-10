@@ -29,7 +29,7 @@ class DashboardController extends Controller
         $pengaduanDiproses = $semuaPengaduanUser->where('status', 'Diproses')->count();
         $pengaduanSelesai = $semuaPengaduanUser->where('status', 'Selesai')->count();
 
-        $pengaduanTerakhir = $user->pengaduan()->latest()->take(5)->get();
+        $pengaduanTerakhir = $user->pengaduan()->with('tanggapan')->latest()->take(5)->get();
 
         // Ambil 4 berita kegiatan terbaru (verified).
         $beritaTerbaru = Berita::where('kategori', 'kegiatan')
@@ -46,5 +46,20 @@ class DashboardController extends Controller
             'pengaduanTerakhir',
             'beritaTerbaru'    
         ));
+    }
+
+    /**
+     * Tandai notifikasi sebagai sudah dibaca dan redirect ke URL terkait.
+     */
+    public function markAsRead($id)
+    {
+        $notification = Auth::user()->notifications()->where('id', $id)->first();
+
+        if ($notification) {
+            $notification->markAsRead();
+            return redirect($notification->data['url']);
+        }
+
+        return back();
     }
 }
