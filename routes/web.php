@@ -114,6 +114,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('pengaduan/{id}', [AdminPengaduanController::class, 'show'])->name('pengaduan.show');
     Route::delete('pengaduan/{id}', [AdminPengaduanController::class, 'destroy'])->name('pengaduan.destroy');
     Route::put('pengaduan/{id}/verifikasi', [AdminPengaduanController::class, 'verifikasi'])->name('pengaduan.verifikasi');
+    Route::post('pengaduan/{id}/tanggapan', [AdminPengaduanController::class, 'storeTanggapan'])->name('pengaduan.tanggapan');
 
     // Prestasi
     Route::get('prestasi/cari-mahasiswa', [AdminPrestasiController::class, 'cariMahasiswa'])->name('prestasi.cariMahasiswa');
@@ -260,6 +261,8 @@ Route::prefix('user')->name('user.')
         Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
         Route::resource('berita', UserBeritaController::class);
         Route::resource('pengaduan', UserPengaduanController::class);
+        Route::post('pengaduan/{id}/tanggapan', [UserPengaduanController::class, 'storeTanggapan'])->name('pengaduan.tanggapan');
+        Route::get('/notifications/{id}/read', [UserDashboardController::class, 'markAsRead'])->name('notifications.read');
     });
 
 

@@ -53,6 +53,19 @@
                                 @error('judul')
                                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div class="mt-4">
+                                <x-input-label for="no_telpon_dihubungi" value="No. WhatsApp / Telepon Aktif" />
+                                <x-text-input id="no_telpon_dihubungi" name="no_telpon_dihubungi" type="text" class="mt-1 block w-full" 
+                                              :value="old('no_telpon_dihubungi')" required 
+                                              placeholder="Contoh: 081234567890" />
+                                <p class="mt-1 text-xs text-gray-500">Nomor ini akan digunakan jika kami perlu menghubungi Anda secara langsung.</p>
+                                @error('no_telpon_dihubungi')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
 
                             <div class="mt-4">

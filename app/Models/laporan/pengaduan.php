@@ -31,6 +31,7 @@ class Pengaduan extends Model
         'deskripsi',
         'status',
         'gambar_bukti',
+        'no_telpon_dihubungi',
     ];
 
     /* ===========================

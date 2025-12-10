@@ -9,14 +9,46 @@
             display: flex !important;
             flex-direction: column !important;
             width: 14rem !important;
+            transition: width 0.3s; /* Smooth transition */
         }
+        /* Fix: Force width reduction when toggled */
+        #accordionSidebar.toggled {
+            width: 6.5rem !important;
+        }
+    }
+    /* Fix sidebar headings not hiding when collapsed */
+    #accordionSidebar.toggled .sidebar-heading {
+        display: none !important;
+    }
+    
+    /* Logic for Logo vs Text */
+    .sidebar-brand-icon img {
+        max-height: 40px; 
+        width: auto;
+    }
+
+    #accordionSidebar:not(.toggled) .sidebar-brand-icon {
+        display: none; 
+    }
+    #accordionSidebar.toggled .sidebar-brand-icon {
+        display: block;
+        text-align: center;
+        margin: 0 auto;
+    }
+    #accordionSidebar.toggled .sidebar-brand-text {
+        display: none;
+    }
+    
+    /* Ensure dividers look good in small mode */
+    #accordionSidebar.toggled hr.sidebar-divider {
+        margin: 0 1rem 1rem !important;
     }
 </style>
 <ul class="navbar-nav bg-[#0d2149] sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-        <div class="sidebar-brand-icon rotate-n-15">
-            <i class=""></i>
+        <div class="sidebar-brand-icon">
+            <img src="{{ asset('img/Logo hima.png') }}" alt="Logo" class="img-fluid">
         </div>
         <div class="sidebar-brand-text mx-3">Sistem manajemen</div>
     </a>

@@ -163,9 +163,16 @@
                                                     {{ $item->created_at->format('d M Y') }}
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                    @php
+                                                        // Cek apakah ada balasan terakhir dari admin
+                                                        $lastTanggapan = $item->tanggapan->sortBy('created_at')->last();
+                                                        $hasReply = $lastTanggapan && $lastTanggapan->id_admin;
+                                                    @endphp
                                                     {{-- Link ke Detail Pengaduan User --}}
                                                     <a href="{{ route('user.pengaduan.show', $item->id_pengaduan) }}"
-                                                        class="text-indigo-600 hover:text-indigo-900">Detail</a>
+                                                        class="text-indigo-600 hover:text-indigo-900 font-semibold">
+                                                        {{ $hasReply ? 'Lihat balasan' : 'Detail' }}
+                                                    </a>
                                                 </td>
                                             </tr>
                                         @endforeach
