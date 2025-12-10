@@ -47,6 +47,11 @@ class PrestasiController extends Controller
             $query->where('tingkat_prestasi', $request->tingkat);
         }
 
+        // Filter Jenis Prestasi
+        if ($request->filled('jenis')) {
+            $query->where('jenis_prestasi', $request->jenis);
+        }
+
         $prestasi = $query->latest()->paginate(10);
         return view('pages.admin.prestasi.index', compact('prestasi'));
     }
@@ -58,38 +63,31 @@ class PrestasiController extends Controller
      */
     public function create()
     {
-        return view('pages.admin.prestasi.create');
+        // Ambil data mahasiswa untuk dropdown multi-select
+        $mahasiswa = Mahasiswa::orderBy('nama', 'asc')->get();
+        return view('pages.admin.prestasi.create', compact('mahasiswa'));
     }
 
     /**
      * Menyimpan data prestasi baru ke database.
      * 
-     * Fitur Cerdas:
-     * Mendukung pencarian ID Mahasiswa berdasarkan NIM jika ID tidak dikirim langsung.
-     * Ini berguna jika input form menggunakan autocomplete NIM.
+     * Fitur Bulk Create:
+     * Mendukung input banyak mahasiswa sekaligus (misal untuk prestasi Tim/Kelompok).
      * 
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
-        // Logika Fallback:
-        // Jika form mengirimkan NIM tetapi tidak mengirimkan ID Mahasiswa (misal JS error),
-        // sistem akan mencoba mencari ID Mahasiswa secara manual berdasarkan NIM tersebut.
-        if (empty($request->id_mahasiswa) && !empty($request->nim)) {
-            $mahasiswa = Mahasiswa::where('nim', $request->nim)->first();
-            if ($mahasiswa) {
-                $request->merge(['id_mahasiswa' => $mahasiswa->id_mahasiswa]);
-            }
-        }
-
         $request->validate([
-            'id_mahasiswa' => 'required|integer|exists:mahasiswa,id_mahasiswa',
+            'id_mahasiswa'   => 'required|array',
+            'id_mahasiswa.*' => 'exists:mahasiswa,id_mahasiswa',
             'judul_prestasi' => 'required|string|max:255',
-            'tingkat'      => 'required|string|max:255',
-            'tanggal'      => 'required|date',
-            'deskripsi'    => 'nullable|string',
-            'bukti_file'   => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:2048', // Max 2MB
+            'jenis_prestasi' => 'required|in:Akademik,Non-Akademik',
+            'tingkat'        => 'required|string|max:255',
+            'tanggal'        => 'required|date',
+            'deskripsi'      => 'nullable|string',
+            'bukti_file'     => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:2048', // Max 2MB
         ]);
 
         $buktiPath = null;
@@ -101,16 +99,20 @@ class PrestasiController extends Controller
             $buktiPath = 'prestasi/' . $filename;
         }
 
-        Prestasi::create([
-            'id_mahasiswa'   => $request->id_mahasiswa,
-            'id_admin'       => Auth::user()->id_admin ?? null,
-            'nama_kegiatan'  => $request->judul_prestasi,
-            'tingkat_prestasi' => $request->tingkat,
-            'tahun'          => date('Y', strtotime($request->tanggal)),
-            'status_validasi' => 'disetujui',
-            'deskripsi'      => $request->deskripsi,
-            'bukti_path'     => $buktiPath,
-        ]);
+        // Loop untuk setiap mahasiswa yang dipilih
+        foreach ($request->id_mahasiswa as $id_mahasiswa) {
+            Prestasi::create([
+                'id_mahasiswa'   => $id_mahasiswa,
+                'id_admin'       => Auth::user()->id_admin ?? null,
+                'nama_kegiatan'  => $request->judul_prestasi,
+                'jenis_prestasi' => $request->jenis_prestasi,
+                'tingkat_prestasi' => $request->tingkat,
+                'tahun'          => date('Y', strtotime($request->tanggal)),
+                'status_validasi' => 'disetujui', // Default disetujui jika entry dari admin
+                'deskripsi'      => $request->deskripsi,
+                'bukti_path'     => $buktiPath,
+            ]);
+        }
 
         return redirect()->route('admin.prestasi.index')->with('success', 'Data prestasi berhasil ditambahkan.');
     }
