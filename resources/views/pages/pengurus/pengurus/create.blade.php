@@ -80,36 +80,116 @@
                         @enderror
                     </div>
 
-                    {{-- Pilih User --}}
-                    <div class="sm:col-span-6">
-                        <label for="id_user" class="block text-sm font-medium text-gray-700">
-                            User (Pengurus) <span class="text-red-500">*</span>
+                    {{-- Pilih Mahasiswa (Alpine.js Custom) --}}
+                    <div class="sm:col-span-6" x-data="studentSelect()">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Pilih Mahasiswa <span class="text-red-500">*</span>
                         </label>
-                        <div class="mt-1">
-                            <select name="id_user" id="id_user" required class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('id_user') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2">
-                                <option value="">-- Pilih User --</option>
-                                @foreach($users as $u)
-                                    <option value="{{ $u->id_user }}" {{ old('id_user') == $u->id_user ? 'selected' : '' }}>
-                                        {{ $u->nama }} ({{ $u->email }})
-                                    </option>
-                                @endforeach
-                            </select>
-                            <p class="mt-1 text-xs text-gray-500">Hanya menampilkan user dengan role "pengurus".</p>
+                        
+                        <!-- Hidden Input for Form Submission -->
+                        <input type="hidden" name="id_user" :value="selectedStudent ? selectedStudent.id_user : ''">
+
+                        <!-- Search Input -->
+                        <div class="relative">
+                            <input 
+                                type="text" 
+                                x-model="search" 
+                                @input="isOpen = true"
+                                @click.away="isOpen = false"
+                                @focus="isOpen = true"
+                                class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-150 ease-in-out"
+                                placeholder="Ketik nama atau NIM mahasiswa..."
+                            >
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-search text-gray-400"></i>
+                            </div>
                         </div>
+
+                        <!-- Dropdown List -->
+                        <div 
+                            x-show="isOpen && filteredStudents.length > 0" 
+                            class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm"
+                            style="display: none;"
+                        >
+                            <template x-for="student in filteredStudents" :key="student.id_user">
+                                <div 
+                                    @click="selectStudent(student)"
+                                    class="cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-blue-600 hover:text-white group"
+                                >
+                                    <div class="flex items-center">
+                                        <span class="font-normal block truncate" x-text="student.nama + ' (' + student.nim + ')'"></span>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Selected Tag -->
+                        <div x-show="selectedStudent" class="mt-2" style="display: none;">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                <span x-text="selectedStudent.nama + ' (' + selectedStudent.nim + ')'"></span>
+                                <button type="button" @click="selectedStudent = null" class="flex-shrink-0 ml-1.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-blue-600 hover:bg-blue-200 hover:text-blue-500 focus:outline-none focus:bg-blue-500 focus:text-white">
+                                    <span class="sr-only">Remove</span>
+                                    <svg class="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+                                        <path stroke-linecap="round" stroke-width="1.5" d="M1 1l6 6m0-6L1 7" />
+                                    </svg>
+                                </button>
+                            </span>
+                        </div>
+                        
                         @error('id_user')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    {{-- Posisi Jabatan --}}
+                    <script>
+                        function studentSelect() {
+                            return {
+                                search: '',
+                                isOpen: false,
+                                selectedStudent: null,
+                                students: @json($mahasiswa),
+                                get filteredStudents() {
+                                    if (this.search === '') {
+                                        return this.students;
+                                    }
+                                    return this.students.filter(student => {
+                                        return student.nama.toLowerCase().includes(this.search.toLowerCase()) || 
+                                            student.nim.includes(this.search);
+                                    });
+                                },
+                                selectStudent(student) {
+                                    this.selectedStudent = student;
+                                    this.search = '';
+                                    this.isOpen = false;
+                                },
+                                init() {
+                                    // Pre-select if old value exists (validation error)
+                                    const oldId = "{{ old('id_user') }}";
+                                    if (oldId) {
+                                        this.selectedStudent = this.students.find(s => s.id_user == oldId);
+                                    }
+                                }
+                            }
+                        }
+                    </script>
+
+                    {{-- Pilih Jabatan --}}
                     <div class="sm:col-span-6">
-                        <label for="posisi_jabatan" class="block text-sm font-medium text-gray-700">
+                        <label for="id_jabatan" class="block text-sm font-medium text-gray-700">
                             Posisi Jabatan <span class="text-red-500">*</span>
                         </label>
                         <div class="mt-1">
-                            <input type="text" name="posisi_jabatan" id="posisi_jabatan" value="{{ old('posisi_jabatan') }}" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('posisi_jabatan') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2" required placeholder="Contoh: Ketua Divisi">
+                            <select name="id_jabatan" id="id_jabatan" required class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('id_jabatan') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2">
+                                <option value="">-- Pilih Jabatan --</option>
+                                @foreach($jabatan as $j)
+                                    <option value="{{ $j->id_jabatan }}" data-divisi="{{ $j->id_divisi }}" class="jabatan-option hidden">
+                                        {{ $j->nama_jabatan }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <p class="mt-1 text-xs text-gray-500">Pilih Divisi terlebih dahulu untuk melihat pilihan jabatan.</p>
                         </div>
-                        @error('posisi_jabatan')
+                        @error('id_jabatan')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -127,4 +207,45 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    $(document).ready(function() {
+        // Dependent Dropdown: Filter Jabatan based on Divisi
+        const jabatanSelect = $('#id_jabatan');
+        const jabatanOptions = jabatanSelect.find('option.jabatan-option');
+
+        $('#id_divisi').on('change', function() {
+            const selectedDivisi = $(this).val();
+            
+            // Reset selection
+            jabatanSelect.val('');
+            
+            if (!selectedDivisi) {
+                jabatanOptions.addClass('hidden');
+                return;
+            }
+
+            jabatanOptions.each(function() {
+                const optionDivisi = $(this).data('divisi');
+                if (optionDivisi == selectedDivisi) {
+                    $(this).removeClass('hidden');
+                } else {
+                    $(this).addClass('hidden');
+                }
+            });
+        });
+
+        // Trigger change on load if old value exists (validation error case)
+        if ($('#id_divisi').val()) {
+            $('#id_divisi').trigger('change');
+            // Restore selected jabatan if exists
+            const oldJabatan = "{{ old('id_jabatan') }}";
+            if(oldJabatan) {
+                jabatanSelect.val(oldJabatan);
+            }
+        }
+    });
+</script>
 @endsection

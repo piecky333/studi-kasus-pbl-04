@@ -93,7 +93,7 @@
                                 </span>
                             </td>
                             <td class="px-3 py-2 lg:px-6 lg:py-4 whitespace-nowrap text-xs lg:text-sm text-gray-500">
-                                {{ $p->posisi_jabatan }}
+                                {{ $p->jabatan->nama_jabatan ?? '-' }}
                             </td>
 
                             <td class="px-3 py-2 lg:px-6 lg:py-4 whitespace-nowrap text-center text-xs lg:text-sm font-medium">

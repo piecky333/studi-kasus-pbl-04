@@ -14,12 +14,17 @@ class pengurus extends Model
     protected $fillable = [
         'id_divisi',
         'id_user',
-        'posisi_jabatan'
+        'id_jabatan'
     ];
 
     public function divisi()
     {
         return $this->belongsTo(divisi::class, 'id_divisi', 'id_divisi');
+    }
+
+    public function jabatan()
+    {
+        return $this->belongsTo(\App\Models\Jabatan::class, 'id_jabatan', 'id_jabatan');
     }
 
     public function user()
