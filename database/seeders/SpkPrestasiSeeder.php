@@ -34,7 +34,7 @@ class SpkPrestasiSeeder extends Seeder
         // --------------------------------------------------------
         $keputusan = Spkkeputusan::create([
             'nama_keputusan' => 'Pemilihan Mahasiswa Berprestasi (MAWAPRES) 2025',
-            'metode_yang_digunakan' => 'SAW', 
+
             'status' => 'Aktif',
         ]);
         $idKeputusan = $keputusan->id_keputusan;
