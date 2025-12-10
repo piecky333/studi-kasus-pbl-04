@@ -72,7 +72,7 @@ class PengaduanController extends Controller
      */
     public function show($id)
     {
-        $pengaduan = pengaduan::with(['user', 'mahasiswa'])
+        $pengaduan = pengaduan::with(['user', 'mahasiswa', 'tanggapan.user', 'tanggapan.admin']) // Eager load tanggapan & actors
                             ->findOrFail($id);
 
         // LOGIKA OTOMATISASI STATUS:
@@ -80,6 +80,8 @@ class PengaduanController extends Controller
         // Ini menandakan bahwa admin telah membuka dan membaca detail laporan ini.
         if ($pengaduan->status === 'Terkirim') {
             $pengaduan->status = 'Diproses';
+            // Validasi data sebelum save untuk menghindari error jika ada field baru yg required tapi kosong (e.g. no_telpon jika tidak nullable di DB lama tapi di migration saya nullable)
+            // Di migration saya buat nullable, jadi aman.
             $pengaduan->save();
         }
 
@@ -89,6 +91,48 @@ class PengaduanController extends Controller
         }
 
         return view('pages.admin.pengaduan.show', compact('pengaduan', 'gambarUrl'));
+    }
+
+    /**
+     * Simpan tanggapan dari admin.
+     */
+    public function storeTanggapan(Request $request, $id)
+    {
+        $request->validate([
+            'isi_tanggapan' => 'required|string',
+        ]);
+
+        // Ambil User yang sedang login
+        $user = auth()->user();
+        
+        // Ambil ID Admin dari relasi user->admin
+        // Pastikan user ini benar-benar admin (middleware sdh menjaga, tapi extra check boleh)
+        $adminId = null;
+        if ($user && $user->admin) {
+             $adminId = $user->admin->id_admin;
+        }
+
+        if (!$adminId) {
+             return back()->with('error', 'Akun Anda tidak terdaftar sebagai Admin.');
+        }
+
+        \App\Models\laporan\Tanggapan::create([
+            'id_pengaduan' => $id,
+            'id_admin' => $adminId, // Bisa null di migration baru, tapi admin harus punya id
+            'isi_tanggapan' => $request->isi_tanggapan,
+            'tanggal_tanggapan' => now(),
+        ]);
+
+        // NOTIFIKASI: Kirim notifikasi ke User pelapor
+        // Use correct model class from use statement: 'pengaduan'
+        $pengaduan = pengaduan::findOrFail($id);
+        
+        if ($pengaduan->user) {
+            $adminPhoto = auth()->user()->profile_photo_url;
+            $pengaduan->user->notify(new \App\Notifications\NewAdminReply($pengaduan, $request->isi_tanggapan, $adminPhoto));
+        }
+
+        return back()->with('success', 'Tanggapan berhasil dikirim.');
     }
 
     /**

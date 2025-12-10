@@ -67,6 +67,7 @@ class PengaduanController extends Controller
             'deskripsi'        => 'required|string',
             'tanggal_pengaduan'=> 'nullable|date',
             'gambar_bukti'     => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'no_telpon_dihubungi' => 'required|string|max:20', // Validasi nomor telepon
         ]);
 
         // Set data tambahan.
@@ -97,10 +98,31 @@ class PengaduanController extends Controller
     {
         $pengaduan = Auth::user()
             ->pengaduan()
-            ->with('user')
+            ->with(['user', 'tanggapan.admin', 'tanggapan.user']) // Eager load tanggapan
             ->findOrFail($id);
 
         return view('pages.user.pengaduan.show', compact('pengaduan'));
+    }
+
+    /**
+     * Simpan tanggapan dari user.
+     */
+    public function storeTanggapan(Request $request, $id)
+    {
+        $request->validate([
+            'isi_tanggapan' => 'required|string',
+        ]);
+
+        $pengaduan = Auth::user()->pengaduan()->findOrFail($id);
+
+        \App\Models\laporan\Tanggapan::create([
+            'id_pengaduan' => $id,
+            'id_user' => Auth::id(),
+            'isi_tanggapan' => $request->isi_tanggapan,
+            'tanggal_tanggapan' => now(),
+        ]);
+
+        return back()->with('success', 'Tanggapan berhasil dikirim.');
     }
 
     /**

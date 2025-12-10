@@ -117,10 +117,70 @@
                                         <dt class="font-medium">Status:</dt>
                                         <dd class="font-semibold">{{ $pengaduan->status }}</dd>
                                     </div>
+
+                                    @if($pengaduan->no_telpon_dihubungi)
+                                    <div class="flex justify-between border-t border-gray-100 pt-2 mt-2">
+                                        <dt class="font-medium text-gray-900">Kontak:</dt>
+                                        <dd class="text-indigo-600 font-mono text-xs font-bold">{{ $pengaduan->no_telpon_dihubungi }}</dd>
+                                    </div>
+                                    @endif
                                 </dl>
                             </div>
                         </div>
 
+                    </div>
+
+                    <!-- BAGIAN: Diskusi & Tanggapan -->
+                    <div class="mt-10">
+                        <h4 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-comments text-indigo-600 mr-2"></i> Diskusi & Tanggapan
+                        </h4>
+
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 h-96 overflow-y-auto mb-4 custom-scrollbar flex flex-col space-y-4">
+                            @forelse($pengaduan->tanggapan as $chat)
+                                @php
+                                    $isUser = $chat->id_user == Auth::id(); // Cek jika chat ini dari user sendiri
+                                @endphp
+                                <div class="flex {{ $isUser ? 'justify-end' : 'justify-start' }}">
+                                    <div class="flex items-end max-w-[80%] {{ $isUser ? 'flex-row-reverse' : 'flex-row' }}">
+                                        <!-- Avatar -->
+                                        <div class="flex-shrink-0 h-8 w-8 rounded-full overflow-hidden border border-gray-300 {{ $isUser ? 'ml-2' : 'mr-2' }}">
+                                            @if($isUser)
+                                                <img src="{{ Auth::user()->profile_photo_url }}" class="h-full w-full object-cover">
+                                            @else
+                                                 <!-- Admin Avatar Placeholder -->
+                                                <img src="https://ui-avatars.com/api/?name=Admin&background=0D2149&color=fff" class="h-full w-full object-cover">
+                                            @endif
+                                        </div>
+
+                                        <!-- Bubble -->
+                                        <div class="px-4 py-2 rounded-lg shadow-sm text-sm {{ $isUser ? 'bg-indigo-600 text-white rounded-br-none' : 'bg-white text-gray-800 border border-gray-200 rounded-bl-none' }}">
+                                            <p>{{ $chat->isi_tanggapan }}</p>
+                                            <span class="text-[10px] {{ $isUser ? 'text-indigo-200' : 'text-gray-400' }} block mt-1 text-right">
+                                                {{ $chat->created_at->format('d M H:i') }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="flex flex-col items-center justify-center h-full text-gray-400">
+                                    <i class="fas fa-comment-slash text-4xl mb-2"></i>
+                                    <p class="text-sm">Belum ada tanggapan.</p>
+                                </div>
+                            @endforelse
+                        </div>
+
+                        <!-- Form Balas -->
+                        <form action="{{ route('user.pengaduan.tanggapan', $pengaduan->id_pengaduan) }}" method="POST">
+                            @csrf
+                            <div class="flex gap-2">
+                                <input type="text" name="isi_tanggapan" required placeholder="Tulis balasan..." 
+                                       class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                                <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                    <i class="fas fa-paper-plane mr-2"></i> Kirim
+                                </button>
+                            </div>
+                        </form>
                     </div>
 
                     <!-- Tombol -->

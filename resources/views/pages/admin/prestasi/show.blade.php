@@ -40,8 +40,9 @@
                 <div class="p-6 text-center">
                     <div class="inline-block relative mb-4">
                         <img class="h-24 w-24 rounded-full object-cover border-4 border-white shadow-md mx-auto" 
-                             src="{{ $prestasi->mahasiswa->user->profile_photo_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($prestasi->mahasiswa->nama ?? 'M') . '&color=7F9CF5&background=EBF4FF&size=128' }}" 
-                             alt="{{ $prestasi->mahasiswa->nama }}">
+                             src="{{ $prestasi->mahasiswa->user?->profile_photo_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($prestasi->mahasiswa->nama ?? 'M') . '&color=7F9CF5&background=EBF4FF&size=128' }}" 
+                             alt="{{ $prestasi->mahasiswa->nama }}"
+                             referrerpolicy="no-referrer">
                     </div>
                     
                     <h2 class="text-xl font-bold text-gray-900 mb-1">{{ $prestasi->mahasiswa->nama ?? 'Unknown' }}</h2>
@@ -239,15 +240,15 @@
                             <i class="fas fa-times text-xl"></i>
                         </button>
                     </div>
-                    <div class="flex justify-center bg-gray-100 rounded-lg p-2">
-                        <img :src="imgUrl" class="max-h-[80vh] max-w-full object-contain rounded" alt="Bukti Prestasi Full">
+                    <div class="flex justify-center items-center bg-gray-100 rounded-lg p-2">
+                        <img :src="imgUrl" class="max-h-[60vh] max-w-full object-contain rounded" alt="Bukti Prestasi Full">
                     </div>
                 </div>
-                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm" @click="showModal = false">
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 flex flex-col sm:flex-row sm:justify-end gap-3 transition-colors">
+                    <button type="button" class="w-full sm:w-auto inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm order-2 sm:order-1" @click="showModal = false">
                         Tutup
                     </button>
-                    <a :href="imgUrl" download class="mt-3 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                    <a :href="imgUrl" download class="w-full sm:w-auto inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm order-1 sm:order-2">
                         <i class="fas fa-download mr-2"></i> Unduh Gambar
                     </a>
                 </div>
