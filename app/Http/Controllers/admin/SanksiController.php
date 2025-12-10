@@ -165,4 +165,17 @@ class SanksiController extends Controller
 
         return redirect()->route('admin.sanksi.index')->with('success', 'Data sanksi berhasil dihapus.');
     }
+    
+    /**
+     * Menampilkan detail data sanksi.
+     * 
+     * @param string $id
+     * @return \Illuminate\View\View
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function show($id)
+    {
+        $sanksi = Sanksi::with('mahasiswa')->findOrFail($id);
+        return view('pages.admin.sanksi.show', compact('sanksi'));
+    }
 }

@@ -130,7 +130,7 @@
                                     <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0 h-6 w-6 lg:h-8 lg:w-8">
-                                                <img class="h-6 w-6 lg:h-8 lg:w-8 rounded-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode($item->mahasiswa->nama ?? 'M') }}&background=random" alt="">
+                                                <img class="h-6 w-6 lg:h-8 lg:w-8 rounded-full object-cover" src="{{ $item->mahasiswa->user->profile_photo_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($item->mahasiswa->nama ?? 'M') . '&color=7F9CF5&background=EBF4FF' }}" alt="">
                                             </div>
                                             <div class="ml-2 lg:ml-3">
                                                 <div class="font-medium text-gray-900">
@@ -140,7 +140,7 @@
                                         </div>
                                     </td>
                                     <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-center">
-                                        <span class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-gray-100 text-gray-600 text-xs font-bold border border-gray-200">
+                                        <span class="inline-flex items-center justify-center h-6 w-6 text-gray-600 text-xs font-bold">
                                             {{ $item->mahasiswa->semester ?? '-' }}
                                         </span>
                                     </td>
@@ -168,7 +168,7 @@
                                     <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-center font-medium">
                                         <div class="flex justify-center space-x-1 lg:space-x-2">
                                             {{-- Detail --}}
-                                            <a href="{{ route('admin.datamahasiswa.show', $item->id_mahasiswa) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white" title="Detail">
+                                            <a href="{{ route('admin.sanksi.show', $item->id_sanksi) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white" title="Detail">
                                                 <i class="fas fa-eye mr-1 lg:mr-2"></i> Detail
                                             </a>
 

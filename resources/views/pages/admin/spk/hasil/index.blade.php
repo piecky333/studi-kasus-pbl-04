@@ -16,20 +16,126 @@
             {{-- Menampilkan pesan error dari Exception jika data perhitungan tidak lengkap --}}
         </div>
     @endif
-            <h4 class="font-semibold text-blue-800 mb-3">Bobot Kriteria Akhir (Wj)</h4>
-            <div class="flex flex-wrap gap-4">
-                @foreach ($calculationData['criteria_metadata'] as $kriteria)
-                    @php
-                        $kode = $kriteria->kode_kriteria;
-                        $bobot = $calculationData['weights'][$kode] ?? 0;
-                    @endphp
-                    <div class="p-2 bg-white rounded-md shadow-sm border border-blue-300 text-center">
-                        <p class="text-xs font-medium text-blue-600">{{ $kriteria->nama_kriteria }} ({{ $kode }})</p>
-                        <p class="text-lg font-bold text-gray-900">{{ number_format($bobot, 4) }}</p>
-                    </div>
-                @endforeach
+
+            {{-- 
+                =============================================
+                HASIL RINGKASAN PERANGKINGAN (Diletakkan di Awal)
+                =============================================
+            --}}
+            {{-- Tabel Hasil Perangkingan Akhir --}}
+            <h4 class="text-lg font-bold text-gray-800 mb-3 flex items-center mt-4">
+                Hasil Perangkingan Akhir
+            </h4>
+            <p class="text-sm text-gray-600 mb-4">Urutan peringkat alternatif berdasarkan nilai total preferensi (Vi) tertinggi ke terendah.</p>
+            
+            <div class="overflow-x-auto border border-gray-200 rounded-lg mb-8 shadow-sm">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Nama Alternatif</th>
+                            <th class="px-6 py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wider w-32">Peringkat</th>
+                            <th class="px-6 py-4 text-center text-xs font-bold text-indigo-700 uppercase tracking-wider w-40">Nilai Akhir (Vi)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @foreach ($calculationData['ranking_results'] as $index => $rankResult)
+                            @if($loop->iteration > 5) @break @endif
+                            @php
+                                $isWinner = $rankResult['rank'] == 1;
+                                $isTop3 = $rankResult['rank'] <= 3;
+                            @endphp
+                            <tr class="{{ $isWinner ? 'bg-green-50' : 'hover:bg-gray-50' }} transition-colors">
+                                {{-- Nama Alternatif --}}
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        @if($isWinner)
+                                            <div class="flex-shrink-0 mr-3">
+                                                <div class="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
+                                                    <i class="fas fa-crown text-green-600 text-sm"></i>
+                                                </div>
+                                            </div>
+                                        @endif
+                                        <div>
+                                            <div class="text-sm font-medium {{ $isWinner ? 'text-green-900' : 'text-gray-900' }}">
+                                                {{ $rankResult['nama'] }}
+                                            </div>
+                                            @if($isWinner)
+                                                <div class="text-xs text-green-600">Rekomendasi Utama</div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </td>
+
+                                {{-- Peringkat --}}
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    @if($isWinner)
+                                        <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-green-600 text-white font-bold shadow-sm ring-2 ring-green-100">
+                                            1
+                                        </span>
+                                    @elseif($isTop3)
+                                        <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-gray-600 text-white font-bold shadow-sm">
+                                            {{ $rankResult['rank'] }}
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-gray-100 text-gray-600 font-bold border border-gray-200">
+                                            {{ $rankResult['rank'] }}
+                                        </span>
+                                    @endif
+                                </td>
+
+                                {{-- Nilai Akhir --}}
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <span class="px-3 py-1 inline-flex text-sm leading-5 font-bold rounded-full {{ $isWinner ? 'bg-green-100 text-green-800' : 'bg-indigo-50 text-indigo-700' }} border {{ $isWinner ? 'border-green-200' : 'border-indigo-100' }}">
+                                        {{ number_format($rankResult['final_score'], 5) }}
+                                    </span>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
-        </div>
+
+            <hr class="my-8 border-t border-gray-200">
+
+            {{-- 
+                =============================================
+                DETAIL PERHITUNGAN (Bobot, Matriks, Normalisasi)
+                =============================================
+            --}}
+
+            <div class="mb-8">
+                <h4 class="font-bold text-gray-800 mb-4 flex items-center">
+                    Bobot Kriteria Akhir (Wj)
+                </h4>
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                    @foreach ($calculationData['criteria_metadata'] as $kriteria)
+                        @php
+                            $kode = $kriteria->kode_kriteria;
+                            $bobot = $calculationData['weights'][$kode] ?? 0;
+                            $isBenefit = $kriteria->jenis_kriteria == 'Benefit';
+                        @endphp
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 transition duration-300 hover:shadow-md relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <i class="fas {{ $isBenefit ? 'fa-arrow-up text-green-500' : 'fa-arrow-down text-red-500' }} text-3xl"></i>
+                            </div>
+                            <div class="relative z-10">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ $isBenefit ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                        {{ $kode }}
+                                    </span>
+                                </div>
+                                <p class="text-xs text-gray-500 h-8 line-clamp-2 leading-tight mb-1" title="{{ $kriteria->nama_kriteria }}">
+                                    {{ $kriteria->nama_kriteria }}
+                                </p>
+                                <p class="text-xl font-bold text-gray-800">
+                                    {{ number_format($bobot, 4) }}
+                                </p>
+                            </div>
+
+                        </div>
+                    @endforeach
+                </div>
+            </div>
         
         {{-- Tabel Matriks Keputusan Awal (Xij) --}}
         <h4 class="text-lg font-bold text-gray-800 mb-3">1. Matriks Keputusan Mentah (Xij)</h4>
@@ -75,7 +181,7 @@
                                 {{ $k->kode_kriteria }}
                             </th>
                         @endforeach
-                        <th class="px-3 py-2 text-center text-xs font-bold text-indigo-700 uppercase tracking-wider bg-indigo-100 border-l">Vi (Total Preferensi)</th>
+                        <th class="px-3 py-2 text-center text-xs font-bold text-gray-700 uppercase tracking-wider border-l">Vi (Total Preferensi)</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -92,7 +198,7 @@
                                     {{ number_format($rankResult['rij_data'][$k->kode_kriteria] ?? 0, 4) }}
                                 </td>
                             @endforeach
-                            <td class="px-3 py-2 whitespace-nowrap text-sm text-center font-bold font-mono {{ $isBest ? 'text-indigo-800' : 'text-indigo-600' }} bg-indigo-100 border-l">
+                            <td class="px-3 py-2 whitespace-nowrap text-sm text-center font-bold font-mono {{ $isBest ? 'text-indigo-800' : 'text-gray-800' }} border-l">
                                 {{ number_format($rankResult['final_score'], 4) }}
                             </td>
                         </tr>
@@ -100,8 +206,6 @@
                 </tbody>
             </table>
         </div>
-    @endif
-
 
 </div>
 

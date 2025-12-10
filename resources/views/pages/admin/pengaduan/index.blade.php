@@ -110,7 +110,7 @@
                                     <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0 h-6 w-6 lg:h-8 lg:w-8">
-                                                <img class="h-6 w-6 lg:h-8 lg:w-8 rounded-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode($item->user->nama ?? 'User') }}&background=random" alt="">
+                                                <img class="h-6 w-6 lg:h-8 lg:w-8 rounded-full object-cover" src="{{ $item->user->profile_photo_url ?? 'https://ui-avatars.com/api/?name=User&color=7F9CF5&background=EBF4FF' }}" alt="">
                                             </div>
                                             <div class="ml-2 lg:ml-3">
                                                 <div class="font-medium text-gray-900">

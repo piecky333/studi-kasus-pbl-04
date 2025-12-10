@@ -16,6 +16,11 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    const ROLE_ADMIN = 'admin';
+    const ROLE_PENGURUS = 'pengurus';
+    const ROLE_USER = 'user';
+    const ROLE_MAHASISWA = 'mahasiswa';
+
     // Ini sudah benar sesuai migrasimu
     protected $table = 'user'; 
     protected $primaryKey = 'id_user'; 

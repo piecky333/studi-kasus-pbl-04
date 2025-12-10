@@ -54,7 +54,7 @@ class MahasiswaImport
                     'username' => $nim, // Gunakan NIM sebagai username
                     'email' => $email,
                     'password' => Hash::make($nim), // Password default adalah NIM
-                    'role' => 'user', // Role harus 'user' sesuai enum database
+                    'role' => 'mahasiswa', // Role mahasiswa
                 ]);
 
                 // Buat data Mahasiswa

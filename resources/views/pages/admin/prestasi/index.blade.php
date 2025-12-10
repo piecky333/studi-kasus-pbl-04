@@ -31,31 +31,41 @@
             <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                 
                 {{-- Cari NIM --}}
-                <div class="md:col-span-4">
+                <div class="md:col-span-3">
                     <label for="nim" class="block text-sm font-medium text-gray-700 mb-1">Cari NIM</label>
                     <div class="relative rounded-md shadow-sm">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fas fa-search text-gray-400"></i>
                         </div>
-                        <input type="text" name="nim" id="nim" value="{{ request('nim') }}" placeholder="Masukkan NIM..." class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2">
+                        <input type="text" name="nim" id="nim" value="{{ request('nim') }}" placeholder="NIM..." class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 text-gray-900">
                     </div>
                 </div>
 
                 {{-- Filter Tahun --}}
-                <div class="md:col-span-3">
-                    <label for="tahun" class="block text-sm font-medium text-gray-700 mb-1">Filter Tahun</label>
-                    <select name="tahun" id="tahun" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm" onchange="this.form.submit()">
-                        <option value="">Semua Tahun</option>
+                <div class="md:col-span-2">
+                    <label for="tahun" class="block text-sm font-medium text-gray-700 mb-1">Tahun</label>
+                    <select name="tahun" id="tahun" class="block w-full pl-2 pr-8 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm {{ request('tahun') ? 'text-gray-900' : 'text-gray-400' }}" onchange="this.form.submit()">
+                        <option value="">Semua</option>
                         @for ($i = date('Y'); $i >= date('Y') - 10; $i--)
                             <option value="{{ $i }}" {{ request('tahun') == $i ? 'selected' : '' }}>{{ $i }}</option>
                         @endfor
                     </select>
                 </div>
 
+                {{-- Filter Jenis Prestasi --}}
+                <div class="md:col-span-2">
+                    <label for="jenis" class="block text-sm font-medium text-gray-700 mb-1">Jenis</label>
+                    <select name="jenis" id="jenis" class="block w-full pl-2 pr-8 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm {{ request('jenis') ? 'text-gray-900' : 'text-gray-400' }}" onchange="this.form.submit()">
+                        <option value="">Semua</option>
+                        <option value="Akademik" {{ request('jenis') == 'Akademik' ? 'selected' : '' }}>Akademik</option>
+                        <option value="Non-Akademik" {{ request('jenis') == 'Non-Akademik' ? 'selected' : '' }}>Non-Akademik</option>
+                    </select>
+                </div>
+
                 {{-- Filter Tingkat --}}
                 <div class="md:col-span-3">
-                    <label for="tingkat" class="block text-sm font-medium text-gray-700 mb-1">Filter Tingkat</label>
-                    <select name="tingkat" id="tingkat" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm" onchange="this.form.submit()">
+                    <label for="tingkat" class="block text-sm font-medium text-gray-700 mb-1">Tingkat</label>
+                    <select name="tingkat" id="tingkat" class="block w-full pl-2 pr-8 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm {{ request('tingkat') ? 'text-gray-900' : 'text-gray-400' }}" onchange="this.form.submit()">
                         <option value="">Semua Tingkat</option>
                         <option value="Internasional" {{ request('tingkat') == 'Internasional' ? 'selected' : '' }}>Internasional</option>
                         <option value="Nasional" {{ request('tingkat') == 'Nasional' ? 'selected' : '' }}>Nasional</option>
@@ -67,10 +77,10 @@
 
                 {{-- Buttons --}}
                 <div class="md:col-span-2 flex space-x-2">
-                    <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <button type="submit" class="w-full inline-flex justify-center items-center px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Cari
                     </button>
-                    <a href="{{ route('admin.prestasi.index') }}" class="w-full inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <a href="{{ route('admin.prestasi.index') }}" class="w-full inline-flex justify-center items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Reset
                     </a>
                 </div>
@@ -135,7 +145,7 @@
                                     <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-normal">
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0 h-6 w-6 lg:h-8 lg:w-8">
-                                                <img class="h-6 w-6 lg:h-8 lg:w-8 rounded-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode($item->mahasiswa->nama ?? 'M') }}&background=random" alt="">
+                                                <img class="h-6 w-6 lg:h-8 lg:w-8 rounded-full object-cover" src="{{ $item->mahasiswa->user->profile_photo_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($item->mahasiswa->nama ?? 'M') . '&color=7F9CF5&background=EBF4FF' }}" alt="">
                                             </div>
                                             <div class="ml-2 lg:ml-3">
                                                 <div class="font-medium text-gray-900">
@@ -146,9 +156,21 @@
                                     </td>
                                     <td class="px-3 py-2 lg:px-4 lg:py-3 text-gray-500 whitespace-normal">
                                         {{ $item->nama_kegiatan }}
+                                        <br>
+                                        <span class="text-[10px] text-gray-400">{{ $item->jenis_prestasi ?? '-' }}</span>
                                     </td>
                                     <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-[10px] lg:text-xs leading-4 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                        @php
+                                            $badgeColor = match($item->tingkat_prestasi) {
+                                                'Internasional' => 'bg-purple-100 text-purple-800',
+                                                'Nasional' => 'bg-rose-100 text-rose-800',
+                                                'Provinsi' => 'bg-orange-100 text-orange-800',
+                                                'Kabupaten/Kota' => 'bg-yellow-100 text-yellow-800',
+                                                'Universitas' => 'bg-blue-100 text-blue-800',
+                                                default => 'bg-gray-100 text-gray-800',
+                                            };
+                                        @endphp
+                                        <span class="px-2 inline-flex text-[10px] lg:text-xs leading-4 font-semibold rounded-full {{ $badgeColor }}">
                                             {{ ucfirst($item->tingkat_prestasi) }}
                                         </span>
                                     </td>
@@ -158,7 +180,7 @@
                                     <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-center font-medium">
                                         <div class="flex justify-center space-x-1 lg:space-x-2">
                                             {{-- View --}}
-                                            <a href="{{ route('admin.datamahasiswa.show', $item->mahasiswa->id_mahasiswa) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white" title="Detail">
+                                            <a href="{{ route('admin.prestasi.show', $item->id_prestasi) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white" title="Detail">
                                                 <i class="fas fa-eye mr-1 lg:mr-2"></i> Detail
                                             </a>
                                             
@@ -182,7 +204,7 @@
                                 <tr>
                                     <td colspan="7" class="px-6 py-10 text-center text-gray-500">
                                         <div class="flex flex-col items-center justify-center">
-                                            <i class="bi bi-trophy text-4xl mb-2 text-gray-300"></i>
+                                            <i class="bi bi-trophy text-4xl mb-3 text-gray-300"></i>
                                             <p class="text-lg font-medium">Belum ada data prestasi.</p>
                                         </div>
                                     </td>
@@ -191,12 +213,11 @@
                         </tbody>
                     </table>
         </div>
-    </div>
-    </div>
 
-    <!-- Pagination -->
-    <div class="mt-4 mb-3">
-        {{ $prestasi->withQueryString()->links() }}
+        <!-- Pagination -->
+        <div class="px-4 py-3 border-t border-gray-200 sm:px-6 mb-3">
+            {{ $prestasi->withQueryString()->links() }}
+        </div>
     </div>
 </div>
 @endsection
