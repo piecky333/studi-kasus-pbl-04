@@ -29,7 +29,7 @@ class KomentarPolicy
             return true;
         }
 
-        // User Boleh hapus JIKA itu adalah komentarnya sendiri.
-        return $user->id_user === $komentar->id_user;
+        // Mahasiswa (User biasa) TIDAK BOLEH menghapus komentar, meskipun miliknya sendiri.
+        return false;
     }
 }

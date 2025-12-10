@@ -17,12 +17,14 @@ class PengurusController extends Controller
      */
     public function index(Request $request)
     {
-        $query = pengurus::with(['divisi', 'user']);
+        $query = pengurus::with(['divisi', 'user', 'jabatan']);
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('posisi_jabatan', 'like', "%{$search}%")
+                $q->whereHas('jabatan', function($q) use ($search) {
+                      $q->where('nama_jabatan', 'like', "%{$search}%");
+                  })
                   ->orWhereHas('user', function($q) use ($search) {
                       $q->where('nama', 'like', "%{$search}%");
                   })
@@ -41,11 +43,18 @@ class PengurusController extends Controller
      *
      * @return \Illuminate\View\View
      */
+    /**
+     * Tampilkan form tambah pengurus.
+     *
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         $divisi = divisi::all();
-        $users = User::where('role', 'pengurus')->get();
-        return view('pages.pengurus.pengurus.create', compact('divisi', 'users'));
+        // Ambil data mahasiswa yang memiliki id_user (sudah punya akun)
+        $mahasiswa = \App\Models\Mahasiswa::whereNotNull('id_user')->get();
+        $jabatan = \App\Models\Jabatan::all();
+        return view('pages.pengurus.pengurus.create', compact('divisi', 'mahasiswa', 'jabatan'));
     }
 
     /**
@@ -59,12 +68,18 @@ class PengurusController extends Controller
         $request->validate([
             'id_divisi' => 'required|exists:divisi,id_divisi',
             'id_user' => 'required|exists:user,id_user',
-            'posisi_jabatan' => 'required|string|max:255',
+            'id_jabatan' => 'required|exists:jabatan,id_jabatan',
         ]);
 
+        // Simpan data pengurus
         pengurus::create($request->all());
 
-        return redirect()->route('pengurus.pengurus.index')->with('success', 'Pengurus berhasil ditambahkan!');
+        // Update role user menjadi 'pengurus'
+        $user = User::findOrFail($request->id_user);
+        $user->role = 'pengurus';
+        $user->save();
+
+        return redirect()->route('pengurus.pengurus.index')->with('success', 'Pengurus berhasil ditambahkan dan role user diperbarui!');
     }
 
     /**
@@ -77,8 +92,10 @@ class PengurusController extends Controller
     {
         $pengurus = pengurus::findOrFail($id);
         $divisi = divisi::all();
-        $users = User::where('role', 'pengurus')->get();
-        return view('pages.pengurus.pengurus.edit', compact('pengurus', 'divisi', 'users'));
+        // Ambil data mahasiswa yang memiliki id_user
+        $mahasiswa = \App\Models\Mahasiswa::whereNotNull('id_user')->get();
+        $jabatan = \App\Models\Jabatan::all();
+        return view('pages.pengurus.pengurus.edit', compact('pengurus', 'divisi', 'mahasiswa', 'jabatan'));
     }
 
     /**
@@ -93,11 +110,21 @@ class PengurusController extends Controller
         $request->validate([
             'id_divisi' => 'required|exists:divisi,id_divisi',
             'id_user' => 'required|exists:user,id_user',
-            'posisi_jabatan' => 'required|string|max:255',
+            'id_jabatan' => 'required|exists:jabatan,id_jabatan',
         ]);
 
         $pengurus = pengurus::findOrFail($id);
+        
+        // Cek jika user berubah, kembalikan role user lama jika perlu (opsional, saat ini kita biarkan saja)
+        // Update data pengurus
         $pengurus->update($request->all());
+
+        // Pastikan role user baru adalah 'pengurus'
+        $user = User::findOrFail($request->id_user);
+        if ($user->role !== 'pengurus') {
+            $user->role = 'pengurus';
+            $user->save();
+        }
 
         return redirect()->route('pengurus.pengurus.index')->with('success', 'Data pengurus berhasil diperbarui!');
     }
