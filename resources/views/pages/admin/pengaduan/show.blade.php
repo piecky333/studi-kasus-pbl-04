@@ -149,8 +149,9 @@
                         <div class="flex items-center mb-4">
                             <div class="flex-shrink-0 h-12 w-12">
                                 <img class="h-12 w-12 rounded-full object-cover border border-gray-200" 
-                                     src="https://ui-avatars.com/api/?name={{ urlencode($pengaduan->user->nama) }}&background=random" 
-                                     alt="">
+                                     src="{{ $pengaduan->user?->profile_photo_url ?? 'https://ui-avatars.com/api/?name=User&color=7F9CF5&background=EBF4FF' }}" 
+                                     alt=""
+                                     referrerpolicy="no-referrer">
                             </div>
                             <div class="ml-4">
                                 <h4 class="text-lg font-bold text-gray-900">{{ $pengaduan->user->nama }}</h4>
