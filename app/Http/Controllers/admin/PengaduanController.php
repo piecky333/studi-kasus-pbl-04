@@ -209,6 +209,7 @@ class PengaduanController extends Controller
             'jenis_kasus'       => 'required|string|max:255',
             'deskripsi'         => 'required|string',
             'gambar_bukti'      => 'nullable|mimes:jpg,jpeg,png,webp|max:2048',
+            'no_telpon_dihubungi' => 'required|string|max:20',
         ]);
 
         $validatedData['id_user'] = auth()->id();

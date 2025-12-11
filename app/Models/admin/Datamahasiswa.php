@@ -18,6 +18,7 @@ class Datamahasiswa extends Model
         'nama',
         'email',
         'semester',
+        'ipk',
     ];
 
     public function prestasi()

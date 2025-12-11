@@ -111,16 +111,16 @@
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0 h-6 w-6 lg:h-8 lg:w-8">
                                                 <img class="h-6 w-6 lg:h-8 lg:w-8 rounded-full object-cover" 
-                                                     src="{{ $item->user?->profile_photo_url ?? 'https://ui-avatars.com/api/?name=User&color=7F9CF5&background=EBF4FF' }}" 
-                                                     alt=""
+                                                     src="https://ui-avatars.com/api/?name=Anonymous&color=6B7280&background=E5E7EB" 
+                                                     alt="Anonymous"
                                                      referrerpolicy="no-referrer">
                                             </div>
                                             <div class="ml-2 lg:ml-3">
                                                 <div class="font-medium text-gray-900">
-                                                    {{ $item->user->nama ?? '[User Dihapus]' }}
+                                                    Pelapor (Disamarkan)
                                                 </div>
                                                 <div class="text-gray-500 text-[10px] lg:text-xs">
-                                                    {{ $item->user->email ?? '-' }}
+                                                    Identitas Dirahasiakan
                                                 </div>
                                             </div>
                                         </div>

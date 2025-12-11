@@ -52,7 +52,18 @@ class PrestasiController extends Controller
             $query->where('jenis_prestasi', $request->jenis);
         }
 
-        $prestasi = $query->latest()->paginate(10);
+        // Sorting
+        if ($request->filled('sort')) {
+            if ($request->sort == 'oldest') {
+                $query->orderBy('created_at', 'asc');
+            } else {
+                $query->orderBy('created_at', 'desc');
+            }
+        } else {
+            $query->latest(); // Default latest
+        }
+
+        $prestasi = $query->paginate(10);
         return view('pages.admin.prestasi.index', compact('prestasi'));
     }
 
