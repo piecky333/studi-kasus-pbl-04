@@ -21,16 +21,18 @@ class PengurusSeeder extends Seeder
         
         $users = User::where('role', 'pengurus')->get();
         $divisi = divisi::all();
+        $jabatan = \App\Models\Jabatan::all();
 
-        if ($users->count() > 0 && $divisi->count() > 0) {
+        if ($users->count() > 0 && $divisi->count() > 0 && $jabatan->count() > 0) {
             foreach ($users as $index => $user) {
                 // Assign user ke divisi secara bergantian atau acak
                 $selectedDivisi = $divisi->random();
+                $selectedJabatan = $jabatan->random();
                 
                 pengurus::create([
                     'id_divisi' => $selectedDivisi->id_divisi,
                     'id_user' => $user->id_user,
-                    'posisi_jabatan' => 'Anggota Divisi ' . $selectedDivisi->nama_divisi, // Contoh posisi
+                    'id_jabatan' => $selectedJabatan->id_jabatan,
                 ]);
             }
         } else {

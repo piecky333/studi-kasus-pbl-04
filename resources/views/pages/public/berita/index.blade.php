@@ -119,26 +119,7 @@
             width: 100%;
         }
 
-        .link-animasi-nav {
-            position: relative;
-            padding-bottom: 4px;
-        }
-        .link-animasi-nav::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: #FACC15;
-            transition: width 0.3s ease-out;
-        }
-        .link-animasi-nav[aria-current="page"]::after {
-            display: none;
-        }
-        .link-animasi-nav:hover::after {
-            width: 100%;
-        }
+
     </style>
 @endpush
 
