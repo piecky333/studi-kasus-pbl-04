@@ -62,6 +62,15 @@
                     </select>
                 </div>
 
+                {{-- Filter Urutan --}}
+                <div class="md:col-span-2">
+                    <label for="sort" class="block text-sm font-medium text-gray-700 mb-1">Urutan</label>
+                    <select name="sort" id="sort" class="block w-full pl-2 pr-8 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm text-gray-900" onchange="this.form.submit()">
+                        <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Terbaru</option>
+                        <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Terlama</option>
+                    </select>
+                </div>
+
                 {{-- Filter Tingkat --}}
                 <div class="md:col-span-3">
                     <label for="tingkat" class="block text-sm font-medium text-gray-700 mb-1">Tingkat</label>

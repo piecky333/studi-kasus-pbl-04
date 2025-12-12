@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\laporan\Tanggapan;
 use App\Models\laporan\Terlapor;
-use App\Models\Mahasiswa;
+use App\Models\admin\Datamahasiswa;
 
 class Pengaduan extends Model
 {
@@ -57,7 +57,7 @@ class Pengaduan extends Model
 
     public function mahasiswa()
 {
-    return $this->hasOne(Mahasiswa::class, 'id_user', 'id_user');
+    return $this->hasOne(Datamahasiswa::class, 'id_user', 'id_user');
 }
 
 

@@ -165,18 +165,14 @@
                         <div class="flex items-center mb-4">
                             <div class="flex-shrink-0 h-12 w-12">
                                 <img class="h-12 w-12 rounded-full object-cover border border-gray-200" 
-                                     src="{{ $pengaduan->user?->profile_photo_url ?? 'https://ui-avatars.com/api/?name=User&color=7F9CF5&background=EBF4FF' }}" 
-                                     alt=""
+                                     src="https://ui-avatars.com/api/?name=Anonymous&color=6B7280&background=E5E7EB" 
+                                     alt="Anonymous"
                                      referrerpolicy="no-referrer">
                             </div>
                             <div class="ml-4">
-                                <h4 class="text-lg font-bold text-gray-900">{{ $pengaduan->user->nama }}</h4>
+                                <h4 class="text-lg font-bold text-gray-900">Pelapor (Disamarkan)</h4>
                                 <p class="text-sm text-gray-500">
-                                    @if($pengaduan->mahasiswa)
-                                        {{ $pengaduan->mahasiswa->nim }}
-                                    @else
-                                        User (Bukan Mahasiswa)
-                                    @endif
+                                    Identitas Dirahasiakan
                                 </p>
                             </div>
                         </div>
@@ -184,13 +180,13 @@
                                 <dl class="space-y-3">
                                     <div>
                                         <dt class="text-xs font-medium text-gray-500 uppercase tracking-wider">Email</dt>
-                                        <dd class="mt-1 text-sm text-gray-900">{{ $pengaduan->user->email }}</dd>
+                                        <dd class="mt-1 text-sm text-gray-900">Dirahasiakan</dd>
                                     </div>
                                     @if($pengaduan->no_telpon_dihubungi)
                                     <div>
                                         <dt class="text-xs font-medium text-gray-500 uppercase tracking-wider">Kontak (WhatsApp)</dt>
                                         <dd class="mt-1 text-sm font-bold text-indigo-700 font-mono">
-                                            <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $pengaduan->no_telpon_dihubungi)) }}" target="_blank" class="hover:underline">
+                                            <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $pengaduan->no_telpon_dihubungi)) }}?text={{ urlencode('Halo, kami dari Admin Kampus ingin menindaklanjuti pengaduan Anda mengenai: "' . $pengaduan->judul . '".') }}" target="_blank" class="hover:underline">
                                                 <i class="fab fa-whatsapp mr-1"></i> {{ $pengaduan->no_telpon_dihubungi }}
                                             </a>
                                         </dd>
@@ -239,7 +235,7 @@
                                             @if($isAdmin)
                                                 <img src="https://ui-avatars.com/api/?name=Admin&background=4F46E5&color=fff" class="h-full w-full object-cover">
                                             @else
-                                                <img src="{{ $chat->user->profile_photo_url ?? 'https://ui-avatars.com/api/?name=User' }}" class="h-full w-full object-cover">
+                                                <img src="https://ui-avatars.com/api/?name=Anonymous&color=6B7280&background=E5E7EB" class="h-full w-full object-cover">
                                             @endif
                                         </div>
 

@@ -87,7 +87,11 @@
                             <tbody class="divide-y divide-gray-100">
                                 @foreach($mahasiswa->prestasi as $prestasi)
                                     <tr class="hover:bg-gray-50">
-                                        <td class="px-6 py-3 font-medium text-gray-800">{{ $prestasi->nama_kegiatan }}</td>
+                                        <td class="px-6 py-3 font-medium text-gray-800">
+                                            <a href="{{ route('admin.prestasi.show', $prestasi->id_prestasi) }}" class="text-indigo-600 hover:text-indigo-900 hover:underline">
+                                                {{ $prestasi->nama_kegiatan }}
+                                            </a>
+                                        </td>
                                         <td class="px-6 py-3 text-center text-sm text-gray-600">{{ $prestasi->tingkat_prestasi }}</td>
                                         <td class="px-6 py-3 text-center text-sm text-gray-600">{{ $prestasi->tahun }}</td>
                                         <td class="px-6 py-3 text-center">
@@ -132,7 +136,11 @@
                             <tbody class="divide-y divide-gray-100">
                                 @foreach($mahasiswa->sanksi as $sanksi)
                                     <tr class="hover:bg-gray-50">
-                                        <td class="px-6 py-3 font-medium text-gray-800">{{ $sanksi->jenis_sanksi }}</td>
+                                        <td class="px-6 py-3 font-medium text-gray-800">
+                                            <a href="{{ route('admin.sanksi.show', $sanksi->id_sanksi) }}" class="text-indigo-600 hover:text-indigo-900 hover:underline">
+                                                {{ $sanksi->jenis_sanksi }}
+                                            </a>
+                                        </td>
                                         <td class="px-6 py-3 text-center text-sm text-gray-600">{{ \Carbon\Carbon::parse($sanksi->tanggal_sanksi)->format('d M Y') }}</td>
                                         <td class="px-6 py-3 text-center">
                                             @if($sanksi->status_sanksi == 'aktif')
