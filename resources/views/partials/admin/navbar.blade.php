@@ -163,7 +163,7 @@
                 Manajemen Data
             </div>
             <a href="{{ route('admin.spk.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                <i class="bi bi-list-task mr-2"></i> Daftar Keputusan (SPK)
+                <i class="bi bi-list-task mr-2"></i> Manajemen SPK
             </a>
             <div class="border-t border-gray-200 my-2"></div>
             <a href="{{ url('/') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">

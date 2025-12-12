@@ -106,7 +106,7 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ route('admin.spk.index') }}">
             <i class="fas fa-fw bi bi-list-task"></i>
-            <span>Daftar Keputusan (SPK)</span>
+            <span>Manajemen SPK</span>
         </a>
     </li>
 

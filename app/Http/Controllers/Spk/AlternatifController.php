@@ -50,6 +50,7 @@ class AlternatifController extends KeputusanDetailController
     public function index()
     {
         $alternatifList = alternatif::where('id_keputusan', $this->idKeputusan)
+            ->with(['penilaian', 'mahasiswa']) // Load relasi penilaian & mahasiswa
             ->orderBy('nama_alternatif', 'asc')
             ->get();
         
@@ -69,9 +70,34 @@ class AlternatifController extends KeputusanDetailController
      * 
      * @return \Illuminate\View\View
      */
-    public function create()
+    public function create(Request $request)
     {
-        $mahasiswa = Datamahasiswa::select('id_mahasiswa', 'nim', 'nama')->get();
+        $query = Datamahasiswa::select('id_mahasiswa', 'nim', 'nama', 'semester');
+
+        // Filter Semester
+        if ($request->filled('semester')) {
+            $query->where('semester', $request->semester);
+        }
+
+        // Filter Prestasi (Punya Prestasi / Tidak)
+        if ($request->filled('filter_prestasi')) {
+            if ($request->filter_prestasi == 'ada') {
+                $query->whereHas('prestasi');
+            } elseif ($request->filter_prestasi == 'tidak_ada') {
+                $query->whereDoesntHave('prestasi');
+            }
+        }
+
+        // Filter Sanksi (Punya Sanksi / Tidak)
+        if ($request->filled('filter_sanksi')) {
+             if ($request->filter_sanksi == 'ada') {
+                $query->whereHas('sanksi');
+            } elseif ($request->filter_sanksi == 'tidak_ada') {
+                $query->whereDoesntHave('sanksi');
+            }
+        }
+
+        $mahasiswa = $query->orderBy('nama', 'asc')->get();
         
         // Mengambil daftar ID Mahasiswa yang SUDAH menjadi alternatif di keputusan ini.
         // Data ini akan digunakan di view untuk menonaktifkan/menyembunyikan opsi mahasiswa tersebut.

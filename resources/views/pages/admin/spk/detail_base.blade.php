@@ -13,7 +13,7 @@
         <nav class="text-sm font-medium text-gray-500 mb-4" aria-label="Breadcrumb">
             <ol class="list-none p-0 inline-flex">
                 <li class="flex items-center">
-                    <a href="{{ route('admin.spk.index') }}" class="text-gray-500 hover:text-gray-700">Daftar Keputusan SPK</a>
+                    <a href="{{ route('admin.spk.index') }}" class="text-gray-500 hover:text-gray-700">Manajemen SPK</a>
                     <i class="fas fa-chevron-right mx-2 text-gray-400 text-xs"></i>
                 </li>
                 <li class="flex items-center">

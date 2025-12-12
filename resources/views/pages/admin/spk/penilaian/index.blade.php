@@ -31,7 +31,15 @@
 
             {{-- Form Sinkronisasi --}}
             <div class="mb-6 flex justify-end">
-                <form action="{{ route('admin.spk.alternatif.penilaian.sync', $keputusan->id_keputusan) }}" method="POST" onsubmit="return confirm('Ini akan menimpa nilai penilaian untuk kriteria Prestasi, Sanksi, dan IPK. Lanjutkan?')">
+                @php
+                    // Collect active auto-sync sources (unique)
+                    $autoSources = $kriteriaList->where('sumber_data', '!=', 'Manual')
+                                               ->pluck('sumber_data')->unique()->implode(', ');
+                    $confirmMessage = $autoSources 
+                        ? "Ini akan menimpa nilai penilaian untuk kriteria yang bersumber dari: $autoSources. Lanjutkan?" 
+                        : "Tidak ada kriteria otomatis yang terdeteksi. Lanjutkan sinkronisasi?";
+                @endphp
+                <form action="{{ route('admin.spk.alternatif.penilaian.sync', $keputusan->id_keputusan) }}" method="POST" onsubmit="return confirm('{{ $confirmMessage }}')">
                     @csrf
                     <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition duration-150 flex items-center">
                         <i class="fas fa-sync-alt mr-2"></i> Sinkronisasi Data Otomatis
@@ -46,9 +54,18 @@
             @endif
 
             @if ($kriteriaList->isNotEmpty() && $alternatifData->isNotEmpty())
-                <form action="{{ route('admin.spk.alternatif.penilaian.update', $keputusan->id_keputusan) }}" method="POST">
+                @php
+                    $hasData = !empty($penilaianMatrix);
+                    $routeAction = $hasData 
+                        ? route('admin.spk.alternatif.penilaian.update', $keputusan->id_keputusan) 
+                        : route('admin.spk.alternatif.penilaian.store', $keputusan->id_keputusan);
+                @endphp
+
+                <form action="{{ $routeAction }}" method="POST">
                     @csrf
-                    @method('PUT')
+                    @if($hasData)
+                        @method('PUT')
+                    @endif
 
                     <div class="overflow-x-auto border border-gray-200 rounded-lg shadow-md mb-6">
                         <table class="min-w-full divide-y divide-gray-200 table-fixed">
@@ -88,10 +105,10 @@
                                                     {{-- Input Dropdown: Jika kriteria memiliki sub-kriteria --}}
                                                     <select name="{{ $inputName }}"
                                                         class="block w-full py-2 px-1 text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-                                                        <option value="" disabled>Pilih Nilai</option>
-                                                        @foreach($subKriteriaMap[$kriteria->id_kriteria] as $konversi => $namaSub)
-                                                            <option value="{{ $konversi }}" {{ $nilai == $konversi ? 'selected' : '' }}>
-                                                                {{ $namaSub }} ({{ number_format($konversi, 2) }})
+                                                        <option value="" disabled {{ $nilai == 0 ? 'selected' : '' }}>Pilih Nilai</option>
+                                                        @foreach($subKriteriaMap[$kriteria->id_kriteria] as $subItem)
+                                                            <option value="{{ $subItem['nilai'] }}" {{ (string)$nilai === (string)$subItem['nilai'] ? 'selected' : '' }}>
+                                                                {{ $subItem['nama'] }} ({{ number_format($subItem['nilai'], 2) }})
                                                             </option>
                                                         @endforeach
                                                     </select>
@@ -113,7 +130,7 @@
                     <div class="flex justify-end mt-4">
                         <button type="submit"
                             class="inline-flex items-center px-6 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">
-                            Simpan
+                            {{ $hasData ? 'Perbarui Data' : 'Simpan Data' }}
                         </button>
                     </div>
                 </form>

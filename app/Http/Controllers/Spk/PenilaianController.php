@@ -66,9 +66,12 @@ class PenilaianController extends KeputusanDetailController
         $subKriteriaMap = [];
         foreach ($kriteriaList as $kriteria) {
             if ($kriteria->subKriteria->count() > 0) {
-                $subKriteriaMap[$kriteria->id_kriteria] = $kriteria->subKriteria
-                    ->pluck('nama_subkriteria', 'nilai');
-            }
+                $subKriteriaMap[$kriteria->id_kriteria] = $kriteria->subKriteria->map(function ($item) {
+                    return [
+                        'nilai' => $item->nilai,
+                        'nama' => $item->nama_subkriteria
+                    ];
+                });            }
         }
         
         // 4. Membangun Matriks Penilaian (Xij).
@@ -101,12 +104,31 @@ class PenilaianController extends KeputusanDetailController
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
+    /**
+     * Menyimpan data penilaian baru (First Time Store).
+     */
+    public function store(Request $request)
+    {
+        return $this->processSave($request, 'menyimpan');
+    }
+
+    /**
+     * Memperbarui data penilaian (Update).
+     */
     public function update(Request $request)
+    {
+        return $this->processSave($request, 'memperbarui');
+    }
+
+    /**
+     * Shared logic untuk menyimpan/update data penilaian.
+     */
+    private function processSave(Request $request, $actionVerb)
     {
         // Validasi massal
         $request->validate([
             'nilai_penilaian' => 'required|array',
-            'nilai_penilaian.*.*' => 'required|numeric', // Tidak membatasi min:0, karena nilai bisa negatif 
+            'nilai_penilaian.*.*' => 'required|numeric', 
         ], [
             'nilai_penilaian.required' => 'Setidaknya satu nilai penilaian harus diisi.',
             'nilai_penilaian.*.*.required' => 'Semua nilai penilaian harus diisi.',
@@ -118,7 +140,6 @@ class PenilaianController extends KeputusanDetailController
         // Melakukan update massal melalui updateOrCreate
         foreach ($request->nilai_penilaian as $idAlternatif => $penilaianPerAlternatif) {
             foreach ($penilaianPerAlternatif as $idKriteria => $nilai) {
-                // Mencari atau membuat 
                 penilaian::updateOrCreate(
                     [
                         'id_alternatif' => $idAlternatif,
@@ -132,6 +153,7 @@ class PenilaianController extends KeputusanDetailController
             }
         }
 
+        return redirect()->back()->with('success', "Berhasil {$actionVerb} {$updatesCount} data penilaian.");
     }
 
     /**
@@ -146,83 +168,60 @@ class PenilaianController extends KeputusanDetailController
      */
     public function syncScores()
     {
-        // 1. Identifikasi Kriteria ID berdasarkan nama
+        // 1. Ambil semua Kriteria untuk keputusan ini
         $kriteriaList = kriteria::where('id_keputusan', $this->idKeputusan)->get();
         
-        $kriteriaMap = [];
-        foreach ($kriteriaList as $kriteria) {
-            $nama = strtolower($kriteria->nama_kriteria);
-            if (str_contains($nama, 'prestasi')) {
-                $kriteriaMap['prestasi'] = $kriteria->id_kriteria;
-            } elseif (str_contains($nama, 'sanksi')) {
-                $kriteriaMap['sanksi'] = $kriteria->id_kriteria;
-            } elseif (str_contains($nama, 'ipk')) {
-                $kriteriaMap['ipk'] = $kriteria->id_kriteria;
-            }
-        }
-
-        if (empty($kriteriaMap)) {
-            return redirect()->back()->with('error', 'Tidak ditemukan kriteria dengan nama "Prestasi", "Sanksi", atau "IPK". Pastikan nama kriteria sesuai.');
-        }
-
-        // 2. Ambil Data Mahasiswa (Alternatif)
+        // 2. Ambil semua Alternatif
         $alternatifList = alternatif::where('id_keputusan', $this->idKeputusan)->get();
         $countUpdated = 0;
 
         foreach ($alternatifList as $alternatif) {
-            // Asumsi: Kita bisa link kembali ke data mahasiswa asli
-            // Idealnya tabel alternatif menyimpan id_mahasiswa. 
-            // Jika tidak, kita harus menebak berdasarkan nama atau kode yang sama dengan NIM.
-            // Mari kita coba cari mahasiswa berdasarkan kode_alternatif (ASUMSI KODE ALTERNATIF = NIM)
-            // Atau jika tabel alternatif punya kolom id_mahasiswa.
-            
-            // Cek struktur tabel alternatif dulu atau gunakan logic pencocokan
-            // Untuk saat ini, asumsikan kode_alternatif adalah NIM atau kita cari berdasarkan nama
-            
+            // Find linked mahasiswa (fallback by name if NIM not found or stored)
+            // Asumsi: kode_alternatif = NIM
             $mahasiswa = \App\Models\admin\Datamahasiswa::where('nim', $alternatif->kode_alternatif)->first();
 
             if (!$mahasiswa) {
-                // Fallback: Try match by name
-                $mahasiswa = \App\Models\admin\Datamahasiswa::where('nama', $alternatif->nama_alternatif)->first();
+                 $mahasiswa = \App\Models\admin\Datamahasiswa::where('nama', $alternatif->nama_alternatif)->first();
             }
 
-            if ($mahasiswa) {
-                // Calculate Values
-                // Prestasi: Hitung yang valid
-                $prestasiCount = $mahasiswa->prestasi()->where('status_validasi', 'valid')->count();
-                // Jika status validasi menggunakan kata lain, sesuaikan (misal 'disetujui')
-                // Cek enum status_validasi di database atau model, step sebelumnya melihat 'disetujui'
-                $prestasiCount = $mahasiswa->prestasi()->where('status_validasi', 'disetujui')->count();
+            if (!$mahasiswa) {
+                continue; // Skip if no student found
+            }
 
-                // Sanksi: Count all
-                $sanksiCount = $mahasiswa->sanksi()->count();
+            foreach ($kriteriaList as $kriteria) {
+                $source = $kriteria->sumber_data;
+                $value = 0;
+                $shouldSync = false;
 
-                // IPK
-                $ipkValue = $mahasiswa->ipk ?? 0;
-
-                // Sync Prestasi
-                if (isset($kriteriaMap['prestasi'])) {
-                    penilaian::updateOrCreate(
-                        ['id_alternatif' => $alternatif->id_alternatif, 'id_kriteria' => $kriteriaMap['prestasi']],
-                        ['nilai' => $prestasiCount]
-                    );
-                    $countUpdated++;
+                // Case 1: Mahasiswa (Dynamic Attribute)
+                if ($source === 'Mahasiswa' && $kriteria->atribut_sumber) {
+                    $attr = $kriteria->atribut_sumber;
+                    // Check if column exists or is valid
+                    // For safety, you might valid against schema, but here we assume it's correct from Kriteria input
+                    $value = $mahasiswa->$attr ?? 0;
+                    $shouldSync = true;
                 }
 
-                // Sync Sanksi
-                if (isset($kriteriaMap['sanksi'])) {
-                    penilaian::updateOrCreate(
-                        ['id_alternatif' => $alternatif->id_alternatif, 'id_kriteria' => $kriteriaMap['sanksi']],
-                        ['nilai' => $sanksiCount]
-                    );
-                    $countUpdated++;
+                // Case 2: Prestasi/Sanksi/etc (Count Logic)
+                elseif ($source === 'Prestasi') {
+                     // Default logic: count valid prestasi
+                     $value = $mahasiswa->prestasi()->where('status_validasi', 'disetujui')->count();
+                     $shouldSync = true;
                 }
-
-                // Sync IPK
-                if (isset($kriteriaMap['ipk'])) {
+                elseif ($source === 'Sanksi') {
+                     $value = $mahasiswa->sanksi()->count();
+                     $shouldSync = true;
+                }
+                elseif ($source === 'Pengaduan') {
+                     $value = $mahasiswa->pengaduan()->count();
+                     $shouldSync = true;
+                }
+                
+                // Perform Update if applicable
+                if ($shouldSync) {
                     penilaian::updateOrCreate(
-                        ['id_alternatif' => $alternatif->id_alternatif, 'id_kriteria' => $kriteriaMap['ipk']],
-                        ['nilai' => $ipkValue]
+                        ['id_alternatif' => $alternatif->id_alternatif, 'id_kriteria' => $kriteria->id_kriteria],
+                        ['nilai' => $value]
                     );
                     $countUpdated++;
                 }

@@ -199,7 +199,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
                 // Penilaian Alternatif ($Xij$)
                 Route::controller(PenilaianController::class)->prefix('nilai')->name('penilaian.')->group(function () {
                     Route::get('/', 'index')->name('index'); // Menampilkan matriks penilaian semua alternatif
-                    Route::put('/', 'update')->name('update'); // Menyimpan semua nilai penilaian
+                    Route::post('/', 'store')->name('store'); // Menyimpan baru
+                    Route::put('/', 'update')->name('update'); // Menyimpan update
                     Route::post('/sync', 'syncScores')->name('sync'); // Sinkronisasi otomatis
                 });
 

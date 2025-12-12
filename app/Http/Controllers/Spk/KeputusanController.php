@@ -46,7 +46,7 @@ class KeputusanController extends Controller
         
         return view('pages.admin.spk.keputusan.index', [ 
             'keputusanList' => $keputusanList,
-            'pageTitle' => 'Daftar Keputusan SPK'
+            'pageTitle' => 'Manajemen SPK'
         ]);
     }
     
