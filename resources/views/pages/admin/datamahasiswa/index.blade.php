@@ -110,6 +110,9 @@
                             Semester
                         </th>
                         <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
+                            IPK
+                        </th>
+                        <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
                             Email
                         </th>
                         <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-center font-medium uppercase tracking-wider">
@@ -145,6 +148,11 @@
                                     {{ $mhs->semester }}
                                 </span>
                             </td>
+
+                            {{-- IPK --}}
+                            <td class="px-3 py-2 lg:px-4 lg:py-3 text-left">
+                                <span class="font-bold text-gray-700">{{ $mhs->ipk ?? '-' }}</span>
+                            </td>
                             
                             {{-- Email --}}
                             <td class="px-3 py-2 lg:px-4 lg:py-3 text-gray-600">
@@ -165,7 +173,7 @@
                                     </a>
 
                                     {{-- Delete --}}
-                                    <form action="{{ route('admin.datamahasiswa.destroy', $mhs->id_mahasiswa) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')" class="inline">
+                                    <form action="{{ route('admin.datamahasiswa.destroy', array_merge(['mahasiswa' => $mhs->id_mahasiswa], request()->query())) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')" class="inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-red-100 text-red-600 hover:bg-red-600 hover:text-white" title="Hapus">
@@ -216,7 +224,7 @@
                             <div class="mt-2">
                                 <p class="text-sm text-gray-500 mb-4">
                                     Upload file Excel (.xlsx, .xls) yang berisi data mahasiswa.
-                                    Pastikan format kolom: <strong>NIM, Nama, Email, Semester</strong>.
+                                    Pastikan format kolom: <strong>NIM, Nama, Semester, IPK, Email</strong>.
                                 </p>
                                 <form action="{{ route('admin.datamahasiswa.import') }}" method="POST" enctype="multipart/form-data">
                                     @csrf

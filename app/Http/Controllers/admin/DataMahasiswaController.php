@@ -96,6 +96,7 @@ class DataMahasiswaController extends Controller
             'nama' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:mahasiswa,email',
             'semester' => 'required|integer|min:1|max:14',
+            'ipk' => 'nullable|numeric|between:0,4.00',
         ]);
 
         Datamahasiswa::create([
@@ -105,6 +106,7 @@ class DataMahasiswaController extends Controller
             'nama' => $request->nama,
             'email' => $request->email,
             'semester' => $request->semester,
+            'ipk' => $request->ipk,
         ]);
 
         return redirect()->route('admin.datamahasiswa.index')->with('success', 'Data mahasiswa berhasil ditambahkan.');
@@ -160,6 +162,7 @@ class DataMahasiswaController extends Controller
             'nama' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:mahasiswa,email,' . $mahasiswa->id_mahasiswa . ',id_mahasiswa',
             'semester' => 'required|integer|min:1|max:8',
+            'ipk' => 'nullable|numeric|between:0,4.00',
         ]);
 
         
@@ -168,6 +171,7 @@ class DataMahasiswaController extends Controller
             'nama' => $request->nama,
             'email' => $request->email,
             'semester' => $request->semester,
+            'ipk' => $request->ipk,
         ]);
 
         return redirect()->route('admin.datamahasiswa.index')->with('success', 'Data mahasiswa berhasil diperbarui.');
@@ -179,12 +183,12 @@ class DataMahasiswaController extends Controller
      * @param Datamahasiswa $mahasiswa Model binding otomatis
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Datamahasiswa $mahasiswa) 
+    public function destroy(Request $request, Datamahasiswa $mahasiswa) 
     {
         
         $mahasiswa->delete();
 
-        return redirect()->route('admin.datamahasiswa.index')->with('success', 'Data mahasiswa berhasil dihapus.');
+        return redirect()->route('admin.datamahasiswa.index', $request->query())->with('success', 'Data mahasiswa berhasil dihapus.');
     }
 
     /**
@@ -200,7 +204,8 @@ class DataMahasiswaController extends Controller
         ]);
 
         try {
-            $import = new MahasiswaImport();
+            $adminId = Auth::user()->admin->id_admin ?? null;
+            $import = new MahasiswaImport($adminId);
             $import->import($request->file('file')->getRealPath());
             
             return redirect()->route('admin.datamahasiswa.index')->with('success', 'Data mahasiswa berhasil diimport!');

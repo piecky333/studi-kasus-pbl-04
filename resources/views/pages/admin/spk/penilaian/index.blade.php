@@ -29,6 +29,16 @@
                 </div>
             </header>
 
+            {{-- Form Sinkronisasi --}}
+            <div class="mb-6 flex justify-end">
+                <form action="{{ route('admin.spk.alternatif.penilaian.sync', $keputusan->id_keputusan) }}" method="POST" onsubmit="return confirm('Ini akan menimpa nilai penilaian untuk kriteria Prestasi, Sanksi, dan IPK. Lanjutkan?')">
+                    @csrf
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition duration-150 flex items-center">
+                        <i class="fas fa-sync-alt mr-2"></i> Sinkronisasi Data Otomatis
+                    </button>
+                </form>
+            </div>
+
             @if (session('success'))
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 text-sm">
                     {{ session('success') }}

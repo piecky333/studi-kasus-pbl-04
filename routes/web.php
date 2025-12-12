@@ -125,7 +125,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 
     // Data Mahasiswa
     Route::post('datamahasiswa/import', [AdminDataMahasiswaController::class, 'import'])->name('datamahasiswa.import');
-    Route::resource('datamahasiswa', AdminDataMahasiswaController::class);
+    Route::resource('datamahasiswa', AdminDataMahasiswaController::class)->parameters(['datamahasiswa' => 'mahasiswa']);
 
 
     // =====================================================
@@ -200,6 +200,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
                 Route::controller(PenilaianController::class)->prefix('nilai')->name('penilaian.')->group(function () {
                     Route::get('/', 'index')->name('index'); // Menampilkan matriks penilaian semua alternatif
                     Route::put('/', 'update')->name('update'); // Menyimpan semua nilai penilaian
+                    Route::post('/sync', 'syncScores')->name('sync'); // Sinkronisasi otomatis
                 });
 
                 // KOREKSI: MENGGANTI Route::resource DENGAN RUTE EKSPLISIT UNTUK MENGHINDARI KONFLIK
