@@ -139,32 +139,7 @@
             width: 100%;
         }
 
-        /* == TAMBAHAN UNTUK ANIMASI UNDERLINE NAVBAR == */
-        .link-animasi-nav {
-            position: relative;
-            padding-bottom: 4px; /* Sedikit padding bawah untuk garis */
-        }
 
-        .link-animasi-nav::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            /* Garisnya warna putih agar kontras di navbar biru */
-            background-color: #FACC15; /* GANTI DARI PUTIH KE KUNING (yellow-400) */ 
-            transition: width 0.3s ease-out;
-        }
-
-        /* Jangan tampilkan garis jika link-nya sedang 'active' */
-        .link-animasi-nav[aria-current="page"]::after {
-            display: none;
-        }
-
-        .link-animasi-nav:hover::after {
-            width: 100%;
-        }
     </style>
 @endpush
 

@@ -6,7 +6,7 @@
         <div class="flex justify-between h-16">
             <div class="flex">
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('user.dashboard') }}">
+                    <a href="{{ route('home') }}">
                         <img src="{{ asset('img/Logo hima.png') }}" alt="Logo" class="block h-9 w-auto">
                     </a>
                 </div>

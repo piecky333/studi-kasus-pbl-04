@@ -5,8 +5,8 @@
 // Jika 'active', kita pakai border-yellow-400 (kuning, statis).
 // Jika tidak 'active', kita pakai 'link-animasi-nav' (untuk animasi garis bawah saat hover).
 $classes = ($active ?? false)
-            ? 'inline-flex items-center px-1 pt-1 border-b-2 border-yellow-400 text-sm font-medium leading-5 text-white focus:outline-none focus:border-yellow-400 transition duration-150 ease-in-out'
-            : 'inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-300 hover:text-white focus:outline-none focus:text-white transition duration-150 ease-in-out link-animasi-nav'; // MODIFIKASI: Tambah kelas 'link-animasi-nav'
+            ? 'inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-white focus:outline-none focus:border-transparent transition duration-150 ease-in-out'
+            : 'inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-300 hover:text-white focus:outline-none focus:text-white transition duration-150 ease-in-out'; // MODIFIKASI: Hapus kelas 'link-animasi-nav'
 @endphp
 
 {{-- File ini HANYA berisi tag <a>. TIDAK BOLEH ADA @extends --}}
