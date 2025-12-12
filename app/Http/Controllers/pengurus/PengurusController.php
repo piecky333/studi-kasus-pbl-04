@@ -52,7 +52,7 @@ class PengurusController extends Controller
     {
         $divisi = divisi::all();
         // Ambil data mahasiswa yang memiliki id_user (sudah punya akun)
-        $mahasiswa = \App\Models\Mahasiswa::whereNotNull('id_user')->get();
+        $mahasiswa = \App\Models\admin\Datamahasiswa::whereNotNull('id_user')->get();
         $jabatan = \App\Models\Jabatan::all();
         return view('pages.pengurus.pengurus.create', compact('divisi', 'mahasiswa', 'jabatan'));
     }
@@ -93,7 +93,7 @@ class PengurusController extends Controller
         $pengurus = pengurus::findOrFail($id);
         $divisi = divisi::all();
         // Ambil data mahasiswa yang memiliki id_user
-        $mahasiswa = \App\Models\Mahasiswa::whereNotNull('id_user')->get();
+        $mahasiswa = \App\Models\admin\Datamahasiswa::whereNotNull('id_user')->get();
         $jabatan = \App\Models\Jabatan::all();
         return view('pages.pengurus.pengurus.edit', compact('pengurus', 'divisi', 'mahasiswa', 'jabatan'));
     }

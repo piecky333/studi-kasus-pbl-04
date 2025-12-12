@@ -27,6 +27,12 @@ class alternatif extends Model
         'keterangan',
     ];
 
+    // Relasi Many-to-One: Alternatif terhubung ke satu mahasiswa
+    public function mahasiswa(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\admin\Datamahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
+    }
+
     // Relasi Many-to-One: Alternatif dimiliki oleh satu keputusan
     public function keputusan(): BelongsTo
     {

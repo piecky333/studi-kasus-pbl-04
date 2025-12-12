@@ -7,7 +7,7 @@
             
             <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex flex-col md:flex-row justify-between items-center gap-4">
                 <h2 class="text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-2">
-                    {{ $pageTitle ?? 'Daftar Keputusan SPK' }}
+                    {{ $pageTitle ?? 'Daftar Manajemen SPK' }}
                 </h2>
                 
                 <a href="{{ route('admin.spk.create') }}"
@@ -115,7 +115,7 @@
                                     <td colspan="5" class="px-6 py-10 whitespace-nowrap text-sm text-gray-500 text-center bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
                                         <div class="flex flex-col items-center">
                                             <i class="fas fa-folder-open text-4xl text-gray-300 mb-3"></i>
-                                            <p>Belum ada data Keputusan SPK.</p>
+                                            <h1 class="h3 mb-0 text-gray-800">Manajemen SPK</h1>
                                             <p class="text-xs mt-1">Klik tombol "Buat Keputusan Baru" untuk memulai.</p>
                                         </div>
                                     </td>

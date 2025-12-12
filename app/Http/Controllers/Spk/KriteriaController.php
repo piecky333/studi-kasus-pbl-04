@@ -52,11 +52,15 @@ class KriteriaController extends KeputusanDetailController
                              ->with('subKriteria') 
                              ->get();
 
+        // Peta kolom yang ramah pengguna (Shared logic)
+        $columns = $this->getReadableLabels();
+
         return view('pages.admin.spk.kriteria.index', [
             'idKeputusan' => $this->idKeputusan,
             'keputusan' => $this->keputusan, // Digunakan untuk navigasi/breadcrumb
             'kriteriaData' => $kriteria,
-            'pageTitle' => 'Manajemen Kriteria'
+            'pageTitle' => 'Manajemen Kriteria',
+            'columnMap' => $columns
         ]);
     }
 
@@ -67,11 +71,23 @@ class KriteriaController extends KeputusanDetailController
      */
     public function create()
     {
+        // Peta kolom yang ramah pengguna
+        $columns = $this->getReadableLabels();
+
+        // Ensure we fetch generic columns if map is missing (fallback)
+        foreach (['Prestasi', 'Sanksi', 'Pengaduan', 'Mahasiswa'] as $model) {
+             if (!isset($columns[$model])) {
+                $rawCols = \Illuminate\Support\Facades\Schema::getColumnListing(strtolower($model));
+                $columns[$model] = array_combine($rawCols, $rawCols);
+             }
+        }
+
         // Data Keputusan sudah dimuat di constructor parent
         return view('pages.admin.spk.kriteria.create', [ 
             'keputusan' => $this->keputusan,
             'idKeputusan' => $this->idKeputusan,
-            'pageTitle' => 'Tambah Kriteria Baru'
+            'pageTitle' => 'Tambah Kriteria Baru',
+            'tableColumns' => $columns
         ]);
     }
 
@@ -101,7 +117,8 @@ class KriteriaController extends KeputusanDetailController
             ],
             'nama_kriteria' => 'required|string|max:255',
             'jenis_kriteria' => 'required|in:Benefit,Cost',
-            'bobot_kriteria' => 'required|numeric|between:0,1', 
+            'bobot_kriteria' => 'required|numeric|between:0,1',
+            'sumber_data' => 'required|in:Manual,Prestasi,Sanksi,Pengaduan,Mahasiswa',
         ], [
             'kode_kriteria.unique' => 'Kode kriteria sudah digunakan dalam keputusan ini.',
             'kode_kriteria.required' => 'Kode kriteria wajib diisi.',
@@ -111,6 +128,8 @@ class KriteriaController extends KeputusanDetailController
             'bobot_kriteria.required' => 'Bobot kriteria wajib diisi.',
             'bobot_kriteria.numeric' => 'Bobot kriteria harus berupa angka.',
             'bobot_kriteria.between' => 'Bobot kriteria harus antara 0 dan 1.',
+            'sumber_data.required' => 'Sumber data wajib dipilih.',
+            'sumber_data.in' => 'Sumber data tidak valid.',
         ]);
 
         // 2. Buat Kriteria baru
@@ -120,9 +139,14 @@ class KriteriaController extends KeputusanDetailController
             'nama_kriteria' => $validated['nama_kriteria'],
             'jenis_kriteria' => $validated['jenis_kriteria'],
             'bobot_kriteria' => $validated['bobot_kriteria'],
+            'sumber_data' => $validated['sumber_data'],
+            'atribut_sumber' => $request->input('atribut_sumber'), // Optional, bisa null
         ]);
         
-        // 3. Inisiasi Penilaian Otomatis:
+        // 3. Generate Sub Kriteria Otomatis (jika applicable)
+        $this->generateDefaultSubKriteria($kriteriaBaru);
+
+        // 4. Inisiasi Penilaian Otomatis:
         // Saat kriteria baru ditambahkan, semua alternatif yang sudah ada harus memiliki
         // entry penilaian untuk kriteria ini (default 0).
         $alternatifList = alternatif::where('id_keputusan', $this->idKeputusan)->get();
@@ -132,12 +156,19 @@ class KriteriaController extends KeputusanDetailController
             penilaian::create([
                 'id_alternatif' => $alternatif->id_alternatif,
                 'id_kriteria' => $kriteriaBaru->id_kriteria,
-                'nilai' => 0, // Nilai default 0, menunggu input user
+                'nilai' => 0, // Nilai default 0, menunggu input user atau auto-fetch
             ]);
         }
 
+        // Resolve readable name for success message
+        $namaDisplay = $validated['nama_kriteria'];
+        $labels = $this->getReadableLabels();
+        if ($validated['sumber_data'] !== 'Manual' && isset($labels[$validated['sumber_data']][$namaDisplay])) {
+            $namaDisplay = $labels[$validated['sumber_data']][$namaDisplay] . " (" . $validated['sumber_data'] . ")";
+        }
+
         return redirect()->route('admin.spk.kriteria.index', $this->idKeputusan)
-                         ->with('success', 'Kriteria "' . $validated['nama_kriteria'] . '" berhasil ditambahkan, dan penilaian alternatif sudah diinisiasi.');
+                         ->with('success', 'Kriteria "' . $namaDisplay . '" berhasil ditambahkan, dan penilaian alternatif sudah diinisiasi.');
     }
     
     /**
@@ -155,10 +186,22 @@ class KriteriaController extends KeputusanDetailController
                             ->where('id_kriteria', $idKriteria)
                             ->firstOrFail();
         
+        // Peta kolom yang ramah pengguna
+        $columns = $this->getReadableLabels();
+
+        // Ensure we fetch generic columns if map is missing (fallback)
+        foreach (['Prestasi', 'Sanksi', 'Pengaduan', 'Mahasiswa'] as $model) {
+             if (!isset($columns[$model])) {
+                $rawCols = \Illuminate\Support\Facades\Schema::getColumnListing(strtolower($model));
+                $columns[$model] = array_combine($rawCols, $rawCols);
+             }
+        }
+
         return view('pages.admin.spk.kriteria.edit', [
             'keputusan' => $this->keputusan,
             'kriteria' => $kriteria,
-            'pageTitle' => 'Edit Kriteria'
+            'pageTitle' => 'Edit Kriteria',
+             'tableColumns' => $columns
         ]);
     }
 
@@ -192,6 +235,7 @@ class KriteriaController extends KeputusanDetailController
             'nama_kriteria' => 'required|string|max:255',
             'jenis_kriteria' => 'required|in:Benefit,Cost',
             'bobot_kriteria' => 'required|numeric|between:0,1',
+            'sumber_data' => 'required|in:Manual,Prestasi,Sanksi,Pengaduan,Mahasiswa',
         ], [
             'kode_kriteria.unique' => 'Kode kriteria sudah digunakan dalam keputusan ini.',
             'kode_kriteria.required' => 'Kode kriteria wajib diisi.',
@@ -201,15 +245,28 @@ class KriteriaController extends KeputusanDetailController
             'bobot_kriteria.required' => 'Bobot kriteria wajib diisi.',
             'bobot_kriteria.numeric' => 'Bobot kriteria harus berupa angka.',
             'bobot_kriteria.between' => 'Bobot kriteria harus antara 0 dan 1.',
+            'sumber_data.required' => 'Sumber data wajib dipilih.',
+            'sumber_data.in' => 'Sumber data tidak valid.',
         ]);
         
         // 3. Update data
         $dataToUpdate = $validated;
+        $dataToUpdate['atribut_sumber'] = $request->input('atribut_sumber');
         
         $kriteria->update($dataToUpdate);
 
+        // 4. Regenerate Sub Kriteria Otomatis (jika applicable)
+        $this->generateDefaultSubKriteria($kriteria);
+
+        // Resolve readable name for success message
+        $namaDisplay = $kriteria->nama_kriteria;
+        $labels = $this->getReadableLabels();
+        if ($kriteria->sumber_data !== 'Manual' && isset($labels[$kriteria->sumber_data][$namaDisplay])) {
+             $namaDisplay = $labels[$kriteria->sumber_data][$namaDisplay] . " (" . $kriteria->sumber_data . ")";
+        }
+
         return redirect()->route('admin.spk.kriteria.index', $this->idKeputusan)
-                         ->with('success', 'Kriteria "' . $kriteria->nama_kriteria . '" berhasil diperbarui.');
+                         ->with('success', 'Kriteria "' . $namaDisplay . '" berhasil diperbarui.');
     }
 
     /**
@@ -237,18 +294,79 @@ class KriteriaController extends KeputusanDetailController
         
         // 3. Hapus Kriteria utama
         $nama = $kriteria->nama_kriteria;
+        
+        // Resolve readable name if dynamic source
+        $labels = $this->getReadableLabels();
+        if ($kriteria->sumber_data !== 'Manual' && isset($labels[$kriteria->sumber_data][$nama])) {
+            $nama = $labels[$kriteria->sumber_data][$nama] . " (" . $kriteria->sumber_data . ")";
+        }
+
         $kriteria->delete();
 
         return redirect()->route('admin.spk.kriteria.index', $this->idKeputusan)
                          ->with('success', 'Kriteria "' . $nama . '" berhasil dihapus.');
     }
     
+
+    use \App\Traits\HasCriteriaLabels;
+
     /**
-     * Menampilkan daftar Sub Kriteria (untuk Kriteria tertentu).
-     * NOTE: Fungsi ini sekarang seharusnya dihandle oleh SubKriteriaController@index.
-     * @param int $idKriteria
-     * @return \Illuminate\View\View
+     * Helper: Generate default sub-criteria based on source/attribute.
      */
+    private function generateDefaultSubKriteria($kriteria)
+    {
+        // 1. Define mappings
+        $mappings = [
+            'Prestasi' => [
+                'tingkat_prestasi' => [ // Column Name
+                    ['nama' => 'Internasional', 'nilai' => 4],
+                    ['nama' => 'Nasional', 'nilai' => 3],
+                    ['nama' => 'Provinsi', 'nilai' => 2],
+                    ['nama' => 'Lokal', 'nilai' => 1],
+                ],
+                // ... (rest of logic same as before)
+                'jenis_prestasi' => [
+                    ['nama' => 'Akademik', 'nilai' => 1],
+                    ['nama' => 'Non-Akademik', 'nilai' => 1],
+                ],
+            ],
+            'Sanksi' => [
+                'jenis_sanksi' => [
+                    ['nama' => 'Berat', 'nilai' => 3],
+                    ['nama' => 'Sedang', 'nilai' => 2],
+                    ['nama' => 'Ringan', 'nilai' => 1],
+                ],
+            ],
+            'Pengaduan' => [
+                'status' => [
+                    ['nama' => 'Selesai', 'nilai' => 3],
+                    ['nama' => 'Diproses', 'nilai' => 2],
+                    ['nama' => 'Terkirim', 'nilai' => 1],
+                    ['nama' => 'Ditolak', 'nilai' => 1], // Or 0
+                ],
+            ],
+        ];
+
+        $source = $kriteria->sumber_data;
+        $column = $kriteria->nama_kriteria;
+
+        // 2. Check match
+        if ($source !== 'Manual' && isset($mappings[$source][$column])) {
+            // Delete existing sub-criteria first (for update scenario)
+            subkriteria::where('id_kriteria', $kriteria->id_kriteria)->delete();
+
+            // Insert new ones
+            foreach ($mappings[$source][$column] as $item) {
+                subkriteria::create([
+                    'id_kriteria' => $kriteria->id_kriteria,
+                    'id_keputusan' => $kriteria->id_keputusan,
+                    'nama_subkriteria' => $item['nama'],
+                    'nilai' => $item['nilai'],
+                ]);
+            }
+        }
+    }
+
     public function subkriteriaIndex($idKriteria)
     {
         // Data Keputusan sudah tersedia via $this->keputusan

@@ -47,20 +47,110 @@
                         @enderror
                     </div>
 
-                    {{-- Input Teks: Mengubah nama kriteria --}}
+                    {{-- Pilihan Dropdown: Menentukan sumber data --}}
+                    <div>
+                        <label for="sumber_data" class="block text-sm font-medium text-gray-700 mb-1">
+                            Sumber Data
+                        </label>
+                        <select name="sumber_data" id="sumber_data" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm
+                                    @error('sumber_data') border-red-500 @enderror" required>
+                            <option value="Manual" {{ old('sumber_data', $kriteria->sumber_data) == 'Manual' ? 'selected' : '' }}>Manual</option>
+                            <option value="Prestasi" {{ old('sumber_data', $kriteria->sumber_data) == 'Prestasi' ? 'selected' : '' }}>Prestasi</option>
+                            <option value="Sanksi" {{ old('sumber_data', $kriteria->sumber_data) == 'Sanksi' ? 'selected' : '' }}>Sanksi</option>
+                            <option value="Pengaduan" {{ old('sumber_data', $kriteria->sumber_data) == 'Pengaduan' ? 'selected' : '' }}>Pengaduan</option>
+                            <option value="Berita" {{ old('sumber_data', $kriteria->sumber_data) == 'Berita' ? 'selected' : '' }}>Berita</option>
+                        </select>
+                        @error('sumber_data')
+                            <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Input Teks/Dropdown: Nama kriteria --}}
                     <div>
                         <label for="nama_kriteria" class="block text-sm font-medium text-gray-700 mb-1">
                             Nama Kriteria
                         </label>
-                        <input type="text" name="nama_kriteria" id="nama_kriteria" 
-                               value="{{ old('nama_kriteria', $kriteria->nama_kriteria) }}"
-                               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm
-                               @error('nama_kriteria') border-red-500 @enderror"
-                               placeholder="Contoh: Nilai Akademik, Tes Potensi" required>
+                        
+                        {{-- Container untuk Input Teks (Manual) --}}
+                        <div id="nama_kriteria_text_container">
+                            <input type="text" name="nama_kriteria" id="nama_kriteria_text" 
+                                   value="{{ old('nama_kriteria', $kriteria->nama_kriteria) }}" 
+                                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm
+                                   @error('nama_kriteria') border-red-500 @enderror"
+                                   placeholder="Contoh: Nilai Akademik, Tes Potensi">
+                        </div>
+
+                        {{-- Container untuk Dropdown (Otomatis) --}}
+                        <div id="nama_kriteria_select_container" class="hidden">
+                            <select name="nama_kriteria_select" id="nama_kriteria_select" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <!-- Options will be populated via JS -->
+                            </select>
+                        </div>
+
                         @error('nama_kriteria')
                             <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const sumberDataSelect = document.getElementById('sumber_data');
+                            const textContainer = document.getElementById('nama_kriteria_text_container');
+                            const textInput = document.getElementById('nama_kriteria_text');
+                            const selectContainer = document.getElementById('nama_kriteria_select_container');
+                            const selectInput = document.getElementById('nama_kriteria_select');
+                            
+                            // Data columns dari controller
+                            const tableColumns = @json($tableColumns);
+                            const currentNamaKriteria = "{{ $kriteria->nama_kriteria }}";
+
+                            function updateInputType() {
+                                const selectedSource = sumberDataSelect.value;
+
+                                if (selectedSource === 'Manual') {
+                                    textContainer.classList.remove('hidden');
+                                    selectContainer.classList.add('hidden');
+                                    textInput.disabled = false;
+                                    selectInput.disabled = true; // Disable select agar tidak terkirim
+                                    
+                                    // Set name attribute agar textInput yang dikirim sebagai 'nama_kriteria'
+                                    textInput.setAttribute('name', 'nama_kriteria');
+                                    selectInput.removeAttribute('name');
+                                } else {
+                                    textContainer.classList.add('hidden');
+                                    selectContainer.classList.remove('hidden');
+                                    textInput.disabled = true;
+                                    selectInput.disabled = false;
+
+                                    // Set name attribute agar selectInput yang dikirim sebagai 'nama_kriteria'
+                                    selectInput.setAttribute('name', 'nama_kriteria');
+                                    textInput.removeAttribute('name');
+
+                                    // Populate options
+                                    selectInput.innerHTML = '';
+                                    if (tableColumns[selectedSource]) {
+                                        // tableColumns[selectedSource] is now an object {colName: label}
+                                        Object.entries(tableColumns[selectedSource]).forEach(([colName, label]) => {
+                                            const option = document.createElement('option');
+                                            option.value = colName;
+                                            option.textContent = label; 
+                                            
+                                            // Select current value if matches
+                                            if (colName === currentNamaKriteria) {
+                                                option.selected = true;
+                                            }
+                                            selectInput.appendChild(option);
+                                        });
+                                    }
+                                }
+                            }
+
+                            sumberDataSelect.addEventListener('change', updateInputType);
+                            
+                            // Initialize on load
+                            updateInputType();
+                        });
+                    </script>
 
                     {{-- Pilihan Dropdown: Mengubah jenis kriteria --}}
                     <div>

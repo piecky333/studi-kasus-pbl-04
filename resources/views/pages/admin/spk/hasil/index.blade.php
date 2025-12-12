@@ -124,8 +124,14 @@
                                         {{ $kode }}
                                     </span>
                                 </div>
-                                <p class="text-xs text-gray-500 h-8 line-clamp-2 leading-tight mb-1" title="{{ $kriteria->nama_kriteria }}">
-                                    {{ $kriteria->nama_kriteria }}
+                                @php
+                                    $namaDisplay = $kriteria->nama_kriteria;
+                                    if ($kriteria->sumber_data !== 'Manual' && isset($columnMap[$kriteria->sumber_data][$namaDisplay])) {
+                                        $namaDisplay = $columnMap[$kriteria->sumber_data][$namaDisplay] . " (" . $kriteria->sumber_data . ")";
+                                    }
+                                @endphp
+                                <p class="text-xs text-gray-500 h-8 line-clamp-2 leading-tight mb-1" title="{{ $namaDisplay }}">
+                                    {{ $namaDisplay }}
                                 </p>
                                 <p class="text-xl font-bold text-gray-800">
                                     {{ number_format($bobot, 4) }}

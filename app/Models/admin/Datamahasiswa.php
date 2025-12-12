@@ -31,6 +31,16 @@ class Datamahasiswa extends Model
         return $this->hasMany(\App\Models\admin\Sanksi::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 
+    public function pengaduan()
+    {
+        return $this->hasMany(\App\Models\laporan\Pengaduan::class, 'id_user', 'id_user');
+    }
+
+    public function berita()
+    {
+        return $this->hasMany(\App\Models\Berita::class, 'id_user', 'id_user');
+    }
+
     public function admin()
     {
         return $this->belongsTo(\App\Models\admin\Admin::class, 'id_admin', 'id_admin');

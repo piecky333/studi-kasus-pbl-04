@@ -24,6 +24,8 @@ use App\Models\penilaian;
  */
 class PerhitunganSAWController extends KeputusanDetailController
 {
+    use \App\Traits\HasCriteriaLabels;
+
     protected SawService $sawService;
 
     /**
@@ -92,7 +94,8 @@ class PerhitunganSAWController extends KeputusanDetailController
             'keputusan' => $this->keputusan,
             'rankingResults' => $rankingResults,
             'calculationData' => $calculationData,
-            'isReady' => $isReady 
+            'isReady' => $isReady,
+            'columnMap' => $this->getReadableLabels()
         ]);
     }
 
