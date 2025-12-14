@@ -86,8 +86,17 @@
                             {{-- Kolom Jenis Kriteria --}}
                             <td class="px-6 py-2 md:py-4 whitespace-nowrap text-sm font-medium flex justify-between md:table-cell items-center">
                                 <span class="md:hidden font-bold text-gray-500">Jenis:</span>
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                    {{ $kriteria->jenis_kriteria == 'Benefit' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                @php
+                                    $jenis = strtolower($kriteria->jenis_kriteria);
+                                    $colorClass = 'bg-gray-100 text-gray-800'; // Default
+                                    
+                                    if ($jenis === 'benefit') {
+                                        $colorClass = 'bg-green-100 text-green-800';
+                                    } elseif ($jenis === 'cost') {
+                                        $colorClass = 'bg-red-100 text-red-800';
+                                    }
+                                @endphp
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $colorClass }}">
                                     {{ $kriteria->jenis_kriteria }}
                                 </span>
                             </td>

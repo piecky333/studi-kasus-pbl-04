@@ -137,6 +137,56 @@
                             </div>
                         </div>
 
+                        <!-- Bukti / File Pendukung -->
+                        @if($sanksi->file_pendukung)
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">
+                                    Bukti / File Pendukung
+                                </label>
+                                
+                                <div class="flex items-center justify-between p-4 bg-blue-50 rounded-lg border border-blue-100">
+                                    @php
+                                        $ext = pathinfo($sanksi->file_pendukung, PATHINFO_EXTENSION);
+                                        $icon = 'fa-file';
+                                        $color = 'text-gray-500';
+                                        
+                                        if (in_array(strtolower($ext), ['pdf'])) {
+                                            $icon = 'fa-file-pdf';
+                                            $color = 'text-red-500';
+                                        } elseif (in_array(strtolower($ext), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+                                            $icon = 'fa-file-image';
+                                            $color = 'text-purple-600';
+                                        }
+                                    @endphp
+
+                                    {{-- Icon & Filename --}}
+                                    <a href="{{ asset('storage/' . $sanksi->file_pendukung) }}" target="_blank" class="flex items-center flex-1 min-w-0 group cursor-pointer text-decoration-none">
+                                        <div class="flex-shrink-0 mr-3">
+                                            <i class="fas {{ $icon }} {{ $color }} text-3xl group-hover:scale-110 transition-transform"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-sm font-medium text-blue-900 truncate group-hover:text-blue-700 transition-colors">
+                                                {{ basename($sanksi->file_pendukung) }}
+                                            </p>
+                                        </div>
+                                    </a>
+
+                                    {{-- Download Action --}}
+                                    <div class="ml-4 flex-shrink-0">
+                                        <a href="{{ asset('storage/' . $sanksi->file_pendukung) }}" download class="text-sm font-bold text-green-600 hover:text-green-800 transition-colors">
+                                            Unduh
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        @else
+                            <div class="bg-gray-50 border border-gray-200 border-dashed rounded-xl p-6 text-center">
+                                <i class="fas fa-file-excel text-gray-300 text-3xl mb-2"></i>
+                                <p class="text-sm text-gray-400 font-medium">Tidak ada bukti / file pendukung yang dilampirkan.</p>
+                            </div>
+                        @endif
+
                         <!-- Footer Info -->
                         <div class="flex items-center justify-between pt-6 border-t border-gray-100 text-xs text-gray-500">
                             <span>Dibuat pada: {{ $sanksi->created_at->format('d M Y, H:i') }}</span>

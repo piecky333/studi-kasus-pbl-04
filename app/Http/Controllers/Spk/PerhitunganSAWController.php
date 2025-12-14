@@ -123,7 +123,8 @@ class PerhitunganSAWController extends KeputusanDetailController
             $this->keputusan->status = 'Selesai';
             $this->keputusan->save();
 
-            $message = 'Perhitungan SAW berhasil dijalankan dan hasil ranking telah disimpan! Keputusan sekarang: ' . $this->keputusan->status;
+            $this->keputusan->refresh(); // Reload to ensure we have fresh data
+            $message = 'Perhitungan SAW berhasil! Status Keputusan kini menjadi: ' . strtoupper($this->keputusan->status);
             session()->flash('success', $message);
 
         } catch (\Exception $e) {

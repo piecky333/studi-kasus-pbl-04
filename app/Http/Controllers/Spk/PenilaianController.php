@@ -166,58 +166,64 @@ class PenilaianController extends KeputusanDetailController
      *
      * @return \Illuminate\Http\RedirectResponse
      */
+    /**
+     * Menyinkronkan nilai penilaian secara otomatis dari data master.
+     * Menggunakan App\Services\SpkCalculator untuk logika kompleks.
+     */
     public function syncScores()
     {
-        // 1. Ambil semua Kriteria untuk keputusan ini
         $kriteriaList = kriteria::where('id_keputusan', $this->idKeputusan)->get();
-        
-        // 2. Ambil semua Alternatif
         $alternatifList = alternatif::where('id_keputusan', $this->idKeputusan)->get();
         $countUpdated = 0;
 
         foreach ($alternatifList as $alternatif) {
-            // Find linked mahasiswa (fallback by name if NIM not found or stored)
-            // Asumsi: kode_alternatif = NIM
+            // Find linked mahasiswa
             $mahasiswa = \App\Models\admin\Datamahasiswa::where('nim', $alternatif->kode_alternatif)->first();
-
             if (!$mahasiswa) {
-                 $mahasiswa = \App\Models\admin\Datamahasiswa::where('nama', $alternatif->nama_alternatif)->first();
+                $mahasiswa = \App\Models\admin\Datamahasiswa::where('nama', $alternatif->nama_alternatif)->first();
             }
+            if (!$mahasiswa) { continue; }
 
-            if (!$mahasiswa) {
-                continue; // Skip if no student found
-            }
+            // Loading Prestasi (Optimized)
+            $prestasiValid = $mahasiswa->prestasi()->where('status_validasi', 'disetujui')->get();
 
             foreach ($kriteriaList as $kriteria) {
                 $source = $kriteria->sumber_data;
+                $kriteriaName = strtolower($kriteria->nama_kriteria);
                 $value = 0;
                 $shouldSync = false;
 
-                // Case 1: Mahasiswa (Dynamic Attribute)
+                // 1. Logika Mahasiswa (IPK, Semester, dll)
                 if ($source === 'Mahasiswa' && $kriteria->atribut_sumber) {
                     $attr = $kriteria->atribut_sumber;
-                    // Check if column exists or is valid
-                    // For safety, you might valid against schema, but here we assume it's correct from Kriteria input
                     $value = $mahasiswa->$attr ?? 0;
                     $shouldSync = true;
                 }
-
-                // Case 2: Prestasi/Sanksi/etc (Count Logic)
+                
+                // 2. Logika Prestasi (Complex Calculation)
                 elseif ($source === 'Prestasi') {
-                     // Default logic: count valid prestasi
-                     $value = $mahasiswa->prestasi()->where('status_validasi', 'disetujui')->count();
-                     $shouldSync = true;
+                    // Cek nama kriteria untuk menentukan jenis perhitungan
+                    if (str_contains($kriteriaName, 'tingkat') || str_contains($kriteriaName, 'level')) {
+                         $value = \App\Services\SpkCalculator::calculateTingkatScore($prestasiValid);
+                    } 
+                    elseif (str_contains($kriteriaName, 'juara') || str_contains($kriteriaName, 'rank') || str_contains($kriteriaName, 'medali')) {
+                         $value = \App\Services\SpkCalculator::calculateJuaraScore($prestasiValid);
+                    }
+                    elseif (str_contains($kriteriaName, 'jumlah') || str_contains($kriteriaName, 'total')) {
+                         $value = $prestasiValid->count();
+                    } else {
+                        // Default Fallback: Count
+                        $value = $prestasiValid->count();
+                    }
+                    $shouldSync = true;
                 }
+
+                // 3. Logika Sanksi
                 elseif ($source === 'Sanksi') {
                      $value = $mahasiswa->sanksi()->count();
                      $shouldSync = true;
                 }
-                elseif ($source === 'Pengaduan') {
-                     $value = $mahasiswa->pengaduan()->count();
-                     $shouldSync = true;
-                }
                 
-                // Perform Update if applicable
                 if ($shouldSync) {
                     penilaian::updateOrCreate(
                         ['id_alternatif' => $alternatif->id_alternatif, 'id_kriteria' => $kriteria->id_kriteria],
@@ -228,6 +234,6 @@ class PenilaianController extends KeputusanDetailController
             }
         }
 
-        return redirect()->back()->with('success', "Sinkronisasi selesai. {$countUpdated} nilai berhasil diperbarui berdasarkan data master.");
+        return redirect()->back()->with('success', "Sinkronisasi selesai. {$countUpdated} nilai berhasil diperbarui.");
     }
 }

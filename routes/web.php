@@ -124,6 +124,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::resource('sanksi', AdminSanksiController::class);
 
     // Data Mahasiswa
+    Route::get('datamahasiswa/import-guide', [AdminDataMahasiswaController::class, 'importGuide'])->name('datamahasiswa.importGuide'); // New Route
     Route::post('datamahasiswa/import', [AdminDataMahasiswaController::class, 'import'])->name('datamahasiswa.import');
     Route::resource('datamahasiswa', AdminDataMahasiswaController::class)->parameters(['datamahasiswa' => 'mahasiswa']);
 
@@ -255,6 +256,25 @@ Route::prefix('pengurus')->name('pengurus.')
 
 
 // =========================================================
+// ROUTE — MAHASISWA
+// =========================================================
+Route::prefix('mahasiswa')->name('mahasiswa.')
+    ->middleware(['auth', 'role:mahasiswa'])
+    ->group(function () {
+        Route::get('/dashboard', [\App\Http\Controllers\mahasiswa\DashboardController::class, 'index'])->name('dashboard');
+        
+        // Pengajuan Sertifikat
+        Route::get('/sertifikat', [\App\Http\Controllers\mahasiswa\SertifikatController::class, 'index'])->name('sertifikat.index');
+        Route::get('/sertifikat/create', [\App\Http\Controllers\mahasiswa\SertifikatController::class, 'create'])->name('sertifikat.create');
+        Route::post('/sertifikat', [\App\Http\Controllers\mahasiswa\SertifikatController::class, 'store'])->name('sertifikat.store');
+
+        // Reuse UserPengaduanController for Mahasiswa
+        Route::resource('pengaduan', UserPengaduanController::class);
+        Route::post('pengaduan/{id}/tanggapan', [UserPengaduanController::class, 'storeTanggapan'])->name('pengaduan.tanggapan');
+    });
+
+
+// =========================================================
 // ROUTE — USER
 // =========================================================
 Route::prefix('user')->name('user.')
@@ -274,6 +294,8 @@ Route::prefix('user')->name('user.')
 
 Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirect'])->name('google.redirect');
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('google.callback');
+
+
 
 Route::middleware(['auth'])->group(function () {
 

@@ -18,6 +18,15 @@
                 </li>
                 <li class="flex items-center">
                     <span class="text-indigo-600 font-semibold">{{ $keputusan->nama_keputusan ?? 'Detail Keputusan'  }}</span>
+                    
+                    @php
+                        $statusColor = 'bg-gray-100 text-gray-800';
+                        if(($keputusan->status ?? '') == 'Selesai') $statusColor = 'bg-green-100 text-green-800';
+                        if(($keputusan->status ?? '') == 'Aktif') $statusColor = 'bg-blue-100 text-blue-800';
+                    @endphp
+                    <span class="ml-3 px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusColor }}">
+                        {{ $keputusan->status ?? 'Draft' }}
+                    </span>
                 </li>
             </ol>
         </nav>

@@ -286,7 +286,7 @@
                                         @endforeach
                                         <th
                                             class="px-3 py-2 text-xs font-bold text-gray-700 uppercase tracking-wider text-center bg-blue-100 border-l">
-                                            Rata-rata Baris (WP)</th>
+                                            Bobot Prioritas / Rata-rata Baris (WP)</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">

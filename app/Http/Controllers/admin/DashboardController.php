@@ -33,6 +33,8 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        \Illuminate\Support\Facades\Log::info('Admin Dashboard Hit. User: ' . auth()->user()->id . ' Role: ' . auth()->user()->role);
+        
         // 1. MENGAMBIL DATA STATISTIK UTAMA (CARD)
         // Menghitung jumlah record untuk ditampilkan di kartu ringkasan dashboard.
         $totalUser = User::where('role', 'user')->count(); // Mahasiswa

@@ -16,7 +16,8 @@ class Sanksi extends Model
         'tanggal_sanksi',
         'jenis_sanksi',
         'jenis_hukuman',
-        'keterangan'
+        'keterangan',
+        'file_pendukung'
     ];
 
     public function mahasiswa()

@@ -111,7 +111,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-10 whitespace-nowrap text-center text-gray-500 bg-gray-50">
+                                <td colspan="6" class="px-6 py-10 whitespace-nowrap text-center text-gray-500 bg-gray-50">
                                     <div class="flex flex-col items-center justify-center">
                                         <i class="fas fa-users-slash text-4xl mb-3 text-gray-300"></i>
                                         <p class="text-base font-medium">Belum ada Alternatif</p>

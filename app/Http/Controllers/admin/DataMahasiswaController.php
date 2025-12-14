@@ -213,4 +213,13 @@ class DataMahasiswaController extends Controller
             return redirect()->back()->with('error', 'Gagal mengimport data: ' . $e->getMessage());
         }
     }
+    /**
+     * Menampilkan panduan import data.
+     * 
+     * @return \Illuminate\View\View
+     */
+    public function importGuide()
+    {
+        return view('pages.admin.datamahasiswa.import_guide');
+    }
 }
