@@ -13,11 +13,20 @@
         <nav class="text-sm font-medium text-gray-500 mb-4" aria-label="Breadcrumb">
             <ol class="list-none p-0 inline-flex">
                 <li class="flex items-center">
-                    <a href="{{ route('admin.spk.index') }}" class="text-gray-500 hover:text-gray-700">Daftar Keputusan SPK</a>
+                    <a href="{{ route('admin.spk.index') }}" class="text-gray-500 hover:text-gray-700">Manajemen SPK</a>
                     <i class="fas fa-chevron-right mx-2 text-gray-400 text-xs"></i>
                 </li>
                 <li class="flex items-center">
                     <span class="text-indigo-600 font-semibold">{{ $keputusan->nama_keputusan ?? 'Detail Keputusan'  }}</span>
+                    
+                    @php
+                        $statusColor = 'bg-gray-100 text-gray-800';
+                        if(($keputusan->status ?? '') == 'Selesai') $statusColor = 'bg-green-100 text-green-800';
+                        if(($keputusan->status ?? '') == 'Aktif') $statusColor = 'bg-blue-100 text-blue-800';
+                    @endphp
+                    <span class="ml-3 px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusColor }}">
+                        {{ $keputusan->status ?? 'Draft' }}
+                    </span>
                 </li>
             </ol>
         </nav>

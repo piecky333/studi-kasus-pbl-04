@@ -87,7 +87,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('admin.sanksi.store') }}" method="POST">
+            <form action="{{ route('admin.sanksi.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
@@ -284,6 +284,22 @@
                         </div>
                         <p class="mt-2 text-sm text-gray-500">Jelaskan secara singkat mengenai pelanggaran yang dilakukan.</p>
                         @error('keterangan')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- File Pendukung -->
+                    <div class="sm:col-span-6">
+                        <label for="file_pendukung" class="block text-sm font-medium text-gray-700">
+                            File Pendukung (PDF / Foto)
+                        </label>
+                        <div class="mt-1">
+                            <input type="file" name="file_pendukung" id="file_pendukung" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md px-3 py-2">
+                            <p class="mt-1 text-sm text-gray-500">
+                                Format: PDF, JPG, PNG. Maks: 2MB.
+                            </p>
+                        </div>
+                        @error('file_pendukung')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>

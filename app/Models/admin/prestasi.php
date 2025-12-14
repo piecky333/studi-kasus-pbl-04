@@ -19,6 +19,7 @@ class prestasi extends Model
         'nama_kegiatan',
         'jenis_prestasi',
         'tingkat_prestasi',
+        'juara',
         'tahun',
         'status_validasi',
         'deskripsi',

@@ -40,6 +40,16 @@ class SanksiController extends Controller
             $query->where('mahasiswa.nim', 'like', $request->nim . '%');
         }
 
+        // Filter Jenis Sanksi
+        if ($request->filled('jenis_sanksi')) {
+            $query->where('sanksi.jenis_sanksi', $request->jenis_sanksi);
+        }
+
+        // Filter Jenis Hukuman (Partial Match)
+        if ($request->filled('jenis_hukuman')) {
+            $query->where('sanksi.jenis_hukuman', 'like', '%' . $request->jenis_hukuman . '%');
+        }
+
         // Sorting
         if ($request->filled('sort')) {
             switch ($request->sort) {
@@ -97,7 +107,13 @@ class SanksiController extends Controller
             'jenis_hukuman'  => 'required|string|max:255',
             'tanggal_sanksi' => 'nullable|date',
             'keterangan'     => 'nullable|string',
+            'file_pendukung' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048', // 2MB Max
         ]);
+
+        $filePath = null;
+        if ($request->hasFile('file_pendukung')) {
+            $filePath = $request->file('file_pendukung')->store('sanksi_files', 'public');
+        }
 
         // Iterasi setiap ID Mahasiswa yang dipilih untuk membuat record sanksi terpisah.
         foreach ($request->id_mahasiswa as $id_mahasiswa) {
@@ -107,6 +123,7 @@ class SanksiController extends Controller
                 'jenis_hukuman'  => $request->jenis_hukuman,
                 'tanggal_sanksi' => $request->tanggal_sanksi,
                 'keterangan'     => $request->keterangan,
+                'file_pendukung' => $filePath,
             ]);
         }
 

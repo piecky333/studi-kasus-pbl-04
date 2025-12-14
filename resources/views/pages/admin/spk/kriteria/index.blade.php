@@ -73,17 +73,30 @@
                                 <span class="font-mono bg-gray-100 px-2 py-1 rounded text-xs">{{ $kriteria->kode_kriteria }}</span>
                             </td>
 
-                            {{-- Kolom Nama Kriteria --}}
+                                {{-- Kolom Nama Kriteria --}}
                             <td class="px-6 py-2 md:py-4 whitespace-nowrap text-sm text-gray-600 flex justify-between md:table-cell font-medium">
                                 <span class="md:hidden font-bold text-gray-500">Nama:</span>
-                                {{ $kriteria->nama_kriteria }}
+                                @if(isset($columnMap[$kriteria->sumber_data]) && isset($columnMap[$kriteria->sumber_data][$kriteria->nama_kriteria]))
+                                    {{ $columnMap[$kriteria->sumber_data][$kriteria->nama_kriteria] }} <span class="text-xs text-gray-400">({{ $kriteria->sumber_data }})</span>
+                                @else
+                                    {{ $kriteria->nama_kriteria }}
+                                @endif
                             </td>
 
                             {{-- Kolom Jenis Kriteria --}}
                             <td class="px-6 py-2 md:py-4 whitespace-nowrap text-sm font-medium flex justify-between md:table-cell items-center">
                                 <span class="md:hidden font-bold text-gray-500">Jenis:</span>
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                    {{ $kriteria->jenis_kriteria == 'Benefit' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                @php
+                                    $jenis = strtolower($kriteria->jenis_kriteria);
+                                    $colorClass = 'bg-gray-100 text-gray-800'; // Default
+                                    
+                                    if ($jenis === 'benefit') {
+                                        $colorClass = 'bg-green-100 text-green-800';
+                                    } elseif ($jenis === 'cost') {
+                                        $colorClass = 'bg-red-100 text-red-800';
+                                    }
+                                @endphp
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $colorClass }}">
                                     {{ $kriteria->jenis_kriteria }}
                                 </span>
                             </td>

@@ -20,6 +20,52 @@
             </div>
         @endif
 
+        {{-- Filter Section --}}
+        <div class="mb-8 bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <h3 class="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                <i class="fas fa-filter mr-2"></i> Filter Data Mahasiswa
+            </h3>
+            <form action="{{ route('admin.spk.alternatif.create', $keputusan->id_keputusan) }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                
+                {{-- Filter Semester --}}
+                <div>
+                    <label for="semester" class="block text-xs font-medium text-gray-700 mb-1">Semester</label>
+                    <select name="semester" id="semester" class="block w-full border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500 px-2 py-2">
+                        <option value="">Semua Semester</option>
+                        @foreach(range(1, 14) as $sem)
+                            <option value="{{ $sem }}" {{ request('semester') == $sem ? 'selected' : '' }}>Semester {{ $sem }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- Filter Prestasi --}}
+                <div>
+                    <label for="filter_prestasi" class="block text-xs font-medium text-gray-700 mb-1">Status Prestasi</label>
+                    <select name="filter_prestasi" id="filter_prestasi" class="block w-full border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500 px-2 py-2">
+                        <option value="">Semua</option>
+                        <option value="ada" {{ request('filter_prestasi') == 'ada' ? 'selected' : '' }}>Memiliki Prestasi</option>
+                        <option value="tidak_ada" {{ request('filter_prestasi') == 'tidak_ada' ? 'selected' : '' }}>Tidak Ada Prestasi</option>
+                    </select>
+                </div>
+
+                {{-- Filter Sanksi --}}
+                <div>
+                    <label for="filter_sanksi" class="block text-xs font-medium text-gray-700 mb-1">Status Sanksi</label>
+                    <select name="filter_sanksi" id="filter_sanksi" class="block w-full border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500 px-2 py-2">
+                        <option value="">Semua</option>
+                        <option value="ada" {{ request('filter_sanksi') == 'ada' ? 'selected' : '' }}>Memiliki Sanksi</option>
+                        <option value="tidak_ada" {{ request('filter_sanksi') == 'tidak_ada' ? 'selected' : '' }}>Tidak Ada Sanksi</option>
+                    </select>
+                </div>
+
+                <div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md text-sm transition duration-150">
+                        Cari
+                    </button>
+                </div>
+            </form>
+        </div>
+
         <form action="{{ route('admin.spk.alternatif.store', $keputusan->id_keputusan) }}" method="POST">
             @csrf
             
@@ -27,7 +73,13 @@
                 
                 {{-- Input Pilihan: Memilih Mahasiswa untuk dijadikan Alternatif (Bisa pilih banyak) --}}
                 <div>
-                    <label for="id_mahasiswa" class="block text-sm font-medium text-gray-700 mb-1">Mahasiswa <span class="text-red-500">*</span></label>
+                    <div class="flex justify-between items-center mb-1">
+                        <label for="id_mahasiswa" class="block text-sm font-medium text-gray-700">Mahasiswa <span class="text-red-500">*</span></label>
+                        <button type="button" id="btn-toggle-select" data-action="select" data-count="{{ count($mahasiswaList) }}" 
+                            class="text-xs text-indigo-600 hover:text-indigo-800 font-medium focus:outline-none transition-colors duration-200">
+                            <i class="fas fa-check-double mr-1"></i> Pilih Semua ({{ count($mahasiswaList) }})
+                        </button>
+                    </div>
                     
                     {{-- Elemen Select2 untuk pencarian dan pemilihan data mahasiswa --}}
                     <select name="id_mahasiswa[]" id="id_mahasiswa" multiple="multiple" required
@@ -126,7 +178,7 @@
             placeholder: "Cari Mahasiswa berdasarkan Nama atau NIM...",
             allowClear: false, // Allow clear false karena kita handle remove sendiri
             width: '100%',
-            closeOnSelect: false // Biarkan terbuka agar user bisa pilih banyak sekaligus
+            closeOnSelect: true // Tutup setelah memilih agar rapi
         });
 
         // Fungsi untuk update tampilan list eksternal
@@ -180,6 +232,35 @@
                 
                 // Update Select2 dan trigger change
                 $select.val(newValues).trigger('change');
+            }
+        });
+
+        // Handle tombol Toggle Select (Pilih Semua / Batalkan)
+        $('#btn-toggle-select').click(function() {
+            var $btn = $(this);
+            var action = $btn.data('action');
+            var totalCount = $btn.data('count');
+
+            if (action === 'select') {
+                // Logic: Pilih Semua
+                var allOptions = [];
+                $('#id_mahasiswa option:not(:disabled)').each(function() {
+                    allOptions.push($(this).val());
+                });
+                $select.val(allOptions).trigger('change');
+
+                // Update UI ke state 'Batalkan'
+                $btn.data('action', 'deselect');
+                $btn.removeClass('text-indigo-600 hover:text-indigo-800').addClass('text-red-600 hover:text-red-800');
+                $btn.html('<i class="fas fa-undo mr-1"></i> Batalkan Pilih Semua');
+            } else {
+                // Logic: Batalkan Semua
+                $select.val([]).trigger('change');
+
+                // Update UI ke state 'Pilih Semua'
+                $btn.data('action', 'select');
+                $btn.removeClass('text-red-600 hover:text-red-800').addClass('text-indigo-600 hover:text-indigo-800');
+                $btn.html('<i class="fas fa-check-double mr-1"></i> Pilih Semua (' + totalCount + ')');
             }
         });
     });

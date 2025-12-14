@@ -21,18 +21,44 @@
 
     <!-- Search Section -->
     <div class="mb-6 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-        <form action="{{ route('pengurus.pengurus.index') }}" method="GET" class="flex flex-col md:flex-row gap-4">
-            <div class="relative w-full md:w-1/2">
+        <form action="{{ route('pengurus.pengurus.index') }}" method="GET" class="flex flex-col lg:flex-row gap-4">
+            
+            {{-- Filter Divisi --}}
+            <div class="relative w-full lg:w-1/4">
+                <select name="id_divisi" onchange="this.form.submit()" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                    <option value="">Semua Divisi</option>
+                    @foreach($divisi as $d)
+                        <option value="{{ $d->id_divisi }}" {{ request('id_divisi') == $d->id_divisi ? 'selected' : '' }}>
+                            {{ $d->nama_divisi }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            {{-- Filter Semester --}}
+            <div class="relative w-full lg:w-1/4">
+                <select name="semester" onchange="this.form.submit()" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                    <option value="">Semua Semester</option>
+                    @foreach($semesters as $smt)
+                        <option value="{{ $smt }}" {{ request('semester') == $smt ? 'selected' : '' }}>
+                            Semester {{ $smt }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="relative w-full lg:w-1/2">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <i class="fas fa-search text-gray-400"></i>
                 </div>
                 <input type="text" name="search" value="{{ request('search') }}" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Cari nama, divisi, atau jabatan...">
             </div>
+            
             <div class="flex gap-2">
                 <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
                     Cari
                 </button>
-                @if(request('search'))
+                @if(request('search') || request('id_divisi') || request('semester'))
                 <a href="{{ route('pengurus.pengurus.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
                     Reset
                 </a>
@@ -70,6 +96,9 @@
                             Divisi
                         </th>
                         <th scope="col" class="px-3 py-2 lg:px-6 lg:py-3 text-left text-xs lg:text-sm font-medium text-white uppercase tracking-wider">
+                            Semester
+                        </th>
+                        <th scope="col" class="px-3 py-2 lg:px-6 lg:py-3 text-left text-xs lg:text-sm font-medium text-white uppercase tracking-wider">
                             Posisi Jabatan
                         </th>
 
@@ -85,12 +114,20 @@
                                 {{ $loop->iteration }}
                             </td>
                             <td class="px-3 py-2 lg:px-6 lg:py-4 whitespace-nowrap text-xs lg:text-sm font-medium text-gray-900">
-                                {{ $p->user->nama ?? '-' }}
+                                @if($p->user && $p->user->mahasiswa)
+                                    <div>{{ $p->user->mahasiswa->nama }}</div>
+                                    <div class="text-xs text-gray-500">{{ $p->user->mahasiswa->nim }}</div>
+                                @else
+                                    {{ $p->user->nama ?? '-' }}
+                                @endif
                             </td>
                             <td class="px-3 py-2 lg:px-6 lg:py-4 whitespace-nowrap">
                                 <span class="px-2 py-1 inline-flex text-[10px] lg:text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                                     {{ $p->divisi->nama_divisi ?? '-' }}
                                 </span>
+                            </td>
+                            <td class="px-3 py-2 lg:px-6 lg:py-4 whitespace-nowrap text-xs lg:text-sm text-gray-500">
+                                {{ $p->user->mahasiswa->semester ?? '-' }}
                             </td>
                             <td class="px-3 py-2 lg:px-6 lg:py-4 whitespace-nowrap text-xs lg:text-sm text-gray-500">
                                 {{ $p->jabatan->nama_jabatan ?? '-' }}

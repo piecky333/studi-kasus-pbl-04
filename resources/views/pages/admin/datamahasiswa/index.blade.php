@@ -221,11 +221,23 @@
                             <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
                                 Import Data Mahasiswa
                             </h3>
-                            <div class="mt-2">
-                                <p class="text-sm text-gray-500 mb-4">
-                                    Upload file Excel (.xlsx, .xls) yang berisi data mahasiswa.
-                                    Pastikan format kolom: <strong>NIM, Nama, Semester, IPK, Email</strong>.
-                                </p>
+                                <div class="text-sm text-gray-500 mb-4 space-y-3">
+                                    <p>Upload file Excel (.xlsx, .xls) berisi data mahasiswa. Baris dengan <strong>NIM & Nama</strong> sama akan digabungkan.</p>
+                                    
+                                    <div class="bg-blue-50 border-l-4 border-blue-400 p-3 mb-3">
+                                        <div class="flex">
+                                            <div class="flex-shrink-0">
+                                                <i class="fas fa-info-circle text-blue-400"></i>
+                                            </div>
+                                            <div class="ml-3">
+                                                <p class="text-xs text-blue-700">
+                                                    Bingung dengan format Excel? 
+                                                    <a href="{{ route('admin.datamahasiswa.importGuide') }}" class="font-bold underline hover:text-blue-900">Lihat Panduan Lengkap & Format Kolom</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <form action="{{ route('admin.datamahasiswa.import') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md relative hover:border-indigo-500 transition-colors cursor-pointer">

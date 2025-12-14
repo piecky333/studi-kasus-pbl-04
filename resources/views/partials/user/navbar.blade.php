@@ -12,13 +12,29 @@
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('user.dashboard')" :active="request()->routeIs('user.dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
+                    @if(Auth::user()->role === 'mahasiswa')
+                        <x-nav-link :href="route('mahasiswa.dashboard')" :active="request()->routeIs('mahasiswa.dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('mahasiswa.sertifikat.index')" :active="request()->routeIs('mahasiswa.sertifikat.*')">
+                            {{ __('Pengajuan Sertifikat') }}
+                        </x-nav-link>
+                    @else
+                        <x-nav-link :href="route('user.dashboard')" :active="request()->routeIs('user.dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                    @endif
                     
-                    <x-nav-link :href="route('user.pengaduan.index')" :active="request()->routeIs('user.pengaduan.*')">
-                        {{ __('Riwayat Pengaduan') }}
-                    </x-nav-link>
+                    {{-- Common Links --}}
+                    @if(Auth::user()->role === 'mahasiswa')
+                        <x-nav-link :href="route('mahasiswa.pengaduan.index')" :active="request()->routeIs('mahasiswa.pengaduan.*')">
+                            {{ __('Riwayat Pengaduan') }}
+                        </x-nav-link>
+                    @else
+                        <x-nav-link :href="route('user.pengaduan.index')" :active="request()->routeIs('user.pengaduan.*')">
+                            {{ __('Riwayat Pengaduan') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -140,12 +156,24 @@
 
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-indigo-700 border-t border-indigo-600">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('user.dashboard')" :active="request()->routeIs('user.dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('user.pengaduan.index')" :active="request()->routeIs('user.pengaduan.*')">
-                {{ __('Riwayat Pengaduan') }}
-            </x-responsive-nav-link>
+            @if(Auth::user()->role === 'mahasiswa')
+                <x-responsive-nav-link :href="route('mahasiswa.dashboard')" :active="request()->routeIs('mahasiswa.dashboard')">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('mahasiswa.sertifikat.index')" :active="request()->routeIs('mahasiswa.sertifikat.*')">
+                    {{ __('Pengajuan Sertifikat') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('mahasiswa.pengaduan.index')" :active="request()->routeIs('mahasiswa.pengaduan.*')">
+                    {{ __('Riwayat Pengaduan') }}
+                </x-responsive-nav-link>
+            @else
+                <x-responsive-nav-link :href="route('user.dashboard')" :active="request()->routeIs('user.dashboard')">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('user.pengaduan.index')" :active="request()->routeIs('user.pengaduan.*')">
+                    {{ __('Riwayat Pengaduan') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <div class="pt-4 pb-1 border-t border-indigo-600">

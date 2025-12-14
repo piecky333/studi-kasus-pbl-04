@@ -13,7 +13,13 @@ use Illuminate\View\View;
 class ProfileController extends Controller
 {
     /**
-     * Tampilkan form edit profil.
+     * Menampilkan form untuk mengedit profil pengguna.
+     * 
+     * Jika pengguna memiliki role 'admin' atau 'pengurus', mereka akan
+     * diarahkan ke rute edit profil khusus masing-masing.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
     public function edit(Request $request)
     {
@@ -33,7 +39,13 @@ class ProfileController extends Controller
     }
 
     /**
-     * Perbarui informasi profil.
+     * Memperbarui informasi profil pengguna.
+     * 
+     * Menangani pembaruan data dasar user, reset status verifikasi email
+     * jika email berubah, serta manajemen upload foto profil baru.
+     * 
+     * @param  \App\Http\Requests\ProfileUpdateRequest  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
@@ -67,7 +79,13 @@ class ProfileController extends Controller
     }
 
     /**
-     * Hapus akun pengguna.
+     * Menghapus akun pengguna secara permanen.
+     * 
+     * Sebelum menghapus, sistem akan memvalidasi password saat ini untuk keamanan.
+     * Foto profil (jika ada) juga akan dihapus dari penyimpanan.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Request $request): RedirectResponse
     {

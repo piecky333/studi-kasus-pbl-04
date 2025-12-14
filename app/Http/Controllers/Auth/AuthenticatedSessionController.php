@@ -30,14 +30,17 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         //authenticated, redirect to intended page
+        \Illuminate\Support\Facades\Log::info('Login User Role: ' . Auth::user()->role . ' | Email: ' . Auth::user()->email);
+
         if (Auth::user()->role === 'admin') {
-            return redirect()->intended(route('admin.dashboard', absolute: false));
+            return redirect(route('admin.dashboard', absolute: false));
         } elseif (Auth::user()->role === 'pengurus') {
-            return redirect()->intended(route('pengurus.dashboard', absolute: false));
-        } elseif (Auth::user()->role === 'user') {
-            return redirect()->intended(route(name: 'user.dashboard', absolute: false));
+            return redirect(route('pengurus.dashboard', absolute: false));
+        } elseif (Auth::user()->role === 'mahasiswa') {
+            return redirect(route('mahasiswa.dashboard', absolute: false));
         }
-        return redirect()->intended(route('user.dashboard', absolute: false));
+        
+        return redirect(route('user.dashboard', absolute: false));
     }
 
     /**

@@ -55,8 +55,8 @@ class MahasiswaImport
             // =========================================================================
             // 1. PEMETAAN HEADER DINAMIS (DYNAMIC HEADER MAPPING)
             // =========================================================================
-            // Membaca baris pertama untuk menentukan indeks kolom secara dinamis.
-            // Ini memungkinkan pengguna menempatkan kolom dalam urutan APAPUN.
+            // [LOGIC] Membaca baris pertama untuk menentukan indeks kolom secara dinamis.
+            // [FEATURE] Flexibilitas Kolom: Allows 'nim', 'nomor induk', etc. to be in any column index.
             $headerRow = array_shift($rows);
             $headerMap = [];
             foreach ($headerRow as $index => $colName) {
@@ -132,8 +132,9 @@ class MahasiswaImport
                 }
 
                 // --- Validasi Dasar Kelengkapan Data ---
-                if (!$nim || !$nama || !$email) {
-                    Log::warning("Row " . ($index + 2) . " skipped: Incomplete data (NIM/Nama/Email missing).");
+                // [LOGIC] Email tidak wajib di Excel karena kita bisa generate dari Nama
+                if (!$nim || !$nama) {
+                    Log::warning("Row " . ($index + 2) . " skipped: Incomplete data (NIM/Nama missing).");
                     continue;
                 }
 
@@ -141,16 +142,33 @@ class MahasiswaImport
                 // 3. PEMBUATAN/PEMBARUAN USER & MAHASISWA
                 // =========================================================================
                 
-                // A. Cari atau Buat Akun User
+                // [LOGIC] Cari atau Buat Akun User
+                // [FEATURE] Auto-Generate Email & Password
+                // Email dibuat dari nama: nama.lengkap@mhs.politala.ac.id
+                // Password default: NIM
+                
+                if ($nama) {
+                    $cleanName = strtolower(trim($nama));
+                    $emailPrefix = str_replace(' ', '.', $cleanName);
+                    // [SECURITY] Remove special characters to prevent injection/invalid emails
+                    $emailPrefix = preg_replace('/[^a-z0-9\.]/', '', $emailPrefix);
+                    $generatedEmail = $emailPrefix . '@mhs.politala.ac.id';
+                } else {
+                    $generatedEmail = $email; // [FALLBACK] Gunakan email dari excel jika nama kosong
+                }
+
+                // [IMPORTANT] Override variable email utama dengan yang digenerate
+                $email = $generatedEmail;
+
                 $user = User::where('email', $email)->orWhere('username', $nim)->first();
                 $isNewUser = false;
                 
                 if (!$user) {
                      $user = User::create([
                         'nama' => $nama,
-                        'username' => $nim,
+                        'username' => $nim, // [NOTE] Username menggunakan NIM
                         'email' => $email,
-                        'password' => Hash::make($nim),
+                        'password' => Hash::make($nim), // [SECURITY] Password default adalah NIM
                         'role' => 'mahasiswa',
                     ]);
                     $isNewUser = true;
@@ -161,7 +179,8 @@ class MahasiswaImport
                     Log::info("User exists: " . $user->username);
                 }
 
-                // B. Cari atau Buat Profil Datamahasiswa
+                // [LOGIC] Cari atau Buat Profil Datamahasiswa
+                // Menghubungkan User (akun login) dengan data akademik mahasiswa
                 $mahasiswa = Datamahasiswa::where('id_user', $user->id_user)->first();
 
                 if (!$mahasiswa) {
@@ -178,12 +197,18 @@ class MahasiswaImport
                 }
 
                 // =========================================================================
-                // 4. LOGIKA IMPORT PRESTASI
+                // 4. LOGIKA IMPORT PRESTASI (OPTIONAL)
                 // =========================================================================
-                // Logika: Jika Nama Prestasi ada ATAU Tingkatan ada, coba import.
-                // Jika Nama hilang tapi Tingkatan valid, buat nama otomatis.
+                // [FEATURE] Multi-Row Support: Jika Mahasiswa punya banyak prestasi, 
+                // cukup buat baris baru dengan NIM yang sama di Excel.
+                
+                // Headers: 'nama kegiatan', 'tingkat', 'tahun', 'status', 'jenis prestasi', 'deskripsi', 'juara'
+                $prestasiDeskripsi = $getValue($row, ['deskripsi prestasi', 'keterangan prestasi', 'deskripsi']);
+                $prestasiJenis = $getValue($row, ['jenis prestasi', 'jenis', 'kategori prestasi']); // Akademik / Non-Akademik
+                $prestasiJuara = $getValue($row, ['juara', 'peringkat', 'rank']); // Juara 1, Juara 2, dll
+
                 if ($prestasiNama || $prestasiTingkatRaw) {
-                     // Peta: Variasi Teks -> Nilai Enum Database
+                     // Mapping Level Prestasi
                      $validTingkatMap = [
                          'internasional' => 'Internasional',
                          'nasional' => 'Nasional',
@@ -192,6 +217,7 @@ class MahasiswaImport
                          'kota' => 'Kabupaten/Kota',
                          'kabupaten' => 'Kabupaten/Kota',
                          'universitas' => 'Internal',
+                         'internal' => 'Internal', 
                          'kampus' => 'Internal',
                          'fakultas' => 'Internal', 
                      ];
@@ -199,45 +225,64 @@ class MahasiswaImport
                      $normalizedTingkat = strtolower(trim($prestasiTingkatRaw));
                      $finalTingkat = $validTingkatMap[$normalizedTingkat] ?? null;
 
-                     // Tangani Nama Prestasi yang Kosong
-                     $finalNama = $prestasiNama;
-                     if (!$finalNama && $finalTingkat) {
-                         $finalNama = "Prestasi Tingkat " . $finalTingkat;
-                     }
+                     $finalNama = $prestasiNama ?: "Prestasi Tingkat " . ($finalTingkat ?? 'Lainnya');
 
-                     if ($finalTingkat && $finalNama) {
-                        prestasi::create([
-                            'id_mahasiswa' => $mahasiswa->id_mahasiswa,
-                            'id_admin' => $this->idAdmin,
-                            'nama_kegiatan' => $finalNama,
-                            'jenis_prestasi' => 'Akademik',
-                            'tingkat_prestasi' => $finalTingkat,
-                            'tahun' => $prestasiTahun ?? date('Y'),
-                            'status_validasi' => strtolower($prestasiStatus) == 'disetujui' ? 'disetujui' : 'menunggu', 
-                            'deskripsi' => 'Dikirim dari Excel',
-                            'bukti_path' => null, 
-                        ]);
-                        Log::info("Prestasi added for Mahasiswa ID: " . $mahasiswa->id_mahasiswa);
-                     } else {
-                        // Peringatkan hanya jika user mencoba mengisi tingkatan tapi tidak valid
-                        if ($prestasiTingkatRaw) {
-                             Log::warning("Skipped Prestasi for Row " . ($index + 2) . ": Invalid Tingkat Prestasi '$prestasiTingkatRaw'. Allowed: " . implode(', ', array_unique($validTingkatMap)));
+                     if ($finalTingkat || $prestasiNama) {
+                        // Cek duplikasi
+                        $exists = prestasi::where('id_mahasiswa', $mahasiswa->id_mahasiswa)
+                            ->where('nama_kegiatan', $finalNama)
+                            ->where('tahun', $prestasiTahun ?? date('Y'))
+                            ->exists();
+
+                        if (!$exists) {
+                            // [LOGIC] Tentukan Jenis Prestasi (Default: Akademik)
+                            $finalJenis = 'Akademik';
+                            if ($prestasiJenis && strtolower($prestasiJenis) == 'non-akademik') {
+                                $finalJenis = 'Non-Akademik';
+                            } elseif ($prestasiJenis && strtolower($prestasiJenis) == 'non akademik') {
+                                $finalJenis = 'Non-Akademik';
+                            }
+
+                            prestasi::create([
+                                'id_mahasiswa' => $mahasiswa->id_mahasiswa,
+                                'id_admin' => $this->idAdmin,
+                                'nama_kegiatan' => $finalNama,
+                                'jenis_prestasi' => $finalJenis,
+                                'tingkat_prestasi' => $finalTingkat ?? 'Internal', 
+                                'juara' => $prestasiJuara, // [FEATURE] Added Juara Mapping
+                                'tahun' => $prestasiTahun ?? date('Y'),
+                                'status_validasi' => strtolower($prestasiStatus) == 'disetujui' ? 'disetujui' : 'menunggu', 
+                                'deskripsi' => $prestasiDeskripsi ?? 'Dikirim dari Excel',
+                                'bukti_path' => null, 
+                            ]);
+                            Log::info("Prestasi added for NIM: " . $nim);
                         }
                      }
                 }
 
                 // =========================================================================
-                // 5. LOGIKA IMPORT SANKSI
+                // 5. LOGIKA IMPORT SANKSI (OPTIONAL)
                 // =========================================================================
-                if ($sanksiTanggal || $sanksiJenis) {
-                    sanksi::create([
-                        'id_mahasiswa' => $mahasiswa->id_mahasiswa,
-                        'tanggal_sanksi' => $sanksiTanggal ?? date('Y-m-d'),
-                        'jenis_sanksi' => $sanksiJenis ?? 'Ringan',
-                        'jenis_hukuman' => $sanksiHukuman,
-                        'keterangan' => $sanksiKeterangan ?? 'Imported via Excel',
-                    ]);
-                     Log::info("Sanksi added for Mahasiswa ID: " . $mahasiswa->id_mahasiswa);
+                // Headers: 'jenis sanksi', 'hukuman', 'tanggal', 'keterangan'
+                if ($sanksiJenis || $sanksiHukuman) {
+                    
+                    // Cek duplikasi untuk sanksi juga
+                    $sanksiExists = sanksi::where('id_mahasiswa', $mahasiswa->id_mahasiswa)
+                        ->where('jenis_sanksi', $sanksiJenis)
+                        ->where('tanggal_sanksi', $sanksiTanggal ?? date('Y-m-d'))
+                        ->exists();
+
+                    if (!$sanksiExists) {
+                        sanksi::create([
+                            'id_mahasiswa' => $mahasiswa->id_mahasiswa,
+                            'tanggal_sanksi' => $sanksiTanggal ?? date('Y-m-d'),
+                            'jenis_sanksi' => $sanksiJenis ?? 'Ringan',
+                            'jenis_hukuman' => $sanksiHukuman ?? 'Teguran Lisan',
+                            'keterangan' => $sanksiKeterangan ?? 'Dikirim dari Excel',
+                            // 'file_pendukung' => null (default)
+                        ]);
+                        Log::info("Sanksi added for NIM: " . $nim);
+                    }
                 }
             } // Akhir Loop
 

@@ -17,16 +17,18 @@ class PengurusController extends Controller
      */
     public function index(Request $request)
     {
-        $query = pengurus::with(['divisi', 'user', 'jabatan']);
+        $query = pengurus::with(['divisi', 'user.mahasiswa', 'jabatan']);
 
+        // Filter by Search (Nama, Divisi, Jabatan)
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->whereHas('jabatan', function($q) use ($search) {
                       $q->where('nama_jabatan', 'like', "%{$search}%");
                   })
-                  ->orWhereHas('user', function($q) use ($search) {
-                      $q->where('nama', 'like', "%{$search}%");
+                  ->orWhereHas('user.mahasiswa', function($q) use ($search) {
+                      $q->where('nama', 'like', "%{$search}%")
+                        ->orWhere('nim', 'like', "%{$search}%");
                   })
                   ->orWhereHas('divisi', function($q) use ($search) {
                       $q->where('nama_divisi', 'like', "%{$search}%");
@@ -34,8 +36,27 @@ class PengurusController extends Controller
             });
         }
 
+        // Filter by Divisi
+        if ($request->has('id_divisi') && $request->id_divisi != '') {
+            $query->where('id_divisi', $request->id_divisi);
+        }
+
+        // Filter by Semester
+        if ($request->has('semester') && $request->semester != '') {
+            $semester = $request->semester;
+            $query->whereHas('user.mahasiswa', function($q) use ($semester) {
+                $q->where('semester', $semester);
+            });
+        }
+
         $pengurus = $query->latest()->paginate(10)->withQueryString();
-        return view('pages.pengurus.pengurus.index', compact('pengurus'));
+
+        // Data for Filters
+        $divisi = divisi::all();
+        // Get distinct semesters from Data Mahasiswa that are linked to users
+        $semesters = \App\Models\admin\Datamahasiswa::select('semester')->distinct()->orderBy('semester')->pluck('semester');
+
+        return view('pages.pengurus.pengurus.index', compact('pengurus', 'divisi', 'semesters'));
     }
 
     /**
@@ -52,7 +73,7 @@ class PengurusController extends Controller
     {
         $divisi = divisi::all();
         // Ambil data mahasiswa yang memiliki id_user (sudah punya akun)
-        $mahasiswa = \App\Models\Mahasiswa::whereNotNull('id_user')->get();
+        $mahasiswa = \App\Models\admin\Datamahasiswa::whereNotNull('id_user')->get();
         $jabatan = \App\Models\Jabatan::all();
         return view('pages.pengurus.pengurus.create', compact('divisi', 'mahasiswa', 'jabatan'));
     }
@@ -93,7 +114,7 @@ class PengurusController extends Controller
         $pengurus = pengurus::findOrFail($id);
         $divisi = divisi::all();
         // Ambil data mahasiswa yang memiliki id_user
-        $mahasiswa = \App\Models\Mahasiswa::whereNotNull('id_user')->get();
+        $mahasiswa = \App\Models\admin\Datamahasiswa::whereNotNull('id_user')->get();
         $jabatan = \App\Models\Jabatan::all();
         return view('pages.pengurus.pengurus.edit', compact('pengurus', 'divisi', 'mahasiswa', 'jabatan'));
     }

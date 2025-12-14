@@ -11,9 +11,13 @@ use Illuminate\Support\Facades\Auth;
 class DashboardController extends Controller
 {
     /**
-     * Tampilkan dashboard user.
-     * Hitung statistik pengaduan dan tampilkan berita terbaru.
-     *
+     * Menampilkan dashboard utama untuk pengguna (User).
+     * 
+     * Halaman ini menyajikan:
+     * 1. Ringkasan statistik pengaduan user (Total, Diproses, Selesai).
+     * 2. Riwayat singkat pengaduan yang pernah dibuat.
+     * 3. Berita kegiatan terbaru dari kampus.
+     * 
      * @return \Illuminate\View\View
      */
     public function index()
@@ -49,7 +53,13 @@ class DashboardController extends Controller
     }
 
     /**
-     * Tandai notifikasi sebagai sudah dibaca dan redirect ke URL terkait.
+     * Menandai notifikasi sebagai sudah dibaca (Mark as Read).
+     * 
+     * Setelah ditandai, pengguna akan diarahkan ke URL yang relevan 
+     * dengan notifikasi tersebut.
+     * 
+     * @param  string  $id  ID Notifikasi
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function markAsRead($id)
     {

@@ -11,7 +11,12 @@ use Illuminate\Support\Facades\Storage;
 class PengaduanController extends Controller
 {
     /**
-     * Tampilkan daftar pengaduan user.
+     * Menampilkan daftar pengaduan yang telah dibuat oleh user.
+     *
+     * Fitur filtering:
+     * - Status (Pending/Diproses/Selesai/Ditolak)
+     * - Pencarian Judul
+     * - Sorting (Terbaru/Terlama)
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
@@ -42,7 +47,7 @@ class PengaduanController extends Controller
     }
 
     /**
-     * Tampilkan form buat pengaduan.
+     * Menampilkan halaman form untuk membuat pengaduan baru.
      *
      * @return \Illuminate\View\View
      */
@@ -52,8 +57,13 @@ class PengaduanController extends Controller
     }
 
     /**
-     * Simpan pengaduan baru.
-     * Upload bukti jika ada.
+     * Menyimpan pengaduan baru ke database.
+     *
+     * Proses:
+     * 1. Validasi input (Judul, Jenis, Deskripsi, dll).
+     * 2. Upload file bukti (optional).
+     * 3. Set status default 'Terkirim'.
+     * 4. Redirect sesuai role user.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
@@ -83,16 +93,21 @@ class PengaduanController extends Controller
         // Simpan data.
         Pengaduan::create($validatedData);
 
+        $redirectRoute = Auth::user()->role === 'mahasiswa' ? 'mahasiswa.dashboard' : 'user.dashboard';
+
         return redirect()
-            ->route('user.dashboard')
+            ->route($redirectRoute)
             ->with('success', 'Pengaduan berhasil dikirim!');
     }
 
     /**
-     * Tampilkan detail pengaduan.
+     * Menampilkan detail lengkap dari sebuah pengaduan.
      *
-     * @param int $id
+     * Memuat relasi tanggapan untuk menampilkan diskusi antara user dan admin.
+     *
+     * @param int $id ID Pengaduan
      * @return \Illuminate\View\View
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function show($id)
     {
@@ -105,7 +120,13 @@ class PengaduanController extends Controller
     }
 
     /**
-     * Simpan tanggapan dari user.
+     * Menyimpan balasan/tanggapan dari user pada pengaduan.
+     * 
+     * Memungkinkan komunikasi dua arah (chat) dalam tiket pengaduan.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id  ID Pengaduan
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function storeTanggapan(Request $request, $id)
     {
@@ -126,10 +147,11 @@ class PengaduanController extends Controller
     }
 
     /**
-     * Hapus pengaduan.
-     * Hapus file bukti terkait.
+     * Menghapus pengaduan yang dibuat oleh user sendiri.
+     * 
+     * Hapus data pengaduan beserta file bukti fisiknya dari storage.
      *
-     * @param int $id
+     * @param int $id ID Pengaduan
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
@@ -143,8 +165,10 @@ class PengaduanController extends Controller
 
         $pengaduan->delete();
 
+        $redirectRoute = Auth::user()->role === 'mahasiswa' ? 'mahasiswa.dashboard' : 'user.dashboard';
+
         return redirect()
-            ->route('user.dashboard')
+            ->route($redirectRoute)
             ->with('success', 'Pengaduan berhasil dihapus.');
     }
 }

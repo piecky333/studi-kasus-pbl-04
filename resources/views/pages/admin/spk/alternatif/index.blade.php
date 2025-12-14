@@ -55,36 +55,68 @@
                 </button>
             </div>
 
-            <div class="overflow-x-auto border border-gray-200 sm:rounded-lg">
+            <div class="overflow-x-auto border border-gray-200 sm:rounded-lg shadow-sm">
                 <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+                    <thead class="bg-gray-100">
                         <tr>
-                            <th class="px-6 py-3 text-center w-10">
-                                <input type="checkbox" id="selectAll" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            <th class="px-6 py-4 text-center w-12 border-b border-gray-200">
+                                <input type="checkbox" id="selectAll" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 h-4 w-4">
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">No</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/2">Nama Alternatif</th>
-                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status Nilai</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider w-16 border-b border-gray-200">No</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200">Nama Alternatif</th>
+                            <th class="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200">Semester</th>
+                            <th class="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200">Status Penilaian</th>
+                            <th class="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse($alternatifList as $alternatif)
-                            <tr>
+                            @php
+                                // Cek apakah sudah ada nilai penilaian yang masuk (total nilai > 0)
+                                $totalNilai = $alternatif->penilaian->sum('nilai');
+                                $sudahDinilai = $totalNilai > 0;
+                            @endphp
+                            <tr class="hover:bg-gray-50 transition duration-150 ease-in-out">
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    <input type="checkbox" name="selected_alternatif[]" value="{{ $alternatif->id_alternatif }}" class="rowCheckbox rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                    <input type="checkbox" name="selected_alternatif[]" value="{{ $alternatif->id_alternatif }}" class="rowCheckbox rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 h-4 w-4">
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $loop->iteration }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ $alternatif->nama_alternatif }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-700 text-center">{{ $loop->iteration }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="text-sm font-semibold text-gray-900">{{ $alternatif->nama_alternatif }}</div>
+                                    </div>
+                                    @if($alternatif->keterangan)
+                                        <div class="text-xs text-gray-500 mt-1">{{ Str::limit($alternatif->keterangan, 50) }}</div>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-800">
+                                    {{ $alternatif->mahasiswa->semester ?? '-' }}
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                        Perlu Diperiksa
-                                    </span>
+                                    @if($sudahDinilai)
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+                                            <i class="fas fa-check-circle mr-1.5"></i> Sudah Dinilai
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
+                                            <i class="fas fa-times-circle mr-1.5"></i> Belum Dinilai
+                                        </span>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-center font-medium">
+                                    <a href="{{ route('admin.spk.alternatif.penilaian.index', $idKeputusan) }}" class="text-indigo-600 hover:text-indigo-900 transition duration-150" title="Atur Nilai">
+                                        <i class="fas fa-edit"></i> Nilai
+                                    </a>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center bg-gray-50">
-                                    Belum ada Alternatif yang ditambahkan. Silakan tambahkan Alternatif baru.
+                                <td colspan="6" class="px-6 py-10 whitespace-nowrap text-center text-gray-500 bg-gray-50">
+                                    <div class="flex flex-col items-center justify-center">
+                                        <i class="fas fa-users-slash text-4xl mb-3 text-gray-300"></i>
+                                        <p class="text-base font-medium">Belum ada Alternatif</p>
+                                        <p class="text-xs mt-1">Silakan tambahkan data alternatif mahasiswa terlebih dahulu.</p>
+                                    </div>
                                 </td>
                             </tr>
                         @endforelse

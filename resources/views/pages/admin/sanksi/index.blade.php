@@ -50,6 +50,24 @@
                             <option value="{{ $i }}" {{ request('semester') == $i ? 'selected' : '' }}>Semester {{ $i }}</option>
                         @endfor
                     </select>
+                    </select>
+                </div>
+
+                {{-- Filter Jenis Sanksi --}}
+                <div class="md:col-span-3">
+                    <label for="jenis_sanksi" class="block text-sm font-medium text-gray-700 mb-1">Filter Tingkat</label>
+                    <select name="jenis_sanksi" id="jenis_sanksi" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm" onchange="this.form.submit()">
+                        <option value="">Semua Tingkat</option>
+                        <option value="Ringan" {{ request('jenis_sanksi') == 'Ringan' ? 'selected' : '' }}>Ringan</option>
+                        <option value="Sedang" {{ request('jenis_sanksi') == 'Sedang' ? 'selected' : '' }}>Sedang</option>
+                        <option value="Berat" {{ request('jenis_sanksi') == 'Berat' ? 'selected' : '' }}>Berat</option>
+                    </select>
+                </div>
+
+                {{-- Filter Jenis Hukuman --}}
+                <div class="md:col-span-3">
+                    <label for="jenis_hukuman" class="block text-sm font-medium text-gray-700 mb-1">Cari Hukuman</label>
+                    <input type="text" name="jenis_hukuman" id="jenis_hukuman" value="{{ request('jenis_hukuman') }}" placeholder="Contoh: Skorsing..." class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-3 sm:text-sm border-gray-300 rounded-md py-2 shadow-sm">
                 </div>
 
                 {{-- Filter NIM --}}

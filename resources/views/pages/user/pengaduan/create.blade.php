@@ -42,7 +42,8 @@
                             </div>
                         @endif
 
-                        <form action="{{ route('user.pengaduan.store') }}" method="POST" enctype="multipart/form-data">
+
+                        <form action="{{ Auth::user()->role === 'mahasiswa' ? route('mahasiswa.pengaduan.store') : route('user.pengaduan.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             
                             <div>
@@ -121,7 +122,7 @@
 
 
                             <div class="flex items-center justify-end mt-6 ">
-                                <a href="{{ route('user.dashboard') }}" class="text-sm text-red-600 hover:text-red-900 underline mr-4 mx-6 px-8 py-2 rounded">
+                                <a href="{{ Auth::user()->role === 'mahasiswa' ? route('mahasiswa.dashboard') : route('user.dashboard') }}" class="text-sm text-red-600 hover:text-red-900 underline mr-4 mx-6 px-8 py-2 rounded">
                                     Batal
                                 </a>
 
