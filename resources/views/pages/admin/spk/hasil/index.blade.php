@@ -150,6 +150,7 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-100">
                     <tr>
+                        <th class="px-3 py-2 text-center text-xs font-medium text-gray-600 uppercase tracking-wider border-r">No</th>
                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider border-r">Alternatif</th>
                         @foreach ($calculationData['criteria_metadata'] as $k)
                             <th class="px-3 py-2 text-center text-xs font-medium text-gray-600 uppercase tracking-wider" title="Jenis: {{ $k->jenis_kriteria }}">
@@ -162,6 +163,7 @@
                 <tbody class="bg-white divide-y divide-gray-200">
                     @foreach ($calculationData['raw_data'] as $rawAlt)
                         <tr>
+                            <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 text-center border-r">{{ $loop->iteration }}</td>
                             <td class="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900 bg-gray-50 border-r">{{ $rawAlt['nama'] }}</td>
                             @foreach ($calculationData['criteria_metadata'] as $k)
                                 <td class="px-3 py-2 whitespace-nowrap text-sm text-center font-mono">
@@ -181,6 +183,7 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-100">
                     <tr>
+                        <th class="px-3 py-2 text-center text-xs font-medium text-gray-600 uppercase tracking-wider border-r">No</th>
                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider border-r">Alternatif</th>
                         @foreach ($calculationData['criteria_metadata'] as $k)
                             <th class="px-3 py-2 text-center text-xs font-medium text-gray-600 uppercase tracking-wider">
@@ -196,6 +199,7 @@
                             $isBest = $rankResult['rank'] == 1;
                         @endphp
                         <tr class="{{ $isBest ? 'bg-yellow-50' : '' }}">
+                            <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500 text-center border-r">{{ $loop->iteration }}</td>
                             <td class="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900 {{ $isBest ? 'bg-yellow-100 font-bold' : 'bg-gray-50' }} border-r">
                                 {{ $rankResult['nama'] }}
                             </td>

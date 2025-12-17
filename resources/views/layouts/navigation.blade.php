@@ -13,9 +13,18 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
+                    @if(Auth::user()->role === 'mahasiswa')
+                        <x-nav-link :href="route('mahasiswa.dashboard')" :active="request()->routeIs('mahasiswa.dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('mahasiswa.prestasi.index')" :active="request()->routeIs('mahasiswa.prestasi.*')">
+                            {{ __('Prestasi') }}
+                        </x-nav-link>
+                    @else
+                        <x-nav-link :href="route('user.dashboard')" :active="request()->routeIs('user.dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 

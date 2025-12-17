@@ -38,13 +38,25 @@
                            @error('nama_subkriteria') border-red-500 @enderror"
                            placeholder="Contoh: Sangat Baik, Cukup, Kurang" required>
                     @error('nama_subkriteria')
+                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Input Number: Nilai --}}
+                <div>
+                    <label for="nilai" class="block text-sm font-medium text-gray-700 mb-1">Nilai Bobot</label>
+                    <input type="number" name="nilai" id="nilai" step="any"
+                           value="{{ old('nilai') }}"
+                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm 
+                           @error('nilai') border-red-500 @enderror"
+                           placeholder="Contoh: 5, 4, 3..." required>
+                    <p class="mt-1 text-xs text-gray-500">
                         *Nilai ini akan digunakan sebagai nilai aktual ($X_{ij}$) dalam Matriks Penilaian.
                     </p>
                     @error('nilai')
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
-                
             </div>
 
             {{-- Bagian Tombol: Simpan atau Batal --}}
@@ -55,7 +67,7 @@
                 </a>
                 <button type="submit"
                         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">
-                    <i class="fas fa-save mr-2"></i> Simpan Sub Kriteria
+                    Simpan
                 </button>
             </div>
         </form>

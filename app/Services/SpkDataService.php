@@ -59,43 +59,13 @@ class SpkDataService
                 $dataAlternatif[$key] = 0;
             }
 
-            // 3. Isi nilai kriteria (Gabungan Manual dan Otomatis)
-            // First pass: Fill with manual values from 'penilaian' table
+            // 3. Isi nilai kriteria
+            // Fill with manual/synced values from 'penilaian' table
             foreach ($alternatif->penilaian as $penilaian) {
                 $idKriteria = $penilaian->id_kriteria;
                 if (isset($kriteriaMap[$idKriteria])) {
                     $kodeKriteria = $kriteriaMap[$idKriteria];
                     $dataAlternatif[$kodeKriteria] = (float) $penilaian->nilai; 
-                }
-            }
-
-            // Second pass: Override with dynamic values if source is not Manual
-            // Kita butuh akses ke object mahasiswanya
-            $mahasiswa = $alternatif->mahasiswa;
-
-            if ($mahasiswa) {
-                foreach ($criteriaKeys as $kodeKriteria) {
-                    $source = $kriteriaSourceMap[$kodeKriteria] ?? 'Manual';
-                    
-                    if ($source !== 'Manual') {
-                        $count = 0;
-                        switch ($source) {
-                            case 'Prestasi':
-                                $count = $mahasiswa->prestasi->count();
-                                break;
-                            case 'Sanksi':
-                                $count = $mahasiswa->sanksi->count();
-                                break;
-                            case 'Pengaduan':
-                                $count = $mahasiswa->pengaduan->count();
-                                break;
-                            case 'Berita':
-                                $count = $mahasiswa->berita->count();
-                                break;
-                        }
-                        // Override nilai manual dengan hasil hitung otomatis
-                        $dataAlternatif[$kodeKriteria] = (float) $count;
-                    }
                 }
             }
             

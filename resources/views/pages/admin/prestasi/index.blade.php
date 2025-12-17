@@ -62,6 +62,17 @@
                     </select>
                 </div>
 
+                {{-- Filter Status --}}
+                <div class="md:col-span-2">
+                    <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <select name="status" id="status" class="block w-full pl-2 pr-8 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm {{ request('status') ? 'text-gray-900' : 'text-gray-400' }}" onchange="this.form.submit()">
+                        <option value="">Semua</option>
+                        <option value="menunggu" {{ request('status') == 'menunggu' ? 'selected' : '' }}>Menunggu</option>
+                        <option value="disetujui" {{ request('status') == 'disetujui' ? 'selected' : '' }}>Disetujui</option>
+                        <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                    </select>
+                </div>
+
                 {{-- Filter Urutan --}}
                 <div class="md:col-span-2">
                     <label for="sort" class="block text-sm font-medium text-gray-700 mb-1">Urutan</label>
@@ -135,6 +146,9 @@
                                     Tingkat
                                 </th>
                                 <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
+                                    Juara
+                                </th>
+                                <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
                                     Tahun
                                 </th>
                                 <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-center font-medium uppercase tracking-wider">
@@ -188,6 +202,9 @@
                                         <span class="px-2 inline-flex text-[10px] lg:text-xs leading-4 font-semibold rounded-full {{ $badgeColor }}">
                                             {{ ucfirst($item->tingkat_prestasi) }}
                                         </span>
+                                    </td>
+                                    <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-gray-500">
+                                        {{ $item->juara ?? '-' }}
                                     </td>
                                     <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-gray-500">
                                         {{ $item->tahun }}

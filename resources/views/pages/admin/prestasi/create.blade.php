@@ -151,6 +151,19 @@
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    {{-- Juara --}}
+                    <div class="sm:col-span-6">
+                         <label for="juara" class="block text-sm font-medium text-gray-700">
+                             Juara/Peringkat <span class="text-red-500">*</span>
+                         </label>
+                         <div class="mt-1">
+                             <input type="text" name="juara" id="juara" value="{{ old('juara') }}" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('juara') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2" placeholder="Contoh: Juara 1, Juara Harapan, Finalis..." required>
+                         </div>
+                         @error('juara')
+                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                         @enderror
+                     </div>
                     {{-- Jenis Prestasi --}}
                     <div class="sm:col-span-3">
                         <label for="jenis_prestasi" class="block text-sm font-medium text-gray-700">

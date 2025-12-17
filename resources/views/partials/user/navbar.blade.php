@@ -17,7 +17,10 @@
                             {{ __('Dashboard') }}
                         </x-nav-link>
                         <x-nav-link :href="route('mahasiswa.sertifikat.index')" :active="request()->routeIs('mahasiswa.sertifikat.*')">
-                            {{ __('Pengajuan Sertifikat') }}
+                            {{ __('Sertifikat (Lama)') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('mahasiswa.prestasi.index')" :active="request()->routeIs('mahasiswa.prestasi.*')">
+                            {{ __('Prestasi') }}
                         </x-nav-link>
                     @else
                         <x-nav-link :href="route('user.dashboard')" :active="request()->routeIs('user.dashboard')">
@@ -161,7 +164,10 @@
                     {{ __('Dashboard') }}
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('mahasiswa.sertifikat.index')" :active="request()->routeIs('mahasiswa.sertifikat.*')">
-                    {{ __('Pengajuan Sertifikat') }}
+                    {{ __('Sertifikat (Lama)') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('mahasiswa.prestasi.index')" :active="request()->routeIs('mahasiswa.prestasi.*')">
+                    {{ __('Prestasi') }}
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('mahasiswa.pengaduan.index')" :active="request()->routeIs('mahasiswa.pengaduan.*')">
                     {{ __('Riwayat Pengaduan') }}

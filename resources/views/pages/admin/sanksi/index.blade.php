@@ -129,7 +129,7 @@
                                     Jenis Sanksi
                                 </th>
                                 <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
-                                    Jenis Hukuman
+                                    Hukuman
                                 </th>
                                 <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
                                     Tanggal
@@ -208,7 +208,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-6 py-10 text-center text-gray-500">
+                                    <td colspan="7" class="px-6 py-10 text-center text-gray-500">
                                         <div class="flex flex-col items-center justify-center">
                                             <i class="bi bi-clipboard-x text-4xl mb-2 text-gray-300"></i>
                                             <p class="text-lg font-medium">Tidak ada data sanksi untuk saat ini.</p>

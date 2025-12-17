@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\laporan\Tanggapan;
 use App\Models\admin\Prestasi;
 use App\Models\admin\Sanksi;
-use App\Models\admin\Mahasiswa;
+use App\Models\admin\Datamahasiswa;
 
 class Admin extends Model
 {
@@ -48,6 +48,6 @@ class Admin extends Model
     // Relasi ke Mahasiswa
     public function mahasiswa()
     {
-        return $this->hasMany(Mahasiswa::class, 'id_admin');
+        return $this->hasMany(Datamahasiswa::class, 'id_admin');
     }
 }

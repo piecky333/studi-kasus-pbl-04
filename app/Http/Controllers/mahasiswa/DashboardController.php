@@ -31,7 +31,15 @@ class DashboardController extends Controller
             ->take(4)
             ->get();
 
-        // Ambil Pengaduan User
+        // Ambil semua pengaduan user untuk statistik
+        $semuaPengaduan = $user->pengaduan()->get();
+
+        // Hitung total dan status pengaduan
+        $totalPengaduan = $semuaPengaduan->count();
+        $pengaduanDiproses = $semuaPengaduan->where('status', 'Diproses')->count();
+        $pengaduanSelesai = $semuaPengaduan->where('status', 'Selesai')->count();
+
+        // Ambil 5 pengaduan terakhir untuk tabel
         $pengaduan = $user->pengaduan()->latest()->take(5)->get();
 
         // Ambil Data Sanksi.
@@ -49,6 +57,13 @@ class DashboardController extends Controller
                 ->get();
         }
 
-        return view('pages.mahasiswa.dashboard', compact('beritaTerbaru', 'pengaduan', 'sanksi'));
+        return view('pages.mahasiswa.dashboard', compact(
+            'beritaTerbaru', 
+            'pengaduan', 
+            'sanksi',
+            'totalPengaduan',
+            'pengaduanDiproses',
+            'pengaduanSelesai'
+        ));
     }
 }

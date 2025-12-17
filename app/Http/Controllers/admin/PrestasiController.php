@@ -52,6 +52,11 @@ class PrestasiController extends Controller
             $query->where('jenis_prestasi', $request->jenis);
         }
 
+        // Filter Status Validasi
+        if ($request->filled('status')) {
+            $query->where('status_validasi', $request->status);
+        }
+
         // Sorting
         if ($request->filled('sort')) {
             if ($request->sort == 'oldest') {
@@ -96,6 +101,7 @@ class PrestasiController extends Controller
             'judul_prestasi' => 'required|string|max:255',
             'jenis_prestasi' => 'required|in:Akademik,Non-Akademik',
             'tingkat'        => 'required|string|max:255',
+            'juara'          => 'required|string|max:255', // Add Juara validation
             'tanggal'        => 'required|date',
             'deskripsi'      => 'nullable|string',
             'bukti_file'     => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:2048', // Max 2MB
@@ -118,6 +124,7 @@ class PrestasiController extends Controller
                 'nama_kegiatan'  => $request->judul_prestasi,
                 'jenis_prestasi' => $request->jenis_prestasi,
                 'tingkat_prestasi' => $request->tingkat,
+                'juara'          => $request->juara, // Save Juara
                 'tahun'          => date('Y', strtotime($request->tanggal)),
                 'status_validasi' => 'disetujui', // Default disetujui jika entry dari admin
                 'deskripsi'      => $request->deskripsi,
@@ -170,6 +177,7 @@ class PrestasiController extends Controller
         $request->validate([
             'nama_kegiatan'    => 'required|string|max:255',
             'tingkat_prestasi' => 'required|string|max:255',
+            'juara'            => 'required|string|max:255', // Add Juara validation
             'tahun'            => 'required|digits:4|integer',
             'status_validasi'  => 'required|in:menunggu,disetujui,ditolak',
             'nim'              => 'nullable|exists:mahasiswa,nim', // Validasi NIM jika ada
@@ -180,6 +188,7 @@ class PrestasiController extends Controller
         $dataToUpdate = [
             'nama_kegiatan'    => $request->nama_kegiatan,
             'tingkat_prestasi' => $request->tingkat_prestasi,
+            'juara'            => $request->juara, // Update Juara
             'tahun'            => $request->tahun,
             'status_validasi'  => $request->status_validasi,
         ];
@@ -188,7 +197,7 @@ class PrestasiController extends Controller
         // Jika field NIM diisi/diubah, kita perlu mencari ulang ID Mahasiswa terkait
         // dan mengupdate foreign key 'id_mahasiswa' di tabel prestasi.
         if ($request->filled('nim')) {
-            $mahasiswa = Mahasiswa::where('nim', $request->nim)->first();
+            $mahasiswa = Datamahasiswa::where('nim', $request->nim)->first();
             if ($mahasiswa) {
                 $dataToUpdate['id_mahasiswa'] = $mahasiswa->id_mahasiswa;
             }
@@ -234,16 +243,13 @@ class PrestasiController extends Controller
             ]);
         }
 
-        $mahasiswa = Mahasiswa::where('nim', $nim)->first();
+        $mahasiswa = Datamahasiswa::where('nim', $nim)->first();
 
         if ($mahasiswa) {
             return response()->json([
                 'success' => true,
                 'mahasiswa' => [
-                    // PASTIKAN NAMA KOLOM INI BENAR
-                    // Jika primary key di tabel mahasiswa adalah 'id', ganti di bawah ini menjadi $mahasiswa->id
                     'id_mahasiswa' => $mahasiswa->id_mahasiswa, 
-                    
                     'nama' => $mahasiswa->nama,
                     'nim' => $mahasiswa->nim,
                     'email' => $mahasiswa->email,

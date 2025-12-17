@@ -11,11 +11,10 @@ trait HasCriteriaLabels
     {
         return [
             'Prestasi' => [
-                'nama_kegiatan' => 'Nama Kegiatan',
-                'judul_prestasi' => 'Judul Prestasi',
+                'juara' => 'Juara',
+                'jumlah_prestasi' => 'Jumlah Prestasi', // Count logic
                 'jenis_prestasi' => 'Jenis Prestasi',
                 'tingkat_prestasi' => 'Tingkat Prestasi',
-                'tanggal' => 'Tanggal Prestasi',
                 'tahun' => 'Tahun',
                 'status_validasi' => 'Status Validasi',
             ],

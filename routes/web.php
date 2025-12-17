@@ -276,6 +276,9 @@ Route::prefix('mahasiswa')->name('mahasiswa.')
         // Reuse UserPengaduanController for Mahasiswa
         Route::resource('pengaduan', UserPengaduanController::class);
         Route::post('pengaduan/{id}/tanggapan', [UserPengaduanController::class, 'storeTanggapan'])->name('pengaduan.tanggapan');
+
+        // CRUD Prestasi (Mahasiswa Submit Sendiri)
+        Route::resource('prestasi', \App\Http\Controllers\mahasiswa\PrestasiController::class);
     });
 
 

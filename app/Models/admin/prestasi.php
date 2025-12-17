@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class prestasi extends Model
 {
     use HasFactory;
-    protected $table = 'Prestasi';
+    protected $table = 'prestasi';
     protected $primaryKey = 'id_prestasi';
     protected $fillable = [
         'id_mahasiswa',

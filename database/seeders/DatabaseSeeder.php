@@ -17,14 +17,10 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             BeritaSeeder::class,
             KomentarSeeder::class,
-            SpkPrestasiSeeder::class,
-            PengaduanSeeder::class,
+            SpkMahasiswaBerprestasiSeeder::class,
             DivisiSeeder::class,
             JabatanSeeder::class,
-            DataMahasiswaSeeder::class,
-            PrestasiSeeder::class,
-            SanksiSeeder::class,
-            PengurusSeeder::class,
+            TingkatanJuaraSeeder::class,
         ]);
     }
 }
