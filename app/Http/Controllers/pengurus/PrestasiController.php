@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Pengurus;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -8,29 +8,16 @@ use App\Models\admin\Prestasi;
 use App\Models\admin\Datamahasiswa;
 use Illuminate\Support\Facades\Auth;
 
-/**
- * Class PrestasiController
- * 
- * Controller ini bertanggung jawab untuk mengelola data Prestasi Mahasiswa.
- * Fitur mencakup CRUD lengkap dan pencarian data mahasiswa via AJAX untuk
- * memudahkan pengisian form.
- * 
- * @package App\Http\Controllers\Admin
- */
 class PrestasiController extends Controller
 {
     /**
      * Menampilkan daftar prestasi mahasiswa.
-     * 
-     * Menggunakan Eager Loading 'mahasiswa' untuk efisiensi query.
-     * 
-     * @return \Illuminate\View\View
      */
     public function index(Request $request)
     {
         $query = Prestasi::with(['mahasiswa']);
 
-        // Filter NIM (Starts With)
+        // Filter NIM
         if ($request->filled('nim')) {
             $query->whereHas('mahasiswa', function ($q) use ($request) {
                 $q->where('nim', 'like', $request->nim . '%');
@@ -60,33 +47,24 @@ class PrestasiController extends Controller
                 $query->orderBy('created_at', 'desc');
             }
         } else {
-            $query->latest(); // Default latest
+            $query->latest();
         }
 
         $prestasi = $query->paginate(10);
-        return view('pages.admin.prestasi.index', compact('prestasi'));
+        return view('pages.pengurus.prestasi.index', compact('prestasi'));
     }
 
     /**
      * Menampilkan form untuk menambahkan prestasi baru.
-     * 
-     * @return \Illuminate\View\View
      */
     public function create()
     {
-        // Ambil data mahasiswa untuk dropdown multi-select
         $mahasiswa = Datamahasiswa::orderBy('nama', 'asc')->get();
-        return view('pages.admin.prestasi.create', compact('mahasiswa'));
+        return view('pages.pengurus.prestasi.create', compact('mahasiswa'));
     }
 
     /**
      * Menyimpan data prestasi baru ke database.
-     * 
-     * Fitur Bulk Create:
-     * Mendukung input banyak mahasiswa sekaligus (misal untuk prestasi Tim/Kelompok).
-     * 
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -98,72 +76,58 @@ class PrestasiController extends Controller
             'tingkat'        => 'required|string|max:255',
             'tanggal'        => 'required|date',
             'deskripsi'      => 'nullable|string',
-            'bukti_file'     => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:2048', // Max 2MB
+            'bukti_file'     => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:2048',
         ]);
 
         $buktiPath = null;
         if ($request->hasFile('bukti_file')) {
             $file = $request->file('bukti_file');
             $filename = time() . '_' . $file->getClientOriginalName();
-            // Simpan ke storage/app/public/prestasi
             $path = $file->storeAs('prestasi', $filename, 'public');
             $buktiPath = 'prestasi/' . $filename;
         }
 
-        // Loop untuk setiap mahasiswa yang dipilih
         foreach ($request->id_mahasiswa as $id_mahasiswa) {
             Prestasi::create([
                 'id_mahasiswa'   => $id_mahasiswa,
-                'id_admin'       => Auth::user()->id_admin ?? null,
+                'id_admin'       => null, // Pengurus create, admin null
                 'nama_kegiatan'  => $request->judul_prestasi,
                 'jenis_prestasi' => $request->jenis_prestasi,
                 'tingkat_prestasi' => $request->tingkat,
                 'tahun'          => date('Y', strtotime($request->tanggal)),
-                'status_validasi' => 'disetujui', // Default disetujui jika entry dari admin
+                'status_validasi' => 'menunggu', // Default menunggu verifikasi admin
                 'deskripsi'      => $request->deskripsi,
                 'bukti_path'     => $buktiPath,
             ]);
         }
 
-        return redirect()->route('admin.prestasi.index')->with('success', 'Data prestasi berhasil ditambahkan.');
+        return redirect()->route('pengurus.prestasi.index')->with('success', 'Data prestasi berhasil diajukan dan menunggu verifikasi admin.');
     }
-
 
     /**
      * Menampilkan detail lengkap satu data prestasi.
-     * 
-     * @param string $id ID Prestasi
-     * @return \Illuminate\View\View
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function show(string $id)
     {
         $prestasi = Prestasi::with('mahasiswa')->findOrFail($id);
-        return view('pages.admin.prestasi.show', compact('prestasi'));
+        return view('pages.pengurus.prestasi.show', compact('prestasi'));
     }
 
     /**
      * Menampilkan form edit data prestasi.
-     * 
-     * @param string $id
-     * @return \Illuminate\View\View
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function edit(string $id)
     {
         $prestasi = Prestasi::with('mahasiswa')->findOrFail($id);
-        return view('pages.admin.prestasi.edit', compact('prestasi'));
+        
+        // Cek jika status sudah disetujui, mungkin pengurus tidak boleh edit? 
+        // Untuk sekarang biarkan bisa edit.
+        
+        return view('pages.pengurus.prestasi.edit', compact('prestasi'));
     }
 
     /**
-     * Memperbarui data prestasi yang sudah ada.
-     * 
-     * Mendukung pembaruan relasi mahasiswa jika NIM diubah.
-     * 
-     * @param Request $request
-     * @param string $id
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * Memperbarui data prestasi.
      */
     public function update(Request $request, string $id)
     {
@@ -171,8 +135,7 @@ class PrestasiController extends Controller
             'nama_kegiatan'    => 'required|string|max:255',
             'tingkat_prestasi' => 'required|string|max:255',
             'tahun'            => 'required|digits:4|integer',
-            'status_validasi'  => 'required|in:menunggu,disetujui,ditolak',
-            'nim'              => 'nullable|exists:mahasiswa,nim', // Validasi NIM jika ada
+            'nim'              => 'nullable|exists:mahasiswa,nim',
         ]);
 
         $prestasi = Prestasi::findOrFail($id);
@@ -181,14 +144,13 @@ class PrestasiController extends Controller
             'nama_kegiatan'    => $request->nama_kegiatan,
             'tingkat_prestasi' => $request->tingkat_prestasi,
             'tahun'            => $request->tahun,
-            'status_validasi'  => $request->status_validasi,
+            // Status tidak diupdate oleh pengurus di sini, tetap seperti sebelumnya atau reset ke menunggu?
+            // Biasanya jika diedit, perlu verifikasi ulang.
+            'status_validasi'  => 'menunggu', 
         ];
 
-        // Logika Update Relasi:
-        // Jika field NIM diisi/diubah, kita perlu mencari ulang ID Mahasiswa terkait
-        // dan mengupdate foreign key 'id_mahasiswa' di tabel prestasi.
         if ($request->filled('nim')) {
-            $mahasiswa = Mahasiswa::where('nim', $request->nim)->first();
+            $mahasiswa = Datamahasiswa::where('nim', $request->nim)->first();
             if ($mahasiswa) {
                 $dataToUpdate['id_mahasiswa'] = $mahasiswa->id_mahasiswa;
             }
@@ -196,33 +158,22 @@ class PrestasiController extends Controller
 
         $prestasi->update($dataToUpdate);
 
-        return redirect()->route('admin.prestasi.index')->with('success', 'Data prestasi berhasil diperbarui.');
+        return redirect()->route('pengurus.prestasi.index')->with('success', 'Data prestasi berhasil diperbarui dan menunggu verifikasi ulang.');
     }
 
     /**
-     * Menghapus data prestasi secara permanen.
-     * 
-     * @param string $id
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * Menghapus data prestasi.
      */
     public function destroy(string $id)
     {
         $prestasi = Prestasi::findOrFail($id);
         $prestasi->delete();
 
-        return redirect()->route('admin.prestasi.index')->with('success', 'Data prestasi berhasil dihapus.');
+        return redirect()->route('pengurus.prestasi.index')->with('success', 'Data prestasi berhasil dihapus.');
     }
 
-    /**
-     * Endpoint AJAX: Mencari data mahasiswa berdasarkan NIM.
-     * 
-     * Digunakan oleh frontend (JavaScript) untuk fitur autofill/autocomplete.
-     * Mengembalikan response JSON berisi data mahasiswa jika ditemukan.
-     * 
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
+    // Reuse cariMahasiswa logic or just use Datamahasiswa model directly in view?
+    // Admin used AJAX. I should probably add the ajax method here too if the view uses it.
     public function cariMahasiswa(Request $request)
     {
         $nim = $request->query('nim');
@@ -234,16 +185,13 @@ class PrestasiController extends Controller
             ]);
         }
 
-        $mahasiswa = Mahasiswa::where('nim', $nim)->first();
+        $mahasiswa = Datamahasiswa::where('nim', $nim)->first();
 
         if ($mahasiswa) {
             return response()->json([
                 'success' => true,
                 'mahasiswa' => [
-                    // PASTIKAN NAMA KOLOM INI BENAR
-                    // Jika primary key di tabel mahasiswa adalah 'id', ganti di bawah ini menjadi $mahasiswa->id
-                    'id_mahasiswa' => $mahasiswa->id_mahasiswa, 
-                    
+                    'id_mahasiswa' => $mahasiswa->id_mahasiswa,
                     'nama' => $mahasiswa->nama,
                     'nim' => $mahasiswa->nim,
                     'email' => $mahasiswa->email,
@@ -256,18 +204,5 @@ class PrestasiController extends Controller
             'success' => false,
             'message' => 'Mahasiswa tidak ditemukan'
         ]);
-    }
-    public function verifikasi($id)
-    {
-        $prestasi = Prestasi::findOrFail($id);
-        $prestasi->update(['status_validasi' => 'disetujui']);
-        return redirect()->back()->with('success', 'Prestasi berhasil disetujui.');
-    }
-
-    public function tolak($id)
-    {
-        $prestasi = Prestasi::findOrFail($id);
-        $prestasi->update(['status_validasi' => 'ditolak']);
-        return redirect()->back()->with('success', 'Prestasi berhasil ditolak.');
     }
 }

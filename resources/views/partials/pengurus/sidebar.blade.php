@@ -62,11 +62,18 @@
     </a>
 </li>
 
-<!-- Kelola Berita -->
 <li class="nav-item {{ request()->is('pengurus/berita*') ? 'active' : '' }}">
     <a class="nav-link" href="{{ route('pengurus.berita.index') }}">
         <i class="bi bi-newspaper"></i>
         <span>Kelola Berita</span>
+    </a>
+</li>
+
+<!-- Kelola Prestasi -->
+<li class="nav-item {{ request()->is('pengurus/prestasi*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('pengurus.prestasi.index') }}">
+        <i class="bi bi-trophy"></i>
+        <span>Kelola Prestasi</span>
     </a>
 </li>
 
