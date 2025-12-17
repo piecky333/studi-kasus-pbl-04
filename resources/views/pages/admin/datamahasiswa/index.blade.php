@@ -185,7 +185,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-10 text-center text-gray-500">
+                            <td colspan="7" class="px-6 py-10 text-center text-gray-500">
                                 <div class="flex flex-col items-center justify-center">
                                     <i class="fas fa-user-graduate text-4xl text-gray-300 mb-3"></i>
                                     <p class="text-lg font-medium">Belum ada data mahasiswa</p>

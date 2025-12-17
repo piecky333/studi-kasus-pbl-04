@@ -112,7 +112,7 @@ class MahasiswaImport
                 // --- Ekstrak Data Sanksi ---
                 $sanksiTanggalRaw = $getValue($row, ['tanggal sanksi', 'tanggal', 'tanggal_sanksi']);
                 $sanksiJenis = $getValue($row, ['jenis sanksi', 'sanksi', 'tipe sanksi', 'jenis_sanksi']);
-                $sanksiHukuman = $getValue($row, ['jenis hukuman', 'hukuman', 'jenis_hukuman']) ?? 'Teguran'; 
+                $sanksiHukuman = $getValue($row, ['jenis hukuman', 'hukuman', 'jenis_hukuman']); 
                 $sanksiKeteranganRaw = $getValue($row, ['keterangan', 'deskripsi', 'catatan']);
                 
                 $sanksiKeterangan = $sanksiKeteranganRaw ?? $sanksiJenis; // Deskripsi cadangan jika kosong
@@ -179,21 +179,24 @@ class MahasiswaImport
                     Log::info("User exists: " . $user->username);
                 }
 
-                // [LOGIC] Cari atau Buat Profil Datamahasiswa
+                // [LOGIC] Cari atau Buat Profil Datamahasiswa (Update jika ada)
                 // Menghubungkan User (akun login) dengan data akademik mahasiswa
-                $mahasiswa = Datamahasiswa::where('id_user', $user->id_user)->first();
-
-                if (!$mahasiswa) {
-                    $mahasiswa = Datamahasiswa::create([
-                        'id_user' => $user->id_user,
+                $mahasiswa = Datamahasiswa::updateOrCreate(
+                    ['id_user' => $user->id_user], // Key Check
+                    [
                         'nim' => $nim,
                         'nama' => $nama,
                         'email' => $email,
                         'semester' => $semester,
                         'ipk' => $ipk,
                         'id_admin' => $this->idAdmin, 
-                    ]);
-                     Log::info("Mahasiswa profile created for User ID: " . $user->id_user);
+                    ]
+                );
+                
+                if ($mahasiswa->wasRecentlyCreated) {
+                    Log::info("Mahasiswa profile created for User ID: " . $user->id_user);
+                } else {
+                    Log::info("Mahasiswa profile updated for User ID: " . $user->id_user);
                 }
 
                 // =========================================================================
@@ -205,7 +208,13 @@ class MahasiswaImport
                 // Headers: 'nama kegiatan', 'tingkat', 'tahun', 'status', 'jenis prestasi', 'deskripsi', 'juara'
                 $prestasiDeskripsi = $getValue($row, ['deskripsi prestasi', 'keterangan prestasi', 'deskripsi']);
                 $prestasiJenis = $getValue($row, ['jenis prestasi', 'jenis', 'kategori prestasi']); // Akademik / Non-Akademik
-                $prestasiJuara = $getValue($row, ['juara', 'peringkat', 'rank']); // Juara 1, Juara 2, dll
+                $prestasiJuaraRaw = $getValue($row, ['juara', 'peringkat', 'rank']); 
+                
+                // [FEATURE] Smart Parsing for Juara
+                // Pisahkan "Juara 1" dari "Lomba Coding" jika digabung
+                $parsedPrestasi = $this->parseJuaraAndKegiatan($prestasiJuaraRaw, $prestasiNama);
+                $finalJuara = $parsedPrestasi['juara'];
+                $finalNama = $parsedPrestasi['kegiatan']; // Updates finalNama based on parsing
 
                 if ($prestasiNama || $prestasiTingkatRaw) {
                      // Mapping Level Prestasi
@@ -225,38 +234,29 @@ class MahasiswaImport
                      $normalizedTingkat = strtolower(trim($prestasiTingkatRaw));
                      $finalTingkat = $validTingkatMap[$normalizedTingkat] ?? null;
 
-                     $finalNama = $prestasiNama ?: "Prestasi Tingkat " . ($finalTingkat ?? 'Lainnya');
+                     $finalNama = $finalNama ?: "Prestasi Tingkat " . ($finalTingkat ?? 'Lainnya');
 
                      if ($finalTingkat || $prestasiNama) {
-                        // Cek duplikasi
-                        $exists = prestasi::where('id_mahasiswa', $mahasiswa->id_mahasiswa)
-                            ->where('nama_kegiatan', $finalNama)
-                            ->where('tahun', $prestasiTahun ?? date('Y'))
-                            ->exists();
-
-                        if (!$exists) {
-                            // [LOGIC] Tentukan Jenis Prestasi (Default: Akademik)
-                            $finalJenis = 'Akademik';
-                            if ($prestasiJenis && strtolower($prestasiJenis) == 'non-akademik') {
-                                $finalJenis = 'Non-Akademik';
-                            } elseif ($prestasiJenis && strtolower($prestasiJenis) == 'non akademik') {
-                                $finalJenis = 'Non-Akademik';
-                            }
-
-                            prestasi::create([
+                        // [LOGIC] Gunakan updateOrCreate agar data yang sudah ada diupdate (terutama Juara)
+                        // Kunci pencarian duplikat: ID Mahasiswa, Nama Kegiatan, Tahun
+                        prestasi::updateOrCreate(
+                            [
                                 'id_mahasiswa' => $mahasiswa->id_mahasiswa,
-                                'id_admin' => $this->idAdmin,
                                 'nama_kegiatan' => $finalNama,
-                                'jenis_prestasi' => $finalJenis,
-                                'tingkat_prestasi' => $finalTingkat ?? 'Internal', 
-                                'juara' => $prestasiJuara, // [FEATURE] Added Juara Mapping
                                 'tahun' => $prestasiTahun ?? date('Y'),
-                                'status_validasi' => strtolower($prestasiStatus) == 'disetujui' ? 'disetujui' : 'menunggu', 
+                            ],
+                            [
+                                'id_admin' => $this->idAdmin,
+                                // Update jenis prestasi jika ada perubahan di excel
+                                'jenis_prestasi' => (str_contains(strtolower(trim($prestasiJenis ?? '')), 'non')) ? 'Non-Akademik' : 'Akademik',
+                                'tingkat_prestasi' => $finalTingkat ?? 'Internal', 
+                                'juara' => $finalJuara, // [UPDATE] Kolom ini akan terupdate jika sebelumnya kosong
+                                'status_validasi' => 'disetujui',
                                 'deskripsi' => $prestasiDeskripsi ?? 'Dikirim dari Excel',
-                                'bukti_path' => null, 
-                            ]);
-                            Log::info("Prestasi added for NIM: " . $nim);
-                        }
+                                // 'bukti_path' => null (Jangan ditimpa kalau update)
+                            ]
+                        );
+                        Log::info("Prestasi updated/created for NIM: " . $nim);
                      }
                 }
 
@@ -266,23 +266,20 @@ class MahasiswaImport
                 // Headers: 'jenis sanksi', 'hukuman', 'tanggal', 'keterangan'
                 if ($sanksiJenis || $sanksiHukuman) {
                     
-                    // Cek duplikasi untuk sanksi juga
-                    $sanksiExists = sanksi::where('id_mahasiswa', $mahasiswa->id_mahasiswa)
-                        ->where('jenis_sanksi', $sanksiJenis)
-                        ->where('tanggal_sanksi', $sanksiTanggal ?? date('Y-m-d'))
-                        ->exists();
-
-                    if (!$sanksiExists) {
-                        sanksi::create([
+                    // Cek duplikasi untuk sanksi juga (Update jika ada)
+                    sanksi::updateOrCreate(
+                        [
                             'id_mahasiswa' => $mahasiswa->id_mahasiswa,
-                            'tanggal_sanksi' => $sanksiTanggal ?? date('Y-m-d'),
                             'jenis_sanksi' => $sanksiJenis ?? 'Ringan',
+                            'tanggal_sanksi' => $sanksiTanggal ?? date('Y-m-d'),
+                        ],
+                        [
                             'jenis_hukuman' => $sanksiHukuman ?? 'Teguran Lisan',
                             'keterangan' => $sanksiKeterangan ?? 'Dikirim dari Excel',
                             // 'file_pendukung' => null (default)
-                        ]);
-                        Log::info("Sanksi added for NIM: " . $nim);
-                    }
+                        ]
+                    );
+                    Log::info("Sanksi updated/created for NIM: " . $nim);
                 }
             } // Akhir Loop
 
@@ -294,5 +291,56 @@ class MahasiswaImport
             Log::error('Import failed: ' . $e->getMessage());
             throw $e;
         }
+    }
+
+    /**
+     * Helper untuk memisahkan Peringkat (Juara) dan Nama Kegiatan.
+     * Contoh regex: "Juara 2 Kategori Video" -> Juara: "Juara 2", Kegiatan: "Kategori Video"
+     */
+    private function parseJuaraAndKegiatan($rawString, $existingKegiatan = '')
+    {
+        // Default result
+        $result = [
+            'juara' => $rawString,
+            'kegiatan' => $existingKegiatan
+        ];
+
+        if (empty($rawString)) return $result;
+
+        // Regex strategi:
+        // 1. Tangkap 'Juara X', 'Medali X', 'Finalis', 'Lolos Seleksi', 'Top X', '... Champion', '... Place'
+        // 2. Sisanya dianggap bagian dari nama kegiatan
+        $pattern = '/^(Juara\s+(\d+|Harapan\s+\d+|Wakil\s+\w+|Favorit|Terbaik)|Medali\s+\w+(\s+\(.*\))?|Finalis|.*Champion.*|.*Place|Lolos\s+Seleksi.*|Top\s+\d+|.*Besar|Peserta\s+Terpilih)\s*(.*)/i';
+
+        if (preg_match($pattern, $rawString, $matches)) {
+            $result['juara'] = trim($matches[1]); // Bagian Ranking
+            $rest = isset($matches[count($matches)-1]) ? trim($matches[count($matches)-1]) : ''; // Bagian Sisa String (Deskripsi)
+            
+            // Perbaiki jika matches terakhir bukan grup terakhir yg kita mau (karena nested groups)
+            // Group 1: Full Rank String
+            // Last Group: The rest description
+             // Let's use specific group logic.
+             // Group 1: The Rank Part
+             // Group 4 (index 4) should be the rest based on regex structure:
+             // (RankGroup) (Group2) (Group3) (RestGroup) -> indices 1, 2, 3, 4.
+             // Wait, regex above:
+             // 1: (Juara ... | ... | ... ) -> The Main Rank match
+             // 2: (\d+|...) -> Juara sub-match
+             // 3: (\s+\(.*\))? -> Medali sub-match
+             // 4: (.*) -> The Rest
+             
+             if (isset($matches[4])) {
+                 $rest = trim($matches[4]);
+             }
+
+            // Gabungkan deskripsi tambahan ke nama kegiatan
+            if (!empty($rest)) {
+                 // Remove starting "-" or ":" if exists in rest
+                $rest = ltrim($rest, "-: ");
+                $result['kegiatan'] = empty($existingKegiatan) ? $rest : $existingKegiatan . ' - ' . $rest;
+            }
+        }
+
+        return $result;
     }
 }

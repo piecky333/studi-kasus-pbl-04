@@ -9,7 +9,6 @@ use App\Models\laporan\pengaduan;
 use App\Models\admin\admin;
 use App\Models\komentar;
 use App\Models\berita;
-use App\Models\Mahasiswa; 
 
 // PERBAIKAN: Hapus 'MustVerifyEmail'
 class User extends Authenticatable
@@ -93,11 +92,6 @@ class User extends Authenticatable
     public function berita()
     {
         return $this->hasMany(berita::class, 'id_user', 'id_user');
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'id_user', 'id_user');
     }
     public function getProfilePhotoUrlAttribute()
     {

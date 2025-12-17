@@ -165,11 +165,15 @@ class AlternatifController extends KeputusanDetailController
             // untuk setiap kriteria yang ada di keputusan ini. Ini memudahkan proses input nilai nantinya.
             $kriteriaList = kriteria::where('id_keputusan', $this->idKeputusan)->get();
             foreach ($kriteriaList as $kriteria) {
-                penilaian::create([
-                    'id_alternatif' => $alternatifBaru->id_alternatif,
-                    'id_kriteria' => $kriteria->id_kriteria,
-                    'nilai' => 0, 
-                ]);
+                penilaian::firstOrCreate(
+                    [
+                        'id_alternatif' => $alternatifBaru->id_alternatif,
+                        'id_kriteria' => $kriteria->id_kriteria
+                    ],
+                    [
+                        'nilai' => 0
+                    ]
+                );
             }
             $countBerhasil++;
         }

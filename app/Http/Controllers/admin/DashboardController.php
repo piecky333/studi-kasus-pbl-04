@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\berita; 
 use App\Models\laporan\pengaduan; 
 use Illuminate\Support\Facades\DB; 
+use App\Models\admin\Datamahasiswa; 
 
 /**
  * Class DashboardController
@@ -37,7 +38,7 @@ class DashboardController extends Controller
         
         // 1. MENGAMBIL DATA STATISTIK UTAMA (CARD)
         // Menghitung jumlah record untuk ditampilkan di kartu ringkasan dashboard.
-        $totalUser = User::where('role', 'user')->count(); // Mahasiswa
+        $totalUser = Datamahasiswa::count(); 
         $totalPengurus = User::where('role', 'pengurus')->count();
         $totalBerita = berita::count();
         $totalPengaduan = pengaduan::count(); 

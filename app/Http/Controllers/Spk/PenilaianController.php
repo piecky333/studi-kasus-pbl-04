@@ -173,18 +173,24 @@ class PenilaianController extends KeputusanDetailController
     public function syncScores()
     {
         $kriteriaList = kriteria::where('id_keputusan', $this->idKeputusan)->get();
-        $alternatifList = alternatif::where('id_keputusan', $this->idKeputusan)->get();
+        // Eager load mahasiswa to prevent N+1 and ensure we have the data
+        $alternatifList = alternatif::where('id_keputusan', $this->idKeputusan)->with('mahasiswa')->get();
         $countUpdated = 0;
 
         foreach ($alternatifList as $alternatif) {
-            // Find linked mahasiswa
-            $mahasiswa = \App\Models\admin\Datamahasiswa::where('nim', $alternatif->kode_alternatif)->first();
-            if (!$mahasiswa) {
-                $mahasiswa = \App\Models\admin\Datamahasiswa::where('nama', $alternatif->nama_alternatif)->first();
+            // Use the relationship directly
+            $mahasiswa = $alternatif->mahasiswa;
+
+            if (!$mahasiswa) { 
+                // Fallback attempt: try finding by ID or Name if relation returned null (which shouldn't happen with FKs but safety first)
+                if ($alternatif->id_mahasiswa) {
+                    $mahasiswa = \App\Models\admin\Datamahasiswa::find($alternatif->id_mahasiswa);
+                }
+                if (!$mahasiswa) continue; 
             }
-            if (!$mahasiswa) { continue; }
 
             // Loading Prestasi (Optimized)
+            // Use the relation on the mahasiswa model
             $prestasiValid = $mahasiswa->prestasi()->where('status_validasi', 'disetujui')->get();
 
             foreach ($kriteriaList as $kriteria) {
@@ -194,20 +200,27 @@ class PenilaianController extends KeputusanDetailController
                 $shouldSync = false;
 
                 // 1. Logika Mahasiswa (IPK, Semester, dll)
-                if ($source === 'Mahasiswa' && $kriteria->atribut_sumber) {
+                if ($source === 'Mahasiswa') {
+                    // Check explicit attribute if set, otherwise guess based on name
                     $attr = $kriteria->atribut_sumber;
-                    $value = $mahasiswa->$attr ?? 0;
-                    $shouldSync = true;
+                    
+                    if (str_contains($kriteriaName, 'ipk')) {
+                        $value = $mahasiswa->ipk ?? 0;
+                        $shouldSync = true;
+                    } elseif ($attr && isset($mahasiswa->$attr)) {
+                         $value = $mahasiswa->$attr;
+                         $shouldSync = true;
+                    }
                 }
                 
                 // 2. Logika Prestasi (Complex Calculation)
                 elseif ($source === 'Prestasi') {
                     // Cek nama kriteria untuk menentukan jenis perhitungan
                     if (str_contains($kriteriaName, 'tingkat') || str_contains($kriteriaName, 'level')) {
-                         $value = \App\Services\SpkCalculator::calculateTingkatScore($prestasiValid);
+                         $value = \App\Services\SpkCalculator::calculateTingkatScore($prestasiValid, $kriteria);
                     } 
                     elseif (str_contains($kriteriaName, 'juara') || str_contains($kriteriaName, 'rank') || str_contains($kriteriaName, 'medali')) {
-                         $value = \App\Services\SpkCalculator::calculateJuaraScore($prestasiValid);
+                         $value = \App\Services\SpkCalculator::calculateJuaraScore($prestasiValid, $kriteria);
                     }
                     elseif (str_contains($kriteriaName, 'jumlah') || str_contains($kriteriaName, 'total')) {
                          $value = $prestasiValid->count();

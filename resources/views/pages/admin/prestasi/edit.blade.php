@@ -62,7 +62,7 @@
                         </div>
                     </div>
 
-                    <!-- Nama Kegiatan -->
+                    {{-- Nama Kegiatan --}}
                     <div class="sm:col-span-6">
                         <label for="nama_kegiatan" class="block text-sm font-medium text-gray-700">
                             Nama Kegiatan <span class="text-red-500">*</span>
@@ -71,6 +71,19 @@
                             <input type="text" name="nama_kegiatan" id="nama_kegiatan" value="{{ old('nama_kegiatan', $prestasi->nama_kegiatan) }}" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('nama_kegiatan') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-2 py-3" required>
                         </div>
                         @error('nama_kegiatan')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Juara --}}
+                    <div class="sm:col-span-6">
+                        <label for="juara" class="block text-sm font-medium text-gray-700">
+                            Juara/Peringkat <span class="text-red-500">*</span>
+                        </label>
+                        <div class="mt-1">
+                            <input type="text" name="juara" id="juara" value="{{ old('juara', $prestasi->juara) }}" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('juara') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-2 py-3" placeholder="Contoh: Juara 1" required>
+                        </div>
+                        @error('juara')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>

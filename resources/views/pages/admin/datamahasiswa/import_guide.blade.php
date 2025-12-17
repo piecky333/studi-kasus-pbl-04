@@ -113,6 +113,10 @@
                             <td class="px-4 py-2">Nasional, Provinsi, Kabupaten, Internal</td>
                         </tr>
                         <tr>
+                            <td class="px-4 py-2 font-mono text-blue-700">Juara</td>
+                            <td class="px-4 py-2">Juara 1, Juara 2, Juara 3, Harapan 1, dll</td>
+                        </tr>
+                        <tr>
                             <td class="px-4 py-2 font-mono text-blue-700">Tahun</td>
                             <td class="px-4 py-2">Contoh: 2024</td>
                         </tr>
