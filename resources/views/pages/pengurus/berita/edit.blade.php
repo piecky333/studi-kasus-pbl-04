@@ -74,22 +74,6 @@
                         @enderror
                     </div>
 
-                    {{-- Kategori Berita --}}
-                    <div class="sm:col-span-3">
-                        <label for="kategori" class="block text-sm font-medium text-gray-700">
-                            Kategori Berita <span class="text-red-500">*</span>
-                        </label>
-                        <div class="mt-1">
-                            <select id="kategori" name="kategori" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('kategori') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2" required>
-                                <option value="">-- Pilih Kategori --</option>
-                                <option value="kegiatan" {{ old('kategori', $berita->kategori) == 'kegiatan' ? 'selected' : '' }}>Kegiatan HIMA-TI</option>
-                                <option value="prestasi" {{ old('kategori', $berita->kategori) == 'prestasi' ? 'selected' : '' }}>Prestasi Mahasiswa</option>
-                            </select>
-                        </div>
-                        @error('kategori')
-                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
 
                     {{-- Gambar Berita --}}
                     <div class="sm:col-span-6">

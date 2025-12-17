@@ -60,9 +60,5 @@ class UserSeeder extends Seeder
             'password' => Hash::make('password_user'),
             'role' => 'user',
         ]);
-
-        User::factory()->count(10)->pengurus()->create();
-
-        User::factory()->count(30)->create();
     }
 }

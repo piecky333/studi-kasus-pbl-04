@@ -90,7 +90,7 @@ class MahasiswaImport
                 $nim = $getValue($row, ['nim', 'nomor induk mahasiswa']);
                 $nama = $getValue($row, ['nama', 'nama mahasiswa', 'nama lengkap']);
                 $email = $getValue($row, ['email', 'e-mail', 'alamat email']);
-                $semester = $getValue($row, ['semester']) ?? 1;
+                $semester = $getValue($row, ['semester']);
                 $ipk = $getValue($row, ['ipk', 'indeks prestasi', 'grade']); 
                 
                 // Validasi IPK: Pastikan rentang 0.00 - 4.00
@@ -181,17 +181,28 @@ class MahasiswaImport
 
                 // [LOGIC] Cari atau Buat Profil Datamahasiswa (Update jika ada)
                 // Menghubungkan User (akun login) dengan data akademik mahasiswa
-                $mahasiswa = Datamahasiswa::updateOrCreate(
-                    ['id_user' => $user->id_user], // Key Check
-                    [
-                        'nim' => $nim,
-                        'nama' => $nama,
-                        'email' => $email,
-                        'semester' => $semester,
-                        'ipk' => $ipk,
-                        'id_admin' => $this->idAdmin, 
-                    ]
-                );
+                // [FIX] Gunakan logic firstOrNew agar tidak menimpa data existing dengan NULL
+                $mahasiswa = Datamahasiswa::firstOrNew(['id_user' => $user->id_user]);
+                
+                $mahasiswa->nim = $nim;
+                $mahasiswa->nama = $nama;
+                $mahasiswa->email = $email;
+                $mahasiswa->id_admin = $this->idAdmin;
+
+                // Hanya update IPK jika ada di excel
+                if (!is_null($ipk)) {
+                    $mahasiswa->ipk = $ipk;
+                }
+                
+                // Hanya update Semester jika ada di excel
+                if (!is_null($semester)) {
+                    $mahasiswa->semester = $semester;
+                } elseif (!$mahasiswa->exists) {
+                    // Default Semester 1 jika data BARU dan tidak ada kolom semester
+                    $mahasiswa->semester = 1;
+                }
+                
+                $mahasiswa->save();
                 
                 if ($mahasiswa->wasRecentlyCreated) {
                     Log::info("Mahasiswa profile created for User ID: " . $user->id_user);

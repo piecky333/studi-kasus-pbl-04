@@ -83,4 +83,31 @@ class SpkCalculator
         }
         return $score;
     }
+    /**
+     * Menghitung skor Jenis Prestasi berdasarkan Sub Kriteria.
+     *
+     * @param \Illuminate\Support\Collection $prestasiList
+     * @param Kriteria $kriteriaObj
+     * @return float|int
+     */
+    public static function calculateJenisScore($prestasiList, $kriteriaObj)
+    {
+        $subKriteriaList = SubKriteria::where('id_kriteria', $kriteriaObj->id_kriteria)->get();
+
+        $score = 0;
+        foreach ($prestasiList as $p) {
+            $jenis = $p->jenis_prestasi; // e.g., "Akademik", "Non-Akademik"
+            
+            $match = $subKriteriaList->first(function ($sub) use ($jenis) {
+                return strcasecmp($sub->nama_subkriteria, $jenis) === 0;
+            });
+
+            if ($match) {
+                $score += $match->nilai;
+            } else {
+                $score += 1; // Default
+            }
+        }
+        return $score;
+    }
 }

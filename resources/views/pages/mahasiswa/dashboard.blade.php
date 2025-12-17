@@ -10,53 +10,62 @@
 
             {{-- Alert Sanksi (Specific to Mahasiswa) --}}
             @if(isset($sanksi) && $sanksi->count() > 0)
-                <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 shadow-sm rounded-r-lg">
-                    <div class="flex">
-                        <div class="flex-shrink-0">
-                            {{-- Heroicon: Exclamation Triangle --}}
-                            <svg class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                            </svg>
-                        </div>
-                        <div class="ml-3 w-full">
-                            <h3 class="text-lg font-medium text-red-800">Peringatan: Anda Memiliki Catatan Sanksi</h3>
-                            <div class="mt-4 overflow-x-auto">
-                                <table class="min-w-full divide-y divide-red-200">
-                                    <thead class="bg-red-100">
-                                        <tr>
-                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-red-700 uppercase tracking-wider">Tanggal</th>
-                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-red-700 uppercase tracking-wider">Jenis Pelanggaran</th>
-                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-red-700 uppercase tracking-wider">Hukuman</th>
-                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-red-700 uppercase tracking-wider">Bukti</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="bg-white divide-y divide-red-100">
-                                        @foreach($sanksi as $item)
-                                            <tr>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                    {{ \Carbon\Carbon::parse($item->tanggal_sanksi)->format('d M Y') }}
-                                                </td>
-                                                <td class="px-6 py-4 text-sm text-gray-900">
-                                                    {{ $item->jenis_sanksi }} - {{ $item->keterangan }}
-                                                </td>
-                                                <td class="px-6 py-4 text-sm text-gray-900 font-semibold text-red-600">
-                                                    {{ $item->jenis_hukuman }}
-                                                </td>
-                                                <td class="px-6 py-4">
-                                                    @if($item->file_pendukung)
-                                                        <a href="{{ asset('storage/' . $item->file_pendukung) }}" target="_blank" class="text-blue-600 hover:underline text-sm">
-                                                            Lihat Bukti
-                                                        </a>
-                                                    @else
-                                                        <span class="text-gray-400 text-xs">-</span>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                <div class="mb-8 rounded-xl border border-red-200 bg-white shadow-sm overflow-hidden">
+                    <div class="bg-red-50 px-6 py-4 border-b border-red-100 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-red-100 text-red-600 p-2 rounded-lg">
+                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900">Catatan Sanksi Akademik</h3>
+                                <p class="text-sm text-red-600 font-medium">Harap perhatikan catatan pelanggaran di bawah ini</p>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="p-0">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-gray-100 bg-gray-50/50">
+                                    <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Tanggal</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Jenis Pelanggaran</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Hukuman</th>
+                                    <th class="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Bukti</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                @foreach($sanksi as $item)
+                                    <tr class="hover:bg-red-50/30 transition-colors duration-150">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 font-medium">
+                                            {{ \Carbon\Carbon::parse($item->tanggal_sanksi)->format('d M Y') }}
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-800">
+                                            <span class="block font-semibold">{{ $item->jenis_sanksi }}</span>
+                                            <span class="text-gray-500 text-xs mt-0.5 block">{{ Str::limit($item->keterangan, 60) }}</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                {{ $item->jenis_hukuman }}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-right">
+                                            @if($item->file_pendukung)
+                                                <a href="{{ asset('storage/' . $item->file_pendukung) }}" 
+                                                   target="_blank" 
+                                                   class="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors">
+                                                    <span>Lihat Bukti</span>
+                                                    <svg class="ml-1.5 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                                </a>
+                                            @else
+                                                <span class="text-gray-400 text-xs italic">Tidak ada lampiran</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             @endif

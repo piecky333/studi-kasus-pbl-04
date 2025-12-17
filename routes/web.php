@@ -118,6 +118,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 
     // Prestasi
     Route::get('prestasi/cari-mahasiswa', [AdminPrestasiController::class, 'cariMahasiswa'])->name('prestasi.cariMahasiswa');
+    Route::put('prestasi/{id}/verifikasi', [AdminPrestasiController::class, 'verifikasi'])->name('prestasi.verifikasi');
+    Route::put('prestasi/{id}/tolak', [AdminPrestasiController::class, 'tolak'])->name('prestasi.tolak');
     Route::resource('prestasi', AdminPrestasiController::class);
 
     // Sanksi
@@ -252,6 +254,9 @@ Route::prefix('pengurus')->name('pengurus.')
         Route::resource('pengurus', \App\Http\Controllers\Pengurus\PengurusController::class);
         Route::resource('keuangan', \App\Http\Controllers\Pengurus\KeuanganController::class);
         Route::resource('berita', \App\Http\Controllers\Pengurus\BeritaController::class);
+        // Prestasi
+        Route::get('prestasi/cari-mahasiswa', [\App\Http\Controllers\Pengurus\PrestasiController::class, 'cariMahasiswa'])->name('prestasi.cariMahasiswa');
+        Route::resource('prestasi', \App\Http\Controllers\Pengurus\PrestasiController::class);
     });
 
 
@@ -271,6 +276,9 @@ Route::prefix('mahasiswa')->name('mahasiswa.')
         // Reuse UserPengaduanController for Mahasiswa
         Route::resource('pengaduan', UserPengaduanController::class);
         Route::post('pengaduan/{id}/tanggapan', [UserPengaduanController::class, 'storeTanggapan'])->name('pengaduan.tanggapan');
+
+        // CRUD Prestasi (Mahasiswa Submit Sendiri)
+        Route::resource('prestasi', \App\Http\Controllers\mahasiswa\PrestasiController::class);
     });
 
 

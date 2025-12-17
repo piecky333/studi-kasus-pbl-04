@@ -222,6 +222,9 @@ class PenilaianController extends KeputusanDetailController
                     elseif (str_contains($kriteriaName, 'juara') || str_contains($kriteriaName, 'rank') || str_contains($kriteriaName, 'medali')) {
                          $value = \App\Services\SpkCalculator::calculateJuaraScore($prestasiValid, $kriteria);
                     }
+                    elseif (str_contains($kriteriaName, 'jenis')) {
+                         $value = \App\Services\SpkCalculator::calculateJenisScore($prestasiValid, $kriteria);
+                    }
                     elseif (str_contains($kriteriaName, 'jumlah') || str_contains($kriteriaName, 'total')) {
                          $value = $prestasiValid->count();
                     } else {

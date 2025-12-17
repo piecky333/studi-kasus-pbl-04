@@ -63,15 +63,17 @@
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 @auth
                     @php
-                        $dashboardRoute = 'home';
-                        if (Auth::user()->role === 'admin')
+                        $dashboardRoute = 'home'; // Default fallback
+                        $userRole = Auth::user()->role;
+                        
+                        if ($userRole === 'admin')
                             $dashboardRoute = 'admin.dashboard';
-                        elseif (Auth::user()->role === 'pengurus')
+                        elseif ($userRole === 'pengurus')
                             $dashboardRoute = 'pengurus.dashboard';
-                        elseif (Auth::user()->role === 'user')
-                            $dashboardRoute = 'user.dashboard';
-                        elseif (Auth::user()->role === 'mahasiswa')
+                        elseif ($userRole === 'mahasiswa')
                             $dashboardRoute = 'mahasiswa.dashboard';
+                        elseif ($userRole === 'user')
+                            $dashboardRoute = 'user.dashboard';
                     @endphp
                     <a href="{{ route($dashboardRoute) }}"
                         class="inline-flex items-center px-4 py-2 bg-yellow-400 border border-transparent rounded-md font-semibold text-xs text-blue-900 uppercase tracking-widest hover:bg-yellow-300 focus:bg-yellow-300 active:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition ease-in-out duration-150">
@@ -141,15 +143,17 @@
             <div class="px-4">
                 @auth
                     @php
-                        $dashboardRoute = 'home';
-                        if (Auth::user()->role === 'admin')
+                        $dashboardRoute = 'home'; // Default fallback
+                        $userRole = Auth::user()->role;
+
+                        if ($userRole === 'admin')
                             $dashboardRoute = 'admin.dashboard';
-                        elseif (Auth::user()->role === 'pengurus')
+                        elseif ($userRole === 'pengurus')
                             $dashboardRoute = 'pengurus.dashboard';
-                        elseif (Auth::user()->role === 'user')
-                            $dashboardRoute = 'user.dashboard';
-                        elseif (Auth::user()->role === 'mahasiswa')
+                        elseif ($userRole === 'mahasiswa')
                             $dashboardRoute = 'mahasiswa.dashboard';
+                        elseif ($userRole === 'user')
+                            $dashboardRoute = 'user.dashboard';
                     @endphp
                     <a href="{{ route($dashboardRoute) }}"
                         class="block w-full text-left px-3 py-2 text-base font-medium text-yellow-300 bg-blue-800 rounded-md">Dashboard</a>

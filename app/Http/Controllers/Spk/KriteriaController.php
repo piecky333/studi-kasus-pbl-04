@@ -115,7 +115,14 @@ class KriteriaController extends KeputusanDetailController
                     return $query->where('id_keputusan', $this->idKeputusan);
                 }),
             ],
-            'nama_kriteria' => 'required|string|max:255',
+            'nama_kriteria' => [
+                'required',
+                'string',
+                'max:255',
+                \Illuminate\Validation\Rule::unique('kriteria')->where(function ($query) {
+                    return $query->where('id_keputusan', $this->idKeputusan);
+                }),
+            ],
             'jenis_kriteria' => 'required|in:Benefit,Cost',
             'bobot_kriteria' => 'required|numeric|between:0,1',
             'sumber_data' => 'required|in:Manual,Prestasi,Sanksi,Pengaduan,Mahasiswa',
@@ -123,6 +130,7 @@ class KriteriaController extends KeputusanDetailController
             'kode_kriteria.unique' => 'Kode kriteria sudah digunakan dalam keputusan ini.',
             'kode_kriteria.required' => 'Kode kriteria wajib diisi.',
             'kode_kriteria.max' => 'Kode kriteria maksimal 10 karakter.',
+            'nama_kriteria.unique' => 'Nama kriteria sudah digunakan dalam keputusan ini.',
             'nama_kriteria.required' => 'Nama kriteria wajib diisi.',
             'jenis_kriteria.required' => 'Jenis kriteria wajib dipilih.',
             'bobot_kriteria.required' => 'Bobot kriteria wajib diisi.',
@@ -232,7 +240,14 @@ class KriteriaController extends KeputusanDetailController
                     return $query->where('id_keputusan', $this->idKeputusan);
                 }),
             ],
-            'nama_kriteria' => 'required|string|max:255',
+            'nama_kriteria' => [
+                'required',
+                'string',
+                'max:255',
+                \Illuminate\Validation\Rule::unique('kriteria')->where(function ($query) {
+                    return $query->where('id_keputusan', $this->idKeputusan);
+                })->ignore($idKriteria, 'id_kriteria'),
+            ],
             'jenis_kriteria' => 'required|in:Benefit,Cost',
             'bobot_kriteria' => 'required|numeric|between:0,1',
             'sumber_data' => 'required|in:Manual,Prestasi,Sanksi,Pengaduan,Mahasiswa',
@@ -240,6 +255,7 @@ class KriteriaController extends KeputusanDetailController
             'kode_kriteria.unique' => 'Kode kriteria sudah digunakan dalam keputusan ini.',
             'kode_kriteria.required' => 'Kode kriteria wajib diisi.',
             'kode_kriteria.max' => 'Kode kriteria maksimal 10 karakter.',
+            'nama_kriteria.unique' => 'Nama kriteria sudah digunakan dalam keputusan ini.',
             'nama_kriteria.required' => 'Nama kriteria wajib diisi.',
             'jenis_kriteria.required' => 'Jenis kriteria wajib dipilih.',
             'bobot_kriteria.required' => 'Bobot kriteria wajib diisi.',
