@@ -63,12 +63,16 @@
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 @auth
                     @php
-                        $dashboardRoute = 'dashboard';
-                        if (Auth::user()->role === 'admin')
+                        $dashboardRoute = 'home'; // Default fallback
+                        $userRole = Auth::user()->role;
+                        
+                        if ($userRole === 'admin')
                             $dashboardRoute = 'admin.dashboard';
-                        elseif (Auth::user()->role === 'pengurus')
+                        elseif ($userRole === 'pengurus')
                             $dashboardRoute = 'pengurus.dashboard';
-                        elseif (Auth::user()->role === 'user')
+                        elseif ($userRole === 'mahasiswa')
+                            $dashboardRoute = 'mahasiswa.dashboard';
+                        elseif ($userRole === 'user')
                             $dashboardRoute = 'user.dashboard';
                     @endphp
                     <a href="{{ route($dashboardRoute) }}"
@@ -139,12 +143,16 @@
             <div class="px-4">
                 @auth
                     @php
-                        $dashboardRoute = 'dashboard';
-                        if (Auth::user()->role === 'admin')
+                        $dashboardRoute = 'home'; // Default fallback
+                        $userRole = Auth::user()->role;
+
+                        if ($userRole === 'admin')
                             $dashboardRoute = 'admin.dashboard';
-                        elseif (Auth::user()->role === 'pengurus')
+                        elseif ($userRole === 'pengurus')
                             $dashboardRoute = 'pengurus.dashboard';
-                        elseif (Auth::user()->role === 'user')
+                        elseif ($userRole === 'mahasiswa')
+                            $dashboardRoute = 'mahasiswa.dashboard';
+                        elseif ($userRole === 'user')
                             $dashboardRoute = 'user.dashboard';
                     @endphp
                     <a href="{{ route($dashboardRoute) }}"

@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.pengurus')
 
 @section('title', 'Data Prestasi Mahasiswa')
 
@@ -15,7 +15,7 @@
             </p>
         </div>
         <div class="mt-4 flex md:mt-0 md:ml-4">
-            <a href="{{ route('admin.prestasi.create') }}" class="inline-flex items-center px-3 py-2 lg:px-4 lg:py-2 border border-transparent rounded-md shadow-sm text-xs lg:text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <a href="{{ route('pengurus.prestasi.create') }}" class="inline-flex items-center px-3 py-2 lg:px-4 lg:py-2 border border-transparent rounded-md shadow-sm text-xs lg:text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 <i class="fas fa-plus mr-2"></i> Tambah Prestasi
             </a>
         </div>
@@ -27,7 +27,7 @@
             <i class="fas fa-filter text-indigo-600 mr-2"></i>
             <h3 class="text-lg font-medium text-gray-900">Filter & Pencarian Prestasi</h3>
         </div>
-        <form action="{{ route('admin.prestasi.index') }}" method="GET">
+        <form action="{{ route('pengurus.prestasi.index') }}" method="GET">
             <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                 
                 {{-- Cari NIM --}}
@@ -89,7 +89,7 @@
                     <button type="submit" class="w-full inline-flex justify-center items-center px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Cari
                     </button>
-                    <a href="{{ route('admin.prestasi.index') }}" class="w-full inline-flex justify-center items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <a href="{{ route('pengurus.prestasi.index') }}" class="w-full inline-flex justify-center items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Reset
                     </a>
                 </div>
@@ -206,34 +206,18 @@
                                     </td>
                                     <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-center font-medium">
                                         <div class="flex justify-center space-x-1 lg:space-x-2">
-                                            @if($item->status_validasi == 'menunggu')
-                                                <form action="{{ route('admin.prestasi.verifikasi', $item->id_prestasi) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <button type="submit" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-green-100 text-green-600 hover:bg-green-600 hover:text-white" title="Verifikasi">
-                                                        <i class="fas fa-check"></i>
-                                                    </button>
-                                                </form>
-                                                <form action="{{ route('admin.prestasi.tolak', $item->id_prestasi) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <button type="submit" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-red-100 text-red-600 hover:bg-red-600 hover:text-white" title="Tolak">
-                                                        <i class="fas fa-times"></i>
-                                                    </button>
-                                                </form>
-                                            @endif
                                             {{-- View --}}
-                                            <a href="{{ route('admin.prestasi.show', $item->id_prestasi) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white" title="Detail">
+                                            <a href="{{ route('pengurus.prestasi.show', $item->id_prestasi) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white" title="Detail">
                                                 <i class="fas fa-eye mr-1 lg:mr-2"></i> Detail
                                             </a>
                                             
                                             {{-- Edit --}}
-                                            <a href="{{ route('admin.prestasi.edit', $item->id_prestasi) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" title="Edit">
+                                            <a href="{{ route('pengurus.prestasi.edit', $item->id_prestasi) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" title="Edit">
                                                 <i class="fas fa-pencil-alt mr-1 lg:mr-2"></i> Edit
                                             </a>
                                             
                                             {{-- Delete --}}
-                                            <form action="{{ route('admin.prestasi.destroy', $item->id_prestasi) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')" class="inline">
+                                            <form action="{{ route('pengurus.prestasi.destroy', $item->id_prestasi) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')" class="inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-red-100 text-red-600 hover:bg-red-600 hover:text-white" title="Hapus">
