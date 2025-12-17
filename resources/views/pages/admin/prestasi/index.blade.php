@@ -146,6 +146,9 @@
                                     Tingkat
                                 </th>
                                 <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
+                                    Juara
+                                </th>
+                                <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
                                     Tahun
                                 </th>
                                 <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-center font-medium uppercase tracking-wider">
@@ -199,6 +202,9 @@
                                         <span class="px-2 inline-flex text-[10px] lg:text-xs leading-4 font-semibold rounded-full {{ $badgeColor }}">
                                             {{ ucfirst($item->tingkat_prestasi) }}
                                         </span>
+                                    </td>
+                                    <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-gray-500">
+                                        {{ $item->juara ?? '-' }}
                                     </td>
                                     <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-gray-500">
                                         {{ $item->tahun }}

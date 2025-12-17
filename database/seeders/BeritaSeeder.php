@@ -88,36 +88,36 @@ class BeritaSeeder extends Seeder
         $this->command->info('Membuat 3 data prestasi...');
         Berita::create([
             'id_user' => $pengurus->id_user,
-            'judul_berita' => 'Prestasi',   
+            'judul_berita' => 'Srikandi Politala! Feby Widia Mecca Raih Juara 1 Putri Anggrek Tanah Laut 2025',   
             'kategori' => 'prestasi',
             'status' => 'verified',
             'id_verifikator' => $admin->id_user,
-            'isi_berita' => '<p><strong>Prestasi Membanggakan</strong> – Mahasiswa Politeknik Negeri Tanah Laut kembali menorehkan prestasi gemilang di kancah nasional. Dalam ajang kompetisi bergengsi tahun ini, tim perwakilan Politala berhasil membawa pulang gelar juara, membuktikan kualitas dan daya saing mahasiswa vokasi.</p><br><p>Prestasi ini tidak lepas dari kerja keras mahasiswa serta bimbingan intensif dari para dosen pendamping. Kompetisi yang diikuti oleh puluhan perguruan tinggi dari seluruh Indonesia ini menjadi ajang pembuktian kemampuan teknis dan soft skill mahasiswa.</p><br><p>Direktur Politala memberikan apresiasi setinggi-tingginya atas pencapaian ini. <em>“Kami sangat bangga dengan capaian mahasiswa kami. Ini adalah bukti bahwa pendidikan vokasi di Politala mampu menghasilkan SDM yang kompeten dan siap bersaing,”</em> ungkap beliau.</p><br><p>Semoga prestasi ini dapat menjadi motivasi bagi mahasiswa lain untuk terus berkarya dan berinovasi demi kemajuan bangsa dan almamater tercinta.</p>',
-            'gambar_berita' => 'berita/4.jpg',
+            'isi_berita' => '<p><strong>Prestasi Membanggakan</strong> – Selamat kepada <strong>Feby Widia Mecca</strong>, mahasiswi Program Studi D4 Teknologi Rekayasa Komputer Jaringan (TRKJJ) Politeknik Negeri Tanah Laut yang telah berhasil meraih gelar <strong>Juara 1 Putri Anggrek Tanah Laut Tahun 2025</strong>.</p><br><p>Pencapaian luar biasa ini tidak hanya menjadi kebanggaan bagi program studi, tetapi juga mengharumkan nama besar kampus Politala di kancah daerah. Prestasi ini membuktikan bahwa mahasiswa Politala tidak hanya unggul di bidang akademik dan teknologi, tetapi juga memiliki talenta luar biasa di bidang seni dan kebudayaan.</p><br><p>Direktur Politala menyampaikan apresiasi mendalam atas dedikasi dan kerja keras Feby. <em>“Semoga pencapaian ini menjadi inspirasi bagi mahasiswa lainnya untuk terus berprestasi, mengembangkan potensi diri, dan mengangkat nama baik kampus dalam setiap langkah. Teruslah bersinar dan berkarya untuk Tanah Laut dan Indonesia!”</em> ujar beliau.</p>',
+            'gambar_berita' => 'berita/4.jpeg',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
         Berita::create([
             'id_user' => $pengurus->id_user,
-            'judul_berita' => 'Prestasi',   
+            'judul_berita' => 'Borong Medali! Alfin Sukses Raih 2 Emas dan 2 Perunggu di Cabor Bridge PORPROV XII Kalsel 2025',   
             'kategori' => 'prestasi',
             'status' => 'verified',
             'id_verifikator' => $admin->id_user,
-            'isi_berita' => '<p><strong>Prestasi Membanggakan</strong> – Mahasiswa Politeknik Negeri Tanah Laut kembali menorehkan prestasi gemilang di kancah nasional. Dalam ajang kompetisi bergengsi tahun ini, tim perwakilan Politala berhasil membawa pulang gelar juara, membuktikan kualitas dan daya saing mahasiswa vokasi.</p><br><p>Prestasi ini tidak lepas dari kerja keras mahasiswa serta bimbingan intensif dari para dosen pendamping. Kompetisi yang diikuti oleh puluhan perguruan tinggi dari seluruh Indonesia ini menjadi ajang pembuktian kemampuan teknis dan soft skill mahasiswa.</p><br><p>Direktur Politala memberikan apresiasi setinggi-tingginya atas pencapaian ini. <em>“Kami sangat bangga dengan capaian mahasiswa kami. Ini adalah bukti bahwa pendidikan vokasi di Politala mampu menghasilkan SDM yang kompeten dan siap bersaing,”</em> ungkap beliau.</p><br><p>Semoga prestasi ini dapat menjadi motivasi bagi mahasiswa lain untuk terus berkarya dan berinovasi demi kemajuan bangsa dan almamater tercinta.</p>',
-            'gambar_berita' => 'berita/5.jpg',
+            'isi_berita' => '<p><strong>Juara Sejati</strong> – Selamat dan sukses kepada <strong>Alfin</strong>, mahasiswa Program Studi D3 Teknologi Informasi Politala, atas pencapaian gemilang di ajang <strong>Pekan Olahraga Provinsi (PORPROV) XII Kalimantan Selatan 2025</strong> yang diselenggarakan di Kabupaten Tanah Laut.</p><br><p>Pada Cabang Olahraga Bridge, Alfin menunjukkan dominasinya dengan meraih total <strong>4 Medali</strong> sekaligus, yang terdiri dari:</p><br><p>🥇 <strong>2 MEDALI EMAS (JUARA 1)</strong><br>- Kategori Bridge Team Super Mix U-26<br>- Kategori Bridge Team Butler Putra</p><br><p>🥉 <strong>2 MEDALI PERUNGGU (JUARA 3)</strong><br>- Kategori Bridge Pasangan Super Mix U-26<br>- Kategori Bridge Team Putra Open</p><br><p>Prestasi ini merupakan hasil dari ketekunan, strategi yang matang, dan mental juara yang dimiliki Alfin. Politala sangat bangga memiliki mahasiswa yang mampu bersaing dan berprestasi tinggi di tingkat provinsi.</p>',
+            'gambar_berita' => 'berita/5.png',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
         Berita::create([
             'id_user' => $pengurus->id_user,
-            'judul_berita' => 'Prestasi',   
+            'judul_berita' => 'Emas untuk Tanah Laut! Muhammad Alfa Rizi Juara Hapkido di PORPROV XII Kalsel 2025',   
             'kategori' => 'prestasi',
             'status' => 'verified',
             'id_verifikator' => $admin->id_user,
-            'isi_berita' => '<p><strong>Prestasi Membanggakan</strong> – Mahasiswa Politeknik Negeri Tanah Laut kembali menorehkan prestasi gemilang di kancah nasional. Dalam ajang kompetisi bergengsi tahun ini, tim perwakilan Politala berhasil membawa pulang gelar juara, membuktikan kualitas dan daya saing mahasiswa vokasi.</p><br><p>Prestasi ini tidak lepas dari kerja keras mahasiswa serta bimbingan intensif dari para dosen pendamping. Kompetisi yang diikuti oleh puluhan perguruan tinggi dari seluruh Indonesia ini menjadi ajang pembuktian kemampuan teknis dan soft skill mahasiswa.</p><br><p>Direktur Politala memberikan apresiasi setinggi-tingginya atas pencapaian ini. <em>“Kami sangat bangga dengan capaian mahasiswa kami. Ini adalah bukti bahwa pendidikan vokasi di Politala mampu menghasilkan SDM yang kompeten dan siap bersaing,”</em> ungkap beliau.</p><br><p>Semoga prestasi ini dapat menjadi motivasi bagi mahasiswa lain untuk terus berkarya dan berinovasi demi kemajuan bangsa dan almamater tercinta.</p>',
-            'gambar_berita' => 'berita/6.jpg',
+            'isi_berita' => '<p><strong>Kabar Kebanggaan</strong> – Selamat kepada <strong>Muhammad Alfa Rizi</strong>, mahasiswa Program Studi D3 Teknologi Otomotif Politeknik Negeri Tanah Laut, yang berhasil mempersembahkan <strong>Medali Emas</strong> pada ajang bergengsi <strong>PORPROV XII Kalimantan Selatan 2025</strong>.</p><br><p>Bertanding di Cabang Olahraga Hapkido kelas <strong>Under 78 kg Putra</strong>, Alfa Rizi tampil impresif dan berhasil mengalahkan lawan-lawannya hingga menaiki podium tertinggi. Kemenangan ini adalah buah dari latihan keras, disiplin, dan semangat pantang menyerah.</p><br><p><em>“Dedikasi, kerja keras, dan semangat juara telah membuahkan hasil terbaik. Terima kasih Alfa Rizi, karena telah membawa nama baik kampus Politala dan daerah Tanah Laut di kancah olahraga provinsi,”</em> ungkap perwakilan kemahasiswaan Politala.</p>',
+            'gambar_berita' => 'berita/6.png',
             'created_at' => now(),
             'updated_at' => now(),
         ]);

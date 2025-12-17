@@ -216,9 +216,9 @@
                                 <a href="{{ route('prestasi.show', $prestasi->id_berita) }}" class="link-animasi">{{ Str::limit($prestasi->judul_berita, 50) }}</a>
                             </h3>
                             {{-- Deskripsi: Tambahkan 'min-h-[3.75rem]' untuk 3 baris --}}
-                            {{-- <p class="text-gray-600 text-sm mb-4 line-clamp-3 min-h-[3.75rem]"> --}}
-                                {{-- Sepertinya deskripsi prestasi terlewat di kodemu, saya biarkan --}}
-                            {{-- </p> --}}
+                            <p class="text-gray-600 text-sm mb-4 line-clamp-3 min-h-[3.75rem]">
+                                {{ Str::limit(strip_tags($prestasi->isi_berita), 100) }}
+                            </p>
                             <div class="flex items-center text-xs text-gray-400 mt-auto">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor" stroke-width="2">
