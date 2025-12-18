@@ -105,6 +105,9 @@ class SawService
                     $rij = ($xij != 0) ? $min / $xij : 0;
                 }
 
+                // Terapkan pembulatan 2 desimal agar sesuai dengan perhitungan manual/Excel pengguna
+                // Uncomment baris di bawah ini jika ingin hasil sama persis dengan Excel (kurang presisi tapi visual match)
+                // $normalizedMatrix[$altIndex][$kodeKriteria] = round($rij, 2);
                 $normalizedMatrix[$altIndex][$kodeKriteria] = $rij;
             }
         }
@@ -132,6 +135,9 @@ class SawService
                 
                 $finalScore += $rij * $wj;
             }
+
+            // Uncomment baris di bawah ini jika ingin membulatkan skor akhir seperti Excel (4 desimal)
+            // $finalScore = round($finalScore, 4);
 
             $rankingData[] = [
                 'id_alternatif' => $alternatives[$altIndex]['id_alternatif'],

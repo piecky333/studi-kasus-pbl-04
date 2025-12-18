@@ -262,7 +262,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="px-6 py-10 text-center text-gray-500">
+                                    <td colspan="9" class="px-6 py-10 text-center text-gray-500">
                                         <div class="flex flex-col items-center justify-center">
                                             <i class="bi bi-trophy text-4xl mb-3 text-gray-300"></i>
                                             <p class="text-lg font-medium">Belum ada data prestasi.</p>
