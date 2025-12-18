@@ -74,22 +74,15 @@
                         @enderror
                     </div>
 
-                    {{-- Pilih Divisi --}}
+                    {{-- Deskripsi Jabatan --}}
                     <div class="sm:col-span-6">
-                        <label for="id_divisi" class="block text-sm font-medium text-gray-700">
-                            Divisi <span class="text-red-500">*</span>
+                        <label for="deskripsi" class="block text-sm font-medium text-gray-700">
+                            Deskripsi Jabatan <span class="text-gray-400 font-normal">(Opsional)</span>
                         </label>
                         <div class="mt-1">
-                            <select name="id_divisi" id="id_divisi" required class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('id_divisi') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2">
-                                <option value="">-- Pilih Divisi --</option>
-                                @foreach($divisi as $d)
-                                    <option value="{{ $d->id_divisi }}" {{ old('id_divisi', $jabatan->id_divisi) == $d->id_divisi ? 'selected' : '' }}>
-                                        {{ $d->nama_divisi }}
-                                    </option>
-                                @endforeach
-                            </select>
+                            <textarea name="deskripsi" id="deskripsi" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md px-3 py-2">{{ old('deskripsi', $jabatan->deskripsi) }}</textarea>
                         </div>
-                        @error('id_divisi')
+                        @error('deskripsi')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>

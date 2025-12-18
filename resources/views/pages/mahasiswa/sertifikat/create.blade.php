@@ -77,6 +77,25 @@
                             @enderror
                         </div>
 
+                        {{-- Tingkat Prestasi --}}
+                        <div class="sm:col-span-3">
+                            <label for="tingkat_kegiatan" class="block text-sm font-semibold text-gray-700 mb-2">
+                                Tingkat Prestasi <span class="text-red-500">*</span>
+                            </label>
+                            <div class="mt-1">
+                                <select id="tingkat_kegiatan" name="tingkat_kegiatan" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('tingkat_kegiatan') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2" required>
+                                    <option value="">-- Pilih Tingkat --</option>
+                                    <option value="Lokal" {{ old('tingkat_kegiatan') == 'Lokal' ? 'selected' : '' }}>Lokal</option>
+                                    <option value="Provinsi" {{ old('tingkat_kegiatan') == 'Provinsi' ? 'selected' : '' }}>Provinsi</option>
+                                    <option value="Nasional" {{ old('tingkat_kegiatan') == 'Nasional' ? 'selected' : '' }}>Nasional</option>
+                                    <option value="Internasional" {{ old('tingkat_kegiatan') == 'Internasional' ? 'selected' : '' }}>Internasional</option>
+                                </select>
+                            </div>
+                            @error('tingkat_kegiatan')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         {{-- Tanggal Kegiatan --}}
                         <div class="sm:col-span-3">
                             <label for="tanggal_kegiatan" class="block text-sm font-semibold text-gray-700 mb-2">

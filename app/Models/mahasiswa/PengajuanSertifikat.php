@@ -16,6 +16,7 @@ class PengajuanSertifikat extends Model
         'id_user',
         'nama_kegiatan',
         'jenis_kegiatan',
+        'tingkat_kegiatan',
         'tanggal_kegiatan',
         'file_sertifikat',
         'deskripsi',

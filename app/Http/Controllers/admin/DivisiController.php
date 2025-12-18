@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\admin\divisi;
+use App\Models\Admin\Divisi;
 
 /**
  * Class DivisiController

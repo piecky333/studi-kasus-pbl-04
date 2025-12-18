@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             DivisiSeeder::class,
             JabatanSeeder::class,
             TingkatanJuaraSeeder::class,
+            MahasiswaSeeder::class,
         ]);
     }
 }

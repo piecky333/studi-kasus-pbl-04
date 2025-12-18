@@ -30,8 +30,8 @@ class HomeController extends Controller
             ->take(3)
             ->get();
 
-        // Ambil semua divisi.
-        $divisi = Divisi::all();
+        // Ambil 4 divisi saja.
+        $divisi = Divisi::take(4)->get();
 
         // Kirim data ke view.
         return view('pages.public.welcome', compact(
