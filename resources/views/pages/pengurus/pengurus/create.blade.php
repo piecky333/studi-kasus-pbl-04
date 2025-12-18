@@ -182,12 +182,11 @@
                             <select name="id_jabatan" id="id_jabatan" required class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('id_jabatan') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2">
                                 <option value="">-- Pilih Jabatan --</option>
                                 @foreach($jabatan as $j)
-                                    <option value="{{ $j->id_jabatan }}" data-divisi="{{ $j->id_divisi }}" class="jabatan-option hidden">
+                                    <option value="{{ $j->id_jabatan }}" {{ old('id_jabatan') == $j->id_jabatan ? 'selected' : '' }}>
                                         {{ $j->nama_jabatan }}
                                     </option>
                                 @endforeach
                             </select>
-                            <p class="mt-1 text-xs text-gray-500">Pilih Divisi terlebih dahulu untuk melihat pilihan jabatan.</p>
                         </div>
                         @error('id_jabatan')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -212,40 +211,7 @@
 @section('scripts')
 <script>
     $(document).ready(function() {
-        // Dependent Dropdown: Filter Jabatan based on Divisi
-        const jabatanSelect = $('#id_jabatan');
-        const jabatanOptions = jabatanSelect.find('option.jabatan-option');
-
-        $('#id_divisi').on('change', function() {
-            const selectedDivisi = $(this).val();
-            
-            // Reset selection
-            jabatanSelect.val('');
-            
-            if (!selectedDivisi) {
-                jabatanOptions.addClass('hidden');
-                return;
-            }
-
-            jabatanOptions.each(function() {
-                const optionDivisi = $(this).data('divisi');
-                if (optionDivisi == selectedDivisi) {
-                    $(this).removeClass('hidden');
-                } else {
-                    $(this).addClass('hidden');
-                }
-            });
-        });
-
-        // Trigger change on load if old value exists (validation error case)
-        if ($('#id_divisi').val()) {
-            $('#id_divisi').trigger('change');
-            // Restore selected jabatan if exists
-            const oldJabatan = "{{ old('id_jabatan') }}";
-            if(oldJabatan) {
-                jabatanSelect.val(oldJabatan);
-            }
-        }
+        // No dependent dropdown needed
     });
 </script>
 @endsection

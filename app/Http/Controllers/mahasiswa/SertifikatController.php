@@ -52,6 +52,7 @@ class SertifikatController extends Controller
         $request->validate([
             'nama_kegiatan' => 'required|string|max:255',
             'jenis_kegiatan' => 'required|string|max:100', // e.g., Akademik, Non-Akademik
+            'tingkat_kegiatan' => 'required|string|max:100', // Lokal, Provinsi, Nasional, Internasional
             'tanggal_kegiatan' => 'required|date',
             'file_sertifikat' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'deskripsi' => 'nullable|string',
@@ -66,6 +67,7 @@ class SertifikatController extends Controller
             'id_user' => Auth::id(),
             'nama_kegiatan' => $request->nama_kegiatan,
             'jenis_kegiatan' => $request->jenis_kegiatan,
+            'tingkat_kegiatan' => $request->tingkat_kegiatan,
             'tanggal_kegiatan' => $request->tanggal_kegiatan,
             'file_sertifikat' => $path,
             'deskripsi' => $request->deskripsi,

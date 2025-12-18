@@ -35,13 +35,12 @@ class JabatanSeeder extends Seeder
             'Anggota Divisi',
         ];
 
-        foreach ($divisiList as $divisi) {
-            foreach ($jabatanPerDivisi as $namaJabatan) {
-                Jabatan::create([
-                    'id_divisi' => $divisi->id_divisi,
-                    'nama_jabatan' => $namaJabatan . ' ' . $divisi->nama_divisi,
-                ]);
-            }
-        }
+        // foreach ($divisiList as $divisi) {
+        //     foreach ($jabatanPerDivisi as $namaJabatan) {
+        //         Jabatan::create([
+        //             'nama_jabatan' => $namaJabatan . ' ' . $divisi->nama_divisi,
+        //         ]);
+        //     }
+        // }
     }
 }

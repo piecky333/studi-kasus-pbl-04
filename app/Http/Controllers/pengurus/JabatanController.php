@@ -16,7 +16,7 @@ class JabatanController extends Controller
      */
     public function index()
     {
-        $jabatan = Jabatan::with('divisi')->latest()->get();
+        $jabatan = Jabatan::latest()->get();
         return view('pages.pengurus.jabatan.index', compact('jabatan'));
     }
 
@@ -27,8 +27,7 @@ class JabatanController extends Controller
      */
     public function create()
     {
-        $divisi = Divisi::all();
-        return view('pages.pengurus.jabatan.create', compact('divisi'));
+        return view('pages.pengurus.jabatan.create');
     }
 
     /**
@@ -40,8 +39,8 @@ class JabatanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_divisi' => 'required|exists:divisi,id_divisi',
             'nama_jabatan' => 'required|string|max:100',
+            'deskripsi' => 'nullable|string',
         ]);
 
         Jabatan::create($request->all());
@@ -59,8 +58,7 @@ class JabatanController extends Controller
     public function edit($id)
     {
         $jabatan = Jabatan::findOrFail($id);
-        $divisi = Divisi::all();
-        return view('pages.pengurus.jabatan.edit', compact('jabatan', 'divisi'));
+        return view('pages.pengurus.jabatan.edit', compact('jabatan'));
     }
 
     /**
@@ -73,8 +71,8 @@ class JabatanController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'id_divisi' => 'required|exists:divisi,id_divisi',
             'nama_jabatan' => 'required|string|max:100',
+            'deskripsi' => 'nullable|string',
         ]);
 
         $jabatan = Jabatan::findOrFail($id);

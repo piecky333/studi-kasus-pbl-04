@@ -40,7 +40,7 @@
                             Nama Jabatan
                         </th>
                         <th scope="col" class="px-3 py-2 lg:px-6 lg:py-3 text-left text-xs lg:text-sm font-medium text-white uppercase tracking-wider">
-                            Divisi
+                            Deskripsi
                         </th>
                         <th scope="col" class="px-3 py-2 lg:px-6 lg:py-3 text-center text-xs lg:text-sm font-medium text-white uppercase tracking-wider w-48">
                             Aksi
@@ -57,8 +57,8 @@
                             <div class="text-xs lg:text-sm font-medium text-gray-900 whitespace-normal">{{ $j->nama_jabatan }}</div>
                         </td>
                         <td class="px-3 py-2 lg:px-6 lg:py-4">
-                            <span class="px-2 py-1 inline-flex text-[10px] lg:text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                {{ $j->divisi->nama_divisi ?? '-' }}
+                            <span class="text-xs lg:text-sm text-gray-700">
+                                {{ $j->deskripsi ?? '-' }}
                             </span>
                         </td>
                         <td class="px-3 py-2 lg:px-6 lg:py-4 whitespace-nowrap text-center text-xs lg:text-sm font-medium">
