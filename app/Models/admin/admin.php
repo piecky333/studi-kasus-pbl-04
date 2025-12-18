@@ -18,7 +18,7 @@ class Admin extends Model
     protected $fillable = [
         'id_user',
         'nama_admin',
-        'jabatan', 
+        'jabatan_admin', 
     ];
 
     // Relasi ke User

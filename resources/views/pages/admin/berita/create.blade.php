@@ -153,7 +153,16 @@
 </div>
 @endsection
 @section('scripts')
+<script src="https://cdn.ckeditor.com/ckeditor5/35.3.2/classic/ckeditor.js"></script>
 <script>
+    ClassicEditor
+        .create(document.querySelector('#isi_berita'), {
+            toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote'],
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
     document.getElementById('gambar_berita').addEventListener('change', function(e) {
         const file = e.target.files[0];
         const label = document.getElementById('dropzone-label');

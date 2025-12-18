@@ -26,12 +26,19 @@ class UserSeeder extends Seeder
         Schema::enableForeignKeyConstraints();
 
         // 1. Akun Admin
-        User::create([
+        $user = User::create([
             'nama' => 'Admin Sistem',
             'username' => 'admin',
             'email' => 'admin@politala.ac.id',
-            'password' => Hash::make('password_admin'), 
+            'password' => 'password_admin', 
             'role' => 'admin',
+        ]);
+
+        // Create Admin detail record
+        \App\Models\admin\admin::create([
+            'id_user' => $user->id_user,
+            'nama_admin' => 'Admin Sistem',
+            'jabatan_admin' => 'Administrator',
         ]);
 
         // 2. Akun Pengurus
@@ -39,7 +46,7 @@ class UserSeeder extends Seeder
             'nama' => 'Pengurus Ormawa',
             'username' => 'pengurus',
             'email' => 'pengurus@politala.ac.id',
-            'password' => Hash::make('password_pengurus'), 
+            'password' => 'password_pengurus', 
             'role' => 'pengurus',
         ]);
         
@@ -48,7 +55,7 @@ class UserSeeder extends Seeder
             'nama' => 'Mahasiswa Politala',
             'username' => 'mahasiswa',
             'email' => 'mahasiswa@mhs.politala.ac.id',
-            'password' => Hash::make('password_mahasiswa'),
+            'password' => 'password_mahasiswa',
             'role' => 'mahasiswa',
         ]);
 
@@ -57,7 +64,7 @@ class UserSeeder extends Seeder
             'nama' => 'User Umum',
             'username' => 'user',
             'email' => 'user@gmail.com',
-            'password' => Hash::make('password_user'),
+            'password' => 'password_user',
             'role' => 'user',
         ]);
     }

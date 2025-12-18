@@ -98,7 +98,7 @@ class MahasiswaSeeder extends Seeder
                     'nama' => $nama,
                     'username' => $nim, // Use NIM as username
                     'email' => $email,
-                    'password' => \Illuminate\Support\Facades\Hash::make('12345678'),
+                    'password' => '12345678',
                     'role' => 'mahasiswa', // or \App\Models\User::ROLE_MAHASISWA
                 ]);
 
@@ -131,10 +131,10 @@ class MahasiswaSeeder extends Seeder
         
         // Delete existing mahasiswa users to prevent integrity error on 'nim' or 'email' in Users table
         // filtering by the seeded NIM pattern might be safer but 'mahasiswa' role is good proxy.
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        Datamahasiswa::truncate();
-        \App\Models\User::where('role', 'mahasiswa')->delete();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        // DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        // Datamahasiswa::truncate();
+        // \App\Models\User::where('role', 'mahasiswa')->delete();
+        // DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $insertMahasiswa($semester3, 3);
         $insertMahasiswa($semester1, 1);
