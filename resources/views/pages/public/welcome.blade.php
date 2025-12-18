@@ -110,35 +110,45 @@
         </p>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-
             @foreach ($divisi as $index => $div)
-    <div class="bg-white rounded-xl shadow-xl hover:shadow-2xl transition 
-                duration-500 text-center flex flex-col items-center p-6 
-                js-animate group"
-         data-animation="fadeInUp" data-delay="{{ ($index + 1) * 100 }}">
+                <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition duration-500 overflow-hidden flex flex-col items-center text-center group js-animate h-full"
+                    data-animation="fadeInUp" data-delay="{{ ($index + 1) * 100 }}">
 
-        <!-- Foto Divisi -->
-        <div class="mb-4">
-            <img src="{{ asset('storage/' . $div->foto_divisi) }}"
-     alt="{{ $div->nama_divisi }}"
-     class="w-28 h-28 object-cover group-hover:scale-110 group-hover:rotate-2 transition">
+                    <!-- Foto Divisi Wrapper -->
+                    <div class="w-full bg-gray-100 py-6 flex justify-center items-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-blue-600 opacity-0 group-hover:opacity-10 transition duration-500"></div>
+                        
+                        @if($div->foto_divisi)
+                            <img src="{{ asset('storage/' . $div->foto_divisi) }}" alt="{{ $div->nama_divisi }}"
+                                class="w-24 h-24 object-cover rounded-full shadow-md group-hover:scale-110 group-hover:rotate-3 transition duration-500">
+                        @else
+                            <div class="w-24 h-24 flex items-center justify-center bg-gray-200 rounded-full shadow-md text-gray-400">
+                                <i class="bi bi-people-fill text-4xl"></i>
+                            </div>
+                        @endif
+                    </div>
 
-        </div>
+                    <div class="p-6 flex flex-col flex-grow w-full">
+                        <!-- Nama Divisi -->
+                        <h3 class="font-bold text-xl text-gray-900 mb-3 group-hover:text-blue-700 transition duration-300">
+                            {{ $div->nama_divisi }}
+                        </h3>
 
-        <!-- Nama Divisi -->
-        <h3 class="font-bold text-xl text-gray-900 mb-2">
-            {{ $div->nama_divisi }}
-        </h3>
+                        <!-- Isi Deskripsi (Summary) -->
+                        <p class="text-sm text-gray-500 mb-6 line-clamp-3">
+                            {{ Str::limit(strip_tags($div->isi_divisi), 100) }}
+                        </p>
 
-        <!-- Isi Deskripsi -->
-        <p class="text-sm text-gray-500">
-            {{ $div->isi_divisi }}
-        </p>
-
-    </div>
-@endforeach
-
-
+                        <!-- Tombol Selengkapnya -->
+                        <div class="mt-auto">
+                            <a href="{{ route('divisi.show', $div->id_divisi) }}"
+                                class="inline-block px-6 py-2 border border-blue-600 text-blue-600 font-semibold rounded-full hover:bg-blue-600 hover:text-white transition duration-300 transform hover:-translate-y-1 text-sm">
+                                Lihat Detail
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
         </div>
     </div>
 </section>

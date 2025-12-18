@@ -53,7 +53,12 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="text-sm font-medium text-gray-900">{{ $item->nama_kegiatan }}</div>
-                                            <div class="text-xs text-gray-500">{{ $item->jenis_kegiatan }}</div>
+                                            <div class="text-xs text-gray-500">
+                                                {{ $item->jenis_kegiatan }}
+                                                @if($item->tingkat_kegiatan)
+                                                    <div class="mt-1 text-gray-700 font-semibold">Tingkat: {{ $item->tingkat_kegiatan }}</div>
+                                                @endif
+                                            </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             @if($item->status == 'verified')
@@ -71,7 +76,10 @@
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 text-sm text-gray-500">
-                                            {{ $item->keterangan_admin ?? '-' }}
+                                            <div class="text-gray-900">{{ $item->deskripsi ?? '-' }}</div>
+                                            @if($item->keterangan_admin)
+                                                <div class="text-xs text-red-600 mt-1 font-medium">Catatan Admin: {{ $item->keterangan_admin }}</div>
+                                            @endif
                                         </td>
                                     </tr>
                                 @empty

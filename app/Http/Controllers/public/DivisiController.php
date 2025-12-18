@@ -4,7 +4,7 @@ namespace App\Http\Controllers\public;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Admin\divisi;
+use App\Models\Admin\Divisi;
 
 class DivisiController extends Controller
 {
@@ -15,7 +15,7 @@ class DivisiController extends Controller
      */
     public function index()
     {
-        $semuaDivisi = divisi::orderBy('nama_divisi')->get(); 
+        $semuaDivisi = Divisi::orderBy('nama_divisi')->get(); 
 
         return view('pages.public.divisi.index', compact('semuaDivisi'));
     }
@@ -28,7 +28,7 @@ class DivisiController extends Controller
      */
     public function show($slugOrId) 
     {
-        $divisi = divisi::findOrFail($slugOrId);
+        $divisi = Divisi::findOrFail($slugOrId);
 
         return view('pages.public.divisi.show', compact('divisi'));
     }

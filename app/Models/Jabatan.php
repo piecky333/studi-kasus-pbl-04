@@ -12,12 +12,7 @@ class Jabatan extends Model
     protected $table = 'jabatan';
     protected $primaryKey = 'id_jabatan';
     protected $fillable = [
-        'id_divisi',
         'nama_jabatan',
+        'deskripsi',
     ];
-
-    public function divisi()
-    {
-        return $this->belongsTo(\App\Models\admin\Divisi::class, 'id_divisi', 'id_divisi');
-    }
 }
