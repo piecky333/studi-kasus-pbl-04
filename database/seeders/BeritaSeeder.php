@@ -5,7 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Berita;
 use App\Models\User; // Import User model
-use Illuminate\Support\Facades\Storage;     
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File; // Import File facade
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash; // Import Hash if needed (though we might just look up existing)
 
@@ -20,6 +21,25 @@ class BeritaSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         Berita::truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        // --- Logika untuk menyalin gambar asset ke storage ---
+        $sourceDir = database_path('seeders/assets/berita');
+        $destinationDir = storage_path('app/public/berita'); // Sesuaikan dengan config filesystems default (biasanya public disk rootnya storage/app/public)
+
+        if (!File::exists($destinationDir)) {
+            File::makeDirectory($destinationDir, 0755, true);
+        }
+
+        if (File::exists($sourceDir)) {
+            $files = File::files($sourceDir);
+            foreach ($files as $file) {
+                File::copy($file->getPathname(), $destinationDir . '/' . $file->getFilename());
+            }
+            $this->command->info('Gambar berita berhasil disalin dari assets seeder.');
+        } else {
+            $this->command->warn('Direktori assets berita tidak ditemukan: ' . $sourceDir);
+        }
+        // -----------------------------------------------------
 
         // Ambil user admin yang sudah dibuat di UserSeeder (atau buat jika belum ada)
         $admin = User::where('username', 'admin')->first();
