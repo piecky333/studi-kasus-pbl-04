@@ -101,8 +101,8 @@
                                                     $isSubkriteria = isset($subKriteriaMap[$kriteria->id_kriteria]);
                                                 @endphp
 
-                                                @if($isSubkriteria)
-                                                    {{-- Input Dropdown: Jika kriteria memiliki sub-kriteria --}}
+                                                @if($isSubkriteria && $kriteria->sumber_data !== 'Prestasi')
+                                                    {{-- Input Dropdown: Jika kriteria memiliki sub-kriteria DAN bukan dari Prestasi (yg butuh agregasi) --}}
                                                     <select name="{{ $inputName }}"
                                                         class="block w-full py-2 px-1 text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
                                                         <option value="" disabled {{ $nilai == 0 ? 'selected' : '' }}>Pilih Nilai</option>
@@ -113,12 +113,13 @@
                                                         @endforeach
                                                     </select>
                                                 @else
-                                                    {{-- Input Text/Number: Jika kriteria tidak memiliki sub-kriteria (input manual) --}}
+                                                    {{-- Input Text/Number: Jika kriteria manual atau Prestasi (Agregasi) --}}
                                                     <input type="number" name="{{ $inputName }}"
                                                         value="{{ number_format($nilai, 4, '.', '') }}" step="any" min="0"
-                                                        class="block w-full py-1 px-1 text-sm text-center border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                                                        required>
+                                                        class="block w-full py-1 px-1 text-sm text-center border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 {{ $kriteria->sumber_data === 'Prestasi' ? 'bg-gray-100' : '' }}"
+                                                        {{ $kriteria->sumber_data === 'Prestasi' ? 'readonly' : 'required' }}>
                                                 @endif
+
                                             </td>
                                         @endforeach
                                     </tr>
