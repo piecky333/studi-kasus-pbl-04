@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\mahasiswa;
+namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
 use App\Models\Berita;
@@ -47,7 +47,7 @@ class DashboardController extends Controller
         // Jika ditemukan, ambil sanksi yang berelasi dengan ID mahasiswa tersebut.
         $sanksi = collect([]);
         
-        $mahasiswaProfile = \App\Models\Admin\Datamahasiswa::where('email', $user->email)
+        $mahasiswaProfile = \App\Models\Admin\DataMahasiswa::where('email', $user->email)
             ->orWhere('nim', $user->username)
             ->first();
         

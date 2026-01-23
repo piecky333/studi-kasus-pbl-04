@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\admin;
+namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Datamahasiswa extends Model
+class DataMahasiswa extends Model
 {
     use HasFactory;
 
@@ -23,17 +23,17 @@ class Datamahasiswa extends Model
 
     public function prestasi()
     {
-        return $this->hasMany(\App\Models\admin\Prestasi::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->hasMany(\App\Models\Admin\Prestasi::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 
     public function sanksi()
     {
-        return $this->hasMany(\App\Models\admin\Sanksi::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->hasMany(\App\Models\Admin\Sanksi::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 
     public function pengaduan()
     {
-        return $this->hasMany(\App\Models\laporan\Pengaduan::class, 'id_user', 'id_user');
+        return $this->hasMany(\App\Models\Laporan\Pengaduan::class, 'id_user', 'id_user');
     }
 
     public function berita()
@@ -43,6 +43,6 @@ class Datamahasiswa extends Model
 
     public function admin()
     {
-        return $this->belongsTo(\App\Models\admin\Admin::class, 'id_admin', 'id_admin');
+        return $this->belongsTo(\App\Models\Admin\Admin::class, 'id_admin', 'id_admin');
     }
 }

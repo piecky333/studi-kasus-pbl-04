@@ -3,9 +3,9 @@
 namespace App\Imports;
 
 use App\Models\User;
-use App\Models\admin\Datamahasiswa; 
-use App\Models\admin\prestasi; 
-use App\Models\admin\sanksi;  
+use App\Models\Admin\DataMahasiswa; 
+use App\Models\Admin\Prestasi; 
+use App\Models\Admin\Sanksi;  
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -182,7 +182,7 @@ class MahasiswaImport
                 // [LOGIC] Cari atau Buat Profil Datamahasiswa (Update jika ada)
                 // Menghubungkan User (akun login) dengan data akademik mahasiswa
                 // [FIX] Gunakan logic firstOrNew agar tidak menimpa data existing dengan NULL
-                $mahasiswa = Datamahasiswa::firstOrNew(['id_user' => $user->id_user]);
+                $mahasiswa = DataMahasiswa::firstOrNew(['id_user' => $user->id_user]);
                 
                 $mahasiswa->nim = $nim;
                 $mahasiswa->nama = $nama;

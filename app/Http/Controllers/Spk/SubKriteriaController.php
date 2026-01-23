@@ -133,7 +133,7 @@ class SubKriteriaController extends KeputusanDetailController
         return redirect()->route('admin.spk.kriteria.subkriteria.index', [
             'idKeputusan' => $this->idKeputusan,
             'idKriteria' => $this->idKriteria
-        ])->with('success', 'Subkriteria berhasil ditambahkan.');
+        ])->with('success', 'SubKriteria berhasil ditambahkan.');
     }
 
     /**
@@ -193,7 +193,7 @@ class SubKriteriaController extends KeputusanDetailController
         return redirect()->route('admin.spk.kriteria.subkriteria.index', [
             'idKeputusan' => $this->idKeputusan,
             'idKriteria' => $this->idKriteria
-        ])->with('success', 'Subkriteria berhasil diperbarui.');
+        ])->with('success', 'SubKriteria berhasil diperbarui.');
     }
 
     /**
@@ -218,6 +218,6 @@ class SubKriteriaController extends KeputusanDetailController
         return redirect()->route('admin.spk.kriteria.subkriteria.index', [
             'idKeputusan' => $this->idKeputusan,
             'idKriteria' => $this->idKriteria
-        ])->with('success', 'Subkriteria berhasil dihapus.');
+        ])->with('success', 'SubKriteria berhasil dihapus.');
     }
 }

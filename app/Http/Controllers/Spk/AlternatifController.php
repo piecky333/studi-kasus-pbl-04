@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Spk;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Spk\KeputusanDetailController;
 use App\Models\alternatif;
-use App\Models\admin\Datamahasiswa; // Import Model Datamahasiswa
+use App\Models\Admin\DataMahasiswa; // Import Model DataMahasiswa
 use App\Models\kriteria;
 use App\Models\penilaian;
 use App\Models\hasilakhir;
@@ -72,7 +72,7 @@ class AlternatifController extends KeputusanDetailController
      */
     public function create(Request $request)
     {
-        $query = Datamahasiswa::select('id_mahasiswa', 'nim', 'nama', 'semester');
+        $query = DataMahasiswa::select('id_mahasiswa', 'nim', 'nama', 'semester');
 
         // Filter Semester
         if ($request->filled('semester')) {

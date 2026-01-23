@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\user;
+namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\laporan\Pengaduan;
+use App\Models\Laporan\Pengaduan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -136,7 +136,7 @@ class PengaduanController extends Controller
 
         $pengaduan = Auth::user()->pengaduan()->findOrFail($id);
 
-        \App\Models\laporan\Tanggapan::create([
+        \App\Models\Laporan\Tanggapan::create([
             'id_pengaduan' => $id,
             'id_user' => Auth::id(),
             'isi_tanggapan' => $request->isi_tanggapan,

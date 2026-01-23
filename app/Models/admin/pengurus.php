@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\admin;
+namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class pengurus extends Model
+class Pengurus extends Model
 {
     use HasFactory;
 
@@ -19,7 +19,7 @@ class pengurus extends Model
 
     public function divisi()
     {
-        return $this->belongsTo(divisi::class, 'id_divisi', 'id_divisi');
+        return $this->belongsTo(Divisi::class, 'id_divisi', 'id_divisi');
     }
 
     public function jabatan()
@@ -34,6 +34,6 @@ class pengurus extends Model
 
        public function keuangan()
     {
-        return $this->hasMany(keuangan::class, 'id_pengurus', 'id_pengurus');
+        return $this->hasMany(Keuangan::class, 'id_pengurus', 'id_pengurus');
     }
 }

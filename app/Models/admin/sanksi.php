@@ -22,6 +22,6 @@ class Sanksi extends Model
 
     public function mahasiswa()
     {
-        return $this->belongsTo(Datamahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->belongsTo(DataMahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 }

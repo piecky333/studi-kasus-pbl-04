@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\admin\Datamahasiswa;
+use App\Models\admin\DataMahasiswa;
 use App\Models\admin\Prestasi;
 use App\Models\admin\Admin; // Import correct Admin model
 use Illuminate\Support\Facades\DB;
@@ -20,7 +20,7 @@ class FixSpkDataSeeder extends Seeder
         }
 
         // 1. Annisa (IPK 2.77)
-        $annisa = Datamahasiswa::where('ipk', 2.77)->orWhere('nama', 'LIKE', '%Annisa%')->first();
+        $annisa = DataMahasiswa::where('ipk', 2.77)->orWhere('nama', 'LIKE', '%Annisa%')->first();
         if ($annisa) {
             $this->updatePrestasi($annisa, $adminId, [
                 [
@@ -36,7 +36,7 @@ class FixSpkDataSeeder extends Seeder
         }
 
         // 2. Maryana (IPK 3.16)
-        $maryana = Datamahasiswa::where('ipk', 3.16)->orWhere('nama', 'LIKE', '%Maryana%')->first();
+        $maryana = DataMahasiswa::where('ipk', 3.16)->orWhere('nama', 'LIKE', '%Maryana%')->first();
         if ($maryana) {
             $this->updatePrestasi($maryana, $adminId, [
                 [
@@ -60,7 +60,7 @@ class FixSpkDataSeeder extends Seeder
         }
 
         // 3. Siti Nurhaliza (IPK 3.88)
-        $siti = Datamahasiswa::where('ipk', 3.88)->orWhere('nama', 'LIKE', '%Siti Nurhaliza%')->first();
+        $siti = DataMahasiswa::where('ipk', 3.88)->orWhere('nama', 'LIKE', '%Siti Nurhaliza%')->first();
         if ($siti) {
             $this->updatePrestasi($siti, $adminId, [
                 [
@@ -76,7 +76,7 @@ class FixSpkDataSeeder extends Seeder
         }
 
         // 4. Rahmah Sa'adah (IPK 2.60)
-        $rahmah = Datamahasiswa::where('ipk', 2.60)->orWhere('nama', 'LIKE', '%Rahmah%')->first();
+        $rahmah = DataMahasiswa::where('ipk', 2.60)->orWhere('nama', 'LIKE', '%Rahmah%')->first();
         if ($rahmah) {
             $this->updatePrestasi($rahmah, $adminId, [
                 [

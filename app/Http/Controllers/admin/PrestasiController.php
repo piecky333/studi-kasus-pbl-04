@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\admin\Prestasi;
-use App\Models\admin\Datamahasiswa;
+use App\Models\Admin\Prestasi;
+use App\Models\Admin\DataMahasiswa;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -80,7 +80,7 @@ class PrestasiController extends Controller
     public function create()
     {
         // Ambil data mahasiswa untuk dropdown multi-select
-        $mahasiswa = Datamahasiswa::orderBy('nama', 'asc')->get();
+        $mahasiswa = DataMahasiswa::orderBy('nama', 'asc')->get();
         return view('pages.admin.prestasi.create', compact('mahasiswa'));
     }
 

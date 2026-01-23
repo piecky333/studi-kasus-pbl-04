@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Pengurus;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\admin\Prestasi;
-use App\Models\admin\Datamahasiswa;
+use App\Models\Admin\Prestasi;
+use App\Models\Admin\DataMahasiswa;
 use Illuminate\Support\Facades\Auth;
 
 class PrestasiController extends Controller
@@ -59,7 +59,7 @@ class PrestasiController extends Controller
      */
     public function create()
     {
-        $mahasiswa = Datamahasiswa::orderBy('nama', 'asc')->get();
+        $mahasiswa = DataMahasiswa::orderBy('nama', 'asc')->get();
         return view('pages.pengurus.prestasi.create', compact('mahasiswa'));
     }
 

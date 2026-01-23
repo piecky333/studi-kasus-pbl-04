@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\user; 
+namespace App\Http\Controllers\User; 
 
 use App\Http\Controllers\Controller; 
 use App\Models\Berita;
-use App\Models\laporan\pengaduan; 
+use App\Models\Laporan\Pengaduan; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

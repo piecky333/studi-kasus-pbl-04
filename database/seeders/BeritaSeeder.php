@@ -49,7 +49,7 @@ class BeritaSeeder extends Seeder
                 'nama' => 'Admin Sistem',
                 'username' => 'admin',
                 'email' => 'admin@politala.ac.id',
-                'password' => Hash::make('password_admin'), 
+                'password' => 'password_admin', 
                 'role' => 'admin',
             ]);
         }
@@ -61,7 +61,7 @@ class BeritaSeeder extends Seeder
                 'nama' => 'Pengurus Ormawa',
                 'username' => 'pengurus',
                 'email' => 'pengurus@politala.ac.id',
-                'password' => Hash::make('password_pengurus'), 
+                'password' => 'password_pengurus', 
                 'role' => 'pengurus',
             ]);
         }

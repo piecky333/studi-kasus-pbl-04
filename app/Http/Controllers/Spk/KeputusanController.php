@@ -133,7 +133,7 @@ class KeputusanController extends Controller
      * Menggunakan Database Transaction untuk memastikan integritas data.
      * Data yang dihapus meliputi:
      * 1. Penilaian (terkait Kriteria & Alternatif)
-     * 2. Subkriteria
+     * 2. SubKriteria
      * 3. Hasil Akhir
      * 4. Kriteria
      * 5. Alternatif
@@ -159,7 +159,7 @@ class KeputusanController extends Controller
             if (!empty($kriteriaIds)) {
                 // Hapus Penilaian yang terkait dengan Kriteria
                 penilaian::whereIn('id_kriteria', $kriteriaIds)->delete();
-                // Hapus Subkriteria yang terkait dengan Kriteria
+                // Hapus SubKriteria yang terkait dengan Kriteria
                 subkriteria::whereIn('id_kriteria', $kriteriaIds)->delete();
             }
             

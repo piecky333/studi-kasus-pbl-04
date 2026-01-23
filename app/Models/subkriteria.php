@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo; // Tambahkan ini
  * Menyimpan detail skala penilaian bertingkat (misalnya, 
  * 'Sangat Baik' = 5) yang terkait dengan Kriteria tertentu.
  */
-class Subkriteria extends Model 
+class SubKriteria extends Model 
 {
     use HasFactory;
 
@@ -40,6 +40,6 @@ class Subkriteria extends Model
      */
     public function keputusan(): BelongsTo // Tambahkan relasi ke Keputusan
     {
-        return $this->belongsTo(spkkeputusan::class, 'id_keputusan');
+        return $this->belongsTo(SpkKeputusan::class, 'id_keputusan');
     }
 }

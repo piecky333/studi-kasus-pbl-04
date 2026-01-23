@@ -3,7 +3,7 @@
 namespace Database\Factories\admin;
 
 use App\Models\admin\sanksi;
-use App\Models\admin\Datamahasiswa;
+use App\Models\admin\DataMahasiswa;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -26,7 +26,7 @@ class SanksiFactory extends Factory
     public function definition(): array
     {
         return [
-            'id_mahasiswa' => Datamahasiswa::factory(),
+            'id_mahasiswa' => DataMahasiswa::factory(),
             'tanggal_sanksi' => $this->faker->date(),
             'jenis_sanksi' => $this->faker->randomElement(['Teguran Lisan', 'Teguran Tertulis', 'Skorsing', 'Drop Out']),
         ];

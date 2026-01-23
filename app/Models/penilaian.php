@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * Model untuk tabel penilaian.
  * Ini adalah Matriks Keputusan (Xij), menyimpan nilai mentah setiap alternatif terhadap setiap kriteria.
  */
-class penilaian extends Model
+class Penilaian extends Model
 {
     use HasFactory;
 
@@ -26,12 +26,12 @@ class penilaian extends Model
     // Relasi Many-to-One: Penilaian merujuk ke Kriteria
     public function kriteria()
     {
-        return $this->belongsTo(kriteria::class, 'id_kriteria');
+        return $this->belongsTo(Kriteria::class, 'id_kriteria');
     }
 
     // Relasi Many-to-One: Penilaian merujuk ke Alternatif
     public function alternatif()
     {
-        return $this->belongsTo(alternatif::class, 'id_alternatif');
+        return $this->belongsTo(Alternatif::class, 'id_alternatif');
     }
 }

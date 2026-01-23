@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\spkkeputusan; 
-use App\Models\alternatif; 
-use App\Models\kriteria; 
-use App\Models\penilaian; 
+use App\Models\SpkKeputusan; 
+use App\Models\Alternatif; 
+use App\Models\Kriteria; 
+use App\Models\Penilaian; 
 
 /**
  * Layanan untuk mengumpulkan data mentah (matriks keputusan Xij)
@@ -25,7 +25,7 @@ class SpkDataService
     public function getSpkRawData(int $idKeputusan): array
     {
         // 1. Ambil Kriteria yang terkait dengan keputusan ini
-        $kriteriaList = kriteria::where('id_keputusan', $idKeputusan)
+        $kriteriaList = Kriteria::where('id_keputusan', $idKeputusan)
             ->get(['id_kriteria', 'kode_kriteria', 'jenis_kriteria', 'nama_kriteria', 'sumber_data']);
         
         $kriteriaMap = $kriteriaList->pluck('kode_kriteria', 'id_kriteria')->toArray();
@@ -35,7 +35,7 @@ class SpkDataService
 
         // 2. Ambil semua Alternatif (Mahasiswa) dan Penilaian mereka dalam satu query
         // Eager load juga relasi data dinamis (prestasi, sanksi, dll)
-        $alternatives = alternatif::with([
+        $alternatives = Alternatif::with([
                 'penilaian' => function ($query) use ($kriteriaList) {
                     $query->whereIn('id_kriteria', $kriteriaList->pluck('id_kriteria'));
                 },

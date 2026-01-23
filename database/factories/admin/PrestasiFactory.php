@@ -3,7 +3,7 @@
 namespace Database\Factories\admin;
 
 use App\Models\admin\Prestasi;
-use App\Models\admin\Datamahasiswa;
+use App\Models\admin\DataMahasiswa;
 use App\Models\admin\Admin;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -27,7 +27,7 @@ class PrestasiFactory extends Factory
     public function definition(): array
     {
         return [
-            'id_mahasiswa' => Datamahasiswa::factory(),
+            'id_mahasiswa' => DataMahasiswa::factory(),
             'id_admin' => Admin::factory(),
             'nama_kegiatan' => $this->faker->sentence(3),
             'tingkat_prestasi' => $this->faker->randomElement(['Nasional', 'Internasional', 'Provinsi', 'Kabupaten/Kota']),

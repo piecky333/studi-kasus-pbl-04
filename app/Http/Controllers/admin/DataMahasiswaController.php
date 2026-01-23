@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\admin\Datamahasiswa;
+use App\Models\Admin\DataMahasiswa;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\MahasiswaImport;
@@ -41,7 +41,7 @@ class DataMahasiswaController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Datamahasiswa::with(['admin']);
+        $query = DataMahasiswa::with(['admin']);
 
         // Filter Semester
         if ($request->filled('semester')) {
@@ -99,7 +99,7 @@ class DataMahasiswaController extends Controller
             'ipk' => 'nullable|numeric|between:0,4.00',
         ]);
 
-        Datamahasiswa::create([
+        DataMahasiswa::create([
             'id_admin' => Auth::user()->id_admin ?? null,
             'id_user' => Auth::user()->id_user ?? null,
             'nim' => $request->nim,
@@ -125,7 +125,7 @@ class DataMahasiswaController extends Controller
      */
     public function show(string $id)
     {
-        $mahasiswa = Datamahasiswa::with(['admin', 'prestasi', 'sanksi'])->findOrFail($id);
+        $mahasiswa = DataMahasiswa::with(['admin', 'prestasi', 'sanksi'])->findOrFail($id);
         return view('pages.admin.datamahasiswa.show', compact('mahasiswa'));
     }
 
@@ -139,7 +139,7 @@ class DataMahasiswaController extends Controller
      */
     public function edit(string $id)
     {
-        $mahasiswa = Datamahasiswa::findOrFail($id);
+        $mahasiswa = DataMahasiswa::findOrFail($id);
         return view('pages.admin.datamahasiswa.edit', compact('mahasiswa'));
     }
 
@@ -151,10 +151,10 @@ class DataMahasiswaController extends Controller
      * agar tidak terjadi error "sudah digunakan" pada data diri sendiri.
      * 
      * @param Request $request
-     * @param Datamahasiswa $mahasiswa Model binding otomatis
+     * @param DataMahasiswa $mahasiswa Model binding otomatis
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Datamahasiswa $mahasiswa) 
+    public function update(Request $request, DataMahasiswa $mahasiswa) 
     {
         
         $request->validate([
@@ -180,10 +180,10 @@ class DataMahasiswaController extends Controller
     /**
      * Menghapus data mahasiswa secara permanen.
      * 
-     * @param Datamahasiswa $mahasiswa Model binding otomatis
+     * @param DataMahasiswa $mahasiswa Model binding otomatis
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Request $request, Datamahasiswa $mahasiswa) 
+    public function destroy(Request $request, DataMahasiswa $mahasiswa) 
     {
         
         $mahasiswa->delete();
