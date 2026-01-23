@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Sanksi;
-use App\Models\admin\Datamahasiswa;
+use App\Models\Admin\DataMahasiswa;
 use Illuminate\Http\Request;
 
 /**
@@ -84,7 +84,7 @@ class SanksiController extends Controller
      */
     public function create()
     {
-        $mahasiswa = Datamahasiswa::orderBy('nama', 'asc')->get();
+        $mahasiswa = DataMahasiswa::orderBy('nama', 'asc')->get();
         return view('pages.admin.sanksi.create', compact('mahasiswa'));
     }
 

@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\admin\Datamahasiswa;
+use App\Models\admin\DataMahasiswa;
 use Illuminate\Support\Facades\DB;
 
 class MahasiswaSeeder extends Seeder

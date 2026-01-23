@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class spkkeputusan extends Model
+class SpkKeputusan extends Model
 {
     use HasFactory;
 
@@ -28,12 +28,12 @@ class spkkeputusan extends Model
     
     public function kriteria()
     {
-        return $this->hasMany(kriteria::class, 'id_keputusan', 'id_keputusan');
+        return $this->hasMany(Kriteria::class, 'id_keputusan', 'id_keputusan');
     }
     
     public function alternatif()
     {
-        return $this->hasMany(alternatif::class, 'id_keputusan', 'id_keputusan');
+        return $this->hasMany(Alternatif::class, 'id_keputusan', 'id_keputusan');
     }
 
 }

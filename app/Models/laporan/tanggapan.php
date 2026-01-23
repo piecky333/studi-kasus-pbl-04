@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\laporan;
+namespace App\Models\Laporan;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
-use App\Models\admin\admin;
+use App\Models\Admin\admin;
 
 class Tanggapan extends Model
 {

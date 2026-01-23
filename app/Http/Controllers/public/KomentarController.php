@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\public;
+namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
-use App\Models\berita;
-use App\Models\komentar;
+use App\Models\Berita;
+use App\Models\Komentar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -66,7 +66,7 @@ class KomentarController extends Controller
      * @param \App\Models\komentar $komentar
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, komentar $komentar)
+    public function update(Request $request, Komentar $komentar)
     {
         // 1. Otorisasi.
         $this->authorize('update', $komentar);
@@ -91,7 +91,7 @@ class KomentarController extends Controller
      * @param \App\Models\komentar $komentar
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(komentar $komentar)
+    public function destroy(Komentar $komentar)
     {
         // 1. Otorisasi.
         $this->authorize('destroy', $komentar);

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\pengurus;
+namespace App\Http\Controllers\Pengurus;
 
 use App\Http\Controllers\Controller;
-use App\Models\admin\Divisi;
+use App\Models\Admin\Divisi;
 use App\Models\Jabatan;
 use App\Models\User;
-use App\Models\berita; 
+use App\Models\Berita; 
 use Illuminate\Support\Facades\Auth;
 
 class PengurusDashboardController extends Controller

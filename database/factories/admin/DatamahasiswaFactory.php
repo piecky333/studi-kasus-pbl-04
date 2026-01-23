@@ -1,23 +1,23 @@
 <?php
 
-namespace Database\Factories\admin;
+namespace Database\Factories\Admin;
 
-use App\Models\admin\Datamahasiswa;
+use App\Models\Admin\DataMahasiswa;
 use App\Models\User;
-use App\Models\admin\Admin;
+use App\Models\Admin\Admin;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\admin\Datamahasiswa>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Admin\DataMahasiswa>
  */
-class DatamahasiswaFactory extends Factory
+class DataMahasiswaFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Datamahasiswa::class;
+    protected $model = DataMahasiswa::class;
 
     /**
      * Define the model's default state.

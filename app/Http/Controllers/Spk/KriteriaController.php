@@ -304,7 +304,7 @@ class KriteriaController extends KeputusanDetailController
                             ->where('id_kriteria', $idKriteria)
                             ->firstOrFail();
 
-        // 2. Hapus data anak (Subkriteria dan Penilaian)
+        // 2. Hapus data anak (SubKriteria dan Penilaian)
         penilaian::where('id_kriteria', $idKriteria)->delete();
         subkriteria::where('id_kriteria', $idKriteria)->delete(); 
         

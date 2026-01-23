@@ -29,11 +29,11 @@ class Kriteria extends Model
 
     /**
      * Relasi Many-to-One: Kriteria dimiliki oleh satu keputusan.
-     * Asumsi: Model keputusan Anda adalah Spkkeputusan.
+     * Asumsi: Model keputusan Anda adalah SpkKeputusan.
      */
     public function keputusan()
     {
-        return $this->belongsTo(spkkeputusan::class, 'id_keputusan');
+        return $this->belongsTo(SpkKeputusan::class, 'id_keputusan');
     }
 
     /**
@@ -48,9 +48,9 @@ class Kriteria extends Model
     /**
      * Relasi One-to-Many: Satu kriteria memiliki banyak sub kriteria.
      * Digunakan ketika 'Cara Penilaian' adalah 'Pilihan Sub Kriteria'.
-     * Asumsi: Model sub kriteria Anda adalah Subkriteria.
+     * Asumsi: Model sub kriteria Anda adalah SubKriteria.
      */
-    public function subkriteria()
+    public function subKriteria()
     {
         return $this->hasMany(SubKriteria::class, 'id_kriteria', 'id_kriteria');
     }
