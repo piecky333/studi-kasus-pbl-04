@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\pengurus;
+namespace App\Http\Controllers\Pengurus;
 
 use App\Http\Controllers\Controller;
-use App\Models\admin\pengurus;
-use App\Models\admin\divisi;
+use App\Models\Admin\Pengurus;
+use App\Models\Admin\Divisi;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -54,7 +54,7 @@ class PengurusController extends Controller
         // Data for Filters
         $divisi = divisi::all();
         // Get distinct semesters from Data Mahasiswa that are linked to users
-        $semesters = \App\Models\admin\Datamahasiswa::select('semester')->distinct()->orderBy('semester')->pluck('semester');
+        $semesters = \App\Models\Admin\DataMahasiswa::select('semester')->distinct()->orderBy('semester')->pluck('semester');
 
         return view('pages.pengurus.pengurus.index', compact('pengurus', 'divisi', 'semesters'));
     }
@@ -73,7 +73,7 @@ class PengurusController extends Controller
     {
         $divisi = divisi::all();
         // Ambil data mahasiswa yang memiliki id_user (sudah punya akun)
-        $mahasiswa = \App\Models\admin\Datamahasiswa::whereNotNull('id_user')->get();
+        $mahasiswa = \App\Models\Admin\DataMahasiswa::whereNotNull('id_user')->get();
         $jabatan = \App\Models\Jabatan::all();
         return view('pages.pengurus.pengurus.create', compact('divisi', 'mahasiswa', 'jabatan'));
     }
@@ -114,7 +114,7 @@ class PengurusController extends Controller
         $pengurus = pengurus::findOrFail($id);
         $divisi = divisi::all();
         // Ambil data mahasiswa yang memiliki id_user
-        $mahasiswa = \App\Models\admin\Datamahasiswa::whereNotNull('id_user')->get();
+        $mahasiswa = \App\Models\Admin\DataMahasiswa::whereNotNull('id_user')->get();
         $jabatan = \App\Models\Jabatan::all();
         return view('pages.pengurus.pengurus.edit', compact('pengurus', 'divisi', 'mahasiswa', 'jabatan'));
     }

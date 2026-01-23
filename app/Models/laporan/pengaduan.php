@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Models\laporan;
+namespace App\Models\Laporan;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\laporan\Tanggapan;
 use App\Models\laporan\Terlapor;
-use App\Models\admin\Datamahasiswa;
+use App\Models\Admin\DataMahasiswa;
 
 class Pengaduan extends Model
 {
@@ -57,7 +57,7 @@ class Pengaduan extends Model
 
     public function mahasiswa()
 {
-    return $this->hasOne(Datamahasiswa::class, 'id_user', 'id_user');
+    return $this->hasOne(DataMahasiswa::class, 'id_user', 'id_user');
 }
 
 

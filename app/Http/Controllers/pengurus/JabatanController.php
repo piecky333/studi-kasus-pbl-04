@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\pengurus;
+namespace App\Http\Controllers\Pengurus;
 
 use App\Http\Controllers\Controller;
 use App\Models\Jabatan;
-use App\Models\admin\Divisi;
+use App\Models\Admin\Divisi;
 use Illuminate\Http\Request;
 
 class JabatanController extends Controller

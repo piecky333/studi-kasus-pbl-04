@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 // =========================================================
 // PUBLIC CONTROLLERS
 // =========================================================
-use App\Http\Controllers\public\{
+use App\Http\Controllers\Public\{
     HomeController as PublicHomeController,
     DivisiController as PublicDivisiController,
     PrestasiController as PublicPrestasiController,
@@ -33,7 +33,7 @@ use App\Http\Controllers\Admin\{
 // =========================================================
 // USER CONTROLLERS
 // =========================================================
-use App\Http\Controllers\user\{
+use App\Http\Controllers\User\{
     DashboardController as UserDashboardController,
     PengaduanController as UserPengaduanController,
     BeritaController as UserBeritaController
@@ -42,7 +42,7 @@ use App\Http\Controllers\user\{
 // =========================================================
 // PENGURUS CONTROLLERS
 // =========================================================
-use App\Http\Controllers\pengurus\{
+use App\Http\Controllers\Pengurus\{
     DivisiController as PengurusDivisiController,
     PengurusDashboardController,
     ProfileController as PengurusProfileController
@@ -266,19 +266,19 @@ Route::prefix('pengurus')->name('pengurus.')
 Route::prefix('mahasiswa')->name('mahasiswa.')
     ->middleware(['auth', 'role:mahasiswa'])
     ->group(function () {
-        Route::get('/dashboard', [\App\Http\Controllers\mahasiswa\DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [\App\Http\Controllers\Mahasiswa\DashboardController::class, 'index'])->name('dashboard');
         
         // Pengajuan Sertifikat
-        Route::get('/sertifikat', [\App\Http\Controllers\mahasiswa\SertifikatController::class, 'index'])->name('sertifikat.index');
-        Route::get('/sertifikat/create', [\App\Http\Controllers\mahasiswa\SertifikatController::class, 'create'])->name('sertifikat.create');
-        Route::post('/sertifikat', [\App\Http\Controllers\mahasiswa\SertifikatController::class, 'store'])->name('sertifikat.store');
+        Route::get('/sertifikat', [\App\Http\Controllers\Mahasiswa\SertifikatController::class, 'index'])->name('sertifikat.index');
+        Route::get('/sertifikat/create', [\App\Http\Controllers\Mahasiswa\SertifikatController::class, 'create'])->name('sertifikat.create');
+        Route::post('/sertifikat', [\App\Http\Controllers\Mahasiswa\SertifikatController::class, 'store'])->name('sertifikat.store');
 
         // Reuse UserPengaduanController for Mahasiswa
         Route::resource('pengaduan', UserPengaduanController::class);
         Route::post('pengaduan/{id}/tanggapan', [UserPengaduanController::class, 'storeTanggapan'])->name('pengaduan.tanggapan');
 
         // CRUD Prestasi (Mahasiswa Submit Sendiri)
-        Route::resource('prestasi', \App\Http\Controllers\mahasiswa\PrestasiController::class);
+        Route::resource('prestasi', \App\Http\Controllers\Mahasiswa\PrestasiController::class);
     });
 
 
@@ -315,4 +315,38 @@ Route::middleware(['auth'])->group(function () {
     // KOMENTAR
     Route::put('/komentar/{komentar}', [PublicKomentarController::class, 'update'])->name('komentar.update');
     Route::delete('/komentar/{komentar}', [PublicKomentarController::class, 'destroy'])->name('komentar.destroy');
+});
+
+// Debug Storage Route
+Route::get('/debug-storage', function() {
+    $target = storage_path('app/public');
+    $link = public_path('storage');
+    
+    echo "<h1>Debug Storage</h1>";
+    echo "Target (Asli): $target<br>";
+    echo "Link (Public): $link<br>";
+    
+    if (file_exists($link)) {
+        echo "Status: Folder/Link sudah ada.<br>";
+        echo "Tipe: " . filetype($link) . "<br>";
+        
+        if (is_link($link)) {
+            echo "Ini adalah LINK. Menghapus link lama...<br>";
+            unlink($link);
+        } elseif (is_dir($link)) {
+            echo "<h3 style='color:red'>MASALAH: Ini adalah FOLDER BIASA (Bukan Link).</h3>";
+            echo "Tolong hapus folder 'public/storage' ini secara manual lewat File Manager, lalu refresh halaman ini.<br>";
+            return; // Stop here
+        }
+    } else {
+        echo "Status: Belum ada link.<br>";
+    }
+    
+    echo "Mencoba membuat Symlink...<br>";
+    try {
+        symlink($target, $link);
+        echo "<h2 style='color:green'>BERHASIL! Symlink dibuat.</h2>";
+    } catch (\Exception $e) {
+        echo "<h2 style='color:red'>GAGAL: " . $e->getMessage() . "</h2>";
+    }
 });

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Models\admin;
+namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\laporan\Tanggapan;
-use App\Models\admin\Prestasi;
-use App\Models\admin\Sanksi;
-use App\Models\admin\Datamahasiswa;
+use App\Models\Laporan\Tanggapan;
+use App\Models\Admin\Prestasi;
+use App\Models\Admin\Sanksi;
+use App\Models\Admin\DataMahasiswa;
 
 class Admin extends Model
 {
@@ -48,6 +48,6 @@ class Admin extends Model
     // Relasi ke Mahasiswa
     public function mahasiswa()
     {
-        return $this->hasMany(Datamahasiswa::class, 'id_admin');
+        return $this->hasMany(DataMahasiswa::class, 'id_admin');
     }
 }

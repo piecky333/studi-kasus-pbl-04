@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\laporan\pengaduan; 
-use App\Models\admin\admin;
+use App\Models\Admin\admin;
 use App\Models\komentar;
 use App\Models\berita;
 
@@ -76,7 +76,7 @@ class User extends Authenticatable
 
     public function mahasiswa()
     {
-        return $this->hasOne(\App\Models\admin\Datamahasiswa::class, 'id_user', 'id_user');
+        return $this->hasOne(\App\Models\Admin\DataMahasiswa::class, 'id_user', 'id_user');
     }
 
     public function pengaduan()

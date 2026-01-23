@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\public;
+namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\berita;
+use App\Models\Berita;
 
 class PrestasiController extends Controller
 {

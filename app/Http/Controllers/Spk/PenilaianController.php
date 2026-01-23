@@ -184,7 +184,7 @@ class PenilaianController extends KeputusanDetailController
             if (!$mahasiswa) { 
                 // Fallback attempt: try finding by ID or Name if relation returned null (which shouldn't happen with FKs but safety first)
                 if ($alternatif->id_mahasiswa) {
-                    $mahasiswa = \App\Models\admin\Datamahasiswa::find($alternatif->id_mahasiswa);
+                    $mahasiswa = \App\Models\Admin\DataMahasiswa::find($alternatif->id_mahasiswa);
                 }
                 if (!$mahasiswa) continue; 
             }

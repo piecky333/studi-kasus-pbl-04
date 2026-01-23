@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\admin\Prestasi;
+use App\Models\Admin\Prestasi;
 use App\Models\SubKriteria;
-use App\Models\kriteria;
+use App\Models\Kriteria;
 
 class SpkCalculator
 {

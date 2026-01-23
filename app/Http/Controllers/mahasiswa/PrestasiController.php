@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\mahasiswa;
+namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\admin\Prestasi;
-use App\Models\admin\Datamahasiswa; // Fix namespace capitalization if needed
+use App\Models\Admin\Prestasi;
+use App\Models\Admin\DataMahasiswa; // Fix namespace capitalization if needed
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 

@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * Model untuk tabel alternatif (Mahasiswa).
  * Mencatat daftar Mahasiswa yang dievaluasi dalam sebuah keputusan.
  */
-class alternatif extends Model
+class Alternatif extends Model
 {
     use HasFactory;
 
@@ -30,25 +30,25 @@ class alternatif extends Model
     // Relasi Many-to-One: Alternatif terhubung ke satu mahasiswa
     public function mahasiswa(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\admin\Datamahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->belongsTo(\App\Models\Admin\DataMahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 
     // Relasi Many-to-One: Alternatif dimiliki oleh satu keputusan
     public function keputusan(): BelongsTo
     {
-        // Asumsi model keputusan bernama 'spkkeputusan'
-        return $this->belongsTo(spkkeputusan::class, 'id_keputusan');
+        // Asumsi model keputusan bernama 'SpkKeputusan'
+        return $this->belongsTo(SpkKeputusan::class, 'id_keputusan');
     }
 
     // Relasi One-to-Many: Satu alternatif memiliki banyak penilaian
     public function penilaian(): HasMany
     {
-        return $this->hasMany(penilaian::class, 'id_alternatif');
+        return $this->hasMany(Penilaian::class, 'id_alternatif');
     }
 
     // Relasi One-to-One: Satu alternatif memiliki satu hasil akhir
     public function hasilAkhir(): HasOne
     {
-        return $this->hasOne(hasilakhir::class, 'id_alternatif');
+        return $this->hasOne(HasilAkhir::class, 'id_alternatif');
     }
 }
