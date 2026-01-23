@@ -252,7 +252,6 @@ Route::prefix('pengurus')->name('pengurus.')
         Route::resource('divisi', PengurusDivisiController::class)->parameters(['divisi' => 'id_divisi']);
         Route::resource('jabatan', \App\Http\Controllers\Pengurus\JabatanController::class);
         Route::resource('pengurus', \App\Http\Controllers\Pengurus\PengurusController::class);
-        Route::resource('keuangan', \App\Http\Controllers\Pengurus\KeuanganController::class);
         Route::resource('berita', \App\Http\Controllers\Pengurus\BeritaController::class);
         // Prestasi
         Route::get('prestasi/cari-mahasiswa', [\App\Http\Controllers\Pengurus\PrestasiController::class, 'cariMahasiswa'])->name('prestasi.cariMahasiswa');

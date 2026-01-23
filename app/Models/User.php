@@ -33,15 +33,15 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'nama', // Ini sudah benar (sesuai migrasimu)
+        'nama', 
         'username', 
         'email', 
         'password', 
         'role', 
         'google_id', 
         'avatar',
-        'no_telpon', // TAMBAHAN
-        'profile_photo_path', // TAMBAHAN
+        'no_telpon', 
+        'profile_photo_path',
     ];
 
     /**

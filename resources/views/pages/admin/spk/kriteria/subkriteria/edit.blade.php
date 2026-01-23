@@ -34,12 +34,23 @@
                 <div>
                     <label for="nama_subkriteria" class="block text-sm font-medium text-gray-700 mb-1">Nama Sub Kriteria</label>
                     <input type="text" name="nama_subkriteria" id="nama_subkriteria" 
-                           {{-- Mengambil nilai lama atau dari database --}}
                            value="{{ old('nama_subkriteria', $subkriterium->nama_subkriteria) }}"
                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm 
                            @error('nama_subkriteria') border-red-500 @enderror"
                            placeholder="Contoh: Sangat Baik, Cukup, Kurang" required>
                     @error('nama_subkriteria')
+                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Input Angka: Nilai Bobot Sub Kriteria --}}
+                <div>
+                    <label for="nilai" class="block text-sm font-medium text-gray-700 mb-1">Nilai / Bobot</label>
+                    <input type="number" step="any" name="nilai" id="nilai"
+                           value="{{ old('nilai', $subkriterium->nilai) }}"
+                           class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm
+                           @error('nilai') border-red-500 @enderror"
+                           placeholder="Contoh: 5, 0.5" required>
                     <p class="mt-1 text-xs text-gray-500">
                         *Nilai ini akan digunakan sebagai nilai aktual ($X_{ij}$) dalam Matriks Penilaian.
                     </p>
