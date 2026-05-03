@@ -20,6 +20,20 @@
             </a>
         </div>
     </div>
+    {{-- Alert Section --}}
+    @if(session('success'))
+        <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded-r-lg shadow-sm flex items-center" role="alert">
+            <i class="fas fa-check-circle mr-2 text-lg"></i>
+            <span>{{ session('success') }}</span>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-r-lg shadow-sm flex items-center" role="alert">
+            <i class="fas fa-times-circle mr-2 text-lg"></i>
+            <span>{{ session('error') }}</span>
+        </div>
+    @endif
 
     {{-- Filter Section --}}
     <div class="mb-6 bg-white p-5 rounded-lg shadow-sm border border-gray-200">
@@ -147,7 +161,7 @@
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse($prestasi as $item)
-                                <tr class="hover:bg-gray-50 transition duration-150 ease-in-out text-xs lg:text-sm">
+                                <tr class="hover:bg-gray-50 transition duration-150 ease-in-out text-xs lg:text-sm cursor-pointer" onclick="window.location='{{ route('pengurus.prestasi.show', $item) }}'">
                                     <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-gray-500">
                                         {{ $loop->iteration }}
                                     </td>
@@ -169,7 +183,7 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-3 py-2 lg:px-4 lg:py-3 text-gray-500 whitespace-normal">
+                                    <td class="px-3 py-2 lg:px-4 lg:py-3 text-indigo-600 font-medium whitespace-normal">
                                         {{ $item->nama_kegiatan }}
                                         <br>
                                         <span class="text-[10px] text-gray-400">{{ $item->jenis_prestasi ?? '-' }}</span>
@@ -192,7 +206,7 @@
                                     <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-gray-500">
                                         {{ $item->tahun }}
                                     </td>
-                                    <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap">
+                                    <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-center">
                                         @php
                                             $statusColor = match($item->status_validasi) {
                                                 'disetujui' => 'bg-green-100 text-green-800',
@@ -204,24 +218,19 @@
                                             {{ ucfirst($item->status_validasi) }}
                                         </span>
                                     </td>
-                                    <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-center font-medium">
-                                        <div class="flex justify-center space-x-1 lg:space-x-2">
-                                            {{-- View --}}
-                                            <a href="{{ route('pengurus.prestasi.show', $item) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white" title="Detail">
-                                                <i class="fas fa-eye mr-1 lg:mr-2"></i> Detail
-                                            </a>
-                                            
+                                    <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-center font-medium" onclick="event.stopPropagation()">
+                                        <div class="flex justify-center space-x-3">
                                             {{-- Edit --}}
-                                            <a href="{{ route('pengurus.prestasi.edit', $item) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" title="Edit">
-                                                <i class="fas fa-pencil-alt mr-1 lg:mr-2"></i> Edit
+                                            <a href="{{ route('pengurus.prestasi.edit', $item) }}" class="text-amber-600 hover:text-amber-800 transition-colors" title="Edit">
+                                                <i class="fas fa-edit"></i>
                                             </a>
                                             
                                             {{-- Delete --}}
                                             <form action="{{ route('pengurus.prestasi.destroy', $item) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')" class="inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-red-100 text-red-600 hover:bg-red-600 hover:text-white" title="Hapus">
-                                                    <i class="fas fa-trash mr-1 lg:mr-2"></i> Hapus
+                                                <button type="submit" class="text-red-600 hover:text-red-800 transition-colors" title="Hapus">
+                                                    <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
                                         </div>

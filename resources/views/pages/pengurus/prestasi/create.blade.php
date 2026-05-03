@@ -33,6 +33,33 @@
         </div>
         <div class="px-4 py-5 sm:p-6">
             
+            {{-- Alert Sukses --}}
+            @if(session('success'))
+                <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded-r-lg shadow-sm flex items-center" role="alert">
+                    <i class="fas fa-check-circle mr-2 text-lg"></i>
+                    <span>{{ session('success') }}</span>
+                </div>
+            @endif
+
+            {{-- Alert Error / Validasi --}}
+            @if ($errors->any())
+                <div class="rounded-md bg-red-50 p-4 mb-6 border-l-4 border-red-400">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-circle text-red-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-red-800">Terdapat kesalahan:</h3>
+                            <ul class="mt-2 list-disc list-inside text-sm text-red-700">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <form action="{{ route('pengurus.prestasi.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
@@ -46,7 +73,7 @@
                         <p class="text-xs text-gray-500 mb-2">Anda dapat memilih lebih dari satu mahasiswa (Untuk prestasi tim/kelompok).</p>
                         
                         <div class="mt-1">
-                            <div x-data="{
+                        <div x-data="{
                                 search: '',
                                 open: false,
                                 selected: [],
@@ -60,6 +87,7 @@
                                         },
                                     @endforeach
                                 ],
+                                oldSelected: @json(old('id_mahasiswa', [])),
                                 get filteredOptions() {
                                     if (this.search === '') {
                                         return this.options.filter(i => !this.selected.some(s => s.id === i.id));
@@ -81,8 +109,12 @@
                                     this.selected = this.selected.filter(item => item.id !== id);
                                 },
                                 init() {
+                                    if (this.oldSelected.length > 0) {
+                                        this.selected = this.options.filter(o => this.oldSelected.includes(o.id));
+                                    }
                                 }
                             }" class="relative">
+
                                 
                                 <!-- Search & Select Input -->
                                 <div class="relative">
@@ -198,6 +230,29 @@
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    {{-- Juara / Peringkat --}}
+                    <div class="sm:col-span-3">
+                        <label for="juara" class="block text-sm font-medium text-gray-700">
+                            Juara / Peringkat <span class="text-red-500">*</span>
+                        </label>
+                        <div class="mt-1">
+                            <select id="juara" name="juara" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('juara') border-red-300 text-red-900 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2" required>
+                                <option value="">-- Pilih Peringkat --</option>
+                                <option value="Juara 1" {{ old('juara') == 'Juara 1' ? 'selected' : '' }}>Juara 1</option>
+                                <option value="Juara 2" {{ old('juara') == 'Juara 2' ? 'selected' : '' }}>Juara 2</option>
+                                <option value="Juara 3" {{ old('juara') == 'Juara 3' ? 'selected' : '' }}>Juara 3</option>
+                                <option value="Juara Harapan 1" {{ old('juara') == 'Juara Harapan 1' ? 'selected' : '' }}>Juara Harapan 1</option>
+                                <option value="Juara Harapan 2" {{ old('juara') == 'Juara Harapan 2' ? 'selected' : '' }}>Juara Harapan 2</option>
+                                <option value="Finalis" {{ old('juara') == 'Finalis' ? 'selected' : '' }}>Finalis</option>
+                                <option value="Peserta" {{ old('juara') == 'Peserta' ? 'selected' : '' }}>Peserta</option>
+                            </select>
+                        </div>
+                        @error('juara')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     {{-- Bukti Prestasi (File) --}}
                     <div class="sm:col-span-6">
                         <label class="block text-sm font-medium text-gray-700">

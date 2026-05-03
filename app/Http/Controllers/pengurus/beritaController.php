@@ -109,6 +109,18 @@ class BeritaController extends Controller
                          ->with('success', 'Berita berhasil diperbarui dan menunggu verifikasi admin.');
     }
 
+    public function show(Berita $berita)
+    {
+        // Hanya pemilik berita yang bisa melihat detail via panel pengurus (opsional, tergantung kebijakan)
+        // Atau biarkan saja jika ingin bisa melihat semua berita organisasi.
+        // Di sini saya batasi ke pemilik agar konsisten dengan index.
+        if ($berita->id_user !== auth()->user()->id_user) {
+            abort(403);
+        }
+
+        return view('pages.pengurus.berita.show', compact('berita'));
+    }
+
     public function destroy(Berita $berita)
     {
         if ($berita->id_user !== auth()->user()->id_user) {

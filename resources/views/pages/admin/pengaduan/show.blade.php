@@ -148,6 +148,64 @@
                     </dl>
                 </div>
             </div>
+
+            <!-- DISKUSI / TANGGAPAN (Pindah ke bawah detail) -->
+            <div class="bg-white shadow-[10px_10px_15px_-3px_rgba(0,0,0,0.1)] overflow-hidden sm:rounded-lg border border-gray-200">
+                <div class="px-4 py-4 sm:px-6 bg-indigo-50 border-b border-indigo-100">
+                    <h3 class="text-lg leading-6 font-medium text-indigo-900">
+                        Diskusi & Tanggapan
+                    </h3>
+                </div>
+                <div class="p-6">
+                     <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 h-96 overflow-y-auto mb-6 custom-scrollbar flex flex-col space-y-4">
+                        @forelse($pengaduan->tanggapan as $chat)
+                            @php
+                                $isAdmin = !empty($chat->id_admin); 
+                            @endphp
+                            <div class="flex {{ $isAdmin ? 'justify-end' : 'justify-start' }}">
+                                <div class="flex items-end max-w-[85%] {{ $isAdmin ? 'flex-row-reverse' : 'flex-row' }}">
+                                    <!-- Avatar -->
+                                    <div class="flex-shrink-0 h-9 w-9 rounded-full overflow-hidden border border-gray-300 shadow-sm {{ $isAdmin ? 'ml-3' : 'mr-3' }}">
+                                        @if($isAdmin)
+                                            <img src="https://ui-avatars.com/api/?name=Admin&background=4F46E5&color=fff" class="h-full w-full object-cover">
+                                        @else
+                                            <img src="https://ui-avatars.com/api/?name=Anonymous&color=6B7280&background=E5E7EB" class="h-full w-full object-cover">
+                                        @endif
+                                    </div>
+
+                                    <!-- Bubble -->
+                                    <div class="px-4 py-3 rounded-2xl shadow-sm text-sm {{ $isAdmin ? 'bg-indigo-600 text-white rounded-br-none' : 'bg-white text-gray-800 border border-gray-200 rounded-bl-none' }}">
+                                        <p class="leading-relaxed">{{ $chat->isi_tanggapan }}</p>
+                                        <span class="text-[10px] {{ $isAdmin ? 'text-indigo-200' : 'text-gray-400' }} block mt-1.5 text-right font-medium">
+                                            {{ $chat->created_at->format('d M Y, H:i') }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="flex flex-col items-center justify-center h-full text-gray-400 py-10">
+                                <div class="bg-gray-100 p-6 rounded-full mb-4">
+                                    <i class="fas fa-comments text-5xl"></i>
+                                </div>
+                                <p class="text-lg font-medium">Belum ada tanggapan</p>
+                                <p class="text-sm text-gray-500 mt-1">Berikan tanggapan untuk memulai diskusi dengan pelapor.</p>
+                            </div>
+                        @endforelse
+                    </div>
+
+                    <!-- Form Balas -->
+                    <form action="{{ route('admin.pengaduan.tanggapan', $pengaduan) }}" method="POST">
+                        @csrf
+                        <div class="flex gap-3">
+                            <input type="text" name="isi_tanggapan" required placeholder="Tulis balasan resmi sebagai Admin..." 
+                                   class="flex-1 rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm px-4 py-3">
+                            <button type="submit" class="inline-flex items-center px-6 py-3 bg-indigo-600 border border-transparent rounded-xl font-bold text-sm text-white hover:bg-indigo-700 active:bg-indigo-900 transition-all duration-200 shadow-lg shadow-indigo-100">
+                                <i class="fas fa-paper-plane mr-2"></i> Kirim
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <!-- Kolom Kanan: Info Pelapor & Aksi -->
@@ -171,32 +229,40 @@
                             </div>
                             <div class="ml-4">
                                 <h4 class="text-lg font-bold text-gray-900">Pelapor (Disamarkan)</h4>
-                                <p class="text-sm text-gray-500">
+                                <p class="text-sm text-gray-500 italic">
                                     Identitas Dirahasiakan
                                 </p>
                             </div>
                         </div>
                             <div class="border-t border-gray-100 pt-4">
-                                <dl class="space-y-3">
-                                    <div>
-                                        <dt class="text-xs font-medium text-gray-500 uppercase tracking-wider">Email</dt>
-                                        <dd class="mt-1 text-sm text-gray-900">Dirahasiakan</dd>
-                                    </div>
+                                <dl class="space-y-4">
                                     @if($pengaduan->no_telpon_dihubungi)
                                     <div>
-                                        <dt class="text-xs font-medium text-gray-500 uppercase tracking-wider">Kontak (WhatsApp)</dt>
-                                        <dd class="mt-1 text-sm font-bold text-indigo-700 font-mono">
-                                            <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $pengaduan->no_telpon_dihubungi)) }}?text={{ urlencode('Halo, kami dari Admin Kampus ingin menindaklanjuti pengaduan Anda mengenai: "' . $pengaduan->judul . '".') }}" target="_blank" class="hover:underline">
-                                                <i class="fab fa-whatsapp mr-1"></i> {{ $pengaduan->no_telpon_dihubungi }}
+                                        <dt class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Kontak (WhatsApp)</dt>
+                                        <dd class="mt-1 text-sm font-bold text-indigo-700 font-mono bg-indigo-50 p-2 rounded-md border border-indigo-100 inline-block">
+                                            <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $pengaduan->no_telpon_dihubungi)) }}?text={{ urlencode('Halo, kami dari Admin Kampus ingin menindaklanjuti pengaduan Anda mengenai: "' . $pengaduan->judul . '".') }}" target="_blank" class="hover:underline flex items-center">
+                                                <i class="fab fa-whatsapp mr-2 text-green-500 text-lg"></i> {{ $pengaduan->no_telpon_dihubungi }}
                                             </a>
                                         </dd>
                                     </div>
                                     @endif
                                     @if($pengaduan->mahasiswa)
-                                        <div>
-                                            <dt class="text-xs font-medium text-gray-500 uppercase tracking-wider">Semester</dt>
-                                            <dd class="mt-1 text-sm text-gray-900">{{ $pengaduan->mahasiswa->semester ?? '-' }}</dd>
-                                        </div>
+                                    <div>
+                                        <dt class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Data Akademik Pelapor</dt>
+                                        <dd class="mt-1 text-sm text-gray-600 flex flex-col space-y-1 bg-gray-50 p-2 rounded-md border border-gray-100">
+                                            <span><i class="fas fa-graduation-cap mr-2 w-4 text-indigo-500"></i> Semester: {{ $pengaduan->mahasiswa->semester ?? '-' }}</span>
+                                            <span><i class="fas fa-id-card mr-2 w-4 text-indigo-500"></i> NIM: {{ $pengaduan->mahasiswa->nim ? substr($pengaduan->mahasiswa->nim, 0, 3) . '****' : '-' }}</span>
+                                        </dd>
+                                    </div>
+                                    @else
+                                    <div>
+                                        <dt class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Informasi Tambahan</dt>
+                                        <dd class="mt-1 text-sm text-gray-600">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
+                                                <i class="fas fa-user-tag mr-1.5"></i> Role: {{ ucfirst($pengaduan->user->role ?? 'Umum') }}
+                                            </span>
+                                        </dd>
+                                    </div>
                                     @endif
                                 </dl>
                             </div>
@@ -215,65 +281,10 @@
                     </div>
                 </div>
 
-                <!-- DISKUSI / TANGGAPAN -->
-                <div class="bg-white shadow-[10px_10px_15px_-3px_rgba(0,0,0,0.1)] overflow-hidden sm:rounded-lg border border-gray-200">
-                    <div class="px-4 py-4 sm:px-3 bg-indigo-50 border-b border-indigo-100">
-                        <h3 class="text-lg leading-6 font-medium text-indigo-900">
-                            Diskusi & Tanggapan
-                        </h3>
-                    </div>
-                    <div class="p-4">
-                         <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 h-80 overflow-y-auto mb-4 custom-scrollbar flex flex-col space-y-4">
-                            @forelse($pengaduan->tanggapan as $chat)
-                                @php
-                                    $isAdmin = !empty($chat->id_admin); 
-                                @endphp
-                                <div class="flex {{ $isAdmin ? 'justify-end' : 'justify-start' }}">
-                                    <div class="flex items-end max-w-[85%] {{ $isAdmin ? 'flex-row-reverse' : 'flex-row' }}">
-                                        <!-- Avatar -->
-                                        <div class="flex-shrink-0 h-8 w-8 rounded-full overflow-hidden border border-gray-300 {{ $isAdmin ? 'ml-2' : 'mr-2' }}">
-                                            @if($isAdmin)
-                                                <img src="https://ui-avatars.com/api/?name=Admin&background=4F46E5&color=fff" class="h-full w-full object-cover">
-                                            @else
-                                                <img src="https://ui-avatars.com/api/?name=Anonymous&color=6B7280&background=E5E7EB" class="h-full w-full object-cover">
-                                            @endif
-                                        </div>
-
-                                        <!-- Bubble -->
-                                        <div class="px-4 py-2 rounded-lg shadow-sm text-sm {{ $isAdmin ? 'bg-indigo-100 text-gray-900 rounded-br-none' : 'bg-white text-gray-800 border border-gray-200 rounded-bl-none' }}">
-                                            <p>{{ $chat->isi_tanggapan }}</p>
-                                            <span class="text-[10px] {{ $isAdmin ? 'text-indigo-500' : 'text-gray-400' }} block mt-1 text-right">
-                                                {{ $chat->created_at->format('d M H:i') }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="flex flex-col items-center justify-center h-full text-gray-400">
-                                    <i class="fas fa-comment-slash text-4xl mb-2"></i>
-                                    <p class="text-sm">Belum ada tanggapan.</p>
-                                </div>
-                            @endforelse
-                        </div>
-
-                        <!-- Form Balas -->
-                        <form action="{{ route('admin.pengaduan.tanggapan', $pengaduan) }}" method="POST">
-                            @csrf
-                            <div class="flex gap-2">
-                                <input type="text" name="isi_tanggapan" required placeholder="Tulis balasan sebagai Admin..." 
-                                       class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm px-2">
-                                <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                    <i class="fas fa-paper-plane mr-2"></i> Balas
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
                 <!-- Aksi Verifikasi -->
                 <div class="bg-white shadow-[10px_10px_15px_-3px_rgba(0,0,0,0.1)] overflow-hidden sm:rounded-lg border border-gray-200">
-                    <div class="px-4 py-4 sm:px-3 bg-indigo-50 border-b border-indigo-100">
-                        <h3 class="text-lg leading-6 font-medium text-indigo-900">
+                    <div class="px-4 py-4 sm:px-6 bg-gray-50 border-b border-gray-200">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">
                             Aksi Verifikasi
                     </h3>
                 </div>
@@ -283,19 +294,16 @@
                         @method('PUT')
 
                         <div class="mb-4">
-                            <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Update Status</label>
-                            <select name="status" id="status" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <label for="status" class="block text-sm font-semibold text-gray-700 mb-2">Update Status Laporan</label>
+                            <select name="status" id="status" class="mt-1 block w-full pl-3 pr-10 py-2.5 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg transition-all">
                                 <option value="Diproses" {{ $pengaduan->status == 'Diproses' ? 'selected' : '' }}>Diproses</option>
                                 <option value="Selesai" {{ $pengaduan->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
                                 <option value="Ditolak" {{ $pengaduan->status == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
                             </select>
-                            @error('status')
-                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
                         </div>
 
-                        <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
-                            Simpan
+                        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-md text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200">
+                            Simpan Perubahan
                         </button>
                     </form>
                 </div>

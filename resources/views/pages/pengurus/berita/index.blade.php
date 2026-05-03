@@ -133,11 +133,11 @@
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
                 @forelse($beritas as $index => $berita)
-                    <tr class="hover:bg-gray-50 transition-colors duration-150 text-xs lg:text-sm">
+                    <tr class="hover:bg-gray-50 transition-colors duration-150 text-xs lg:text-sm cursor-pointer" onclick="window.location='{{ route('pengurus.berita.show', $berita) }}'">
                         <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-gray-500">
                             {{ $loop->iteration }}
                         </td>
-                        <td class="px-3 py-2 lg:px-4 lg:py-3 font-medium text-gray-900 whitespace-normal" title="{{ $berita->judul_berita }}">
+                        <td class="px-3 py-2 lg:px-4 lg:py-3 font-medium text-indigo-600 whitespace-normal" title="{{ $berita->judul_berita }}">
                             {{ Str::limit($berita->judul_berita, 50) }}
                         </td>
                          <td class="px-3 py-2 lg:px-6 lg:py-4 whitespace-nowrap">
@@ -151,15 +151,15 @@
                         <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap">
                             @if($berita->status == 'pending')
                                 <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] lg:text-xs font-medium bg-yellow-100 text-yellow-800">
-                                    Pending
+                                    Menunggu
                                 </span>
                             @elseif($berita->status == 'verified')
                                 <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] lg:text-xs font-medium bg-green-100 text-green-800">
-                                    Verified
+                                    Terverifikasi
                                 </span>
                             @else
                                 <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] lg:text-xs font-medium bg-red-100 text-red-800">
-                                    Rejected
+                                    Ditolak
                                 </span>
                             @endif
                         </td>
@@ -172,19 +172,21 @@
                                 -
                             @endif
                         </td>
-                        <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-center font-medium space-x-1 lg:space-x-2">
-                            {{-- Edit --}}
-                            <a href="{{ route('pengurus.berita.edit', $berita) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" title="Edit">
-                                <i class="fas fa-pencil-alt mr-1 lg:mr-2"></i> Edit
-                            </a>
+                        <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-center font-medium" onclick="event.stopPropagation()">
+                            <div class="flex justify-center items-center space-x-2">
+                                {{-- Edit --}}
+                                <a href="{{ route('pengurus.berita.edit', $berita) }}" class="text-amber-600 hover:text-amber-800 transition-colors" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
 
-                            <form action="{{ route('pengurus.berita.destroy', $berita) }}" method="POST" class="d-inline inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus berita ini?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-red-100 text-red-600 hover:bg-red-600 hover:text-white" title="Hapus">
-                                    <i class="fas fa-trash mr-1 lg:mr-2"></i> Hapus
-                                </button>
-                            </form>
+                                <form action="{{ route('pengurus.berita.destroy', $berita) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus berita ini?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:text-red-800 transition-colors" title="Hapus">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 @empty

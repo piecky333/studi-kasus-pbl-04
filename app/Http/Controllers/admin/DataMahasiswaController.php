@@ -119,13 +119,13 @@ class DataMahasiswaController extends Controller
      * Memuat relasi 'prestasi' dan 'sanksi' untuk memberikan gambaran lengkap
      * mengenai rekam jejak mahasiswa tersebut.
      * 
-     * @param string $id ID Mahasiswa
+     * @param DataMahasiswa $mahasiswa
      * @return \Illuminate\View\View
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function show(string $id)
+    public function show(DataMahasiswa $mahasiswa)
     {
-        $mahasiswa = DataMahasiswa::with(['admin', 'prestasi', 'sanksi'])->findOrFail($id);
+        $mahasiswa->load(['admin', 'prestasi', 'sanksi']);
         return view('pages.admin.datamahasiswa.show', compact('mahasiswa'));
     }
 
@@ -133,13 +133,12 @@ class DataMahasiswaController extends Controller
     /**
      * Menampilkan form edit data mahasiswa.
      * 
-     * @param string $id
+     * @param DataMahasiswa $mahasiswa
      * @return \Illuminate\View\View
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function edit(string $id)
+    public function edit(DataMahasiswa $mahasiswa)
     {
-        $mahasiswa = DataMahasiswa::findOrFail($id);
         return view('pages.admin.datamahasiswa.edit', compact('mahasiswa'));
     }
 
