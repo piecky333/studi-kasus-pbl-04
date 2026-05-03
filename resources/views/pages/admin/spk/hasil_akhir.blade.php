@@ -55,7 +55,7 @@
     </div>
     
     <div class="mt-6 flex justify-end">
-        <a href="{{ route('admin.spk.calculate.proses', $keputusan->id_keputusan) }}" 
+        <a href="{{ route('admin.spk.hasil.index', $keputusan) }}" 
            class="text-sm text-indigo-600 hover:text-indigo-800">
             <i class="fas fa-eye mr-1"></i> Lihat Detail Proses Perhitungan
         </a>
@@ -65,3 +65,6 @@
 
 </div>
 @endsection
+
+
+

@@ -1,6 +1,6 @@
 @extends('layouts.pengurus')
 
-@section('title', 'Dashboard')
+@section('title' , 'Dashboard Pengurus')
 
 @section('content')
     <div class="min-h-screen bg-gray-50/50 pt-8">
@@ -173,7 +173,7 @@
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 text-center">
-                                        <a href="{{ route('pengurus.berita.edit', $berita->id_berita) }}" class="text-yellow-500 hover:text-yellow-600 font-medium text-sm">
+                                        <a href="{{ route('pengurus.berita.edit', $berita) }}" class="text-yellow-500 hover:text-yellow-600 font-medium text-sm">
                                             <i class="bi bi-pencil-square"></i> Edit
                                         </a>
                                     </td>
@@ -195,3 +195,6 @@
         </div>
     </div>
 @endsection
+
+
+

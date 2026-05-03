@@ -18,11 +18,11 @@
                     @endif
                 </div>
                 <div class="flex space-x-3">
-                    <a href="{{ route('admin.spk.alternatif.index', $keputusan->id_keputusan) }}"
+                    <a href="{{ route('admin.spk.alternatif.index', $keputusan) }}"
                         class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg text-sm transition duration-150">
                         <i class="fas fa-users mr-1"></i> Kelola Alternatif
                     </a>
-                    <a href="{{ route('admin.spk.hasil.index', $keputusan->id_keputusan) }}"
+                    <a href="{{ route('admin.spk.hasil.index', $keputusan) }}"
                         class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition duration-150">
                         <i class="fas fa-calculator mr-1"></i> Lanjut ke Perhitungan SAW
                     </a>
@@ -39,7 +39,7 @@
                         ? "Ini akan menimpa nilai penilaian untuk kriteria yang bersumber dari: $autoSources. Lanjutkan?" 
                         : "Tidak ada kriteria otomatis yang terdeteksi. Lanjutkan sinkronisasi?";
                 @endphp
-                <form action="{{ route('admin.spk.alternatif.penilaian.sync', $keputusan->id_keputusan) }}" method="POST" onsubmit="return confirm('{{ $confirmMessage }}')">
+                <form action="{{ route('admin.spk.alternatif.penilaian.sync', $keputusan) }}" method="POST" onsubmit="return confirm('{{ $confirmMessage }}')">
                     @csrf
                     <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition duration-150 flex items-center">
                         <i class="fas fa-sync-alt mr-2"></i> Sinkronisasi Data Otomatis
@@ -57,8 +57,8 @@
                 @php
                     $hasData = !empty($penilaianMatrix);
                     $routeAction = $hasData 
-                        ? route('admin.spk.alternatif.penilaian.update', $keputusan->id_keputusan) 
-                        : route('admin.spk.alternatif.penilaian.store', $keputusan->id_keputusan);
+                        ? route('admin.spk.alternatif.penilaian.update', $keputusan) 
+                        : route('admin.spk.alternatif.penilaian.store', $keputusan);
                 @endphp
 
                 <form action="{{ $routeAction }}" method="POST">
@@ -177,3 +177,6 @@
     </div>
 
 @endsection
+
+
+

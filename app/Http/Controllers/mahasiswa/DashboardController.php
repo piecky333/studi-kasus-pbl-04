@@ -47,12 +47,12 @@ class DashboardController extends Controller
         // Jika ditemukan, ambil sanksi yang berelasi dengan ID mahasiswa tersebut.
         $sanksi = collect([]);
         
-        $mahasiswaProfile = \App\Models\Admin\DataMahasiswa::where('email', $user->email)
+        $mahasiswaProfile = \App\Models\DataMahasiswa::where('email', $user->email)
             ->orWhere('nim', $user->username)
             ->first();
         
         if ($mahasiswaProfile) {
-            $sanksi = \App\Models\Admin\Sanksi::where('id_mahasiswa', $mahasiswaProfile->id_mahasiswa)
+            $sanksi = \App\Models\Sanksi::where('id_mahasiswa', $mahasiswaProfile->id_mahasiswa)
                 ->latest()
                 ->get();
         }

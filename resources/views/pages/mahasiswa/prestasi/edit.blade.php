@@ -10,7 +10,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
 
-                    <form method="POST" action="{{ route('mahasiswa.prestasi.update', $prestasi->id_prestasi) }}" enctype="multipart/form-data" class="space-y-6">
+                    <form method="POST" action="{{ route('mahasiswa.prestasi.update', $prestasi) }}" enctype="multipart/form-data" class="space-y-6">
                         @csrf
                         @method('PUT')
 
@@ -93,3 +93,6 @@
         </div>
     </div>
 </x-app-layout>
+
+
+

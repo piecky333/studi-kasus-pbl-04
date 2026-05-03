@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Admin\Divisi;
+use App\Models\Divisi;
 
 /**
  * Class DivisiController
@@ -34,9 +34,10 @@ class DivisiController extends Controller
      * @return \Illuminate\View\View
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function show($id)
+    public function show(\App\Models\Divisi $divisi)
     {
-        $divisi = Divisi::findOrFail($id);
+        
         return view('pages.admin.divisi.show', compact('divisi'));
     }
 }
+

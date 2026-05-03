@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\HasHashid;
+
 class Berita extends Model
 {
-    use HasFactory;
+    use HasFactory, HasHashid;
 
     protected $table = 'berita';
     protected $primaryKey = 'id_berita';
@@ -24,21 +26,21 @@ class Berita extends Model
 
     public function user()
     {
-        return $this->belongsTo(\App\Models\User::class, 'id_user', 'id_user');
+        return $this->belongsTo(User::class, 'id_user', 'id_user');
     }
 
     public function komentar()
     {
-        return $this->hasMany(komentar::class, 'id_berita', 'id_berita');
+        return $this->hasMany(Komentar::class, 'id_berita', 'id_berita');
     }
 
     public function verifikator()
     {
-        return $this->belongsTo(\App\Models\User::class, 'id_verifikator', 'id_user');
+        return $this->belongsTo(User::class, 'id_verifikator', 'id_user');
     }
 
     public function penolak()
     {
-        return $this->belongsTo(\App\Models\User::class, 'id_penolak', 'id_user');
+        return $this->belongsTo(User::class, 'id_penolak', 'id_user');
     }
 }

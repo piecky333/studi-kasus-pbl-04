@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Admin\Sanksi;
-use App\Models\Admin\DataMahasiswa;
+use App\Models\Sanksi;
+use App\Models\DataMahasiswa;
 use Illuminate\Http\Request;
 
 /**
@@ -137,10 +137,10 @@ class SanksiController extends Controller
      * @return \Illuminate\View\View
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function edit($id)
+    public function edit(Sanksi $sanksi)
     {
-        $sanksi = Sanksi::findOrFail($id);
-        $mahasiswa = Datamahasiswa::all();
+        
+        $mahasiswa = DataMahasiswa::all();
         return view('pages.admin.sanksi.edit', compact('sanksi', 'mahasiswa'));
     }
 
@@ -152,7 +152,7 @@ class SanksiController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Sanksi $sanksi)
     {
         $request->validate([
             'id_mahasiswa' => 'required|exists:mahasiswa,id_mahasiswa',
@@ -162,7 +162,7 @@ class SanksiController extends Controller
             'keterangan'     => 'nullable|string',
         ]);
 
-        $sanksi = Sanksi::findOrFail($id);
+        
         $sanksi->update($request->only(['id_mahasiswa', 'jenis_sanksi', 'jenis_hukuman', 'tanggal_sanksi', 'keterangan']));
 
         return redirect()->route('admin.sanksi.index')->with('success', 'Data sanksi berhasil diperbarui.');
@@ -175,9 +175,9 @@ class SanksiController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function destroy($id)
+    public function destroy(Sanksi $sanksi)
     {
-        $sanksi = Sanksi::findOrFail($id);
+        
         $sanksi->delete();
 
         return redirect()->route('admin.sanksi.index')->with('success', 'Data sanksi berhasil dihapus.');
@@ -190,9 +190,10 @@ class SanksiController extends Controller
      * @return \Illuminate\View\View
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function show($id)
+    public function show(Sanksi $sanksi)
     {
-        $sanksi = Sanksi::with('mahasiswa')->findOrFail($id);
+        $sanksi->load('mahasiswa');
         return view('pages.admin.sanksi.show', compact('sanksi'));
     }
 }
+

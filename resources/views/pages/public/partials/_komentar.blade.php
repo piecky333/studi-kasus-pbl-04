@@ -23,7 +23,7 @@
             {{-- TOMBOL HAPUS (DELETE) - Hanya Tampil Jika User Memiliki Izin --}}
             {{-- Pemeriksaan izin menggunakan @can('destroy', $komen) berdasarkan KomentarPolicy --}}
             @can('destroy', $komen)
-                <form action="{{ route('komentar.destroy', $komen->id_komentar) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus komentar ini? Ini akan menghapus semua balasannya.');">
+                <form action="{{ route('komentar.destroy', $komen) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus komentar ini? Ini akan menghapus semua balasannya.');">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="text-sm font-semibold text-red-600 hover:text-red-800 focus:outline-none">
@@ -42,7 +42,7 @@
     
     {{-- Form Balasan (tersembunyi) --}}
     <div id="form-balas-{{ $komen->id_komentar }}" class="hidden mb-6">
-        <form action="{{ route('komentar.store', $berita->id_berita) }}" method="POST">
+        <form action="{{ route('komentar.store', $berita) }}" method="POST">
             @csrf
             <input type="hidden" name="parent_id" value="{{ $komen->id_komentar }}">
             <p class="text-sm text-gray-500 mb-2">
@@ -66,3 +66,6 @@
         </div>
     @endif
 </div>  
+
+
+

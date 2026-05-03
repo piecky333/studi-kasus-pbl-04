@@ -7,20 +7,15 @@
         </span>
     </div>
     <div class="flex-1">
-        <div class="flex items-baseline space-x-2">
+        <div class="flex items-baseline space-x-2 flex-wrap">
             <span class="font-semibold text-gray-900">{{ $balasan->nama_komentator }}</span>
-            <span class="text-xs text-gray-500">{{ $balasan->created_at->diffForHumans() }}</span>
+            @if($balasan->parent)
+                <span class="text-xs text-gray-500 mx-1">membalas</span>
+                <span class="font-semibold text-blue-600 text-sm">{{ $balasan->parent->nama_komentator }}</span>
+            @endif
+            <span class="text-xs text-gray-400 ml-2">{{ $balasan->created_at->diffForHumans() }}</span>
         </div>
         <p class="text-gray-700 mt-1">
-            {{-- 
-              Tampilkan "@NamaInduk" jika ini adalah balasan dari balasan.
-              Ini meniru gaya YouTube.
-            --}}
-            @if($balasan->parent && $balasan->parent->parent_id != null)
-                <a href="#komentar-{{ $balasan->parent->id_komentar }}" class="font-semibold text-blue-600 hover:underline">
-                    {{ '@' . $balasan->parent->nama_komentator }}
-                </a> 
-            @endif
             {{ $balasan->isi }}
         </p>
         <button onclick="tampilkanFormBalas({{ $komen->id_komentar }}, {{ json_encode($balasan->nama_komentator) }})" class="text-sm font-semibold text-blue-600 hover:text-blue-800 mt-2">
@@ -28,3 +23,5 @@
         </button>
     </div>
 </div>
+
+

@@ -46,7 +46,7 @@ class NewAdminReply extends Notification
             'id_pengaduan' => $this->pengaduan->id_pengaduan,
             'judul' => 'Balasan Baru dari Admin',
             'pesan' => 'Admin telah membalas pengaduan Anda: "' . $this->pengaduan->judul . '"',
-            'url' => route('user.pengaduan.show', $this->pengaduan->id_pengaduan),
+            'url' => route('user.pengaduan.show', $this->pengaduan),
             'type' => 'reply', // penanda tipe
             'image' => $this->image,
         ];

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Laporan\Pengaduan;
+use App\Models\Pengaduan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -109,12 +109,14 @@ class PengaduanController extends Controller
      * @return \Illuminate\View\View
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function show($id)
+    public function show(Pengaduan $pengaduan)
     {
-        $pengaduan = Auth::user()
-            ->pengaduan()
-            ->with(['user', 'tanggapan.admin', 'tanggapan.user']) // Eager load tanggapan
-            ->findOrFail($id);
+        // Keamanan tambahan: Pastikan pengaduan milik user yang login
+        if ($pengaduan->id_user !== Auth::id()) {
+            abort(403, 'Aksi ilegal.');
+        }
+
+        $pengaduan->load(['user', 'tanggapan.admin', 'tanggapan.user']);
 
         return view('pages.user.pengaduan.show', compact('pengaduan'));
     }
@@ -128,16 +130,18 @@ class PengaduanController extends Controller
      * @param  int  $id  ID Pengaduan
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function storeTanggapan(Request $request, $id)
+    public function storeTanggapan(Request $request, Pengaduan $pengaduan)
     {
         $request->validate([
             'isi_tanggapan' => 'required|string',
         ]);
 
-        $pengaduan = Auth::user()->pengaduan()->findOrFail($id);
+        if ($pengaduan->id_user !== Auth::id()) {
+            abort(403);
+        }
 
-        \App\Models\Laporan\Tanggapan::create([
-            'id_pengaduan' => $id,
+        \App\Models\Tanggapan::create([
+            'id_pengaduan' => $pengaduan->id_pengaduan,
             'id_user' => Auth::id(),
             'isi_tanggapan' => $request->isi_tanggapan,
             'tanggal_tanggapan' => now(),
@@ -154,9 +158,11 @@ class PengaduanController extends Controller
      * @param int $id ID Pengaduan
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy($id)
+    public function destroy(Pengaduan $pengaduan)
     {
-        $pengaduan = Auth::user()->pengaduan()->findOrFail($id);
+        if ($pengaduan->id_user !== Auth::id()) {
+            abort(403);
+        }
 
         // Hapus file bukti.
         if ($pengaduan->gambar_bukti && Storage::disk('public')->exists($pengaduan->gambar_bukti)) {

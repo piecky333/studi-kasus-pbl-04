@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Spk;
 use Illuminate\Http\Request;
 use App\Models\SubKriteria;
 use App\Models\Kriteria;
+use App\Models\SpkKeputusan;
 use App\Http\Controllers\Spk\KeputusanDetailController; 
 use Illuminate\Validation\ValidationException; 
-
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 /**
  * Class SubKriteriaController
  * 
@@ -39,21 +40,14 @@ class SubKriteriaController extends KeputusanDetailController
     }
 
     /**
-     * Helper Method: Memuat dan Memvalidasi Kriteria.
+     * Helper Method: Memuat dan Memvalidasi Kriteria (Opsional jika menggunakan Route Model Binding).
      * 
-     * Method ini memastikan bahwa ID Kriteria yang diterima dari URL valid
-     * dan benar-benar milik Keputusan saat ini ($this->idKeputusan).
-     * Jika tidak valid, akan melempar ModelNotFoundException (404).
-     * 
-     * @param int|string $idKriteria
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @param Kriteria $kriteria
      */
-    private function loadKriteria($idKriteria)
+    private function setKriteria(Kriteria $kriteria)
     {
-        $this->idKriteria = $idKriteria;
-        // SECURITY SCOPE: Memastikan Kriteria yang dimuat benar-benar terikat pada Keputusan aktif.
-        $this->kriteria = Kriteria::where('id_keputusan', $this->idKeputusan)
-                                  ->findOrFail($this->idKriteria);
+        $this->kriteria = $kriteria;
+        $this->idKriteria = $kriteria->id_kriteria;
     }
 
     // ----------------------------------------------------------------------------------
@@ -63,13 +57,13 @@ class SubKriteriaController extends KeputusanDetailController
     /**
      * Menampilkan daftar Sub Kriteria untuk Kriteria tertentu.
      * 
-     * @param mixed $idKeputusan
-     * @param mixed $idKriteria
+     * @param SpkKeputusan $keputusan
+     * @param Kriteria $kriteria
      * @return \Illuminate\View\View
      */
-    public function index($idKeputusan, $idKriteria)
+    public function index(SpkKeputusan $keputusan, Kriteria $kriteria)
     {
-        $this->loadKriteria($idKriteria);
+        $this->setKriteria($kriteria);
 
         // SCOPE: Hanya ambil subkriteria yang terkait dengan kriteria ini.
         $subkriteriaList = SubKriteria::where('id_kriteria', $this->idKriteria)
@@ -88,13 +82,13 @@ class SubKriteriaController extends KeputusanDetailController
     /**
      * Menampilkan form untuk membuat Sub Kriteria baru.
      * 
-     * @param mixed $idKeputusan
-     * @param mixed $idKriteria
+     * @param SpkKeputusan $keputusan
+     * @param Kriteria $kriteria
      * @return \Illuminate\View\View
      */
-    public function create($idKeputusan, $idKriteria)
+    public function create(SpkKeputusan $keputusan, Kriteria $kriteria)
     {
-        $this->loadKriteria($idKriteria);
+        $this->setKriteria($kriteria);
 
         $pageTitle = 'Tambah Sub Kriteria Baru';
 
@@ -109,13 +103,13 @@ class SubKriteriaController extends KeputusanDetailController
      * Menyimpan Sub Kriteria baru ke database.
      * 
      * @param Request $request
-     * @param mixed $idKeputusan
-     * @param mixed $idKriteria
+     * @param SpkKeputusan $keputusan
+     * @param Kriteria $kriteria
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request, $idKeputusan, $idKriteria)
+    public function store(Request $request, SpkKeputusan $keputusan, Kriteria $kriteria)
     {
-        $this->loadKriteria($idKriteria);
+        $this->setKriteria($kriteria);
 
         $request->validate([
             'nama_subkriteria' => 'required|string|max:255',
@@ -131,31 +125,28 @@ class SubKriteriaController extends KeputusanDetailController
         ]);
 
         return redirect()->route('admin.spk.kriteria.subkriteria.index', [
-            'idKeputusan' => $this->idKeputusan,
-            'idKriteria' => $this->idKriteria
+            'keputusan' => $this->keputusan,
+            'kriteria' => $this->kriteria
         ])->with('success', 'SubKriteria berhasil ditambahkan.');
     }
 
     /**
      * Menampilkan form edit untuk Sub Kriteria.
      * 
-     * @param mixed $idKeputusan
-     * @param mixed $idKriteria
-     * @param int|string $subkriteriumId ID Sub Kriteria yang akan diedit
+     * @param SpkKeputusan $keputusan
+     * @param Kriteria $kriteria
+     * @param SubKriteria $subkriteria
      * @return \Illuminate\View\View
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
-    public function edit($idKeputusan, $idKriteria, int|string $subkriteriumId)
+    public function edit(SpkKeputusan $keputusan, Kriteria $kriteria, SubKriteria $subkriteria)
     {
-        $this->loadKriteria($idKriteria);
+        $this->setKriteria($kriteria);
 
-        // MANUAL LOOKUP + SECURITY SCOPE
-        $subkriterium = SubKriteria::where('id_kriteria', $this->idKriteria)
-                                   ->findOrFail($subkriteriumId);
+        $pageTitle = 'Edit Sub Kriteria: ' . $subkriteria->nama_subkriteria;
 
-        $pageTitle = 'Edit Sub Kriteria: ' . $subkriterium->nama_subkriteria;
-
-        return view('pages.admin.spk.kriteria.subkriteria.edit', compact('pageTitle', 'subkriterium') + [
+        return view('pages.admin.spk.kriteria.subkriteria.edit', compact('pageTitle') + [
+            'subkriterium' => $subkriteria,
             'idKeputusan' => $this->idKeputusan,
             'keputusan' => $this->keputusan,
             'kriteria' => $this->kriteria,
@@ -166,58 +157,50 @@ class SubKriteriaController extends KeputusanDetailController
      * Memperbarui data Sub Kriteria.
      * 
      * @param Request $request
-     * @param mixed $idKeputusan
-     * @param mixed $idKriteria
-     * @param int|string $subkriteriumId
+     * @param SpkKeputusan $keputusan
+     * @param Kriteria $kriteria
+     * @param SubKriteria $subkriteria
      * @return \Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
-    public function update(Request $request, $idKeputusan, $idKriteria, int|string $subkriteriumId)
+    public function update(Request $request, SpkKeputusan $keputusan, Kriteria $kriteria, SubKriteria $subkriteria)
     {
-        $this->loadKriteria($idKriteria);
-
-        // MANUAL LOOKUP + SECURITY SCOPE
-        $subkriterium = SubKriteria::where('id_kriteria', $this->idKriteria)
-                                   ->findOrFail($subkriteriumId);
+        $this->setKriteria($kriteria);
 
         $request->validate([
             'nama_subkriteria' => 'required|string|max:255',
             'nilai' => 'required|numeric|min:0',
         ]);
 
-        $subkriterium->update([
+        $subkriteria->update([
             'nama_subkriteria' => $request->nama_subkriteria,
             'nilai' => $request->nilai,
         ]);
 
         return redirect()->route('admin.spk.kriteria.subkriteria.index', [
-            'idKeputusan' => $this->idKeputusan,
-            'idKriteria' => $this->idKriteria
+            'keputusan' => $this->keputusan,
+            'kriteria' => $this->kriteria
         ])->with('success', 'SubKriteria berhasil diperbarui.');
     }
 
     /**
      * Menghapus Sub Kriteria.
      * 
-     * @param mixed $idKeputusan
-     * @param mixed $idKriteria
-     * @param int|string $subkriteriumId
+     * @param SpkKeputusan $keputusan
+     * @param Kriteria $kriteria
+     * @param SubKriteria $subkriteria
      * @return \Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
-    public function destroy($idKeputusan, $idKriteria, int|string $subkriteriumId)
+    public function destroy(SpkKeputusan $keputusan, Kriteria $kriteria, SubKriteria $subkriteria)
     {
-        $this->loadKriteria($idKriteria);
+        $this->setKriteria($kriteria);
 
-        // MANUAL LOOKUP + SECURITY SCOPE
-        $subkriterium = SubKriteria::where('id_kriteria', $this->idKriteria)
-                                   ->findOrFail($subkriteriumId);
-
-        $subkriterium->delete();
+        $subkriteria->delete();
 
         return redirect()->route('admin.spk.kriteria.subkriteria.index', [
-            'idKeputusan' => $this->idKeputusan,
-            'idKriteria' => $this->idKriteria
+            'keputusan' => $this->keputusan,
+            'kriteria' => $this->kriteria
         ])->with('success', 'SubKriteria berhasil dihapus.');
     }
 }

@@ -27,16 +27,18 @@ class PrestasiController extends Controller
     /**
      * Tampilkan detail prestasi.
      *
-     * @param int $id
+     * @param Berita $berita
      * @return \Illuminate\View\View
      */
-    public function show($id)
+    public function show(Berita $berita)
     {
-        $berita = berita::where('kategori', 'prestasi')
-            ->findOrFail($id);
+        // Pastikan berita yang diakses adalah kategori prestasi
+        if ($berita->kategori !== 'prestasi') {
+            abort(404);
+        }
 
-        $beritaTerkait = berita::where('kategori', 'prestasi')
-            ->where('id_berita', '!=', $id)
+        $beritaTerkait = Berita::where('kategori', 'prestasi')
+            ->where('id_berita', '!=', $berita->id_berita)
             ->latest()->take(3)->get();
 
         // Ambil komentar induk dan balasan.

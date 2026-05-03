@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Models\berita; 
 use App\Models\laporan\pengaduan; 
 use Illuminate\Support\Facades\DB; 
-use App\Models\Admin\DataMahasiswa; 
+use App\Models\DataMahasiswa; 
 
 /**
  * Class DashboardController

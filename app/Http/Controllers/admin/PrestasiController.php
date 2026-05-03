@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Admin\Prestasi;
-use App\Models\Admin\DataMahasiswa;
+use App\Models\Prestasi;
+use App\Models\DataMahasiswa;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -143,9 +143,9 @@ class PrestasiController extends Controller
      * @return \Illuminate\View\View
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function show(string $id)
+    public function show(Prestasi $prestasi)
     {
-        $prestasi = Prestasi::with('mahasiswa')->findOrFail($id);
+        $prestasi->load('mahasiswa');
         return view('pages.admin.prestasi.show', compact('prestasi'));
     }
 
@@ -156,9 +156,9 @@ class PrestasiController extends Controller
      * @return \Illuminate\View\View
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function edit(string $id)
+    public function edit(Prestasi $prestasi)
     {
-        $prestasi = Prestasi::with('mahasiswa')->findOrFail($id);
+        $prestasi->load('mahasiswa');
         return view('pages.admin.prestasi.edit', compact('prestasi'));
     }
 
@@ -172,18 +172,16 @@ class PrestasiController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Prestasi $prestasi)
     {
         $request->validate([
             'nama_kegiatan'    => 'required|string|max:255',
             'tingkat_prestasi' => 'required|string|max:255',
-            'juara'            => 'required|string|max:255', // Add Juara validation
+            'juara'            => 'required|string|max:255', 
             'tahun'            => 'required|digits:4|integer',
             'status_validasi'  => 'required|in:menunggu,disetujui,ditolak',
-            'nim'              => 'nullable|exists:mahasiswa,nim', // Validasi NIM jika ada
+            'nim'              => 'nullable|exists:mahasiswa,nim', 
         ]);
-
-        $prestasi = Prestasi::findOrFail($id);
         
         $dataToUpdate = [
             'nama_kegiatan'    => $request->nama_kegiatan,
@@ -197,7 +195,7 @@ class PrestasiController extends Controller
         // Jika field NIM diisi/diubah, kita perlu mencari ulang ID Mahasiswa terkait
         // dan mengupdate foreign key 'id_mahasiswa' di tabel prestasi.
         if ($request->filled('nim')) {
-            $mahasiswa = Datamahasiswa::where('nim', $request->nim)->first();
+            $mahasiswa = DataMahasiswa::where('nim', $request->nim)->first();
             if ($mahasiswa) {
                 $dataToUpdate['id_mahasiswa'] = $mahasiswa->id_mahasiswa;
             }
@@ -215,9 +213,8 @@ class PrestasiController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function destroy(string $id)
+    public function destroy(Prestasi $prestasi)
     {
-        $prestasi = Prestasi::findOrFail($id);
         $prestasi->delete();
 
         return redirect()->route('admin.prestasi.index')->with('success', 'Data prestasi berhasil dihapus.');
@@ -243,7 +240,7 @@ class PrestasiController extends Controller
             ]);
         }
 
-        $mahasiswa = Datamahasiswa::where('nim', $nim)->first();
+        $mahasiswa = DataMahasiswa::where('nim', $nim)->first();
 
         if ($mahasiswa) {
             return response()->json([
@@ -263,16 +260,14 @@ class PrestasiController extends Controller
             'message' => 'Mahasiswa tidak ditemukan'
         ]);
     }
-    public function verifikasi($id)
+    public function verifikasi(Prestasi $prestasi)
     {
-        $prestasi = Prestasi::findOrFail($id);
         $prestasi->update(['status_validasi' => 'disetujui']);
         return redirect()->back()->with('success', 'Prestasi berhasil disetujui.');
     }
 
-    public function tolak($id)
+    public function tolak(Prestasi $prestasi)
     {
-        $prestasi = Prestasi::findOrFail($id);
         $prestasi->update(['status_validasi' => 'ditolak']);
         return redirect()->back()->with('success', 'Prestasi berhasil ditolak.');
     }

@@ -1,29 +1,19 @@
 <?php
 
-namespace Database\Factories\admin;
+namespace Database\Factories;
 
-use App\Models\admin\Prestasi;
-use App\Models\admin\DataMahasiswa;
-use App\Models\admin\Admin;
+use App\Models\Prestasi;
+use App\Models\DataMahasiswa;
+use App\Models\Admin;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\admin\Prestasi>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Prestasi>
  */
 class PrestasiFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
     protected $model = Prestasi::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [

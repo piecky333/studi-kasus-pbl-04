@@ -55,7 +55,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('pengurus.berita.update', $berita->id_berita) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('pengurus.berita.update', $berita) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -197,3 +197,7 @@
     });
 </script>
 @endsection
+
+
+
+

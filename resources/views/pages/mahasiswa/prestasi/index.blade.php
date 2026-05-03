@@ -95,11 +95,11 @@
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <a href="{{ route('mahasiswa.prestasi.show', $item->id_prestasi) }}" class="text-indigo-600 hover:text-indigo-900 mr-2">Detail</a>
+                                            <a href="{{ route('mahasiswa.prestasi.show', $item) }}" class="text-indigo-600 hover:text-indigo-900 mr-2">Detail</a>
                                             
                                             @if($item->status_validasi != 'disetujui')
-                                                <a href="{{ route('mahasiswa.prestasi.edit', $item->id_prestasi) }}" class="text-amber-600 hover:text-amber-900 mr-2">Edit</a>
-                                                <form action="{{ route('mahasiswa.prestasi.destroy', $item->id_prestasi) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                                                <a href="{{ route('mahasiswa.prestasi.edit', $item) }}" class="text-amber-600 hover:text-amber-900 mr-2">Edit</a>
+                                                <form action="{{ route('mahasiswa.prestasi.destroy', $item) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="text-red-600 hover:text-red-900">Hapus</button>
@@ -127,3 +127,7 @@
         </div>
     </div>
 </x-app-layout>
+
+
+
+

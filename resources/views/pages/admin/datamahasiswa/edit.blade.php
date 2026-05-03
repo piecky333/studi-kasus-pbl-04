@@ -18,7 +18,7 @@
     {{-- Form Card --}}
     <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden max-w-4xl mx-auto">
         <div class="p-8">
-            <form action="{{ route('admin.datamahasiswa.update', $mahasiswa->id_mahasiswa) }}" method="POST">
+            <form action="{{ route('admin.datamahasiswa.update', $mahasiswa) }}" method="POST">
                 @csrf
                 @method('PUT')
 
@@ -94,3 +94,5 @@
     </div>
 </div>
 @endsection
+
+

@@ -136,12 +136,12 @@
                             <td class="px-3 py-2 lg:px-6 lg:py-4 whitespace-nowrap text-center text-xs lg:text-sm font-medium">
                                 <div class="flex justify-center space-x-1 lg:space-x-2">
                                     {{-- Edit --}}
-                                    <a href="{{ route('pengurus.pengurus.edit', $p->id_pengurus) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-lg transition-colors duration-200 bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" title="Edit">
+                                    <a href="{{ route('pengurus.pengurus.edit', $p) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-lg transition-colors duration-200 bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" title="Edit">
                                         <i class="fas fa-pencil-alt text-xs lg:text-sm mr-1 lg:mr-2"></i> Edit
                                     </a>
                                     
                                     {{-- Delete --}}
-                                    <form action="{{ route('pengurus.pengurus.destroy', $p->id_pengurus) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')" class="inline">
+                                    <form action="{{ route('pengurus.pengurus.destroy', $p) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')" class="inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-lg transition-colors duration-200 bg-red-100 text-red-600 hover:bg-red-600 hover:text-white" title="Hapus">
@@ -173,3 +173,5 @@
     </div>
 </div>
 @endsection
+
+

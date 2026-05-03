@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\kriteria;
+use App\Models\Kriteria;
 use App\Models\SubKriteria;
 
 class TingkatanJuaraSeeder extends Seeder
@@ -56,3 +56,4 @@ class TingkatanJuaraSeeder extends Seeder
         $this->command->info("Berhasil menambahkan " . count($subKriteriaItems) . " sub kriteria.");
     }
 }
+

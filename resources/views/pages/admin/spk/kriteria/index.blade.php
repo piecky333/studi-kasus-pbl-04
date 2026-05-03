@@ -29,13 +29,13 @@
             <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-3 w-full md:w-auto">
                 {{-- Tombol Perbandingan AHP hanya muncul jika ada >= 2 kriteria --}}
                 @if($kriteriaData->count() >= 2)
-                    <a href="{{ route('admin.spk.kriteria.perbandingan.index', $keputusan->id_keputusan) }}"
+                    <a href="{{ route('admin.spk.kriteria.perbandingan.index', $keputusan) }}"
                         class="w-full md:w-auto text-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg text-sm transition duration-150 shadow-sm">
                         <i class="fas fa-balance-scale mr-1"></i> Bobot Preferensi AHP
                     </a>
                 @endif
                 
-                <a href="{{ route('admin.spk.kriteria.create', $keputusan->id_keputusan) }}"
+                <a href="{{ route('admin.spk.kriteria.create', $keputusan) }}"
                     class="w-full md:w-auto text-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition duration-150 shadow-sm">
                     <i class="fas fa-plus mr-1"></i> Tambah Kriteria
                 </a>
@@ -110,15 +110,15 @@
                             {{-- Kolom Aksi: Atur Sub, Edit, dan Hapus --}}
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex justify-center md:table-cell">
                                 <div class="flex flex-row md:justify-center gap-2 w-full md:w-auto">
-                                    <a href="{{ route('admin.spk.kriteria.subkriteria.index', [$idKeputusan, $kriteria->id_kriteria]) }}"
+                                    <a href="{{ route('admin.spk.kriteria.subkriteria.index', [$keputusan, $kriteria]) }}"
                                         class="flex-1 md:flex-none text-center px-3 py-2 md:py-1 text-xs text-blue-600 hover:text-blue-900 border border-blue-600 hover:border-blue-900 rounded transition duration-150">
                                         Sub Kriteria
                                     </a>
-                                    <a href="{{ route('admin.spk.kriteria.edit', [$idKeputusan, $kriteria->id_kriteria]) }}"
+                                    <a href="{{ route('admin.spk.kriteria.edit', [$keputusan, $kriteria]) }}"
                                         class="flex-1 md:flex-none text-center px-3 py-2 md:py-1 text-xs text-amber-600 hover:text-amber-900 border border-amber-600 hover:border-amber-900 rounded transition duration-150">
                                         Edit
                                     </a>
-                                    <form action="{{ route('admin.spk.kriteria.destroy', [$idKeputusan, $kriteria->id_kriteria]) }}" method="POST" class="flex-1 md:flex-none inline">
+                                    <form action="{{ route('admin.spk.kriteria.destroy', [$keputusan, $kriteria]) }}" method="POST" class="flex-1 md:flex-none inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" onclick="return confirm('Yakin ingin menghapus kriteria ini?')"
@@ -145,3 +145,6 @@
         </div>
     </div>
 @endsection
+
+
+

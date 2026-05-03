@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
-use App\Models\admin\Admin;
+use App\Models\Admin;
 
 class AdminSeeder extends Seeder
 {
@@ -17,3 +17,4 @@ class AdminSeeder extends Seeder
         Admin::factory(10)->create();
     }
 }
+

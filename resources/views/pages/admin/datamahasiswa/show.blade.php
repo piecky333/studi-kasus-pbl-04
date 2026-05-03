@@ -27,10 +27,10 @@
                 <p class="text-sm text-gray-500 mb-4">{{ $mahasiswa->nim }}</p>
                 
                 <div class="flex justify-center gap-2">
-                    <a href="{{ route('admin.datamahasiswa.edit', $mahasiswa->id_mahasiswa) }}" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium rounded-lg transition-colors duration-200">
+                    <a href="{{ route('admin.datamahasiswa.edit', $mahasiswa) }}" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium rounded-lg transition-colors duration-200">
                         <i class="fas fa-edit mr-1"></i> Edit
                     </a>
-                    <form action="{{ route('admin.datamahasiswa.destroy', $mahasiswa->id_mahasiswa) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                    <form action="{{ route('admin.datamahasiswa.destroy', $mahasiswa) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-lg transition-colors duration-200">
@@ -88,7 +88,7 @@
                                 @foreach($mahasiswa->prestasi as $prestasi)
                                     <tr class="hover:bg-gray-50">
                                         <td class="px-6 py-3 font-medium text-gray-800">
-                                            <a href="{{ route('admin.prestasi.show', $prestasi->id_prestasi) }}" class="text-indigo-600 hover:text-indigo-900 hover:underline">
+                                            <a href="{{ route('admin.prestasi.show', $prestasi) }}" class="text-indigo-600 hover:text-indigo-900 hover:underline">
                                                 {{ $prestasi->nama_kegiatan }}
                                             </a>
                                         </td>
@@ -137,7 +137,7 @@
                                 @foreach($mahasiswa->sanksi as $sanksi)
                                     <tr class="hover:bg-gray-50">
                                         <td class="px-6 py-3 font-medium text-gray-800">
-                                            <a href="{{ route('admin.sanksi.show', $sanksi->id_sanksi) }}" class="text-indigo-600 hover:text-indigo-900 hover:underline">
+                                            <a href="{{ route('admin.sanksi.show', $sanksi) }}" class="text-indigo-600 hover:text-indigo-900 hover:underline">
                                                 {{ $sanksi->jenis_sanksi }}
                                             </a>
                                         </td>
@@ -166,3 +166,5 @@
     </div>
 </div>
 @endsection
+
+

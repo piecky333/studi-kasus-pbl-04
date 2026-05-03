@@ -116,63 +116,43 @@
                                     <thead class="bg-blue-100">
                                         <tr>
                                             <th scope="col"
-                                                class="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
+                                                class="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider rounded-tl-lg">
                                                 Judul</th>
                                             <th scope="col"
                                                 class="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
                                                 Status</th>
                                             <th scope="col"
-                                                class="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
+                                                class="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider rounded-tr-lg">
                                                 Tanggal Dibuat</th>
-                                            <th scope="col" class="relative px-6 py-3"><span class="sr-only">Aksi</span>
-                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody class="bg-white divide-y divide-gray-200">
                                         @foreach($pengaduanTerakhir as $item)
-                                            <tr>
+                                            <tr onclick="window.location='{{ route('user.pengaduan.show', $item) }}'" 
+                                                class="cursor-pointer hover:bg-gray-50 transition duration-150">
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                                     {{ Str::limit($item->judul, 40) }}
                                                 </td>
 
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                                     @php
-                                                        // Bersihkan nilai status untuk perbandingan yang aman
                                                         $statusBersih = trim($item->status);
                                                     @endphp
 
                                                     @if(strcasecmp($statusBersih, 'Diproses') == 0)
-                                                        <span
-                                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Diproses</span>
+                                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Diproses</span>
                                                     @elseif(strcasecmp($statusBersih, 'Selesai') == 0)
-                                                        <span
-                                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Selesai</span>
+                                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Selesai</span>
                                                     @elseif(strcasecmp($statusBersih, 'Ditolak') == 0)
-                                                        <span
-                                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Ditolak</span>
+                                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Ditolak</span>
                                                     @elseif(strcasecmp($statusBersih, 'Terkirim') == 0)
-                                                        <span
-                                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Terkirim</span>
+                                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Terkirim</span>
                                                     @else
-                                                        {{-- Ini untuk data kosong atau tidak valid --}}
-                                                        <span
-                                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">{{ $statusBersih ?: 'N/A' }}</span>
+                                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">{{ $statusBersih ?: 'N/A' }}</span>
                                                     @endif
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                     {{ $item->created_at->format('d M Y') }}
-                                                </td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                    @php
-                                                        // Cek apakah ada balasan terakhir dari admin
-                                                        $lastTanggapan = $item->tanggapan->sortBy('created_at')->last();
-                                                        $hasReply = $lastTanggapan && $lastTanggapan->id_admin;
-                                                    @endphp
-                                                    {{-- Link ke Detail Pengaduan User --}}
-                                                    <a href="{{ route('user.pengaduan.show', $item->id_pengaduan) }}"
-                                                        class="text-indigo-600 hover:text-indigo-900 font-semibold">
-                                                        {{ $hasReply ? 'Lihat balasan' : 'Detail' }}
-                                                    </a>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -181,11 +161,14 @@
                             </div>
                         @endif
                     </div>
-                    {{-- Link ke Halaman Index Pengaduan User --}}
-                    <div class="p-6 bg-gray-50 border-t border-gray-200 text-right">
+                    
+                    <div class="px-6 py-4 bg-gray-50 text-right">
                         <a href="{{ route('user.pengaduan.index') }}"
-                            class="text-sm font-semibold text-indigo-600 hover:text-indigo-900 transition duration-150 ease-in-out ">
-                            Lihat Semua Riwayat Pengaduan &rarr;
+                            class="text-sm font-semibold text-indigo-600 hover:text-indigo-900 flex items-center justify-end group">
+                            Lihat Semua Riwayat Pengaduan 
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
                         </a>
                     </div>
                 </div>
@@ -260,3 +243,5 @@
         </div>
     </div>
 </x-app-layout>
+
+

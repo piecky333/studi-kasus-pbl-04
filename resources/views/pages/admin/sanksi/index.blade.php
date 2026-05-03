@@ -186,17 +186,17 @@
                                     <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-center font-medium">
                                         <div class="flex justify-center space-x-1 lg:space-x-2">
                                             {{-- Detail --}}
-                                            <a href="{{ route('admin.sanksi.show', $item->id_sanksi) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white" title="Detail">
+                                            <a href="{{ route('admin.sanksi.show', $item) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white" title="Detail">
                                                 <i class="fas fa-eye mr-1 lg:mr-2"></i> Detail
                                             </a>
 
                                             {{-- Edit --}}
-                                            <a href="{{ route('admin.sanksi.edit', $item->id_sanksi) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" title="Edit">
+                                            <a href="{{ route('admin.sanksi.edit', $item) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" title="Edit">
                                                 <i class="fas fa-pencil-alt mr-1 lg:mr-2"></i> Edit
                                             </a>
                                             
                                             {{-- Delete --}}
-                                            <form action="{{ route('admin.sanksi.destroy', $item->id_sanksi) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')" class="inline">
+                                            <form action="{{ route('admin.sanksi.destroy', $item) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')" class="inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-red-100 text-red-600 hover:bg-red-600 hover:text-white" title="Hapus">
@@ -227,3 +227,6 @@
     </div>
 </div>
 @endsection
+
+
+

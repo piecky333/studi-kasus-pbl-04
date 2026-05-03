@@ -55,7 +55,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('pengurus.pengurus.update', $pengurus->id_pengurus) }}" method="POST">
+            <form action="{{ route('pengurus.pengurus.update', $pengurus) }}" method="POST">
                 @csrf
                 @method('PUT')
 
@@ -215,3 +215,6 @@
     });
 </script>
 @endsection
+
+
+

@@ -1,11 +1,9 @@
 <?php
 
-namespace App\Models\Laporan;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
-use App\Models\laporan\Pengaduan;
 
 class Terlapor extends Model
 {

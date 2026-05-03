@@ -199,7 +199,7 @@
                         Kembali
                     </a>
                     
-                    <a href="{{ route('pengurus.prestasi.edit', $prestasi->id_prestasi) }}" class="w-full sm:w-auto inline-flex justify-center items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-amber-500 hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">
+                    <a href="{{ route('pengurus.prestasi.edit', $prestasi) }}" class="w-full sm:w-auto inline-flex justify-center items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-amber-500 hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">
                         <i class="fas fa-pencil-alt mr-2"></i> Edit 
                     </a>
                 </div>
@@ -257,3 +257,6 @@
     </div>
 </div>
 @endsection
+
+
+

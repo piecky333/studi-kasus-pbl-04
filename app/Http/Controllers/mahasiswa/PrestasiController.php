@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Admin\Prestasi;
-use App\Models\Admin\DataMahasiswa; // Fix namespace capitalization if needed
+use App\Models\Prestasi;
+use App\Models\DataMahasiswa; // Fix namespace capitalization if needed
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -101,12 +101,13 @@ class PrestasiController extends Controller
     /**
      * Menampilkan detail prestasi.
      */
-    public function show($id)
+    public function show(Prestasi $prestasi)
     {
         $user = Auth::user();
         // Pastikan hanya bisa lihat punya sendiri
-        $prestasi = Prestasi::where('id_mahasiswa', $user->mahasiswa->id_mahasiswa)
-                            ->findOrFail($id);
+        if ($prestasi->id_mahasiswa !== $user->mahasiswa->id_mahasiswa) {
+            abort(403);
+        }
 
         return view('pages.mahasiswa.prestasi.show', compact('prestasi'));
     }
@@ -114,11 +115,12 @@ class PrestasiController extends Controller
     /**
      * Form edit (Hanya jika status 'menunggu' atau 'ditolak').
      */
-    public function edit($id)
+    public function edit(Prestasi $prestasi)
     {
         $user = Auth::user();
-        $prestasi = Prestasi::where('id_mahasiswa', $user->mahasiswa->id_mahasiswa)
-                            ->findOrFail($id);
+        if ($prestasi->id_mahasiswa !== $user->mahasiswa->id_mahasiswa) {
+            abort(403);
+        }
 
         if ($prestasi->status_validasi == 'disetujui') {
             return redirect()->route('mahasiswa.prestasi.index')->with('error', 'Prestasi yang sudah disetujui tidak dapat diedit.');
@@ -130,11 +132,12 @@ class PrestasiController extends Controller
     /**
      * Update prestasi.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Prestasi $prestasi)
     {
         $user = Auth::user();
-        $prestasi = Prestasi::where('id_mahasiswa', $user->mahasiswa->id_mahasiswa)
-                            ->findOrFail($id);
+        if ($prestasi->id_mahasiswa !== $user->mahasiswa->id_mahasiswa) {
+            abort(403);
+        }
 
         if ($prestasi->status_validasi == 'disetujui') {
             return back()->with('error', 'Tidak bisa mengubah data yang sudah disetujui.');
@@ -181,11 +184,12 @@ class PrestasiController extends Controller
     /**
      * Hapus prestasi (Hanya jika belum disetujui).
      */
-    public function destroy($id)
+    public function destroy(Prestasi $prestasi)
     {
         $user = Auth::user();
-        $prestasi = Prestasi::where('id_mahasiswa', $user->mahasiswa->id_mahasiswa)
-                            ->findOrFail($id);
+        if ($prestasi->id_mahasiswa !== $user->mahasiswa->id_mahasiswa) {
+            abort(403);
+        }
 
         if ($prestasi->status_validasi == 'disetujui') {
             return back()->with('error', 'Tidak bisa menghapus prestasi yang sudah disetujui.');
@@ -200,3 +204,4 @@ class PrestasiController extends Controller
         return redirect()->route('mahasiswa.prestasi.index')->with('success', 'Data prestasi berhasil dihapus.');
     }
 }
+

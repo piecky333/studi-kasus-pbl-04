@@ -22,3 +22,6 @@
     <a href="{{ route('pengaduan.index') }}" class="btn btn-secondary mt-3">Kembali</a>
 </div>
 @endsection
+
+
+

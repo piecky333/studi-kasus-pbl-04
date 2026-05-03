@@ -52,7 +52,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('admin.sanksi.update', $sanksi->id_sanksi) }}" method="POST">
+            <form action="{{ route('admin.sanksi.update', $sanksi) }}" method="POST">
                 @csrf
                 @method('PUT')
 
@@ -168,3 +168,6 @@
     </div>
 </div>
 @endsection
+
+
+

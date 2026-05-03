@@ -59,7 +59,7 @@
                         <h2 class="text-2xl font-bold text-blue-800 mb-6">Komentar ({{ $berita->komentar->count() }})</h2>
 
                         {{-- 1. Form Kirim Komentar (Induk) --}}
-                        <form action="{{ route('komentar.store', $berita->id_berita) }}" method="POST" class="mb-8">
+                        <form action="{{ route('komentar.store', $berita) }}" method="POST" class="mb-8">
                             @csrf
                             @if (session('success'))
                                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md relative mb-4"
@@ -128,7 +128,7 @@
                                     <div>
                                         <h4 class="font-semibold text-gray-800 group-hover:text-blue-700 leading-tight">
                                             {{-- ROUTE TELAH DIPERBAIKI KE PRESTASI.SHOW --}}
-                                            <a href="{{ route('prestasi.show', $terkait->id_berita) }}">{{ Str::limit($terkait->judul_berita, 50) }}</a>
+                                            <a href="{{ route('prestasi.show', $terkait) }}">{{ Str::limit($terkait->judul_berita, 50) }}</a>
                                         </h4>
                                         <span class="text-xs text-gray-500">{{ $terkait->created_at->format('d M Y') }}</span>
                                     </div>
@@ -198,3 +198,6 @@
         </script>
     @endpush
 @endsection
+
+
+

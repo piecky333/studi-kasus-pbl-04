@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Models\Admin;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasHashid;
 
 class DataMahasiswa extends Model
 {
-    use HasFactory;
+    use HasFactory, HasHashid;
 
     protected $table = 'mahasiswa';
     protected $primaryKey = 'id_mahasiswa';
@@ -23,26 +24,28 @@ class DataMahasiswa extends Model
 
     public function prestasi()
     {
-        return $this->hasMany(\App\Models\Admin\Prestasi::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->hasMany(Prestasi::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 
     public function sanksi()
     {
-        return $this->hasMany(\App\Models\Admin\Sanksi::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->hasMany(Sanksi::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 
     public function pengaduan()
     {
-        return $this->hasMany(\App\Models\Laporan\Pengaduan::class, 'id_user', 'id_user');
+        return $this->hasMany(Pengaduan::class, 'id_user', 'id_user');
     }
 
     public function berita()
     {
-        return $this->hasMany(\App\Models\Berita::class, 'id_user', 'id_user');
+        return $this->hasMany(Berita::class, 'id_user', 'id_user');
     }
 
     public function admin()
     {
-        return $this->belongsTo(\App\Models\Admin\Admin::class, 'id_admin', 'id_admin');
+        return $this->belongsTo(Admin::class, 'id_admin', 'id_admin');
     }
 }
+
+

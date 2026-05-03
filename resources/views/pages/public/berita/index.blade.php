@@ -44,7 +44,7 @@
                         data-wow-delay="0.{{ $loop->index % 3 }}s">
 
                         {{-- Gambar --}}
-                        <a href="{{ route('berita.show', $kegiatan->id_berita) }}" class="block overflow-hidden h-48">
+                        <a href="{{ route('berita.show', $kegiatan) }}" class="block overflow-hidden h-48">
                             <img src="{{ asset('storage/' . $kegiatan->gambar_berita) }}" 
                                  alt="{{ $kegiatan->judul_berita }}"
                                  class="w-full h-full object-cover transform hover:scale-105 transition duration-500">
@@ -55,7 +55,7 @@
                             {{-- JUDUL --}}
                             <h3 class="font-bold text-lg text-gray-900 my-2 hover:text-blue-700 
                                        line-clamp-2 min-h-[3.5rem] transition duration-300">
-                                <a href="{{ route('berita.show', $kegiatan->id_berita) }}" class="link-animasi">
+                                <a href="{{ route('berita.show', $kegiatan) }}" class="link-animasi">
                                     {{ Str::limit($kegiatan->judul_berita, 50) }}
                                 </a>
                             </h3>
@@ -148,3 +148,6 @@
         });
     </script>
 @endpush
+
+
+

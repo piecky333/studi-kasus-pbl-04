@@ -5,13 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Model untuk tabel kriteria.
- * Menyimpan detail kriteria, tipe (Benefit/Cost), bobot, dan cara penilaian.
- */
+use App\Traits\HasHashid;
+
 class Kriteria extends Model
 {
-    use HasFactory;
+    use HasFactory, HasHashid;
 
     protected $table = 'kriteria';
     protected $primaryKey = 'id_kriteria';
@@ -21,37 +19,25 @@ class Kriteria extends Model
         'id_keputusan',
         'nama_kriteria',
         'kode_kriteria',
-        'jenis_kriteria', // Menyimpan 'Benefit' atau 'Cost' (Type)
-        'bobot_kriteria', // Menyimpan bobot hasil AHP/manual (Bobot)
+        'jenis_kriteria',
+        'bobot_kriteria',
         'sumber_data',
         'atribut_sumber',
     ];
 
-    /**
-     * Relasi Many-to-One: Kriteria dimiliki oleh satu keputusan.
-     * Asumsi: Model keputusan Anda adalah SpkKeputusan.
-     */
     public function keputusan()
     {
         return $this->belongsTo(SpkKeputusan::class, 'id_keputusan');
     }
 
-    /**
-     * Relasi One-to-Many: Satu kriteria memiliki banyak penilaian.
-     * Digunakan untuk mencatat nilai alternatif untuk kriteria ini.
-     */
     public function penilaian()
     {
         return $this->hasMany(Penilaian::class, 'id_kriteria');
     }
 
-    /**
-     * Relasi One-to-Many: Satu kriteria memiliki banyak sub kriteria.
-     * Digunakan ketika 'Cara Penilaian' adalah 'Pilihan Sub Kriteria'.
-     * Asumsi: Model sub kriteria Anda adalah SubKriteria.
-     */
     public function subKriteria()
     {
         return $this->hasMany(SubKriteria::class, 'id_kriteria', 'id_kriteria');
     }
 }
+

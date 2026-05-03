@@ -3,9 +3,9 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\admin\DataMahasiswa;
-use App\Models\admin\Prestasi;
-use App\Models\admin\Admin; // Import correct Admin model
+use App\Models\DataMahasiswa;
+use App\Models\Prestasi;
+use App\Models\Admin; // Import correct Admin model
 use Illuminate\Support\Facades\DB;
 
 class FixSpkDataSeeder extends Seeder
@@ -116,3 +116,4 @@ class FixSpkDataSeeder extends Seeder
         }
     }
 }
+
