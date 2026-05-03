@@ -69,7 +69,7 @@ class BeritaSeeder extends Seeder
         // Membuat 3 data berita kategori 'kegiatan'
         $this->command->info('Membuat 3 data kegiatan...');
         Berita::create([
-            'id_user' => $pengurus->id_user, // Created by Pengurus
+            'id_user' => $pengurus->id_user, // Created by Random Pengurus
             'judul_berita' => 'Politala Bersama Pemkab Tanah Laut Luncurkan Aplikasi Amang Tani dan Acil Puskes pada Rapat Paripurna DPRD dalam rangka Hari Jadi ke-60 Tanah Laut.',
             'kategori' => 'kegiatan',
             'status' => 'verified',

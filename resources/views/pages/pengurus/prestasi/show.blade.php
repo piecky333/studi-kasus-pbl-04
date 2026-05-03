@@ -115,6 +115,11 @@
                                 <div>
                                     <p class="text-lg font-bold text-gray-900">{{ $prestasi->nama_kegiatan }}</p>
                                     <span class="text-sm text-gray-500">{{ $prestasi->jenis_prestasi ?? 'Umum' }}</span>
+                                    @if($prestasi->juara)
+                                        <p class="mt-1 text-sm font-semibold text-indigo-700">
+                                            <i class="fas fa-medal mr-1"></i> {{ $prestasi->juara }}
+                                        </p>
+                                    @endif
                                 </div>
                             </div>
                         </div>

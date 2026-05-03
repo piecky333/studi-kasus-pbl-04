@@ -46,6 +46,11 @@ class DataMahasiswa extends Model
     {
         return $this->belongsTo(Admin::class, 'id_admin', 'id_admin');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user', 'id_user');
+    }
 }
 
 

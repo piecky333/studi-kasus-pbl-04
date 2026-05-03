@@ -1,3 +1,8 @@
 #Navigasi{
     background-color: #182246
 }
+
+/* Mematikan efek underline bawaan Bootstrap saat link (terutama yang berfungsi sebagai tombol) di-hover */
+a:hover {
+    text-decoration: none !important;
+}

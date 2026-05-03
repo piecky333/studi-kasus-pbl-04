@@ -240,7 +240,7 @@
                                     <div>
                                         <dt class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Kontak (WhatsApp)</dt>
                                         <dd class="mt-1 text-sm font-bold text-indigo-700 font-mono bg-indigo-50 p-2 rounded-md border border-indigo-100 inline-block">
-                                            <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $pengaduan->no_telpon_dihubungi)) }}?text={{ urlencode('Halo, kami dari Admin Kampus ingin menindaklanjuti pengaduan Anda mengenai: "' . $pengaduan->judul . '".') }}" target="_blank" class="hover:underline flex items-center">
+                                            <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $pengaduan->no_telpon_dihubungi)) }}?text={{ urlencode('Halo, kami dari Admin Kampus ingin menindaklanjuti pengaduan Anda mengenai: "' . $pengaduan->judul . '".') }}" target="_blank" class="flex items-center">
                                                 <i class="fab fa-whatsapp mr-2 text-green-500 text-lg"></i> {{ $pengaduan->no_telpon_dihubungi }}
                                             </a>
                                         </dd>
