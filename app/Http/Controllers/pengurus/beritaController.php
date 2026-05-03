@@ -48,6 +48,7 @@ class BeritaController extends Controller
         $request->validate([
             'judul_berita'  => 'required|string|max:255',
             'isi_berita'    => 'required|string',
+            'kategori'      => 'required|string|in:kegiatan,prestasi',
             'gambar_berita' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -60,7 +61,7 @@ class BeritaController extends Controller
             'id_user'       => auth()->user()->id_user,
             'judul_berita'  => $request->judul_berita,
             'isi_berita'    => $request->isi_berita,
-            'kategori'      => 'kegiatan',
+            'kategori'      => $request->kategori,
             'gambar_berita' => $gambar,
             'status'        => 'pending',
         ]);
@@ -79,6 +80,7 @@ class BeritaController extends Controller
         $request->validate([
             'judul_berita'  => 'required|string|max:255',
             'isi_berita'    => 'required|string',
+            'kategori'      => 'required|string|in:kegiatan,prestasi',
             'gambar_berita' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -93,7 +95,7 @@ class BeritaController extends Controller
         $berita->update([
             'judul_berita'  => $request->judul_berita,
             'isi_berita'    => $request->isi_berita,
-            'kategori'      => 'kegiatan',
+            'kategori'      => $request->kategori,
             'gambar_berita' => $gambar,
         ]);
 
