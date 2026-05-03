@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\berita; 
-use App\Models\laporan\pengaduan; 
+use App\Models\Berita; 
+use App\Models\Pengaduan; 
 use Illuminate\Support\Facades\DB; 
 use App\Models\DataMahasiswa; 
 
@@ -40,19 +40,19 @@ class DashboardController extends Controller
         // Menghitung jumlah record untuk ditampilkan di kartu ringkasan dashboard.
         $totalUser = DataMahasiswa::count(); 
         $totalPengurus = User::where('role', 'pengurus')->count();
-        $totalBerita = berita::count();
-        $totalPengaduan = pengaduan::count(); 
+        $totalBerita = Berita::count();
+        $totalPengaduan = Pengaduan::count(); 
 
         // Mengambil Berita yang membutuhkan perhatian (Status Pending).
         // Ini membantu admin untuk segera memverifikasi berita baru.
-        $beritaPending = berita::where('status', 'pending')->latest()->get();
+        $beritaPending = Berita::where('status', 'pending')->latest()->get();
 
         // Mengambil 5 Pengaduan Terbaru dengan status 'Diproses' untuk ditampilkan di widget "Aktivitas Terbaru".
-        $recentPengaduan = pengaduan::where('status', 'Diproses')->latest()->take(5)->get();
+        $recentPengaduan = Pengaduan::where('status', 'Diproses')->latest()->take(5)->get();
 
         // 2A. PERSIAPAN DATA LINE CHART: Tren Laporan per Bulan
         // Mengelompokkan data pengaduan berdasarkan bulan pembuatan untuk tahun berjalan.
-        $laporanPerBulan = pengaduan::select(
+        $laporanPerBulan = Pengaduan::select(
             DB::raw('MONTH(created_at) as bulan'),
             DB::raw('COUNT(*) as jumlah')
         )
@@ -63,7 +63,7 @@ class DashboardController extends Controller
 
         // 2B. PERSIAPAN DATA PIE CHART: Distribusi Status Laporan
         // Menghitung jumlah laporan berdasarkan statusnya (Pending, Proses, Selesai, Ditolak).
-        $statusLaporan = pengaduan::select('status', DB::raw('COUNT(*) as jumlah'))
+        $statusLaporan = Pengaduan::select('status', DB::raw('COUNT(*) as jumlah'))
             ->groupBy('status')
             ->get();
 
