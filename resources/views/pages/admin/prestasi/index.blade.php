@@ -161,7 +161,7 @@
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse($prestasi as $item)
-                                <tr class="hover:bg-gray-50 transition duration-150 ease-in-out text-xs lg:text-sm">
+                                <tr class="hover:bg-gray-50 transition duration-150 ease-in-out text-xs lg:text-sm cursor-pointer" onclick="window.location='{{ route('admin.prestasi.show', $item) }}'">
                                     <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-gray-500">
                                         {{ $loop->iteration }}
                                     </td>
@@ -183,7 +183,7 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-3 py-2 lg:px-4 lg:py-3 text-gray-500 whitespace-normal">
+                                    <td class="px-3 py-2 lg:px-4 lg:py-3 text-indigo-600 font-medium whitespace-normal">
                                         {{ $item->nama_kegiatan }}
                                         <br>
                                         <span class="text-[10px] text-gray-400">{{ $item->jenis_prestasi ?? '-' }}</span>
@@ -209,52 +209,49 @@
                                     <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-gray-500">
                                         {{ $item->tahun }}
                                     </td>
-                                    <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap">
+                                    <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-center">
                                         @php
+                                            $statusLabel = match($item->status_validasi) {
+                                                'disetujui' => 'Disetujui',
+                                                'ditolak'   => 'Ditolak',
+                                                default     => 'Menunggu',
+                                            };
                                             $statusColor = match($item->status_validasi) {
                                                 'disetujui' => 'bg-green-100 text-green-800',
-                                                'ditolak' => 'bg-red-100 text-red-800',
-                                                default => 'bg-yellow-100 text-yellow-800',
+                                                'ditolak'   => 'bg-red-100 text-red-800',
+                                                default     => 'bg-yellow-100 text-yellow-800',
                                             };
                                         @endphp
                                         <span class="px-2 inline-flex text-[10px] lg:text-xs leading-4 font-semibold rounded-full {{ $statusColor }}">
-                                            {{ ucfirst($item->status_validasi) }}
+                                            {{ $statusLabel }}
                                         </span>
                                     </td>
-                                    <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-center font-medium">
-                                        <div class="flex justify-center space-x-1 lg:space-x-2">
+                                    <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-center font-medium" onclick="event.stopPropagation()">
+                                        <div class="flex justify-center items-center space-x-3">
                                             @if($item->status_validasi == 'menunggu')
                                                 <form action="{{ route('admin.prestasi.verifikasi', $item) }}" method="POST" class="inline">
                                                     @csrf
                                                     @method('PUT')
-                                                    <button type="submit" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-green-100 text-green-600 hover:bg-green-600 hover:text-white" title="Verifikasi">
+                                                    <button type="submit" class="text-green-600 hover:text-green-800 transition-colors" title="Setujui">
                                                         <i class="fas fa-check"></i>
                                                     </button>
                                                 </form>
                                                 <form action="{{ route('admin.prestasi.tolak', $item) }}" method="POST" class="inline">
                                                     @csrf
                                                     @method('PUT')
-                                                    <button type="submit" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-red-100 text-red-600 hover:bg-red-600 hover:text-white" title="Tolak">
+                                                    <button type="submit" class="text-gray-500 hover:text-gray-700 transition-colors" title="Tolak">
                                                         <i class="fas fa-times"></i>
                                                     </button>
                                                 </form>
                                             @endif
-                                            {{-- View --}}
-                                            <a href="{{ route('admin.prestasi.show', $item) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white" title="Detail">
-                                                <i class="fas fa-eye mr-1 lg:mr-2"></i> Detail
+                                            <a href="{{ route('admin.prestasi.edit', $item) }}" class="text-amber-600 hover:text-amber-800 transition-colors" title="Edit">
+                                                <i class="fas fa-edit"></i>
                                             </a>
-                                            
-                                            {{-- Edit --}}
-                                            <a href="{{ route('admin.prestasi.edit', $item) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" title="Edit">
-                                                <i class="fas fa-pencil-alt mr-1 lg:mr-2"></i> Edit
-                                            </a>
-                                            
-                                            {{-- Delete --}}
                                             <form action="{{ route('admin.prestasi.destroy', $item) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')" class="inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-red-100 text-red-600 hover:bg-red-600 hover:text-white" title="Hapus">
-                                                    <i class="fas fa-trash mr-1 lg:mr-2"></i> Hapus
+                                                <button type="submit" class="text-red-600 hover:text-red-800 transition-colors" title="Hapus">
+                                                    <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
                                         </div>

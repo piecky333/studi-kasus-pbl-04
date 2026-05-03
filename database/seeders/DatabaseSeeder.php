@@ -23,6 +23,9 @@ class DatabaseSeeder extends Seeder
             TingkatanJuaraSeeder::class,
             MahasiswaSeeder::class,
             PengaduanSeeder::class,
+            PengurusSeeder::class,
+            PrestasiSeeder::class,
+            SanksiSeeder::class,
         ]);
     }
 }

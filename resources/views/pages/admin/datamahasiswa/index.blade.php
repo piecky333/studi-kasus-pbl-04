@@ -122,7 +122,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     @forelse ($mahasiswa as $index => $mhs)
-                        <tr class="hover:bg-gray-50 transition-colors duration-150 text-xs lg:text-sm">
+                        <tr class="hover:bg-gray-50 transition-colors duration-150 text-xs lg:text-sm cursor-pointer" onclick="window.location='{{ route('admin.datamahasiswa.show', $mhs) }}'">
                             {{-- No --}}
                             <td class="px-3 py-2 lg:px-4 lg:py-3 text-left text-gray-500 font-medium">
                                 {{ $loop->iteration + ($mahasiswa->currentPage() - 1) * $mahasiswa->perPage() }}
@@ -148,7 +148,7 @@
                                     {{ $mhs->semester }}
                                 </span>
                             </td>
-
+ 
                             {{-- IPK --}}
                             <td class="px-3 py-2 lg:px-4 lg:py-3 text-left">
                                 <span class="font-bold text-gray-700">{{ $mhs->ipk ?? '-' }}</span>
@@ -160,24 +160,19 @@
                             </td>
                             
                             {{-- Aksi --}}
-                            <td class="px-3 py-2 lg:px-4 lg:py-3 text-center">
-                                <div class="flex justify-center space-x-1 lg:space-x-2">
-                                    {{-- View --}}
-                                    <a href="{{ route('admin.datamahasiswa.show', $mhs) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white" title="Detail">
-                                        <i class="fas fa-eye mr-1 lg:mr-2"></i> Detail
-                                    </a>
-                                    
+                            <td class="px-3 py-2 lg:px-4 lg:py-3 text-center" onclick="event.stopPropagation()">
+                                <div class="flex justify-center space-x-2 lg:space-x-3">
                                     {{-- Edit --}}
-                                    <a href="{{ route('admin.datamahasiswa.edit', $mhs) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" title="Edit">
-                                        <i class="fas fa-pencil-alt mr-1 lg:mr-2"></i> Edit
+                                    <a href="{{ route('admin.datamahasiswa.edit', $mhs) }}" class="text-amber-600 hover:text-amber-900 transition-colors" title="Edit Data">
+                                        <i class="fas fa-edit"></i>
                                     </a>
-
+ 
                                     {{-- Delete --}}
                                     <form action="{{ route('admin.datamahasiswa.destroy', array_merge(['mahasiswa' => $mhs->id_mahasiswa], request()->query())) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')" class="inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-red-100 text-red-600 hover:bg-red-600 hover:text-white" title="Hapus">
-                                            <i class="fas fa-trash mr-1 lg:mr-2"></i> Hapus
+                                        <button type="submit" class="text-red-600 hover:text-red-900 transition-colors" title="Hapus Data">
+                                            <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
                                 </div>

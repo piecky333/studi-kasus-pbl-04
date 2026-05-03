@@ -141,7 +141,7 @@
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse ($sanksi as $index => $item)
-                                <tr class="hover:bg-gray-50 transition duration-150 ease-in-out text-xs lg:text-sm">
+                                <tr class="hover:bg-gray-50 transition duration-150 ease-in-out text-xs lg:text-sm cursor-pointer" onclick="window.location='{{ route('admin.sanksi.show', $item) }}'">
                                     <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-gray-500">
                                         {{ $sanksi->firstItem() + $index }}
                                     </td>
@@ -151,7 +151,7 @@
                                                 <img class="h-6 w-6 lg:h-8 lg:w-8 rounded-full object-cover" src="{{ $item->mahasiswa->user->profile_photo_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($item->mahasiswa->nama ?? 'M') . '&color=7F9CF5&background=EBF4FF' }}" alt="">
                                             </div>
                                             <div class="ml-2 lg:ml-3">
-                                                <div class="font-medium text-gray-900">
+                                                <div class="font-medium text-indigo-600">
                                                     {{ $item->mahasiswa->nama ?? '[Mahasiswa Dihapus]' }}
                                                 </div>
                                             </div>
@@ -183,26 +183,18 @@
                                     <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-gray-500">
                                         {{ $item->tanggal_sanksi ? \Carbon\Carbon::parse($item->tanggal_sanksi)->format('d M Y') : '-' }}
                                     </td>
-                                    <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-center font-medium">
-                                        <div class="flex justify-center space-x-1 lg:space-x-2">
-                                            {{-- Detail --}}
-                                            <a href="{{ route('admin.sanksi.show', $item) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white" title="Detail">
-                                                <i class="fas fa-eye mr-1 lg:mr-2"></i> Detail
+                                    <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-center font-medium" onclick="event.stopPropagation()">
+                                        <div class="flex justify-center items-center space-x-3">
+                                            <a href="{{ route('admin.sanksi.edit', $item) }}" class="text-amber-600 hover:text-amber-800 transition-colors" title="Edit">
+                                                <i class="fas fa-edit"></i>
                                             </a>
-
-                                            {{-- Edit --}}
-                                            <a href="{{ route('admin.sanksi.edit', $item) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" title="Edit">
-                                                <i class="fas fa-pencil-alt mr-1 lg:mr-2"></i> Edit
-                                            </a>
-                                            
-                                            {{-- Delete --}}
                                             <form action="{{ route('admin.sanksi.destroy', $item) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')" class="inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-red-100 text-red-600 hover:bg-red-600 hover:text-white" title="Hapus">
-                                                    <i class="fas fa-trash mr-1 lg:mr-2"></i> Hapus
+                                                <button type="submit" class="text-red-600 hover:text-red-800 transition-colors" title="Hapus">
+                                                    <i class="fas fa-trash"></i>
                                                 </button>
-                                    </form>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>

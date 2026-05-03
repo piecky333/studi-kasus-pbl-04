@@ -60,6 +60,17 @@ class BeritaController extends Controller
     }
 
     /**
+     * Menampilkan detail berita.
+     * 
+     * @param Berita $berita
+     * @return \Illuminate\View\View
+     */
+    public function show(Berita $berita)
+    {
+        return view('pages.admin.berita.show', compact('berita'));
+    }
+
+    /**
      * Menampilkan form untuk membuat berita baru.
      * 
      * @return \Illuminate\View\View

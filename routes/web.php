@@ -97,6 +97,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('/berita', [AdminBeritaController::class, 'index'])->name('berita.index');
     Route::get('/berita/create', [AdminBeritaController::class, 'create'])->name('berita.create');
     Route::post('/berita', [AdminBeritaController::class, 'store'])->name('berita.store');
+    Route::get('/berita/{berita}', [AdminBeritaController::class, 'show'])->name('berita.show');
     Route::get('/berita/{berita}/edit', [AdminBeritaController::class, 'edit'])->name('berita.edit');
     Route::put('/berita/{berita}', [AdminBeritaController::class, 'update'])->name('berita.update');
     Route::delete('/berita/{berita}', [AdminBeritaController::class, 'destroy'])->name('berita.destroy');

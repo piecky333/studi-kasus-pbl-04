@@ -2,10 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Jabatan;
-use App\Models\Divisi;
 use Illuminate\Support\Facades\Schema;
 
 class JabatanSeeder extends Seeder
@@ -15,33 +13,40 @@ class JabatanSeeder extends Seeder
      */
     public function run(): void
     {
-        // Disable foreign key checks to allow truncation
         Schema::disableForeignKeyConstraints();
         Jabatan::truncate();
         Schema::enableForeignKeyConstraints();
 
-        // Get all divisions
-        $divisiList = Divisi::all();
-
-        if ($divisiList->isEmpty()) {
-            $this->command->info('No divisions found. Please run DivisiSeeder first.');
-            return;
-        }
-
-        $jabatanPerDivisi = [
-            'Ketua Divisi',
-            'Sekretaris Divisi',
-            'Bendahara Divisi',
-            'Anggota Divisi',
+        $jabatan = [
+            // Pengurus Inti
+            'Ketua Umum',
+            'Wakil Ketua Umum',
+            'Sekretaris Umum',
+            'Bendahara Umum',
+            // Divisi Akademik
+            'Ketua Divisi Akademik',
+            'Anggota Divisi Akademik',
+            // Divisi Minat & Bakat
+            'Ketua Divisi Minat & Bakat',
+            'Anggota Divisi Minat & Bakat',
+            // Divisi Kewirausahaan
+            'Ketua Divisi Kewirausahaan',
+            'Anggota Divisi Kewirausahaan',
+            // Divisi Hubungan Masyarakat
+            'Ketua Divisi Hubungan Masyarakat',
+            'Anggota Divisi Hubungan Masyarakat',
+            // Divisi Sosial & Lingkungan
+            'Ketua Divisi Sosial & Lingkungan',
+            'Anggota Divisi Sosial & Lingkungan',
+            // Divisi Teknologi & Informasi
+            'Ketua Divisi Teknologi & Informasi',
+            'Anggota Divisi Teknologi & Informasi',
         ];
 
-        // foreach ($divisiList as $divisi) {
-        //     foreach ($jabatanPerDivisi as $namaJabatan) {
-        //         Jabatan::create([
-        //             'nama_jabatan' => $namaJabatan . ' ' . $divisi->nama_divisi,
-        //         ]);
-        //     }
-        // }
+        foreach ($jabatan as $nama) {
+            Jabatan::create(['nama_jabatan' => $nama]);
+        }
+
+        $this->command->info('JabatanSeeder: ' . count($jabatan) . ' jabatan berhasil di-seed.');
     }
 }
-

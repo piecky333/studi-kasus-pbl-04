@@ -23,10 +23,6 @@
 
     {{-- Filter Section --}}
     <div class="mb-6 bg-white p-5 rounded-lg shadow-sm border border-gray-200">
-        <div class="flex items-center mb-4">
-            <i class="fas fa-filter text-indigo-600 mr-2"></i>
-            <h3 class="text-lg font-medium text-gray-900">Filter & Pencarian Berita</h3>
-        </div>
         <form action="{{ route('admin.berita.index') }}" method="GET">
             <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                 
@@ -44,7 +40,7 @@
                 {{-- Filter Status --}}
                 <div class="md:col-span-2">
                     <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                    <select name="status" id="status" class="block w-full pl-2 pr-8 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm {{ request('status') ? 'text-gray-900' : 'text-gray-400' }}" onchange="this.form.submit()">
+                    <select name="status" id="status" class="block w-full pl-2 pr-8 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm text-gray-900" onchange="this.form.submit()">
                         <option value="">Semua</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                         <option value="verified" {{ request('status') == 'verified' ? 'selected' : '' }}>Verified</option>
@@ -55,7 +51,7 @@
                 {{-- Filter Kategori --}}
                 <div class="md:col-span-2">
                     <label for="kategori" class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
-                    <select name="kategori" id="kategori" class="block w-full pl-2 pr-8 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm {{ request('kategori') ? 'text-gray-900' : 'text-gray-400' }}" onchange="this.form.submit()">
+                    <select name="kategori" id="kategori" class="block w-full pl-2 pr-8 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm text-gray-900" onchange="this.form.submit()">
                         <option value="">Semua</option>
                         <option value="kegiatan" {{ request('kategori') == 'kegiatan' ? 'selected' : '' }}>Kegiatan</option>
                         <option value="prestasi" {{ request('kategori') == 'prestasi' ? 'selected' : '' }}>Prestasi</option>
@@ -63,23 +59,25 @@
                 </div>
 
                 {{-- Filter Tanggal --}}
-                <div class="md:col-span-3 grid grid-cols-2 gap-2">
-                    <div>
-                        <label for="start_date" class="block text-sm font-medium text-gray-700 mb-1">Mulai Dari</label>
-                        <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md py-2 {{ request('start_date') ? 'text-gray-900' : 'text-gray-400' }} px-2 shadow-sm">
-                    </div>
-                    <div>
-                        <label for="end_date" class="block text-sm font-medium text-gray-700 mb-1">Sampai Dengan</label>
-                        <input type="date" name="end_date" id="end_date" value="{{ request('end_date') }}" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md py-2 {{ request('end_date') ? 'text-gray-900' : 'text-gray-400' }} px-2 shadow-sm">
+                <div class="md:col-span-3">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label for="start_date" class="block text-sm font-medium text-gray-700 mb-1">Mulai</label>
+                            <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md py-2 text-gray-900 px-2 shadow-sm">
+                        </div>
+                        <div>
+                            <label for="end_date" class="block text-sm font-medium text-gray-700 mb-1">Sampai</label>
+                            <input type="date" name="end_date" id="end_date" value="{{ request('end_date') }}" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md py-2 text-gray-900 px-2 shadow-sm">
+                        </div>
                     </div>
                 </div>
 
                 {{-- Buttons --}}
                 <div class="md:col-span-2 flex space-x-2">
-                    <button type="submit" class="w-full inline-flex justify-center items-center px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Cari
+                    <button type="submit" class="flex-1 inline-flex justify-center items-center px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                        Filter
                     </button>
-                    <a href="{{ route('admin.berita.index') }}" class="w-full inline-flex justify-center items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <a href="{{ route('admin.berita.index') }}" class="flex-1 inline-flex justify-center items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                         Reset
                     </a>
                 </div>
@@ -104,106 +102,94 @@
     @endif
 
     <!-- Data Table -->
-        <div class="overflow-x-auto bg-white shadow-[4px_4px_10px_rgba(0,0,0,0.1)] rounded-lg overflow-hidden border border-gray-200">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-[#0d2149] text-white text-xs lg:text-sm uppercase tracking-wider">
-                    <tr>
-                        <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
-                            No
-                        </th>
-                        <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
-                            Judul
-                        </th>
-                        <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
-                            Penulis
-                        </th>
-                        <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
-                            Tanggal Publikasi
-                        </th>
-                        <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
-                            Status
-                        </th>
-                        <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
-                            Diproses Oleh
-                        </th>
-                        <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-center font-medium uppercase tracking-wider">
-                            Aksi
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @forelse($beritas as $index => $berita)
-                        <tr class="hover:bg-gray-50 transition-colors duration-150 text-xs lg:text-sm">
-                            <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-gray-500">
-                                {{ $loop->iteration }}
-                            </td>
-                            <td class="px-3 py-2 lg:px-4 lg:py-3 font-medium text-gray-900 whitespace-normal" title="{{ $berita->judul_berita }}">
-                                {{ Str::limit($berita->judul_berita, 50) }}
-                            </td>
-                            <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-gray-500">
-                                {{ $berita->user->nama ?? 'Unknown' }}
-                                <br>
-                                <span class="text-[10px] text-gray-400">{{ $berita->user->role ?? '-' }}</span>
-                            </td>
-                            <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-gray-500">
-                                {{ $berita->created_at->format('d M Y, H:i') }}
-                            </td>
-                            <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap">
-                                @if($berita->status == 'pending')
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] lg:text-xs font-medium bg-yellow-100 text-yellow-800">
-                                        Pending
-                                    </span>
-                                @elseif($berita->status == 'verified')
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] lg:text-xs font-medium bg-green-100 text-green-800">
-                                        Verified
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] lg:text-xs font-medium bg-red-100 text-red-800">
-                                        Rejected
-                                    </span>
-                                @endif
-                            </td>
-                            <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-gray-500">
-                                @if($berita->status == 'verified')
-                                    <span class="text-green-600 font-medium" title="Disetujui"><i class="fas fa-check-circle mr-1"></i> {{ $berita->verifikator->nama ?? '-' }}</span>
-                                @elseif($berita->status == 'rejected')
-                                    <span class="text-red-600 font-medium" title="Ditolak"><i class="fas fa-times-circle mr-1"></i> {{ $berita->penolak->nama ?? '-' }}</span>
-                                @else
-                                    -
-                                @endif
-                            </td>
-                            <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-center font-medium space-x-1 lg:space-x-2">
+    <div class="overflow-x-auto bg-white shadow-[4px_4px_10px_rgba(0,0,0,0.1)] rounded-lg overflow-hidden border border-gray-200">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-[#0d2149] text-white text-xs lg:text-sm uppercase tracking-wider">
+                <tr>
+                    <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
+                        No
+                    </th>
+                    <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
+                        Judul
+                    </th>
+                    <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
+                        Penulis
+                    </th>
+                    <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
+                        Tanggal
+                    </th>
+                    <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
+                        Status
+                    </th>
+                    <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
+                        Verifikator
+                    </th>
+                    <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-center font-medium uppercase tracking-wider">
+                        Aksi
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                @forelse($beritas as $index => $berita)
+                    <tr class="hover:bg-gray-50 transition-colors duration-150 text-xs lg:text-sm cursor-pointer" onclick="window.location='{{ route('admin.berita.show', $berita) }}'">
+                        <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-gray-500">
+                            {{ $loop->iteration }}
+                        </td>
+                        <td class="px-3 py-2 lg:px-4 lg:py-3 font-semibold text-indigo-600 whitespace-normal">
+                            {{ Str::limit($berita->judul_berita, 50) }}
+                        </td>
+                        <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-gray-500">
+                            {{ $berita->user->nama ?? 'Unknown' }}
+                        </td>
+                        <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-gray-500">
+                            {{ $berita->created_at->format('d/m/Y') }}
+                        </td>
+                        <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap">
+                            @if($berita->status == 'pending')
+                                <span class="px-2 py-0.5 rounded-full text-[10px] lg:text-xs font-medium bg-yellow-100 text-yellow-800">Pending</span>
+                            @elseif($berita->status == 'verified')
+                                <span class="px-2 py-0.5 rounded-full text-[10px] lg:text-xs font-medium bg-green-100 text-green-800">Verified</span>
+                            @else
+                                <span class="px-2 py-0.5 rounded-full text-[10px] lg:text-xs font-medium bg-red-100 text-red-800">Rejected</span>
+                            @endif
+                        </td>
+                        <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-gray-500">
+                            {{ $berita->verifikator->nama ?? ($berita->penolak->nama ?? '-') }}
+                        </td>
+                        <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-center" onclick="event.stopPropagation()">
+                            <div class="flex justify-center space-x-2 lg:space-x-3">
                                 {{-- Edit --}}
-                                <a href="{{ route('admin.berita.edit', $berita) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" title="Edit">
-                                    <i class="fas fa-pencil-alt mr-1 lg:mr-2"></i> Edit
+                                <a href="{{ route('admin.berita.edit', $berita) }}" class="text-amber-600 hover:text-amber-900 transition-colors" title="Edit Berita">
+                                    <i class="fas fa-edit"></i>
                                 </a>
 
                                 @if($berita->status == 'pending')
-                                    <form action="{{ route('admin.berita.verifikasi', $berita) }}" method="POST" class="d-inline inline-block">
-                                        @csrf
-                                        @method('PUT')
-                                        <button type="submit" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-green-100 text-green-600 hover:bg-green-600 hover:text-white" title="Verifikasi">
-                                            <i class="fas fa-check mr-1 lg:mr-2"></i> Verif
+                                    {{-- Verifikasi --}}
+                                    <form action="{{ route('admin.berita.verifikasi', $berita) }}" method="POST" class="inline">
+                                        @csrf @method('PUT')
+                                        <button type="submit" class="text-green-600 hover:text-green-900 transition-colors" title="Verifikasi">
+                                            <i class="fas fa-check"></i>
                                         </button>
                                     </form>
-                                    <form action="{{ route('admin.berita.tolak', $berita) }}" method="POST" class="d-inline inline-block">
-                                        @csrf
-                                        @method('PUT')
-                                        <button type="submit" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-gray-100 text-gray-600 hover:bg-gray-600 hover:text-white" title="Tolak">
-                                            <i class="fas fa-times mr-1 lg:mr-2"></i> Tolak
+                                    {{-- Tolak --}}
+                                    <form action="{{ route('admin.berita.tolak', $berita) }}" method="POST" class="inline">
+                                        @csrf @method('PUT')
+                                        <button type="submit" class="text-gray-500 hover:text-gray-700 transition-colors" title="Tolak Berita">
+                                            <i class="fas fa-times"></i>
                                         </button>
                                     </form>
                                 @endif
 
-                                <form action="{{ route('admin.berita.destroy', $berita) }}" method="POST" class="d-inline inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus berita ini?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-red-100 text-red-600 hover:bg-red-600 hover:text-white" title="Hapus">
-                                        <i class="fas fa-trash mr-1 lg:mr-2"></i> Hapus
+                                {{-- Delete --}}
+                                <form action="{{ route('admin.berita.destroy', $berita) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus berita ini?')">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:text-red-900 transition-colors" title="Hapus Berita">
+                                        <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
-                            </td>
-                        </tr>
+                            </div>
+                        </td>
+                    </tr>
                     @empty
                         <tr>
                             <td colspan="7" class="px-6 py-10 text-center text-gray-500">

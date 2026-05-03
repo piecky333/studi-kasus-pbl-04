@@ -103,7 +103,7 @@
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse ($daftarPengaduan as $item)
-                                <tr class="hover:bg-gray-50 transition duration-150 ease-in-out text-xs lg:text-sm">
+                                <tr class="hover:bg-gray-50 transition duration-150 ease-in-out text-xs lg:text-sm cursor-pointer" onclick="window.location='{{ route('admin.pengaduan.show', $item) }}'">
                                     <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-gray-500">
                                         {{ $loop->iteration + $daftarPengaduan->firstItem() - 1 }}
                                     </td>
@@ -116,58 +116,52 @@
                                                      referrerpolicy="no-referrer">
                                             </div>
                                             <div class="ml-2 lg:ml-3">
-                                                <div class="font-medium text-gray-900">
-                                                    Pelapor (Disamarkan)
-                                                </div>
-                                                <div class="text-gray-500 text-[10px] lg:text-xs">
+                                                <div class="font-medium text-gray-900 italic">
                                                     Identitas Dirahasiakan
                                                 </div>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-normal">
-                                        <div class="text-gray-900 font-medium">{{ Str::limit($item->judul, 30) }}</div>
-                                        <div class="text-[10px] lg:text-xs text-gray-500">{{ $item->jenis_kasus }}</div>
+                                        <div class="text-indigo-600 font-bold hover:underline">{{ Str::limit($item->judul, 50) }}</div>
+                                        <div class="text-[10px] lg:text-xs text-gray-500 mt-0.5"><i class="fas fa-tag mr-1 text-[8px]"></i> {{ $item->jenis_kasus }}</div>
                                     </td>
                                     <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap">
                                         @if ($item->status == 'Terkirim')
-                                            <span class="px-2 inline-flex text-[10px] lg:text-xs leading-4 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                            <span class="px-2 py-0.5 inline-flex text-[10px] lg:text-xs leading-4 font-semibold rounded-full bg-blue-100 text-blue-800">
                                                 Terkirim
                                             </span>
                                         @elseif ($item->status == 'Diproses')
-                                            <span class="px-2 inline-flex text-[10px] lg:text-xs leading-4 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                            <span class="px-2 py-0.5 inline-flex text-[10px] lg:text-xs leading-4 font-semibold rounded-full bg-yellow-100 text-yellow-800">
                                                 Diproses
                                             </span>
                                         @elseif ($item->status == 'Selesai')
-                                            <span class="px-2 inline-flex text-[10px] lg:text-xs leading-4 font-semibold rounded-full bg-green-100 text-green-800">
+                                            <span class="px-2 py-0.5 inline-flex text-[10px] lg:text-xs leading-4 font-semibold rounded-full bg-green-100 text-green-800">
                                                 Selesai
                                             </span>
                                         @elseif ($item->status == 'Ditolak')
-                                            <span class="px-2 inline-flex text-[10px] lg:text-xs leading-4 font-semibold rounded-full bg-red-100 text-red-800">
+                                            <span class="px-2 py-0.5 inline-flex text-[10px] lg:text-xs leading-4 font-semibold rounded-full bg-red-100 text-red-800">
                                                 Ditolak
                                             </span>
                                         @endif
                                     </td>
                                     <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-gray-500">
-                                        {{ $item->created_at->format('d M Y') }}
-                                        <br>
-                                        <span class="text-[10px] lg:text-xs">{{ $item->created_at->format('H:i') }}</span>
+                                        {{ $item->created_at->format('d/m/Y') }}
+                                        <div class="text-[10px] lg:text-xs text-gray-400">{{ $item->created_at->format('H:i') }}</div>
                                     </td>
-                                    <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap font-medium">
-                                        <div class="flex justify-center space-x-1 lg:space-x-2">    
-                                            {{-- View --}}
-                                            <a href="{{ route('admin.pengaduan.show', $item) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white" title="Detail">
-                                                <i class="fas fa-eye mr-1 lg:mr-2"></i> Detail
+                                    <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap font-medium text-center" onclick="event.stopPropagation()">
+                                        <div class="flex justify-center space-x-2">    
+                                            <a href="{{ route('admin.pengaduan.show', $item) }}" class="text-blue-600 hover:text-blue-900" title="Lihat Detail">
+                                                <i class="fas fa-external-link-alt"></i>
                                             </a>    
 
-                                            {{-- Delete --}}
-                                            <form action="{{ route('admin.pengaduan.destroy', $item) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')" class="inline">
+                                            <form action="{{ route('admin.pengaduan.destroy', $item) }}" method="POST" onsubmit="return confirm('Hapus pengaduan ini?')" class="inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-red-100 text-red-600 hover:bg-red-600 hover:text-white" title="Hapus">
-                                            <i class="fas fa-trash mr-1 lg:mr-2"></i> Hapus
-                                        </button>
-                                    </form>
+                                                <button type="submit" class="text-red-600 hover:text-red-900" title="Hapus">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>

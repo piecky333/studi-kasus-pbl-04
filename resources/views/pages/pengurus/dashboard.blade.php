@@ -153,28 +153,30 @@
                         </thead>
                         <tbody>
                             @forelse($recentBerita as $berita)
-                                <tr class="bg-white border-b hover:bg-gray-50 transition-colors">
-                                    <td class="px-6 py-4 font-medium text-gray-900">
+                                <tr class="bg-white border-b hover:bg-gray-50 transition-colors cursor-pointer" onclick="window.location='{{ route('pengurus.berita.show', $berita) }}'">
+                                    <td class="px-6 py-4 font-medium text-indigo-600">
                                         {{ Str::limit($berita->judul_berita, 40) }}
                                     </td>
                                     <td class="px-6 py-4">
                                         <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded border border-blue-400">
-                                            {{ $berita->kategori }}
+                                            {{ ucfirst($berita->kategori) }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4">
                                         {{ \Carbon\Carbon::parse($berita->created_at)->translatedFormat('d F Y, H:i') }} WITA
                                     </td>
                                     <td class="px-6 py-4">
-                                        @if($berita->status == 'aktif')
-                                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded border border-green-400">Aktif</span>
+                                        @if($berita->status == 'pending')
+                                            <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded border border-yellow-400">Menunggu</span>
+                                        @elseif($berita->status == 'verified')
+                                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded border border-green-400">Terverifikasi</span>
                                         @else
-                                            <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded border border-red-400">Tidak Aktif</span>
+                                            <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded border border-red-400">Ditolak</span>
                                         @endif
                                     </td>
-                                    <td class="px-6 py-4 text-center">
-                                        <a href="{{ route('pengurus.berita.edit', $berita) }}" class="text-yellow-500 hover:text-yellow-600 font-medium text-sm">
-                                            <i class="bi bi-pencil-square"></i> Edit
+                                    <td class="px-6 py-4 text-center" onclick="event.stopPropagation()">
+                                        <a href="{{ route('pengurus.berita.edit', $berita) }}" class="text-amber-500 hover:text-amber-700 font-medium text-sm" title="Edit">
+                                            <i class="bi bi-pencil-square"></i>
                                         </a>
                                     </td>
                                 </tr>

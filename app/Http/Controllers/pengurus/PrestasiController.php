@@ -39,6 +39,17 @@ class PrestasiController extends Controller
             'tingkat'        => 'required|string|max:255',
             'juara'          => 'required|string|max:255',
             'tanggal'        => 'required|date',
+        ], [
+            'id_mahasiswa.required'   => 'Pilih minimal satu mahasiswa.',
+            'id_mahasiswa.array'      => 'Data mahasiswa tidak valid.',
+            'judul_prestasi.required' => 'Judul prestasi wajib diisi.',
+            'judul_prestasi.max'      => 'Judul prestasi maksimal 255 karakter.',
+            'jenis_prestasi.required' => 'Jenis prestasi wajib dipilih.',
+            'jenis_prestasi.in'       => 'Jenis prestasi harus Akademik atau Non-Akademik.',
+            'tingkat.required'        => 'Tingkat prestasi wajib dipilih.',
+            'juara.required'          => 'Juara / peringkat wajib dipilih.',
+            'tanggal.required'        => 'Tanggal prestasi wajib diisi.',
+            'tanggal.date'            => 'Format tanggal tidak valid.',
         ]);
 
         foreach ($request->id_mahasiswa as $id_mahasiswa) {
