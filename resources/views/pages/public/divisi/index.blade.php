@@ -37,7 +37,7 @@
                             <p class="text-gray-600 line-clamp-3 mb-4">
                                 {{ $div->isi_divisi }}
                             </p>
-                            <a href="{{ route('divisi.show', $div->id_divisi) }}" class="inline-flex items-center text-blue-600 font-medium hover:text-blue-800">
+                            <a href="{{ route('divisi.show', $div) }}" class="inline-flex items-center text-blue-600 font-medium hover:text-blue-800">
                                 Selengkapnya
                                 <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
@@ -58,3 +58,6 @@
         </div>
     </section>
 @endsection
+
+
+

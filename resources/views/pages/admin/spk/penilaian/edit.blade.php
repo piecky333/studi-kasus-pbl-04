@@ -97,7 +97,7 @@
 
             {{-- Bagian Tombol: Simpan atau Batal --}}
             <div class="mt-8 flex justify-end space-x-3">
-                <a href="{{ route('admin.spk.alternatif.penilaian.index', $keputusan->id_keputusan) }}" 
+                <a href="{{ route('admin.spk.alternatif.penilaian.index', $keputusan) }}" 
                    class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition duration-150 shadow-sm">
                     Batal
                 </a>
@@ -111,3 +111,5 @@
 </div>
 
 @endsection
+
+

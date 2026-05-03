@@ -25,7 +25,7 @@
             <h3 class="text-sm font-semibold text-gray-700 mb-3 flex items-center">
                 <i class="fas fa-filter mr-2"></i> Filter Data Mahasiswa
             </h3>
-            <form action="{{ route('admin.spk.alternatif.create', $keputusan->id_keputusan) }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <form action="{{ route('admin.spk.alternatif.create', $keputusan) }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 
                 {{-- Filter Semester --}}
                 <div>
@@ -66,7 +66,7 @@
             </form>
         </div>
 
-        <form action="{{ route('admin.spk.alternatif.store', $keputusan->id_keputusan) }}" method="POST">
+        <form action="{{ route('admin.spk.alternatif.store', $keputusan) }}" method="POST">
             @csrf
             
             <div class="space-y-6">
@@ -123,7 +123,7 @@
 
             {{-- Bagian Tombol: Simpan data atau Batal kembali ke daftar --}}
             <div class="mt-8 flex justify-end space-x-3">
-                <a href="{{ route('admin.spk.alternatif.index', $keputusan->id_keputusan) }}" 
+                <a href="{{ route('admin.spk.alternatif.index', $keputusan) }}" 
                    class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition duration-150 shadow-sm">
                     Batal
                 </a>
@@ -266,3 +266,5 @@
     });
 </script>
 @endsection
+
+

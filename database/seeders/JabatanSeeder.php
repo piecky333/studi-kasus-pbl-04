@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Jabatan;
-use App\Models\admin\Divisi;
+use App\Models\Divisi;
 use Illuminate\Support\Facades\Schema;
 
 class JabatanSeeder extends Seeder
@@ -44,3 +44,4 @@ class JabatanSeeder extends Seeder
         // }
     }
 }
+

@@ -26,20 +26,20 @@ class BeritaController extends Controller
     /**
      * Tampilkan detail berita kegiatan.
      *
-     * @param int $id
+     * @param Berita $berita
      * @return \Illuminate\View\View
      */
-    public function show($id)
+    public function show(Berita $berita)
     {
-        // Ambil berita verified.
-        $berita = Berita::where('kategori', 'kegiatan')
-            ->where('status', 'verified')
-            ->findOrFail($id);
+        // Pastikan berita yang diakses adalah kategori kegiatan dan sudah verified
+        if ($berita->kategori !== 'kegiatan' || $berita->status !== 'verified') {
+            abort(404);
+        }
 
         // Ambil 3 berita terkait terbaru.
         $beritaTerkait = Berita::where('kategori', 'kegiatan')
             ->where('status', 'verified')
-            ->where('id_berita', '!=', $id)
+            ->where('id_berita', '!=', $berita->id_berita)
             ->latest()
             ->take(3)
             ->get();

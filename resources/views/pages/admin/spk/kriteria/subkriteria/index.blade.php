@@ -121,7 +121,7 @@
 
             {{-- Tombol Kembali ke daftar kriteria --}}
             <div class="mt-6 flex justify-end">
-                <a href="{{ route('admin.spk.kriteria.index', $keputusan->id_keputusan) }}"
+                <a href="{{ route('admin.spk.kriteria.index', $keputusan) }}"
                     class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg text-sm transition duration-150 shadow-md">
                     Kembali ke Kriteria
                 </a>
@@ -130,3 +130,6 @@
     </div>
 
 @endsection
+
+
+

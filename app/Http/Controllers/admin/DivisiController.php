@@ -3,40 +3,57 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Admin\Divisi;
+use App\Models\Divisi;
+use Illuminate\Http\Request;
 
-/**
- * Class DivisiController
- * 
- * Controller ini bertanggung jawab untuk menampilkan informasi Divisi.
- * Saat ini fungsinya terbatas pada Read Only (Melihat daftar dan detail),
- * karena manajemen divisi mungkin dilakukan di level database atau fitur lain.
- * 
- * @package App\Http\Controllers\Admin
- */
 class DivisiController extends Controller
 {
-    /**
-     * Menampilkan daftar semua divisi.
-     * 
-     * @return \Illuminate\View\View
-     */
     public function index()
     {
         $divisi = Divisi::orderBy('created_at', 'desc')->get();
         return view('pages.admin.divisi.index', compact('divisi'));
     }
 
-    /**
-     * Menampilkan detail informasi divisi tertentu.
-     * 
-     * @param int $id ID Divisi
-     * @return \Illuminate\View\View
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
-     */
-    public function show($id)
+    public function create()
     {
-        $divisi = Divisi::findOrFail($id);
+        return view('pages.admin.divisi.create');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama_divisi' => 'required|string|max:255|unique:divisi,nama_divisi',
+        ]);
+
+        Divisi::create($request->all());
+
+        return redirect()->route('admin.divisi.index')->with('success', 'Divisi berhasil ditambahkan.');
+    }
+
+    public function show(Divisi $divisi)
+    {
         return view('pages.admin.divisi.show', compact('divisi'));
+    }
+
+    public function edit(Divisi $divisi)
+    {
+        return view('pages.admin.divisi.edit', compact('divisi'));
+    }
+
+    public function update(Request $request, Divisi $divisi)
+    {
+        $request->validate([
+            'nama_divisi' => 'required|string|max:255|unique:divisi,nama_divisi,' . $divisi->id_divisi . ',id_divisi',
+        ]);
+
+        $divisi->update($request->all());
+
+        return redirect()->route('admin.divisi.index')->with('success', 'Divisi berhasil diperbarui.');
+    }
+
+    public function destroy(Divisi $divisi)
+    {
+        $divisi->delete();
+        return redirect()->route('admin.divisi.index')->with('success', 'Divisi berhasil dihapus.');
     }
 }

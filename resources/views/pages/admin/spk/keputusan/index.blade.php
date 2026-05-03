@@ -87,19 +87,19 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex justify-center md:table-cell">
                                         <div class="flex flex-row md:justify-center gap-2 w-full md:w-auto">
                                             {{-- Tombol Kelola: Masuk ke detail kriteria dan alternatif --}}
-                                            <a href="{{ route('admin.spk.kriteria.index', ['idKeputusan' => $keputusan->id_keputusan]) }}"
+                                            <a href="{{ route('admin.spk.kriteria.index', $keputusan) }}"
                                                 class="flex-1 md:flex-none text-center px-3 py-2 md:py-1 text-xs font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition shadow-sm">
                                                 <i class="fas fa-cogs md:hidden mr-1"></i> Kelola
                                             </a>
 
                                             {{-- Tombol Edit: Mengubah data keputusan --}}
-                                            <a href="{{ route('admin.spk.edit', $keputusan->id_keputusan) }}"
+                                            <a href="{{ route('admin.spk.edit', $keputusan) }}"
                                                 class="flex-1 md:flex-none text-center px-3 py-2 md:py-1 text-xs font-medium text-white bg-amber-500 rounded hover:bg-amber-600 transition shadow-sm">
                                                 <i class="fas fa-edit md:hidden mr-1"></i> Edit
                                             </a>
 
                                             {{-- Tombol Hapus: Menghapus keputusan beserta data terkait --}}
-                                            <form action="{{ route('admin.spk.destroy', $keputusan->id_keputusan) }}" method="POST" class="flex-1 md:flex-none inline"
+                                            <form action="{{ route('admin.spk.destroy', $keputusan) }}" method="POST" class="flex-1 md:flex-none inline"
                                                 onsubmit="return confirm('APAKAH ANDA YAKIN? Menghapus keputusan ini akan menghapus SEMUA data terkait: Kriteria, Alternatif, dan Hasil!')">
                                                 @csrf
                                                 @method('DELETE')
@@ -136,3 +136,6 @@
     </div>
 
 @endsection
+
+
+

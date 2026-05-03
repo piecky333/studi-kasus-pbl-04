@@ -141,7 +141,7 @@
 
                         <!-- Tombol Selengkapnya -->
                         <div class="mt-auto">
-                            <a href="{{ route('divisi.show', $div->id_divisi) }}"
+                            <a href="{{ route('divisi.show', $div) }}"
                                 class="inline-block px-6 py-2 border border-blue-600 text-blue-600 font-semibold rounded-full hover:bg-blue-600 hover:text-white transition duration-300 transform hover:-translate-y-1 text-sm">
                                 Lihat Detail
                             </a>
@@ -168,13 +168,13 @@
                     {{-- Card wrapper: flex flex-col --}}
                     <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col wow fadeInUp">
 
-                        <a href="{{ route('berita.show', $kegiatan->id_berita) }}">
+                        <a href="{{ route('berita.show', $kegiatan) }}">
                             <img src="{{ asset('storage/'. $kegiatan->gambar_berita) }}" alt="{{ $kegiatan->judul_berita }}"
                                 class="w-full h-48 object-cover">
                         </a>
                         <div class="p-6 text-left flex flex-col flex-grow">
                             <h3 class="font-bold text-lg text-gray-900 my-2 hover:text-blue-700 line-clamp-2 min-h-[3.5rem] transition duration-300">
-                                <a href="{{ route('berita.show', $kegiatan->id_berita) }}" class="link-animasi">
+                                <a href="{{ route('berita.show', $kegiatan) }}" class="link-animasi">
                                     {{ Str::limit($kegiatan->judul_berita, 50) }}
                                 </a>
                             </h3>
@@ -217,13 +217,13 @@
 
                     {{-- 1. Card wrapper: Tambahkan 'flex flex-col' --}}
                     <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col wow fadeInUp">
-                        <a href="{{ route('prestasi.show', $prestasi->id_berita) }}">
+                        <a href="{{ route('prestasi.show', $prestasi) }}">
                             <img src="{{ asset('storage/'. $prestasi->gambar_berita) }}" alt="{{ $prestasi->judul_berita }}"
                                 class="w-full h-48 object-cover">
                         </a>
                         <div class="p-6 text-left flex flex-col flex-grow">
                             <h3 class="font-bold text-lg text-gray-900 my-2 hover:text-blue-700 line-clamp-2 min-h-[3.5rem] transition duration-300">
-                                <a href="{{ route('prestasi.show', $prestasi->id_berita) }}" class="link-animasi">{{ Str::limit($prestasi->judul_berita, 50) }}</a>
+                                <a href="{{ route('prestasi.show', $prestasi) }}" class="link-animasi">{{ Str::limit($prestasi->judul_berita, 50) }}</a>
                             </h3>
                             {{-- Deskripsi: Tambahkan 'min-h-[3.75rem]' untuk 3 baris --}}
                             <p class="text-gray-600 text-sm mb-4 line-clamp-3 min-h-[3.75rem]">
@@ -498,3 +498,5 @@
         });
     </script>
 @endpush
+
+

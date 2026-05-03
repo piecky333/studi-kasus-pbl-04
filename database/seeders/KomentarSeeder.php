@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\komentar; 
-use App\Models\berita;  
+use App\Models\Komentar; 
+use App\Models\Berita;  
 use App\Models\User;     
 use Illuminate\Support\Facades\DB; 
 

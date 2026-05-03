@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\admin\DataMahasiswa;
+use App\Models\DataMahasiswa;
 use Illuminate\Support\Facades\DB;
 
 class MahasiswaSeeder extends Seeder
@@ -142,3 +142,4 @@ class MahasiswaSeeder extends Seeder
         $this->command->info("Seeded " . ($counter - 1) . " Mahasiswa records.");
     }
 }
+

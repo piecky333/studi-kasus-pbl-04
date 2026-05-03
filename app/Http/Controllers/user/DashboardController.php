@@ -4,7 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller; 
 use App\Models\Berita;
-use App\Models\Laporan\Pengaduan; 
+use App\Models\Pengaduan; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

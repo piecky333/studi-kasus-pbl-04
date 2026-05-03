@@ -3,193 +3,107 @@
 namespace App\Http\Controllers\Spk;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; 
-use App\Models\spkkeputusan; 
-use App\Models\kriteria;
-use App\Models\alternatif;
-use App\Models\penilaian;
-use App\Models\hasilakhir;
-use App\Models\subkriteria; 
+use App\Http\Controllers\Controller;
+use App\Models\SpkKeputusan;
+use App\Models\Kriteria;
+use App\Models\Alternatif;
+use App\Models\Penilaian;
+use App\Models\HasilAkhir;
+use App\Models\SubKriteria;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-/**
- * Class KeputusanController
- * 
- * Controller ini bertanggung jawab untuk mengelola CRUD (Create, Read, Update, Delete)
- * dari entitas Keputusan SPK (Level 1 / Root).
- * 
- * Note: Controller ini TIDAK mewarisi KeputusanDetailController karena ini adalah 
- * halaman Index utama yang menampilkan daftar semua keputusan, bukan detail dari satu keputusan.
- * 
- * @package App\Http\Controllers\Spk
- */
 class KeputusanController extends Controller
 {
-    // =================================================================
-    // >>> KEPUTUSAN SPK (CRUD) <<<
-    // =================================================================
-    
-    /**
-     * Menampilkan daftar semua Keputusan SPK yang tersedia.
-     * 
-     * Menggunakan pagination (10 item per halaman) untuk efisiensi tampilan data.
-     * 
-     * @return \Illuminate\View\View
-     */
     public function index()
     {
-        // Fetch semua data keputusan dari database
-        $keputusanList = spkkeputusan::all();
-        
-        $keputusanList = spkkeputusan::paginate(10);
-        
-        return view('pages.admin.spk.keputusan.index', [ 
+        $keputusanList = SpkKeputusan::paginate(10);
+
+        return view('pages.admin.spk.keputusan.index', [
             'keputusanList' => $keputusanList,
-            'pageTitle' => 'Manajemen SPK'
-        ]);
-    }
-    
-    /**
-     * Menampilkan form untuk membuat Keputusan SPK baru.
-     * 
-     * @return \Illuminate\View\View
-     */
-    public function create()
-    {
-        return view('pages.admin.spk.keputusan.create', [
-            'pageTitle' => 'Buat Keputusan SPK Baru'
+            'pageTitle'     => 'Manajemen SPK',
         ]);
     }
 
-    /**
-     * Menyimpan Keputusan SPK baru ke database.
-     * 
-     * Status awal keputusan yang baru dibuat akan diset otomatis menjadi 'Draft'.
-     * 
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
+    public function create()
+    {
+        return view('pages.admin.spk.keputusan.create', [
+            'pageTitle' => 'Buat Keputusan SPK Baru',
+        ]);
+    }
+
     public function store(Request $request)
     {
-        // 1. Validasi input yang masuk
         $validated = $request->validate([
             'nama_keputusan' => 'required|string|max:255',
         ]);
 
-        // 2. Buat record baru di database
-        $keputusan = spkkeputusan::create([
+        $keputusan = SpkKeputusan::create([
             'nama_keputusan' => $validated['nama_keputusan'],
             'tanggal_dibuat' => now(),
-            'status' => 'Draft', // Status awal selalu Draft
+            'status'         => 'Draft',
         ]);
 
-        // 3. Redirect ke halaman index dengan pesan sukses
         return redirect()->route('admin.spk.index')
                          ->with('success', 'Keputusan SPK "' . $keputusan->nama_keputusan . '" berhasil dibuat!');
     }
 
-    /**
-     * Menampilkan form edit untuk Keputusan tertentu.
-     * 
-     * @param int $idKeputusan ID Keputusan yang akan diedit
-     * @return \Illuminate\View\View
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
-     */
-    public function edit($idKeputusan)
+    public function edit(SpkKeputusan $keputusan)
     {
-        $keputusan = spkkeputusan::findOrFail($idKeputusan);
         return view('pages.admin.spk.keputusan.edit', [
             'keputusan' => $keputusan,
-            'pageTitle' => 'Edit Keputusan SPK'
+            'pageTitle' => 'Edit Keputusan SPK',
         ]);
     }
 
-    /**
-     * Memperbarui data Keputusan yang sudah ada.
-     * 
-     * @param Request $request
-     * @param int $idKeputusan
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
-     */
-    public function update(Request $request, $idKeputusan)
+    public function update(Request $request, SpkKeputusan $keputusan)
     {
-        $keputusan = spkkeputusan::findOrFail($idKeputusan);
         $validated = $request->validate([
             'nama_keputusan' => 'required|string|max:255',
         ]);
 
         $keputusan->update($validated);
 
-        // agar pengguna langsung bisa melanjutkan pengerjaan SPK.
         return redirect()->route('admin.spk.index')
                          ->with('success', 'Keputusan SPK "' . $keputusan->nama_keputusan . '" berhasil diperbarui.');
     }
 
-    /**
-     * Menghapus Keputusan SPK beserta seluruh data turunannya (Cascading Delete).
-     * 
-     * Menggunakan Database Transaction untuk memastikan integritas data.
-     * Data yang dihapus meliputi:
-     * 1. Penilaian (terkait Kriteria & Alternatif)
-     * 2. SubKriteria
-     * 3. Hasil Akhir
-     * 4. Kriteria
-     * 5. Alternatif
-     * 6. Keputusan itu sendiri
-     * 
-     * @param int $idKeputusan
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function destroy($idKeputusan)
+    public function destroy(SpkKeputusan $keputusan)
     {
-        // Menggunakan Transaction untuk memastikan semua penghapusan bertingkat berhasil (Atomic Operation)
         DB::beginTransaction();
         try {
-            $keputusan = spkkeputusan::findOrFail($idKeputusan);
-            $nama = $keputusan->nama_keputusan;
+            $idKeputusan = $keputusan->id_keputusan;
+            $nama      = $keputusan->nama_keputusan;
 
-            // 1. Ambil ID terkait (Pluck ID hanya jika ada data, untuk menghindari kesalahan query)
-            $kriteriaIds = kriteria::where('id_keputusan', $idKeputusan)->pluck('id_kriteria')->toArray();
-            $alternatifIds = alternatif::where('id_keputusan', $idKeputusan)->pluck('id_alternatif')->toArray();
+            $kriteriaIds   = Kriteria::where('id_keputusan', $idKeputusan)->pluck('id_kriteria')->toArray();
+            $alternatifIds = Alternatif::where('id_keputusan', $idKeputusan)->pluck('id_alternatif')->toArray();
 
-            // 2. Hapus data anak paling dalam (Deepest Child) terlebih dahulu.
-            // Ini untuk menghindari constraint violation jika foreign key tidak di-set ON DELETE CASCADE.
             if (!empty($kriteriaIds)) {
-                // Hapus Penilaian yang terkait dengan Kriteria
-                penilaian::whereIn('id_kriteria', $kriteriaIds)->delete();
-                // Hapus SubKriteria yang terkait dengan Kriteria
-                subkriteria::whereIn('id_kriteria', $kriteriaIds)->delete();
+                Penilaian::whereIn('id_kriteria', $kriteriaIds)->delete();
+                SubKriteria::whereIn('id_kriteria', $kriteriaIds)->delete();
             }
-            
-            if (!empty($alternatifIds)) {
-                // Hapus Penilaian yang terkait dengan Alternatif
-                penilaian::whereIn('id_alternatif', $alternatifIds)->delete(); // Penilaian terikat ke Kriteria dan Alternatif
-                // Hapus HasilAkhir yang terkait dengan Alternatif
-                hasilakhir::whereIn('id_alternatif', $alternatifIds)->delete();
-            }
-            
-            // 3. Hapus data entitas utama (Kriteria dan Alternatif) setelah data anaknya bersih.
-            kriteria::where('id_keputusan', $idKeputusan)->delete();
-            alternatif::where('id_keputusan', $idKeputusan)->delete();
 
-            // 4. Hapus Keputusan utama
+            if (!empty($alternatifIds)) {
+                Penilaian::whereIn('id_alternatif', $alternatifIds)->delete();
+                HasilAkhir::whereIn('id_alternatif', $alternatifIds)->delete();
+            }
+
+            Kriteria::where('id_keputusan', $idKeputusan)->delete();
+            Alternatif::where('id_keputusan', $idKeputusan)->delete();
+
             $keputusan->delete();
-            
-            DB::commit(); // Selesai, simpan perubahan
+
+            DB::commit();
 
             return redirect()->route('admin.spk.index')
                              ->with('success', 'Keputusan SPK "' . $nama . '" dan semua data terkait berhasil dihapus.');
 
         } catch (\Exception $e) {
-            DB::rollBack(); // Batalkan semua operasi jika ada error
-            // Log error untuk debugging yang lebih mudah di environment developer
-            Log::error("Gagal menghapus keputusan SPK: " . $e->getMessage(), ['id_keputusan' => $idKeputusan]); 
-            
-            // Mengembalikan pesan error yang jelas
+            DB::rollBack();
+            Log::error("Gagal menghapus keputusan SPK: " . $e->getMessage(), ['id_keputusan' => $keputusan->id_keputusan]);
+
             return redirect()->route('admin.spk.index')
-                             ->with('error', 'Gagal menghapus keputusan SPK: ' . $e->getMessage() . '. Cek log server untuk detail.');
+                             ->with('error', 'Gagal menghapus keputusan SPK: ' . $e->getMessage());
         }
     }
 }

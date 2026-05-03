@@ -12,3 +12,5 @@ $classes = ($active ?? false) ? $activeClasses : $inactiveClasses;
 <a {{ $attributes->merge(['class' => $classes]) }}>
     {{ $slot }}
 </a>
+
+

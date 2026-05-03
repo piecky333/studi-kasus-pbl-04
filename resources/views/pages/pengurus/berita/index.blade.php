@@ -174,11 +174,11 @@
                         </td>
                         <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-center font-medium space-x-1 lg:space-x-2">
                             {{-- Edit --}}
-                            <a href="{{ route('pengurus.berita.edit', $berita->id_berita) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" title="Edit">
+                            <a href="{{ route('pengurus.berita.edit', $berita) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" title="Edit">
                                 <i class="fas fa-pencil-alt mr-1 lg:mr-2"></i> Edit
                             </a>
 
-                            <form action="{{ route('pengurus.berita.destroy', $berita->id_berita) }}" method="POST" class="d-inline inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus berita ini?');">
+                            <form action="{{ route('pengurus.berita.destroy', $berita) }}" method="POST" class="d-inline inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus berita ini?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-red-100 text-red-600 hover:bg-red-600 hover:text-white" title="Hapus">
@@ -210,3 +210,7 @@
     @endif
 </div>
 @endsection
+
+
+
+

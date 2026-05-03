@@ -23,8 +23,8 @@
                 <div class="relative">
                     @php
                         // Mengambil notifikasi pengaduan terbaru (status 'Terkirim')
-                        $unreadCount = \App\Models\laporan\pengaduan::where('status', 'Terkirim')->count();
-                        $latestNotifications = \App\Models\laporan\pengaduan::with('user')
+                        $unreadCount = \App\Models\Pengaduan::where('status', 'Terkirim')->count();
+                        $latestNotifications = \App\Models\Pengaduan::with('user')
                                                 ->where('status', 'Terkirim')
                                                 ->latest()
                                                 ->take(5)
@@ -60,7 +60,7 @@
 
                         <div class="max-h-64 overflow-y-auto">
                             @forelse($latestNotifications as $notif)
-                                <a href="{{ route('admin.pengaduan.show', $notif->id_pengaduan) }}" class="block px-4 py-3 hover:bg-gray-50 transition duration-150 ease-in-out border-b border-gray-50 last:border-0">
+                                <a href="{{ route('admin.pengaduan.show', $notif) }}" class="block px-4 py-3 hover:bg-gray-50 transition duration-150 ease-in-out border-b border-gray-50 last:border-0">
                                     <p class="text-sm text-gray-800 font-semibold truncate">{{ $notif->judul }}</p>
                                     <p class="text-xs text-gray-600 mt-0.5">Dari: <span class="font-medium">{{ $notif->user->nama ?? 'User' }}</span></p>
                                     <p class="text-xs text-gray-400 mt-1 flex items-center">
@@ -177,3 +177,7 @@
 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
     @csrf
 </form>
+
+
+
+

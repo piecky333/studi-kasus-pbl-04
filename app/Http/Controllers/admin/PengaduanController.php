@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\laporan\pengaduan;
+use App\Models\Pengaduan;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
@@ -30,7 +30,7 @@ class PengaduanController extends Controller
      */
     public function index(Request $request)
     {
-        $query = pengaduan::with('mahasiswa');
+        $query = Pengaduan::with('mahasiswa');
 
         // Filter Status
         if ($request->filled('status')) {
@@ -70,10 +70,9 @@ class PengaduanController extends Controller
      * @return \Illuminate\View\View
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function show($id)
+    public function show(Pengaduan $pengaduan)
     {
-        $pengaduan = pengaduan::with(['user', 'mahasiswa', 'tanggapan.user', 'tanggapan.admin']) // Eager load tanggapan & actors
-                            ->findOrFail($id);
+        $pengaduan->load(['user', 'mahasiswa', 'tanggapan.user', 'tanggapan.admin']); // Eager load tanggapan & actors
 
         // LOGIKA OTOMATISASI STATUS:
         // Ubah status ke 'Diproses' jika status awal adalah 'Terkirim'.
@@ -96,7 +95,7 @@ class PengaduanController extends Controller
     /**
      * Simpan tanggapan dari admin.
      */
-    public function storeTanggapan(Request $request, $id)
+    public function storeTanggapan(Request $request, Pengaduan $pengaduan)
     {
         $request->validate([
             'isi_tanggapan' => 'required|string',
@@ -116,17 +115,15 @@ class PengaduanController extends Controller
              return back()->with('error', 'Akun Anda tidak terdaftar sebagai Admin.');
         }
 
-        \App\Models\laporan\Tanggapan::create([
-            'id_pengaduan' => $id,
+        \App\Models\Tanggapan::create([
+            'id_pengaduan' => $pengaduan->id_pengaduan,
             'id_admin' => $adminId, // Bisa null di migration baru, tapi admin harus punya id
             'isi_tanggapan' => $request->isi_tanggapan,
             'tanggal_tanggapan' => now(),
         ]);
 
         // NOTIFIKASI: Kirim notifikasi ke User pelapor
-        // Use correct model class from use statement: 'pengaduan'
-        $pengaduan = pengaduan::findOrFail($id);
-        
+        // $pengaduan sudah tersedia dari parameter model binding
         if ($pengaduan->user) {
             $adminPhoto = auth()->user()->profile_photo_url;
             $pengaduan->user->notify(new \App\Notifications\NewAdminReply($pengaduan, $request->isi_tanggapan, $adminPhoto));
@@ -147,7 +144,7 @@ class PengaduanController extends Controller
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function verifikasi(Request $request, $id)
+    public function verifikasi(Request $request, Pengaduan $pengaduan)
     {
         $validated = $request->validate([
             'status' => [
@@ -157,11 +154,11 @@ class PengaduanController extends Controller
             ],
         ]);
 
-        $pengaduan = pengaduan::findOrFail($id);
+        
         $pengaduan->status = $validated['status'];
         $pengaduan->save();
 
-        return redirect()->route('admin.pengaduan.show', $pengaduan->id_pengaduan)
+        return redirect()->route('admin.pengaduan.show', $pengaduan)
                          ->with('success', 'Status pengaduan berhasil diperbarui!');
     }
 
@@ -174,9 +171,9 @@ class PengaduanController extends Controller
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy($id)
+    public function destroy(Pengaduan $pengaduan)
     {
-        $pengaduan = pengaduan::findOrFail($id);
+        
 
         // Hapus file dari storage jika ada
         if ($pengaduan->gambar_bukti) {
@@ -221,9 +218,10 @@ class PengaduanController extends Controller
                 $request->file('gambar_bukti')->store('pengaduan', 'public');
         }
 
-        pengaduan::create($validatedData);
+        Pengaduan::create($validatedData);
 
         return redirect()->route('user.pengaduan.index')
                          ->with('success', 'Pengaduan berhasil dikirim!');
     }
 }
+

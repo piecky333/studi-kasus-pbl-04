@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\spkkeputusan;
-use App\Models\kriteria;
+use App\Models\SpkKeputusan;
+use App\Models\Kriteria;
 use App\Models\PerbandinganKriteria;
 
 class SpkMahasiswaBerprestasiSeeder extends Seeder
@@ -133,3 +133,4 @@ class SpkMahasiswaBerprestasiSeeder extends Seeder
         $this->command->info('Seeder SPK Mahasiswa Berprestasi berhasil dijalankan!');
     }
 }
+

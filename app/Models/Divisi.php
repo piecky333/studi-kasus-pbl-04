@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Models\Admin;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasHashid;
 
 class Divisi extends Model
 {
-    use HasFactory;
+    use HasFactory, HasHashid;
 
     protected $table = 'divisi';
     protected $primaryKey = 'id_divisi';
@@ -17,22 +18,18 @@ class Divisi extends Model
     protected $fillable = [
         'nama_divisi',
         'isi_divisi',
-        'foto_divisi'
+        'foto_divisi',
     ];
 
-    // RELASI
     public function pengurus()
     {
-        return $this->hasMany(\App\Models\Admin\Pengurus::class, 'id_divisi', 'id_divisi');
+        return $this->hasMany(Pengurus::class, 'id_divisi', 'id_divisi');
     }
 
     public function jabatan()
     {
-        return $this->hasMany(\App\Models\Jabatan::class, 'id_divisi', 'id_divisi');
-    }
-
-    public function keuangan()
-    {
-        return $this->hasMany(\App\Models\Admin\Keuangan::class, 'id_divisi', 'id_divisi');
+        return $this->hasMany(Jabatan::class, 'id_divisi', 'id_divisi');
     }
 }
+
+

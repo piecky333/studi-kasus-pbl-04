@@ -1,13 +1,10 @@
 <?php
 
-namespace App\Models\Admin;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Laporan\Tanggapan;
-use App\Models\Admin\Prestasi;
-use App\Models\Admin\Sanksi;
-use App\Models\Admin\DataMahasiswa;
+use App\Models\Tanggapan;
 
 class Admin extends Model
 {
@@ -18,34 +15,29 @@ class Admin extends Model
     protected $fillable = [
         'id_user',
         'nama_admin',
-        'jabatan_admin', 
+        'jabatan_admin',
     ];
 
-    // Relasi ke User
     public function user()
     {
-        return $this->belongsTo(\App\Models\User::class, 'id_user');
+        return $this->belongsTo(User::class, 'id_user');
     }
 
-    // Relasi ke Tanggapan
     public function tanggapan()
     {
         return $this->hasMany(Tanggapan::class, 'id_admin');
     }
 
-    // Relasi ke Prestasi
     public function prestasi()
     {
         return $this->hasMany(Prestasi::class, 'id_admin');
     }
 
-    // Relasi ke Sanksi
     public function sanksi()
     {
         return $this->hasMany(Sanksi::class, 'id_admin');
     }
 
-    // Relasi ke Mahasiswa
     public function mahasiswa()
     {
         return $this->hasMany(DataMahasiswa::class, 'id_admin');

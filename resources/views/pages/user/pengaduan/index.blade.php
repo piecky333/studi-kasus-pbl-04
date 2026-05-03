@@ -80,7 +80,7 @@
                             <thead class="bg-blue-100">
                                 <tr>
                                     <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
+                                        class="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider rounded-tl-lg">
                                         No</th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
@@ -91,12 +91,13 @@
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider">
                                         Status</th>
-                                    <th scope="col" class="relative px-6 py-3"><span class="sr-only">Aksi</span></th>
+                                    <th scope="col" class="px-6 py-3 rounded-tr-lg"><span class="sr-only">Hapus</span></th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @forelse($pengaduan as $p)
-                                    <tr>
+                                    <tr onclick="window.location='{{ route('user.pengaduan.show', $p) }}'" 
+                                        class="cursor-pointer hover:bg-gray-50 transition duration-150">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{ $loop->iteration + ($pengaduan->currentPage() - 1) * $pengaduan->perPage() }}
                                         </td>
@@ -109,35 +110,24 @@
 
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                                             @php
-                                                // Bersihkan nilai status untuk perbandingan yang aman
                                                 $statusBersih = trim($p->status);
                                             @endphp
 
                                             @if(strcasecmp($statusBersih, 'Diproses') == 0)
-                                                <span
-                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Diproses</span>
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Diproses</span>
                                             @elseif(strcasecmp($statusBersih, 'Selesai') == 0)
-                                                <span
-                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Selesai</span>
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Selesai</span>
                                             @elseif(strcasecmp($statusBersih, 'Ditolak') == 0)
-                                                <span
-                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Ditolak</span>
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Ditolak</span>
                                             @elseif(strcasecmp($statusBersih, 'Terkirim') == 0)
-                                                {{-- Sekarang 'Terkirim' dicek secara eksplisit --}}
-                                                <span
-                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Terkirim</span>
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Terkirim</span>
                                             @else
-                                                {{-- Ini untuk menangani data kosong atau tidak valid --}}
-                                                <span
-                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">{{ $statusBersih ?: 'N/A' }}</span>
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">{{ $statusBersih ?: 'N/A' }}</span>
                                             @endif
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-4">
-                                            <a href="{{ route('user.pengaduan.show', $p->id_pengaduan) }}"
-                                                class="text-indigo-600 hover:text-indigo-900">Detail</a>
-
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium" onclick="event.stopPropagation()">
                                             @if(strcasecmp(trim($p->status), 'Terkirim') == 0)
-                                                <form action="{{ route('user.pengaduan.destroy', $p->id_pengaduan) }}"
+                                                <form action="{{ route('user.pengaduan.destroy', $p) }}"
                                                     method="POST" class="inline-block">
                                                     @csrf
                                                     @method('DELETE')
@@ -174,3 +164,5 @@
         </div>
     </div>
 </x-app-layout>
+
+

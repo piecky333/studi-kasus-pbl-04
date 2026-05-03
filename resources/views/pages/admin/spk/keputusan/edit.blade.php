@@ -22,7 +22,7 @@
     @endif
 
     {{-- Form untuk memperbarui data keputusan yang sudah ada --}}
-    <form action="{{ route('admin.spk.update', $keputusan->id_keputusan) }}" method="POST">
+    <form action="{{ route('admin.spk.update', $keputusan) }}" method="POST">
         @csrf
         @method('PUT') {{-- Method Spoofing: Menggunakan PUT untuk update data sesuai standar RESTful --}}
 
@@ -61,3 +61,5 @@
 
 </div>
 @endsection
+
+

@@ -257,7 +257,7 @@
                         </div>
 
                         <!-- Form Balas -->
-                        <form action="{{ route('admin.pengaduan.tanggapan', $pengaduan->id_pengaduan) }}" method="POST">
+                        <form action="{{ route('admin.pengaduan.tanggapan', $pengaduan) }}" method="POST">
                             @csrf
                             <div class="flex gap-2">
                                 <input type="text" name="isi_tanggapan" required placeholder="Tulis balasan sebagai Admin..." 
@@ -278,7 +278,7 @@
                     </h3>
                 </div>
                 <div class="px-4 py-5 sm:p-6">
-                    <form action="{{ route('admin.pengaduan.verifikasi', $pengaduan->id_pengaduan) }}" method="POST">
+                    <form action="{{ route('admin.pengaduan.verifikasi', $pengaduan) }}" method="POST">
                         @csrf
                         @method('PUT')
 
@@ -305,3 +305,6 @@
     </div>
 </div>
 @endsection
+
+
+

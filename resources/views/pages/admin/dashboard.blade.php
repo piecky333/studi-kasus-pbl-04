@@ -137,7 +137,7 @@
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 text-center">
-                                        <a href="{{ route('admin.pengaduan.show', $pengaduan->id_pengaduan) }}" class="text-blue-600 hover:text-blue-800 font-medium text-xs">Detail</a>
+                                        <a href="{{ route('admin.pengaduan.show', $pengaduan) }}" class="text-blue-600 hover:text-blue-800 font-medium text-xs">Detail</a>
                                     </td>
                                 </tr>
                             @empty
@@ -178,7 +178,7 @@
                                     <td class="px-6 py-4 font-medium text-gray-900">{{ Str::limit($berita->judul_berita, 30) }}</td>
                                     <td class="px-6 py-4">{{ $berita->user->nama ?? 'Unknown' }}</td>
                                     <td class="px-6 py-4 text-center">
-                                        <a href="{{ route('admin.berita.edit', $berita->id_berita) }}" class="text-blue-600 hover:text-blue-800 font-medium text-xs">Review</a>
+                                        <a href="{{ route('admin.berita.edit', $berita) }}" class="text-blue-600 hover:text-blue-800 font-medium text-xs">Review</a>
                                     </td>
                                 </tr>
                             @empty
@@ -296,3 +296,5 @@
         }
     </script>
 @endsection
+
+

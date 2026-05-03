@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Models\Laporan;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
-use App\Models\Admin\admin;
+
+use App\Traits\HasHashid;
 
 class Tanggapan extends Model
 {
-    use HasFactory;
+    use HasFactory, HasHashid;
 
     protected $table = 'tanggapan';
     protected $primaryKey = 'id_tanggapan';
@@ -34,7 +34,7 @@ class Tanggapan extends Model
 
     public function admin()
     {
-        return $this->belongsTo(admin::class, 'id_admin', 'id_admin');
+        return $this->belongsTo(Admin::class, 'id_admin', 'id_admin');
     }
 
     public function user()

@@ -49,7 +49,7 @@
                         {{-- ========================================================== --}}
                         {{-- == PERBAIKAN: Mengganti route('berita.show') menjadi 'prestasi.show' == --}}
                         {{-- ========================================================== --}}
-                        <a href="{{ route('prestasi.show', $item->id_berita) }}" class="block overflow-hidden h-48">
+                        <a href="{{ route('prestasi.show', $item) }}" class="block overflow-hidden h-48">
                             @if ($item->gambar_berita)
                                 <img src="{{ asset('storage/' . $item->gambar_berita) }}" alt="{{ $item->judul_berita }}"
                                      class="w-full h-full object-cover transform hover:scale-105 transition duration-500">
@@ -71,7 +71,7 @@
                                 {{-- == PERBAIKAN: Mengganti route('berita.show') menjadi 'prestasi.show' == --}}
                                 {{-- ========================================================== --}}
                                 {{-- MODIFIKASI: Menambahkan kelas 'link-animasi' --}}
-                                <a href="{{ route('prestasi.show', $item->id_berita) }}" class="link-animasi">
+                                <a href="{{ route('prestasi.show', $item) }}" class="link-animasi">
                                     {{ Str::limit($item->judul_berita, 50) }}
                                 </a>
                             </h3>
@@ -174,3 +174,5 @@
         });
     </script>
 @endpush
+
+

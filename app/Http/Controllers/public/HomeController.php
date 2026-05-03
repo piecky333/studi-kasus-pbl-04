@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Berita;
-use App\Models\Admin\Divisi;
+use App\Models\Divisi;
 
 class HomeController extends Controller
 {

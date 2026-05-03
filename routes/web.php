@@ -75,10 +75,10 @@ Route::get('/', [PublicHomeController::class, 'index'])->name('home');
 Route::get('/berita', [PublicBeritaController::class, 'index'])->name('berita.index');
 Route::get('/berita/{berita}', [PublicBeritaController::class, 'show'])->name('berita.show');
 Route::get('/divisi', [PublicDivisiController::class, 'index'])->name('divisi.index');
-Route::get('/divisi/{id}', [PublicDivisiController::class, 'show'])->name('divisi.show');
+Route::get('/divisi/{divisi}', [PublicDivisiController::class, 'show'])->name('divisi.show');
 Route::get('/prestasi', [PublicPrestasiController::class, 'index'])->name('prestasi.index');
-Route::get('/prestasi/{id}', [PublicPrestasiController::class, 'show'])->name('prestasi.show');
-Route::post('/berita/{id_berita}/komentar', [PublicKomentarController::class, 'store'])->name('komentar.store');
+Route::get('/prestasi/{berita}', [PublicPrestasiController::class, 'show'])->name('prestasi.show');
+Route::post('/berita/{berita}/komentar', [PublicKomentarController::class, 'store'])->name('komentar.store');
 
 
 // =========================================================
@@ -97,29 +97,30 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('/berita', [AdminBeritaController::class, 'index'])->name('berita.index');
     Route::get('/berita/create', [AdminBeritaController::class, 'create'])->name('berita.create');
     Route::post('/berita', [AdminBeritaController::class, 'store'])->name('berita.store');
-    Route::get('/berita/{id}/edit', [AdminBeritaController::class, 'edit'])->name('berita.edit');
-    Route::put('/berita/{id}', [AdminBeritaController::class, 'update'])->name('berita.update');
-    Route::delete('/berita/{id}', [AdminBeritaController::class, 'destroy'])->name('berita.destroy');
-    Route::put('/berita/{id}/verifikasi', [AdminBeritaController::class, 'verifikasi'])->name('berita.verifikasi');
-    Route::put('/berita/{id}/tolak', [AdminBeritaController::class, 'tolak'])->name('berita.tolak');
+    Route::get('/berita/{berita}/edit', [AdminBeritaController::class, 'edit'])->name('berita.edit');
+    Route::put('/berita/{berita}', [AdminBeritaController::class, 'update'])->name('berita.update');
+    Route::delete('/berita/{berita}', [AdminBeritaController::class, 'destroy'])->name('berita.destroy');
+    Route::put('/berita/{berita}/verifikasi', [AdminBeritaController::class, 'verifikasi'])->name('berita.verifikasi');
+    Route::put('/berita/{berita}/tolak', [AdminBeritaController::class, 'tolak'])->name('berita.tolak');
 
     // CRUD Pengurus
     Route::resource('pengurus', AdminPengurusController::class);
 
     // CRUD Divisi
-    Route::resource('divisi', AdminDivisiController::class)->only(['index', 'show']);
+    Route::resource('divisi', AdminDivisiController::class);
+    Route::resource('jabatan', \App\Http\Controllers\Admin\JabatanController::class);
 
     // Pengaduan
     Route::get('pengaduan', [AdminPengaduanController::class, 'index'])->name('pengaduan.index');
-    Route::get('pengaduan/{id}', [AdminPengaduanController::class, 'show'])->name('pengaduan.show');
-    Route::delete('pengaduan/{id}', [AdminPengaduanController::class, 'destroy'])->name('pengaduan.destroy');
-    Route::put('pengaduan/{id}/verifikasi', [AdminPengaduanController::class, 'verifikasi'])->name('pengaduan.verifikasi');
-    Route::post('pengaduan/{id}/tanggapan', [AdminPengaduanController::class, 'storeTanggapan'])->name('pengaduan.tanggapan');
+    Route::get('pengaduan/{pengaduan}', [AdminPengaduanController::class, 'show'])->name('pengaduan.show');
+    Route::delete('pengaduan/{pengaduan}', [AdminPengaduanController::class, 'destroy'])->name('pengaduan.destroy');
+    Route::put('pengaduan/{pengaduan}/verifikasi', [AdminPengaduanController::class, 'verifikasi'])->name('pengaduan.verifikasi');
+    Route::post('pengaduan/{pengaduan}/tanggapan', [AdminPengaduanController::class, 'storeTanggapan'])->name('pengaduan.tanggapan');
 
     // Prestasi
     Route::get('prestasi/cari-mahasiswa', [AdminPrestasiController::class, 'cariMahasiswa'])->name('prestasi.cariMahasiswa');
-    Route::put('prestasi/{id}/verifikasi', [AdminPrestasiController::class, 'verifikasi'])->name('prestasi.verifikasi');
-    Route::put('prestasi/{id}/tolak', [AdminPrestasiController::class, 'tolak'])->name('prestasi.tolak');
+    Route::put('prestasi/{prestasi}/verifikasi', [AdminPrestasiController::class, 'verifikasi'])->name('prestasi.verifikasi');
+    Route::put('prestasi/{prestasi}/tolak', [AdminPrestasiController::class, 'tolak'])->name('prestasi.tolak');
     Route::resource('prestasi', AdminPrestasiController::class);
 
     // Sanksi
@@ -141,12 +142,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
         Route::get('/', [KeputusanController::class, 'index'])->name('index');
         Route::get('/create', [KeputusanController::class, 'create'])->name('create');
         Route::post('/', [KeputusanController::class, 'store'])->name('store');
-        Route::get('/{idKeputusan}/edit', [KeputusanController::class, 'edit'])->name('edit');
-        Route::put('/{idKeputusan}', [KeputusanController::class, 'update'])->name('update');
-        Route::delete('/{idKeputusan}', [KeputusanController::class, 'destroy'])->name('destroy');
+        Route::get('/{keputusan}/edit', [KeputusanController::class, 'edit'])->name('edit');
+        Route::put('/{keputusan}', [KeputusanController::class, 'update'])->name('update');
+        Route::delete('/{keputusan}', [KeputusanController::class, 'destroy'])->name('destroy');
 
         // LEVEL 2: DETAIL KEPUTUSAN (Navigasi Tab)
-        Route::prefix('{idKeputusan}')->group(function () {
+        Route::prefix('{keputusan}')->group(function () {
 
             // TAB 1: KRITERIA & BOBOT 
             Route::prefix('kriteria')->name('kriteria.')->group(function () {
@@ -158,34 +159,34 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
                     // CRUD Kriteria
                     Route::get('/create', 'create')->name('create');
                     Route::post('/', 'store')->name('store');
-                    Route::get('/{idKriteria}/edit', 'edit')->name('edit');
-                    Route::put('/{idKriteria}', 'update')->name('update');
-                    Route::delete('/{idKriteria}', 'destroy')->name('destroy');
+                    Route::get('/{kriteria}/edit', 'edit')->name('edit');
+                    Route::put('/{kriteria}', 'update')->name('update');
+                    Route::delete('/{kriteria}', 'destroy')->name('destroy');
                 });
 
                 // Subkriteria (Nested Resource)
                 Route::name('subkriteria.')->controller(SubKriteriaController::class)->group(function () {
 
-                    // BASE PATH (misalnya, /kriteria/{idKriteria}/subkriteria)
-                    $basePath = '/{idKriteria}/subkriteria';
+                    // BASE PATH (misalnya, /kriteria/{kriteria}/subkriteria)
+                    $basePath = '/{kriteria}/subkriteria';
 
-                    // 1. INDEX: GET /kriteria/{idKriteria}/subkriteria
+                    // 1. INDEX: GET /kriteria/{kriteria}/subkriteria
                     Route::get($basePath, 'index')->name('index');
 
-                    // 2. CREATE: GET /kriteria/{idKriteria}/subkriteria/create
+                    // 2. CREATE: GET /kriteria/{kriteria}/subkriteria/create
                     Route::get($basePath . '/create', 'create')->name('create');
 
-                    // 3. STORE: POST /kriteria/{idKriteria}/subkriteria
+                    // 3. STORE: POST /kriteria/{kriteria}/subkriteria
                     Route::post($basePath, 'store')->name('store');
 
-                    // 4. EDIT: GET /kriteria/{idKriteria}/subkriteria/{subkriteriumId}/edit
-                    Route::get($basePath . '/{subkriteriumId}/edit', 'edit')->name('edit');
+                    // 4. EDIT: GET /kriteria/{kriteria}/subkriteria/{subkriteria}/edit
+                    Route::get($basePath . '/{subkriteria}/edit', 'edit')->name('edit');
 
-                    // 5. UPDATE: PUT /kriteria/{idKriteria}/subkriteria/{subkriteriumId}
-                    Route::put($basePath . '/{subkriteriumId}', 'update')->name('update');
+                    // 5. UPDATE: PUT /kriteria/{kriteria}/subkriteria/{subkriteria}
+                    Route::put($basePath . '/{subkriteria}', 'update')->name('update');
 
-                    // 6. DESTROY: DELETE /kriteria/{idKriteria}/subkriteria/{subkriteriumId}
-                    Route::delete($basePath . '/{subkriteriumId}', 'destroy')->name('destroy');
+                    // 6. DESTROY: DELETE /kriteria/{kriteria}/subkriteria/{subkriteria}
+                    Route::delete($basePath . '/{subkriteria}', 'destroy')->name('destroy');
                 });
 
                 // Perbandingan Kriteria (AHP)
@@ -214,10 +215,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
                     // CRUD Alternatif
                     Route::get('/create', 'create')->name('create');
                     Route::post('/', 'store')->name('store');
-                    Route::get('/{idAlternatif}/edit', 'edit')->name('edit');
-                    Route::put('/{idAlternatif}', 'update')->name('update');
+                    Route::get('/{alternatif}/edit', 'edit')->name('edit');
+                    Route::put('/{alternatif}', 'update')->name('update');
                     Route::delete('/bulk-destroy', 'bulkDestroy')->name('bulkDestroy'); // Route baru untuk bulk delete
-                    Route::delete('/{idAlternatif}', 'destroy')->name('destroy');
+                    Route::delete('/{alternatif}', 'destroy')->name('destroy');
                 });
 
 
@@ -252,7 +253,6 @@ Route::prefix('pengurus')->name('pengurus.')
         Route::resource('divisi', PengurusDivisiController::class)->parameters(['divisi' => 'id_divisi']);
         Route::resource('jabatan', \App\Http\Controllers\Pengurus\JabatanController::class);
         Route::resource('pengurus', \App\Http\Controllers\Pengurus\PengurusController::class);
-        Route::resource('keuangan', \App\Http\Controllers\Pengurus\KeuanganController::class);
         Route::resource('berita', \App\Http\Controllers\Pengurus\BeritaController::class);
         // Prestasi
         Route::get('prestasi/cari-mahasiswa', [\App\Http\Controllers\Pengurus\PrestasiController::class, 'cariMahasiswa'])->name('prestasi.cariMahasiswa');
@@ -275,7 +275,7 @@ Route::prefix('mahasiswa')->name('mahasiswa.')
 
         // Reuse UserPengaduanController for Mahasiswa
         Route::resource('pengaduan', UserPengaduanController::class);
-        Route::post('pengaduan/{id}/tanggapan', [UserPengaduanController::class, 'storeTanggapan'])->name('pengaduan.tanggapan');
+        Route::post('pengaduan/{pengaduan}/tanggapan', [UserPengaduanController::class, 'storeTanggapan'])->name('pengaduan.tanggapan');
 
         // CRUD Prestasi (Mahasiswa Submit Sendiri)
         Route::resource('prestasi', \App\Http\Controllers\Mahasiswa\PrestasiController::class);
@@ -291,7 +291,7 @@ Route::prefix('user')->name('user.')
         Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
         Route::resource('berita', UserBeritaController::class);
         Route::resource('pengaduan', UserPengaduanController::class);
-        Route::post('pengaduan/{id}/tanggapan', [UserPengaduanController::class, 'storeTanggapan'])->name('pengaduan.tanggapan');
+        Route::post('pengaduan/{pengaduan}/tanggapan', [UserPengaduanController::class, 'storeTanggapan'])->name('pengaduan.tanggapan');
         Route::get('/notifications/{id}/read', [UserDashboardController::class, 'markAsRead'])->name('notifications.read');
     });
 

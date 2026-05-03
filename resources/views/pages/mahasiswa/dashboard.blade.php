@@ -222,7 +222,7 @@
                                                         $lastTanggapan = $item->tanggapan ? $item->tanggapan->sortBy('created_at')->last() : null;
                                                         $hasReply = $lastTanggapan && $lastTanggapan->id_admin;
                                                     @endphp
-                                                    <a href="{{ route('mahasiswa.pengaduan.show', $item->id_pengaduan) }}"
+                                                    <a href="{{ route('mahasiswa.pengaduan.show', $item) }}"
                                                         class="text-indigo-600 hover:text-indigo-900 font-semibold">
                                                         {{ $hasReply ? 'Lihat balasan' : 'Detail' }}
                                                     </a>
@@ -302,3 +302,7 @@
         </div>
     </div>
 </x-app-layout>
+
+
+
+

@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Models\Admin;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasHashid;
 
 class Sanksi extends Model
 {
-    use HasFactory;
+    use HasFactory, HasHashid;
 
     protected $table = 'sanksi';
     protected $primaryKey = 'id_sanksi';
@@ -17,7 +18,7 @@ class Sanksi extends Model
         'jenis_sanksi',
         'jenis_hukuman',
         'keterangan',
-        'file_pendukung'
+        'file_pendukung',
     ];
 
     public function mahasiswa()
@@ -25,3 +26,5 @@ class Sanksi extends Model
         return $this->belongsTo(DataMahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 }
+
+

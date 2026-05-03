@@ -12,12 +12,6 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
-    /**
-     * Tampilkan form edit profil.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\View\View
-     */
     public function edit(Request $request): View
     {
         return view('pages.pengurus.profile.edit', [
@@ -25,18 +19,9 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * Perbarui informasi profil.
-     * Reset verifikasi email jika email berubah.
-     * Update foto profil jika ada upload baru.
-     *
-     * @param \App\Http\Requests\ProfileUpdateRequest $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $user = $request->user();
-
         $user->fill($request->validated());
 
         if ($user->isDirty('email')) {

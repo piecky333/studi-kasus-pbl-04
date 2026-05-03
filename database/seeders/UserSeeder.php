@@ -35,7 +35,7 @@ class UserSeeder extends Seeder
         ]);
 
         // Create Admin detail record
-        \App\Models\admin\admin::create([
+        \App\Models\Admin::create([
             'id_user' => $user->id_user,
             'nama_admin' => 'Admin Sistem',
             'jabatan_admin' => 'Administrator',
@@ -69,3 +69,4 @@ class UserSeeder extends Seeder
         ]);
     }
 }
+

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Admin\Divisi;
+use App\Models\Divisi;
 
 class DivisiController extends Controller
 {
@@ -23,13 +23,11 @@ class DivisiController extends Controller
     /**
      * Tampilkan detail divisi.
      *
-     * @param string|int $slugOrId
+     * @param Divisi $divisi
      * @return \Illuminate\View\View
      */
-    public function show($slugOrId) 
+    public function show(Divisi $divisi) 
     {
-        $divisi = Divisi::findOrFail($slugOrId);
-
         return view('pages.public.divisi.show', compact('divisi'));
     }
 }

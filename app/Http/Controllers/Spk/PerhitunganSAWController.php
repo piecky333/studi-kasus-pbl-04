@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Spk;
 
-use App\Models\hasilakhir;
+use App\Models\HasilAkhir;
 use App\Services\SawService;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Spk\KeputusanDetailController; // PENTING: Import Base Controller SPK
+use App\Http\Controllers\Spk\KeputusanDetailController; 
 
-use App\Models\alternatif;
-use App\Models\penilaian;
+use App\Models\Alternatif;
+use App\Models\Penilaian;
 
 /**
  * Class PerhitunganSAWController
@@ -49,18 +49,18 @@ class PerhitunganSAWController extends KeputusanDetailController
      * 
      * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
-    public function index()
+    public function index(SpkKeputusan $keputusan)
     {
         // CEK DATA: Jika tidak ada alternatif atau penilaian, redirect ke halaman alternatif
-        $hasAlternatif = alternatif::where('id_keputusan', $this->idKeputusan)->exists();
+        $hasAlternatif = Alternatif::where('id_keputusan', $this->idKeputusan)->exists();
         
         // Cek apakah ada penilaian yang terkait dengan alternatif di keputusan ini
-        $hasPenilaian = penilaian::whereHas('alternatif', function ($query) {
+        $hasPenilaian = Penilaian::whereHas('alternatif', function ($query) {
             $query->where('id_keputusan', $this->idKeputusan);
         })->exists();
 
         if (!$hasAlternatif || !$hasPenilaian) {
-            return redirect()->route('admin.spk.alternatif.index', $this->idKeputusan)
+            return redirect()->route('admin.spk.alternatif.index', $this->keputusan)
                 ->with('error', 'Harap tambahkan Alternatif dan Penilaian terlebih dahulu sebelum melihat Hasil Akhir.');
         }
 
@@ -108,7 +108,7 @@ class PerhitunganSAWController extends KeputusanDetailController
      * 
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function runCalculation()
+    public function runCalculation(SpkKeputusan $keputusan)
     {
         // NOTE: Request object tidak perlu di-type hint jika tidak digunakan,
         // tetapi dipertahankan jika Anda ingin menambahkan validasi isMethod('POST') 
@@ -133,6 +133,6 @@ class PerhitunganSAWController extends KeputusanDetailController
         }
 
         // Menggunakan PRG Pattern: Redirect kembali ke halaman Hasil Akhir (GET route)
-        return redirect()->route('admin.spk.hasil.index', $this->idKeputusan);
+        return redirect()->route('admin.spk.hasil.index', $this->keputusan);
     }
 }

@@ -113,9 +113,9 @@ class BeritaController extends Controller
      * @return \Illuminate\View\View
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function edit($id)
+    public function edit(Berita $berita)
     {
-        $berita = Berita::findOrFail($id);
+        
         return view('pages.admin.berita.edit', compact('berita'));
     }
 
@@ -131,9 +131,9 @@ class BeritaController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Berita $berita)
     {
-        $berita = Berita::findOrFail($id);
+        
 
         $request->validate([
             'judul_berita' => 'required|string|max:255',
@@ -170,9 +170,9 @@ class BeritaController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function destroy($id)
+    public function destroy(Berita $berita)
     {
-        $berita = Berita::findOrFail($id);
+        
 
         if ($berita->gambar_berita) {
             Storage::disk('public')->delete($berita->gambar_berita);
@@ -191,9 +191,9 @@ class BeritaController extends Controller
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function verifikasi($id)
+    public function verifikasi(Berita $berita)
     {
-        $berita = Berita::findOrFail($id);
+        
         $berita->status = 'verified';
         $berita->id_verifikator = auth()->id(); // Catat verifikator
         $berita->save();
@@ -209,9 +209,9 @@ class BeritaController extends Controller
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function tolak($id)
+    public function tolak(Berita $berita)
     {
-        $berita = Berita::findOrFail($id);
+        
         $berita->status = 'rejected';
         $berita->id_penolak = auth()->id(); // Catat penolak
         $berita->save();
@@ -219,3 +219,4 @@ class BeritaController extends Controller
         return redirect()->route('admin.berita.index')->with('success', 'Berita ditolak.');
     }
 }
+

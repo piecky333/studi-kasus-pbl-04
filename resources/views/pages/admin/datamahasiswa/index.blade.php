@@ -163,12 +163,12 @@
                             <td class="px-3 py-2 lg:px-4 lg:py-3 text-center">
                                 <div class="flex justify-center space-x-1 lg:space-x-2">
                                     {{-- View --}}
-                                    <a href="{{ route('admin.datamahasiswa.show', $mhs->id_mahasiswa) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white" title="Detail">
+                                    <a href="{{ route('admin.datamahasiswa.show', $mhs) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white" title="Detail">
                                         <i class="fas fa-eye mr-1 lg:mr-2"></i> Detail
                                     </a>
                                     
                                     {{-- Edit --}}
-                                    <a href="{{ route('admin.datamahasiswa.edit', $mhs->id_mahasiswa) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" title="Edit">
+                                    <a href="{{ route('admin.datamahasiswa.edit', $mhs) }}" class="inline-flex items-center px-2 py-1 lg:px-3 lg:py-2 text-xs lg:text-sm font-medium rounded-md transition-colors duration-200 bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white" title="Edit">
                                         <i class="fas fa-pencil-alt mr-1 lg:mr-2"></i> Edit
                                     </a>
 
@@ -286,3 +286,5 @@
     });
 </script>
 @endsection
+
+

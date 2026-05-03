@@ -104,11 +104,6 @@
 
                                 <dl class="space-y-3 text-gray-700">
                                     <div class="flex justify-between">
-                                        <dt class="font-medium">ID Laporan:</dt>
-                                        <dd>#{{ $pengaduan->id_pengaduan }}</dd>
-                                    </div>
-
-                                    <div class="flex justify-between">
                                         <dt class="font-medium">Tanggal Dibuat:</dt>
                                         <dd>{{ $pengaduan->created_at->format('d F Y, H:i') }}</dd>
                                     </div>
@@ -171,7 +166,7 @@
                         </div>
 
                         <!-- Form Balas -->
-                        <form action="{{ route('user.pengaduan.tanggapan', $pengaduan->id_pengaduan) }}" method="POST">
+                        <form action="{{ route('user.pengaduan.tanggapan', $pengaduan) }}" method="POST">
                             @csrf
                             <div class="flex gap-2">
                                 <input type="text" name="isi_tanggapan" required placeholder="Tulis balasan..." 
@@ -231,3 +226,7 @@
     </script>
 
 </x-app-layout>
+
+
+
+
