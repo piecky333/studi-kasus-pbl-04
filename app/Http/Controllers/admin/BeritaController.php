@@ -120,7 +120,7 @@ class BeritaController extends Controller
     /**
      * Menampilkan form edit untuk berita tertentu.
      * 
-     * @param int $id ID Berita yang akan diedit
+     * @param Berita $berita Berita yang akan diedit
      * @return \Illuminate\View\View
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
@@ -138,7 +138,7 @@ class BeritaController extends Controller
      * - Jika tidak ada gambar baru, gambar lama tetap dipertahankan.
      * 
      * @param Request $request
-     * @param int $id
+     * @param Berita $berita
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
@@ -177,7 +177,7 @@ class BeritaController extends Controller
      * 
      * Juga menghapus file gambar terkait dari storage untuk menghemat ruang penyimpanan.
      * 
-     * @param int $id
+     * @param Berita $berita
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
@@ -199,7 +199,7 @@ class BeritaController extends Controller
      * 
      * Digunakan jika ada alur kontribusi berita dari user biasa yang butuh persetujuan admin.
      * 
-     * @param int $id
+     * @param Berita $berita
      * @return \Illuminate\Http\RedirectResponse
      */
     public function verifikasi(Berita $berita)
@@ -217,7 +217,7 @@ class BeritaController extends Controller
      * 
      * Mengubah status berita menjadi 'rejected'.
      * 
-     * @param int $id
+     * @param Berita $berita
      * @return \Illuminate\Http\RedirectResponse
      */
     public function tolak(Berita $berita)

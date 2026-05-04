@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Spk;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Spk\KeputusanDetailController;
 use App\Models\PerbandinganKriteria;
+use App\Models\SpkKeputusan;
 use App\Models\Kriteria;
 use App\Services\AhpService;
 use Illuminate\Support\Facades\Validator;
