@@ -66,7 +66,7 @@ class PengaduanController extends Controller
      * sistem akan otomatis mengubah statusnya menjadi 'Diproses'.
      * Hal ini memberikan feedback implisit bahwa laporan sudah dilihat admin.
      * 
-     * @param int $id ID Pengaduan
+     * @param Pengaduan $pengaduan ID Pengaduan
      * @return \Illuminate\View\View
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
@@ -141,7 +141,7 @@ class PengaduanController extends Controller
      * - Ditolak: Laporan tidak valid atau tidak dapat diproses.
      * 
      * @param Request $request
-     * @param int $id
+     * @param Pengaduan $pengaduan
      * @return \Illuminate\Http\RedirectResponse
      */
     public function verifikasi(Request $request, Pengaduan $pengaduan)
@@ -168,7 +168,7 @@ class PengaduanController extends Controller
      * File gambar bukti (jika ada) akan dihapus dari storage fisik
      * untuk menjaga kebersihan server.
      * 
-     * @param int $id
+     * @param Pengaduan $pengaduan
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Pengaduan $pengaduan)

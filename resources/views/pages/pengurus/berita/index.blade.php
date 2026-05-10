@@ -21,6 +21,7 @@
         </div>
     </div>
 
+
     {{-- Filter Section --}}
     <div class="mb-6 bg-white p-5 rounded-lg shadow-sm border border-gray-200">
         <div class="flex items-center mb-4">
@@ -46,9 +47,9 @@
                     <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Filter Status</label>
                     <select name="status" id="status" class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:text-gray-900 sm:text-sm rounded-md shadow-sm {{ request('status') ? 'text-gray-900' : 'text-gray-400' }} px-2" onchange="this.form.submit()">
                         <option value="">Semua Status</option>
-                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                        <option value="verified" {{ request('status') == 'verified' ? 'selected' : '' }}>Verified</option>
-                        <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                        <option value="pending"   {{ request('status') == 'pending'   ? 'selected' : '' }}>Menunggu Verifikasi</option>
+                        <option value="verified"  {{ request('status') == 'verified'  ? 'selected' : '' }}>Terverifikasi</option>
+                        <option value="rejected"  {{ request('status') == 'rejected'  ? 'selected' : '' }}>Ditolak</option>
                     </select>
                 </div>
 
@@ -121,6 +122,9 @@
                         Tanggal Publikasi
                     </th>
                     <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
+                        Penulis
+                    </th>
+                    <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
                         Status
                     </th>
                     <th scope="col" class="px-3 py-2 lg:px-4 lg:py-3 text-left font-medium uppercase tracking-wider">
@@ -148,10 +152,18 @@
                         <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-gray-500">
                             {{ $berita->created_at->format('d M Y, H:i') }}
                         </td>
+                        {{-- Kolom Penulis --}}
+                        <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap">
+                            <div class="flex items-center gap-2">
+                                <img src="{{ $berita->user?->profile_photo_url ?? 'https://ui-avatars.com/api/?name=P&color=7F9CF5&background=EBF4FF' }}"
+                                     class="h-6 w-6 rounded-full object-cover border border-gray-200" alt="">
+                                <span class="text-xs text-gray-700 font-medium">{{ $berita->user?->nama ?? '-' }}</span>
+                            </div>
+                        </td>
                         <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap">
                             @if($berita->status == 'pending')
                                 <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] lg:text-xs font-medium bg-yellow-100 text-yellow-800">
-                                    Menunggu
+                                    Menunggu Verifikasi
                                 </span>
                             @elseif($berita->status == 'verified')
                                 <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] lg:text-xs font-medium bg-green-100 text-green-800">
@@ -174,11 +186,9 @@
                         </td>
                         <td class="px-3 py-2 lg:px-4 lg:py-3 whitespace-nowrap text-center font-medium" onclick="event.stopPropagation()">
                             <div class="flex justify-center items-center space-x-2">
-                                {{-- Edit --}}
                                 <a href="{{ route('pengurus.berita.edit', $berita) }}" class="text-amber-600 hover:text-amber-800 transition-colors" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </a>
-
                                 <form action="{{ route('pengurus.berita.destroy', $berita) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus berita ini?');">
                                     @csrf
                                     @method('DELETE')
@@ -191,7 +201,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="px-6 py-10 text-center text-gray-500">
+                        <td colspan="8" class="px-6 py-10 text-center text-gray-500">
                             <div class="flex flex-col items-center justify-center">
                                 <i class="bi bi-newspaper text-4xl mb-3 text-gray-300"></i>
                                 <p class="text-lg font-medium">Belum ada berita.</p>

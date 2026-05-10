@@ -105,7 +105,7 @@ class PengaduanController extends Controller
      *
      * Memuat relasi tanggapan untuk menampilkan diskusi antara user dan admin.
      *
-     * @param int $id ID Pengaduan
+     * @param Pengaduan $pengaduan ID Pengaduan
      * @return \Illuminate\View\View
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
@@ -126,8 +126,8 @@ class PengaduanController extends Controller
      * 
      * Memungkinkan komunikasi dua arah (chat) dalam tiket pengaduan.
      * 
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id  ID Pengaduan
+     * @param  Request  $request
+     * @param  Pengaduan  $pengaduan  ID Pengaduan
      * @return \Illuminate\Http\RedirectResponse
      */
     public function storeTanggapan(Request $request, Pengaduan $pengaduan)
@@ -155,7 +155,7 @@ class PengaduanController extends Controller
      * 
      * Hapus data pengaduan beserta file bukti fisiknya dari storage.
      *
-     * @param int $id ID Pengaduan
+     * @param Pengaduan $pengaduan ID Pengaduan
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Pengaduan $pengaduan)

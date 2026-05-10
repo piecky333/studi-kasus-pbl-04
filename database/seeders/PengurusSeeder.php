@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Schema;
 class PengurusSeeder extends Seeder
 {
     /**
-     * Seed data pengurus HIMA-TI.
+     * Seed 5 data pengurus HIMA-TI.
      * Memerlukan DivisiSeeder, JabatanSeeder, dan MahasiswaSeeder sudah dijalankan.
      */
     public function run(): void
@@ -22,54 +22,41 @@ class PengurusSeeder extends Seeder
         Pengurus::truncate();
         Schema::enableForeignKeyConstraints();
 
-        // Ambil user pengurus
-        $userPengurus = User::where('role', 'pengurus')->first();
-
-        // Ambil beberapa mahasiswa dari seeder
-        $mahasiswa = DataMahasiswa::inRandomOrder()->take(10)->get();
+        // Ambil 5 mahasiswa pertama (urutan konsisten, bukan random)
+        $mahasiswa = DataMahasiswa::with('user')->take(5)->get();
         $divisiList = Divisi::all();
         $jabatanList = Jabatan::all();
 
         if ($mahasiswa->isEmpty() || $divisiList->isEmpty() || $jabatanList->isEmpty()) {
-            $this->command->warn('PengurusSeeder: Pastikan DivisiSeeder, JabatanSeeder, dan MahasiswaSeeder sudah dijalankan terlebih dahulu.');
+            $this->command->warn('PengurusSeeder: Pastikan DivisiSeeder, JabatanSeeder, dan MahasiswaSeeder sudah dijalankan.');
             return;
         }
 
-        // Data pengurus yang akan dibuat
+        // 5 pengurus dengan jabatan dan divisi berbeda
         $pengurusData = [
-            // Pengurus Inti - 4 orang
-            ['jabatan' => 'Ketua Umum',       'divisi_index' => 0],
-            ['jabatan' => 'Wakil Ketua Umum', 'divisi_index' => 0],
-            ['jabatan' => 'Sekretaris Umum',  'divisi_index' => 0],
-            ['jabatan' => 'Bendahara Umum',   'divisi_index' => 0],
-
-            // Kepala & Anggota Divisi - mengambil divisi 1,2,3,4,5,6 (index 1-6)
-            ['jabatan' => 'Ketua Divisi Akademik',              'divisi_index' => 1],
-            ['jabatan' => 'Anggota Divisi Akademik',            'divisi_index' => 1],
-            ['jabatan' => 'Ketua Divisi Minat & Bakat',         'divisi_index' => 2],
-            ['jabatan' => 'Anggota Divisi Minat & Bakat',       'divisi_index' => 2],
-            ['jabatan' => 'Ketua Divisi Kewirausahaan',         'divisi_index' => 3],
-            ['jabatan' => 'Anggota Divisi Kewirausahaan',       'divisi_index' => 3],
+            ['jabatan' => 'Ketua Umum',            'divisi_index' => 0],
+            ['jabatan' => 'Sekretaris Umum',        'divisi_index' => 0],
+            ['jabatan' => 'Bendahara Umum',         'divisi_index' => 0],
+            ['jabatan' => 'Ketua Divisi Akademik',  'divisi_index' => 1],
+            ['jabatan' => 'Ketua Divisi Minat & Bakat', 'divisi_index' => 2],
         ];
 
         foreach ($pengurusData as $i => $data) {
-            // Ambil mahasiswa secara berurutan (loop)
-            $mhs = $mahasiswa[$i % $mahasiswa->count()];
-
-            // Cari divisi berdasarkan index (mod agar tidak out of range)
-            $divisi = $divisiList[$data['divisi_index'] % $divisiList->count()];
-
-            // Cari jabatan berdasarkan nama
+            $mhs     = $mahasiswa[$i];
+            $divisi  = $divisiList[$data['divisi_index'] % $divisiList->count()];
             $jabatan = Jabatan::where('nama_jabatan', $data['jabatan'])->first()
-                ?? $jabatanList->first();
+                       ?? $jabatanList->first();
 
             Pengurus::create([
                 'id_user'    => $mhs->id_user,
                 'id_divisi'  => $divisi->id_divisi,
                 'id_jabatan' => $jabatan->id_jabatan,
             ]);
+
+            // Ubah role user menjadi pengurus agar mereka bisa login ke panel pengurus
+            $mhs->user->update(['role' => 'pengurus']);
         }
 
-        $this->command->info('PengurusSeeder: ' . count($pengurusData) . ' data pengurus berhasil di-seed.');
+        $this->command->info('PengurusSeeder: 5 data pengurus berhasil di-seed.');
     }
 }

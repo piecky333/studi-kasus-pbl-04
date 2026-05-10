@@ -88,7 +88,7 @@
                                 @foreach($mahasiswa->prestasi as $prestasi)
                                     <tr class="hover:bg-gray-50">
                                         <td class="px-6 py-3 font-medium text-gray-800">
-                                            <a href="{{ route('admin.prestasi.show', $prestasi) }}" class="text-indigo-600 hover:text-indigo-900 hover:underline">
+                                            <a href="{{ route('admin.prestasi.show', $prestasi) }}" class="text-indigo-600 hover:text-indigo-900">
                                                 {{ $prestasi->nama_kegiatan }}
                                             </a>
                                         </td>
@@ -137,7 +137,7 @@
                                 @foreach($mahasiswa->sanksi as $sanksi)
                                     <tr class="hover:bg-gray-50">
                                         <td class="px-6 py-3 font-medium text-gray-800">
-                                            <a href="{{ route('admin.sanksi.show', $sanksi) }}" class="text-indigo-600 hover:text-indigo-900 hover:underline">
+                                            <a href="{{ route('admin.sanksi.show', $sanksi) }}" class="text-indigo-600 hover:text-indigo-900">
                                                 {{ $sanksi->jenis_sanksi }}
                                             </a>
                                         </td>

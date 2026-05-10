@@ -30,7 +30,7 @@ class HomeController extends Controller
             ->take(3)
             ->get();
 
-        // Ambil 4 divisi saja.
+        // Ambil 4 divisi pertama.
         $divisi = Divisi::take(4)->get();
 
         // Kirim data ke view.

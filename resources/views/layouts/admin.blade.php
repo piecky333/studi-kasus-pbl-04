@@ -11,6 +11,11 @@
     <link href="{{ asset('template/css/sb-admin-2.min.css') }}" rel="stylesheet">
     <link href="{{ asset('template/css/admin.css') }}" rel="stylesheet"> 
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        a:hover {
+            text-decoration: none !important;
+        }
+    </style>
 </head>
 
 <body id="page-top">

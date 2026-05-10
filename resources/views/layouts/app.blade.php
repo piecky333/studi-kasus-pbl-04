@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,14 +14,20 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
     <!-- Scripts & Styles (Menggunakan Vite seperti Breeze) -->
-    @vite(['resources/css/app.css', 'resources/js/app.js']) 
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     {{-- Untuk CSS tambahan dari halaman spesifik --}}
     @stack('styles')
 
-    {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
-
+    {{--
+    <script src="https://cdn.tailwindcss.com"></script> --}}
+    <style>
+        a:hover {
+            text-decoration: none !important;
+        }
+    </style>
 </head>
+
 <body class="font-sans antialiased bg-gray-100 flex flex-col min-h-screen">
 
     {{-- Memasukkan Navbar dari file partial --}}
@@ -30,18 +37,15 @@
     @hasSection('hero')
         @yield('hero')
     @endif
-    
+
     {{-- Konten Utama Halaman --}}
     <main class="flex-grow">
         <div class="@hasSection('hero') @else mt-16 @endif"> {{-- mt-16 = tinggi navbar default Breeze --}}
-             {{ $slot }}
-        </div>
-    </main>
+            {{ $slot }}
+            </div> </main>
 
-    {{-- Untuk JS tambahan dari halaman spesifik --}}
-    @stack('scripts')
+            {{-- Untuk JS tambahan dari halaman spesifik --}}
+            @stack('scripts')
 </body>
+
 </html>
-
-
-

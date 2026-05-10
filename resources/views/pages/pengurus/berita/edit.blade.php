@@ -62,7 +62,7 @@
                 <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
                     
                     {{-- Judul Berita --}}
-                    <div class="sm:col-span-6">
+                    <div class="sm:col-span-4">
                         <label for="judul_berita" class="block text-sm font-medium text-gray-700">
                             Judul Berita <span class="text-red-500">*</span>
                         </label>
@@ -70,6 +70,23 @@
                             <input type="text" name="judul_berita" id="judul_berita" value="{{ old('judul_berita', $berita->judul_berita) }}" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('judul_berita') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2" required placeholder="Masukkan judul berita...">
                         </div>
                         @error('judul_berita')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Kategori Berita --}}
+                    <div class="sm:col-span-2">
+                        <label for="kategori" class="block text-sm font-medium text-gray-700">
+                            Kategori Berita <span class="text-red-500">*</span>
+                        </label>
+                        <div class="mt-1">
+                            <select name="kategori" id="kategori" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('kategori') border-red-300 text-red-900 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror px-3 py-2" required>
+                                <option value="">Pilih Kategori</option>
+                                <option value="kegiatan" {{ old('kategori', $berita->kategori) == 'kegiatan' ? 'selected' : '' }}>Kegiatan</option>
+                                <option value="prestasi" {{ old('kategori', $berita->kategori) == 'prestasi' ? 'selected' : '' }}>Prestasi</option>
+                            </select>
+                        </div>
+                        @error('kategori')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>

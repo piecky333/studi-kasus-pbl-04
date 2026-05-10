@@ -11,7 +11,7 @@ class BeritaController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Berita::where('id_user', auth()->user()->id_user)->latest();
+        $query = Berita::with('user')->latest();
 
         if ($request->filled('search')) {
             $query->where('judul_berita', 'like', '%' . $request->search . '%');
@@ -48,6 +48,7 @@ class BeritaController extends Controller
         $request->validate([
             'judul_berita'  => 'required|string|max:255',
             'isi_berita'    => 'required|string',
+            'kategori'      => 'required|string|in:kegiatan,prestasi',
             'gambar_berita' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -60,7 +61,7 @@ class BeritaController extends Controller
             'id_user'       => auth()->user()->id_user,
             'judul_berita'  => $request->judul_berita,
             'isi_berita'    => $request->isi_berita,
-            'kategori'      => 'kegiatan',
+            'kategori'      => $request->kategori,
             'gambar_berita' => $gambar,
             'status'        => 'pending',
         ]);
@@ -71,22 +72,15 @@ class BeritaController extends Controller
 
     public function edit(Berita $berita)
     {
-        if ($berita->id_user !== auth()->user()->id_user) {
-            abort(403);
-        }
-
         return view('pages.pengurus.berita.edit', compact('berita'));
     }
 
     public function update(Request $request, Berita $berita)
     {
-        if ($berita->id_user !== auth()->user()->id_user) {
-            abort(403);
-        }
-
         $request->validate([
             'judul_berita'  => 'required|string|max:255',
             'isi_berita'    => 'required|string',
+            'kategori'      => 'required|string|in:kegiatan,prestasi',
             'gambar_berita' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -101,7 +95,7 @@ class BeritaController extends Controller
         $berita->update([
             'judul_berita'  => $request->judul_berita,
             'isi_berita'    => $request->isi_berita,
-            'kategori'      => 'kegiatan',
+            'kategori'      => $request->kategori,
             'gambar_berita' => $gambar,
         ]);
 
@@ -111,22 +105,13 @@ class BeritaController extends Controller
 
     public function show(Berita $berita)
     {
-        // Hanya pemilik berita yang bisa melihat detail via panel pengurus (opsional, tergantung kebijakan)
-        // Atau biarkan saja jika ingin bisa melihat semua berita organisasi.
-        // Di sini saya batasi ke pemilik agar konsisten dengan index.
-        if ($berita->id_user !== auth()->user()->id_user) {
-            abort(403);
-        }
-
+        // Semua pengurus boleh melihat detail berita organisasi.
+        // Pembatasan hanya berlaku untuk edit, update, dan destroy (hanya pemilik).
         return view('pages.pengurus.berita.show', compact('berita'));
     }
 
     public function destroy(Berita $berita)
     {
-        if ($berita->id_user !== auth()->user()->id_user) {
-            abort(403);
-        }
-
         if ($berita->gambar_berita) {
             Storage::disk('public')->delete($berita->gambar_berita);
         }

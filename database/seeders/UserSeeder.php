@@ -37,8 +37,23 @@ class UserSeeder extends Seeder
         // Create Admin detail record
         \App\Models\Admin::create([
             'id_user' => $user->id_user,
-            'nama_admin' => 'Admin Sistem',
-            'jabatan_admin' => 'Administrator',
+            'nama_admin' => 'Admin Sistem 1',
+            'jabatan_admin' => 'Administrator Utama',
+        ]);
+
+        // 1b. Akun Admin 2
+        $user2 = User::create([
+            'nama' => 'Admin Sistem 2',
+            'username' => 'admin2',
+            'email' => 'admin2@politala.ac.id',
+            'password' => 'password_admin', 
+            'role' => 'admin',
+        ]);
+
+        \App\Models\Admin::create([
+            'id_user' => $user2->id_user,
+            'nama_admin' => 'Admin Sistem 2',
+            'jabatan_admin' => 'Administrator Pendukung',
         ]);
 
         // 2. Akun Pengurus

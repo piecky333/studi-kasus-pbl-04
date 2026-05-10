@@ -133,7 +133,7 @@ class SanksiController extends Controller
     /**
      * Menampilkan form edit data sanksi.
      * 
-     * @param string $id
+     * @param Sanksi $sanksi
      * @return \Illuminate\View\View
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
@@ -148,7 +148,7 @@ class SanksiController extends Controller
      * Memperbarui data sanksi yang sudah ada.
      * 
      * @param Request $request
-     * @param string $id
+     * @param Sanksi $sanksi
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
@@ -171,7 +171,7 @@ class SanksiController extends Controller
     /**
      * Menghapus data sanksi secara permanen.
      * 
-     * @param string $id
+     * @param Sanksi $sanksi
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
@@ -186,7 +186,7 @@ class SanksiController extends Controller
     /**
      * Menampilkan detail data sanksi.
      * 
-     * @param string $id
+     * @param Sanksi $sanksi
      * @return \Illuminate\View\View
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */

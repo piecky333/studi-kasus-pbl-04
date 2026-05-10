@@ -64,7 +64,7 @@
                             <label for="remember_me" class="ml-2 text-sm text-gray-600">Ingat saya</label>
                         </div>
                         @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}" class="text-sm font-medium text-blue-600 hover:text-blue-500 hover:underline">
+                            <a href="{{ route('password.request') }}" class="text-sm font-medium text-blue-600 hover:text-blue-500">
                                 Lupa password?
                             </a>
                         @endif
@@ -93,7 +93,7 @@
 
                     <p class="mt-8 text-sm text-center text-gray-600">
                         Belum punya akun?
-                        <a href="{{ route('register') }}" class="font-semibold text-blue-600 hover:text-blue-500 hover:underline">
+                        <a href="{{ route('register') }}" class="font-semibold text-blue-600 hover:text-blue-500">
                             Daftar sekarang
                         </a>
                     </p>

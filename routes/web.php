@@ -254,7 +254,7 @@ Route::prefix('pengurus')->name('pengurus.')
         Route::resource('divisi', PengurusDivisiController::class)->parameters(['divisi' => 'id_divisi']);
         Route::resource('jabatan', \App\Http\Controllers\Pengurus\JabatanController::class);
         Route::resource('pengurus', \App\Http\Controllers\Pengurus\PengurusController::class);
-        Route::resource('berita', \App\Http\Controllers\Pengurus\BeritaController::class);
+        Route::resource('berita', \App\Http\Controllers\Pengurus\BeritaController::class)->parameters(['berita' => 'berita']);
         // Prestasi
         Route::get('prestasi/cari-mahasiswa', [\App\Http\Controllers\Pengurus\PrestasiController::class, 'cariMahasiswa'])->name('prestasi.cariMahasiswa');
         Route::resource('prestasi', \App\Http\Controllers\Pengurus\PrestasiController::class);
@@ -269,11 +269,6 @@ Route::prefix('mahasiswa')->name('mahasiswa.')
     ->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Mahasiswa\DashboardController::class, 'index'])->name('dashboard');
         
-        // Pengajuan Sertifikat
-        Route::get('/sertifikat', [\App\Http\Controllers\Mahasiswa\SertifikatController::class, 'index'])->name('sertifikat.index');
-        Route::get('/sertifikat/create', [\App\Http\Controllers\Mahasiswa\SertifikatController::class, 'create'])->name('sertifikat.create');
-        Route::post('/sertifikat', [\App\Http\Controllers\Mahasiswa\SertifikatController::class, 'store'])->name('sertifikat.store');
-
         // Reuse UserPengaduanController for Mahasiswa
         Route::resource('pengaduan', UserPengaduanController::class);
         Route::post('pengaduan/{pengaduan}/tanggapan', [UserPengaduanController::class, 'storeTanggapan'])->name('pengaduan.tanggapan');

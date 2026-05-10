@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Spk;
 use App\Models\HasilAkhir;
 use App\Services\SawService;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Spk\KeputusanDetailController; 
+use App\Http\Controllers\Spk\KeputusanDetailController;
+use App\Models\SpkKeputusan; 
 
 use App\Models\Alternatif;
 use App\Models\Penilaian;

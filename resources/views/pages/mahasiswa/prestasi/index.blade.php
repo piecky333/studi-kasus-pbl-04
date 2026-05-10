@@ -28,11 +28,9 @@
                     </select>
                 </form>
 
-                <a href="{{ route('mahasiswa.prestasi.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-                    </svg>
-                    Ajukan Prestasi
+                <a href="{{ route('mahasiswa.prestasi.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                    <i class="fas fa-plus -ml-1 mr-2 h-5 w-5 flex items-center justify-center"></i>
+                    Ajukan Prestasi Baru
                 </a>
             </div>
 
@@ -56,18 +54,18 @@
 
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                            <thead class="bg-blue-50">
                                 <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal/Tahun</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul Kegiatan</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tingkat & Juara</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status Validasi</th>
-                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider border-b">Tanggal/Tahun</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider border-b">Judul Kegiatan</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider border-b">Tingkat & Juara</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-blue-700 uppercase tracking-wider border-b">Status Validasi</th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-semibold text-blue-700 uppercase tracking-wider border-b">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @forelse ($prestasi as $item)
-                                    <tr>
+                                    <tr onclick="window.location='{{ route('mahasiswa.prestasi.show', $item) }}'" class="hover:bg-gray-50 cursor-pointer transition-colors duration-150">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{ $item->tahun }}
                                         </td>
@@ -94,11 +92,9 @@
                                                 </span>
                                             @endif
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <a href="{{ route('mahasiswa.prestasi.show', $item) }}" class="text-indigo-600 hover:text-indigo-900 mr-2">Detail</a>
-                                            
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium" onclick="event.stopPropagation()">
                                             @if($item->status_validasi != 'disetujui')
-                                                <a href="{{ route('mahasiswa.prestasi.edit', $item) }}" class="text-amber-600 hover:text-amber-900 mr-2">Edit</a>
+                                                <a href="{{ route('mahasiswa.prestasi.edit', $item) }}" class="text-amber-600 hover:text-amber-900 mr-3">Edit</a>
                                                 <form action="{{ route('mahasiswa.prestasi.destroy', $item) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
                                                     @csrf
                                                     @method('DELETE')

@@ -20,6 +20,11 @@
     
     <!-- Alpine.js (Fallback/Direct) -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        a:hover {
+            text-decoration: none !important;
+        }
+    </style>
 </head>
 
 <body id="page-top">

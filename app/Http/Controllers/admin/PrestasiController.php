@@ -139,7 +139,7 @@ class PrestasiController extends Controller
     /**
      * Menampilkan detail lengkap satu data prestasi.
      * 
-     * @param string $id ID Prestasi
+     * @param Prestasi $prestasi ID Prestasi
      * @return \Illuminate\View\View
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
@@ -152,7 +152,7 @@ class PrestasiController extends Controller
     /**
      * Menampilkan form edit data prestasi.
      * 
-     * @param string $id
+     * @param Prestasi $prestasi
      * @return \Illuminate\View\View
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
@@ -168,7 +168,7 @@ class PrestasiController extends Controller
      * Mendukung pembaruan relasi mahasiswa jika NIM diubah.
      * 
      * @param Request $request
-     * @param string $id
+     * @param Prestasi $prestasi
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
@@ -209,7 +209,7 @@ class PrestasiController extends Controller
     /**
      * Menghapus data prestasi secara permanen.
      * 
-     * @param string $id
+     * @param Prestasi $prestasi
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */

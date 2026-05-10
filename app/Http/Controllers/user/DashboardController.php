@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\User; 
+namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Controller; 
+use App\Http\Controllers\Controller;
 use App\Models\Berita;
-use App\Models\Pengaduan; 
+use App\Models\Pengaduan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -48,7 +48,7 @@ class DashboardController extends Controller
             'pengaduanDiproses',
             'pengaduanSelesai',
             'pengaduanTerakhir',
-            'beritaTerbaru'    
+            'beritaTerbaru'
         ));
     }
 
